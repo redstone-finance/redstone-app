@@ -11,7 +11,7 @@
 
   a {
     display: block;
-    color: var(--sidebar-color-item);
+    color: white;
     text-decoration: none;
     cursor: pointer;
   }
@@ -86,7 +86,7 @@
   align-items: center;
   margin-left: auto;
   margin-right: 22px;
-  color: #5CB0FF;
+  color: white;
 
   i {
     @include transition(transform 0.3s ease-in-out);

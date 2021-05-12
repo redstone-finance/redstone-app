@@ -508,7 +508,7 @@ export const liveChart = {
   liveChartInterval: null,
   colors: [primary],
   chart: {
-    height: 170,
+    height: 350,
     type: 'spline',
     animation: Highcharts.svg, // don't animate in old IE
     marginRight: 10,
@@ -521,7 +521,7 @@ export const liveChart = {
           var x = (new Date()).getTime(), // current time
             y = Math.random();
           series.addPoint([x, y], true, true);
-        }, 1000);
+        }, 2000);
       }
     }
   },

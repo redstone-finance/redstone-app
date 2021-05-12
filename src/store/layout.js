@@ -3,7 +3,7 @@ import isScreen from '@/core/screenHelper';
 export default {
   namespaced: true,
   state: {
-    sidebarClose: false,
+    sidebarClose: true,
     sidebarStatic: false,
     sidebarActiveElement: null,
     chatOpen: false,
