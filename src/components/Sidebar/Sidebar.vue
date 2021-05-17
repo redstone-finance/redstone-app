@@ -11,21 +11,21 @@
       <ul class="nav" >
         <NavLink
             :activeItem="activeItem"
-            header="Dashboard"
-            link="/app/dashboard"
+            header="Tokens"
+            link="/app/tokens"
             iconName="flaticon-list"
-            index="dashboard"
+            index="tokens"
             isHeader
         />
         <NavLink
-                :activeItem="activeItem"
-                header="Notifications"
-                link="/app/components/charts"
-                iconName="flaticon-bell"
-                index="notifications"
-                isHeader
+            :activeItem="activeItem"
+            header="Notifications"
+            link="/app/components/charts"
+            iconName="flaticon-bell"
+            index="notifications"
+            isHeader
         />
-        <NavLink
+        <!-- <NavLink
             :activeItem="activeItem"
             header="Typography"
             link="/app/typography"
@@ -40,7 +40,7 @@
             iconName="flaticon-equal-1"
             index="tables"
             isHeader
-        />
+        /> -->
 
 
       </ul>
@@ -103,6 +103,7 @@ export default {
     ...mapState('layout', {
       sidebarStatic: state => state.sidebarStatic,
       sidebarOpened: state => !state.sidebarClose,
+      sidebarClose: state => state.sidebarClose,
       activeItem: state => state.sidebarActiveElement,
     }),
   },

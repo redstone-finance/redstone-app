@@ -23,6 +23,9 @@ import ChartsPage from '@/pages/Charts/Charts';
 import IconsPage from '@/pages/Icons/Icons';
 import NotificationsPage from '@/pages/Notifications/Notifications';
 
+// Redstone
+import Tokens from "@/pages/Redstone/Tokens/Tokens";
+import Token from "@/pages/Redstone/Token/Token";
 
 Vue.use(Router);
 
@@ -38,11 +41,24 @@ export default new Router({
       name: 'Error',
       component: ErrorPage,
     },
+
     {
       path: '/app',
       name: 'Layout',
       component: Layout,
       children: [
+        // Redstone
+        {
+          path: 'tokens',
+          name: 'TokensPage',
+          component: Tokens,
+        },
+        {
+          path: 'token/:symbol',
+          name: 'TokenPage',
+          component: Token,
+        },
+
         {
           path: 'dashboard',
           name: 'AnalyticsPage',
