@@ -5,8 +5,8 @@
     extends: Line,
     props: ['data'],
     watch: {
-      data: function(chartData, oldVal) { // watch it
-        console.log('Data changed: ', chartData, ' | was: ', oldVal)
+      data: function(chartData) { // watch it
+        // console.log('Data changed: ', chartData, ' | was: ', oldVal)
 
         this.renderChart(
           {

@@ -1,9 +1,22 @@
 <template>
   <div>
     <BCard class="border-0">
-      {{ symbol }}  Prices
+      <BForm inline>
+        {{ symbol }}  Prices for last
+        <BFormInput
+          v-model="lastDaysCount"
+          type="number"
+          debounce="500"
+          class="ml-2 mr-2"
+          style="width: 80px"
+        >
+        </BFormInput>
+        day(s)
+      </BForm>
       <hr />
-      <p v-if="loading">Loading...</p>
+      <p v-if="loading">
+        <vue-loaders-ball-beat color="#432B97" scale="1"></vue-loaders-ball-beat>
+      </p>
       <TokenPriceChart v-show="!loading" :data="chartData" />
     </BCard>
   </div>
@@ -11,19 +24,21 @@
 
 <script>
 import limestone from 'limestone-api';
-import { BCard } from 'bootstrap-vue';
+import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 
 export default {
   name: "TokenPriceChartContainer",
   props: {
     symbol: String,
+    provider: String,
   },
 
   data() {
     return {
       prices: [],
       loading: false,
+      lastDaysCount: 1,
     };
   },
 
@@ -38,11 +53,18 @@ export default {
         this.prices = await limestone
           .query()
           .symbol(this.symbol)
-          .forLastDays(1)
-          .exec();
+          .forLastDays(this.lastDaysCount)
+          .exec({ provider: this.provider });
       } finally {
         this.loading = false;
       }
+    },
+  },
+
+  watch: {
+    lastDaysCount() {
+      // console.log(`Last days count updated to ${newVal}`);
+      this.loadPrices();
     },
   },
 
@@ -66,6 +88,8 @@ export default {
   components: {
     TokenPriceChart,
     BCard,
+    BFormInput,
+    BForm,
   },
 }
 </script>

@@ -27,9 +27,12 @@ import NotificationsPage from '@/pages/Notifications/Notifications';
 import Tokens from "@/pages/Redstone/Tokens/Tokens";
 import Token from "@/pages/Redstone/Token/Token";
 
+// Store
+import store from "./store";
+
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/login',
@@ -52,6 +55,9 @@ export default new Router({
           path: 'tokens',
           name: 'TokensPage',
           component: Tokens,
+          meta: {
+            showSearchInputInNavbar: true,
+          },
         },
         {
           path: 'token/:symbol',
@@ -98,3 +104,14 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.showSearchInputInNavbar) {
+    store.dispatch("layout/setSearchInputVisibilityInHeader", true);
+  } else {
+    store.dispatch("layout/setSearchInputVisibilityInHeader", false);
+  }
+  next();
+});
+
+export default router;

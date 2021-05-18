@@ -20,15 +20,15 @@
         <NavLink
             :activeItem="activeItem"
             header="Notifications"
-            link="/app/components/charts"
+            link="/app/token/ETH"
             iconName="flaticon-bell"
             index="notifications"
             isHeader
         />
-        <!-- <NavLink
+        <NavLink
             :activeItem="activeItem"
             header="Typography"
-            link="/app/typography"
+            link="/app/token/AR"
             iconName="flaticon-home"
             index="typography"
             isHeader
@@ -36,11 +36,11 @@
         <NavLink
             :activeItem="activeItem"
             header="Tables Basic"
-            link="/app/tables"
+            link="/app/token/BTC"
             iconName="flaticon-equal-1"
             index="tables"
             isHeader
-        /> -->
+        />
 
 
       </ul>

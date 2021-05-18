@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>
-      {{ tokenName }}:
+      {{ tokenDetails.name }}:
       <strong>
-        {{ currentPriceValue }}
+        {{ currentPriceValue | price }}
       </strong>
     </h1>
     <TokenPriceChartContainer :symbol="symbol" />
@@ -16,6 +16,7 @@
 import limestone from "limestone-api";
 import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
 import CodeExample from "@/components/Token/CodeExample";
+import tokensData from "@/assets/data/tokens.json";
 
 export default {
   name: "Token",
@@ -32,7 +33,9 @@ export default {
 
   methods: {
     async loadCurrentPrice() {
-      this.currentPrice = await limestone.getPrice(this.symbol);
+      this.currentPrice = await limestone.getPrice(this.symbol, {
+        provider: this.provider,
+      });
     },
   },
 
@@ -46,12 +49,15 @@ export default {
       return this.$route.params.symbol;
     },
 
-    tokenName() {
-      const mapping = {
-        "ETH": "Ethereum",
+    tokenDetails() {
+      return {
+        ...tokensData[this.symbol],
+        symbol: this.symbol,
       };
+    },
 
-      return mapping[this.symbol];
+    provider() {
+      return this.tokenDetails.providers[0];
     },
 
     currentPriceValue() {

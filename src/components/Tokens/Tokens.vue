@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="d-flex align-items-center mb-lg">
+    <div class="mb-lg">
       <b-row>
-        <b-col md="6" xl="4" sm="6" xs="12" v-for="(token, index) in tokens" :key="index">
-          <div class="pb-xlg" @click="$router.push('/app/token/ETH')">
-            <Widget class="mb-0" style="height: 60px; cursor: pointer;">
+        <b-col md="6" xl="4" lg="4" sm="6" xs="12" v-for="(token, index) in filteredTokens" :key="index">
+          <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
+            <Widget class="mb-0 enlarge-on-hover" style="height: 60px; cursor: pointer;">
               <div class="d-flex align-items-center mb-lg">
-                <img :src="token.logo" style="height: 30px;">
+                <img :src="token.logoURI" style="height: 30px;">
                 <h4 style="margin-bottom: 0px; margin-left: 10px;">{{token.name}}</h4>
-                <h2 style="position:absolute; right:20px;">${{token.price}}</h2>
+                <!-- <h2 style="position:absolute; right:20px;">${{token.price}}</h2> -->
                 <!--
                 <i class="la la-arrow-right text-success la-lg rotate-315" />
                 -->
@@ -23,43 +23,53 @@
 
 <script>
 import Widget from "@/components/Widget/Widget";
+import tokensData from "@/assets/data/tokens.json";
 
 export default {
   name: 'Tokens',
-  data() {
-    return {
-      tokens: [],
-    };
+
+  props: {
+    type: String,
   },
 
-  created() {
-    this.loadTokens();
-  },
+  computed: {
+    filteredTokens() {
+      const result = [];
+      for (const symbol of Object.keys(tokensData)) {
+        const token = tokensData[symbol];
+        let shouldBeAdded = true;
 
-  methods: {
-    async loadTokens() {
-      this.tokens = [
-        {name: "Ethereum", price: "1,750.23", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png"},
-        {name: "Bitcoin", price: "57,267.64", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=010"},
-        {name: "AR", price: "14.73", logo: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=010"},
-        {name: "Ethereum", price: "1,750.23", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png"},
-        {name: "Bitcoin", price: "57,267.64", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=010"},
-        {name: "AR", price: "14.73", logo: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=010"},
-        {name: "Ethereum", price: "1,750.23", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png"},
-        {name: "Bitcoin", price: "57,267.64", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=010"},
-        {name: "AR", price: "14.73", logo: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=010"},
-        {name: "Ethereum", price: "1,750.23", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png"},
-        {name: "Bitcoin", price: "57,267.64", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=010"},
-        {name: "AR", price: "14.73", logo: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=010"},
-        {name: "Ethereum", price: "1,750.23", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png"},
-        {name: "Bitcoin", price: "57,267.64", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=010"},
-        {name: "AR", price: "14.73", logo: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=010"},
-        {name: "Ethereum", price: "1,750.23", logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png"},
-        {name: "Bitcoin", price: "57,267.64", logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=010"},
-        {name: "AR", price: "14.73", logo: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=010"},
-      ]
+        if (this.type) {
+          if (!token.tags || !token.tags.includes(this.type)) {
+            shouldBeAdded = false;
+          }
+        }
+
+        const { searchTerm } = this.$store.state.layout;
+        const searchTermLowerCase = searchTerm.toLowerCase();
+        if (searchTerm) {
+          const nameIncludesSearchTerm =
+            token.name.toLowerCase().includes(searchTermLowerCase);
+          const symbolIncludesSearchTerm =
+            symbol.toLowerCase().includes(searchTermLowerCase);
+          if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm) {
+            shouldBeAdded = false;
+          }
+        }
+
+        if (shouldBeAdded) {
+          result.push({
+            ...token,
+            symbol,
+          });
+        }
+      }
+
+      return result;
     },
   },
+
+  methods: {},
 
   components: {
     Widget,
@@ -67,6 +77,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+.enlarge-on-hover {
+  transition: all 0.5s ease;
+}
+
+.enlarge-on-hover:hover {
+  transform: scale(1.1);
+}
 
 </style>

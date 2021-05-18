@@ -23,14 +23,19 @@
     <b-nav>
       <b-form class="d-sm-down-none ml-5" inline>
         <b-form-group>
-          <b-input-group class="input-group-no-border">
+          <b-input-group v-if="showSearchInputInHeader" class="input-group-no-border">
             <template v-slot:prepend>
               <b-input-group-text><i class='fi flaticon-search-2'/></b-input-group-text>
             </template>
-            <b-form-input id="search-input" placeholder="Search Tokens" />
+            <b-form-input v-model="searchTerm" id="search-input" placeholder="Search Tokens" />
           </b-input-group>
+          <a href="/#/app/tokens" v-else>
+            <BIconArrowLeft />
+            Explore data
+          </a>
         </b-form-group>
       </b-form>
+      
     </b-nav>
     <a class="navbarBrand d-md-none">
       <i class="fa fa-circle text-danger" />
@@ -75,16 +80,29 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import { BIconArrowLeft } from "bootstrap-vue";
 import Notifications from '@/components/Notifications/Notifications';
 
 export default {
   name: 'Header',
-  components: { Notifications },
-  computed: {
-    ...mapState('layout', ['sidebarClose', 'sidebarStatic']),
+  data() {
+    return {};
   },
+  computed: {
+    ...mapState('layout', ['sidebarClose', 'sidebarStatic', 'showSearchInputInHeader']),
+
+    searchTerm: {
+      get() {
+        return this.$store.state.layout.searchTerm;
+      },
+      set(value) {
+        this.updateSearchTerm(value);
+      },
+    },
+  },
+
   methods: {
-    ...mapActions('layout', ['toggleSidebar', 'switchSidebar', 'changeSidebarActive']),
+    ...mapActions('layout', ['toggleSidebar', 'switchSidebar', 'changeSidebarActive', 'updateSearchTerm']),
     switchSidebarMethod() {
       if (!this.sidebarClose) {
         this.switchSidebar(true);
@@ -111,7 +129,12 @@ export default {
       window.localStorage.setItem('authenticated', false);
       this.$router.push('/login');
     },
-  }
+  },
+
+  components: {
+    BIconArrowLeft,
+    Notifications,
+  },
 };
 </script>
 

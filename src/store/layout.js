@@ -9,6 +9,8 @@ export default {
     chatOpen: false,
     chatNotificationIcon: false,
     chatNotificationPopover: false,
+    showSearchInputInHeader: false,
+    searchTerm: '',
   },
   mutations: {
     toggleSidebar(state) {
@@ -42,6 +44,12 @@ export default {
     changeSidebarActive(state, index) {
       state.sidebarActiveElement = index;
     },
+    setSearchInputVisibilityInHeader(state, visibility) {
+      state.showSearchInputInHeader = visibility;
+    },
+    updateSearchTerm(state, searchTerm) {
+      state.searchTerm = searchTerm;
+    },
   },
   actions: {
     toggleSidebar({ commit }) {
@@ -55,6 +63,12 @@ export default {
     },
     changeSidebarActive({ commit }, index) {
       commit('changeSidebarActive', index);
+    },
+    setSearchInputVisibilityInHeader({ commit }, visibility) {
+      commit('setSearchInputVisibilityInHeader', visibility);
+    },
+    updateSearchTerm({ commit }, searchTerm) {
+      commit('updateSearchTerm', searchTerm);
     },
   },
 };

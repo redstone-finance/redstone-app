@@ -25,8 +25,6 @@
 <script>
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from "@/components/Tokens/Tokens";
-// import Widget from '@/components/Widget/Widget';
-
 
 export default {
   name: "Tokens",
