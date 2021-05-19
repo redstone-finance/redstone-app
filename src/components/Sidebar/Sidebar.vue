@@ -13,31 +13,31 @@
             :activeItem="activeItem"
             header="Tokens"
             link="/app/tokens"
-            iconName="flaticon-list"
+            iconName="flaticon-search-2"
             index="tokens"
-            isHeader
-        />
-        <NavLink
-            :activeItem="activeItem"
-            header="Notifications"
-            link="/app/token/ETH"
-            iconName="flaticon-bell"
-            index="notifications"
             isHeader
         />
         <NavLink
             :activeItem="activeItem"
             header="Typography"
             link="/app/token/AR"
-            iconName="flaticon-home"
+            imgUrl="/ar-logo.png"
             index="typography"
+            isHeader
+        />
+        <NavLink
+            :activeItem="activeItem"
+            header="Notifications"
+            link="/app/token/ETH"
+            imgUrl="https://cryptoicons.org/api/color/eth/400"
+            index="notifications"
             isHeader
         />
         <NavLink
             :activeItem="activeItem"
             header="Tables Basic"
             link="/app/token/BTC"
-            iconName="flaticon-equal-1"
+            imgUrl="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
             index="tables"
             isHeader
         />

@@ -53,6 +53,10 @@
     line-height: 28px;
     text-align: center;
 
+    img {
+      width: 28px;
+    }
+
     @media (min-width: map_get($grid-breakpoints, lg))
     and (min-height: $screen-lg-height), (max-width: map_get($grid-breakpoints, md) - 1px) {
       top: 12px;

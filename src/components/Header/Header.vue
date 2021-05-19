@@ -21,7 +21,7 @@
       <!--</b-nav-item>-->
     <!--</b-nav>-->
     <b-nav>
-      <b-form class="d-sm-down-none ml-5" inline>
+      <b-form class="ml-5" inline>
         <b-form-group>
           <b-input-group v-if="showSearchInputInHeader" class="input-group-no-border">
             <template v-slot:prepend>
@@ -37,13 +37,9 @@
       </b-form>
       
     </b-nav>
-    <a class="navbarBrand d-md-none">
-      <i class="fa fa-circle text-danger" />
-      &nbsp;
-      sing
-      &nbsp;
-      <i class="fa fa-circle text-primary" />
-    </a>
+    <!-- <a class="navbarBrand d-md-none text-danger">
+      Redstone
+    </a> -->
     <b-nav class="ml-auto">
       <!--<b-nav-item-dropdown-->
         <!--class="notificationsMenu d-sm-down-none mr-2"-->

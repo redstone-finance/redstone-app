@@ -3,7 +3,7 @@
     <h1 class="page-title"><small>Tokens</small></h1>
     <b-row>
 
-      <b-col md="6" xl="4" sm="6" xs="12" v-for="token in tokens">
+      <b-col md="6" xl="4" sm="6" xs="12" v-for="(token, index) in tokens" :key="index">
         <div class="pb-xlg" @click="$router.push('/app/components/charts')">
           <Widget class="mb-0" style="height: 60px; cursor: pointer;"
 

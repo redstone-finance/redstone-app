@@ -6,7 +6,9 @@
         {{ currentPriceValue | price }}
       </strong>
     </h1>
-    <TokenPriceChartContainer :symbol="symbol" />
+    <TokenPriceChartContainer
+      :symbol="symbol"
+      :currentPrice="currentPrice" />
     <div class="space"></div>
     <CodeExample :symbol="symbol" />
   </div>
@@ -42,6 +44,12 @@ export default {
   components: {
     CodeExample,
     TokenPriceChartContainer,
+  },
+
+  watch: {
+    '$route.params.symbol': function() {
+      this.loadCurrentPrice();
+    },
   },
 
   computed: {

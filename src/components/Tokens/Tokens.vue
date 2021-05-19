@@ -8,7 +8,11 @@
               <div class="d-flex align-items-center mb-lg">
                 <img :src="token.logoURI" style="height: 30px;">
                 <h4 style="margin-bottom: 0px; margin-left: 10px;">{{token.name}}</h4>
-                <!-- <h2 style="position:absolute; right:20px;">${{token.price}}</h2> -->
+                <h2
+                  v-if="prices[token.symbol]"
+                  style="position:absolute; right:20px; top: 22px; font-size: 16px;">
+                  ${{ prices[token.symbol].value | price }}
+                </h2>
                 <!--
                 <i class="la la-arrow-right text-success la-lg rotate-315" />
                 -->
@@ -30,6 +34,7 @@ export default {
 
   props: {
     type: String,
+    prices: Object,
   },
 
   computed: {
@@ -49,9 +54,9 @@ export default {
         const searchTermLowerCase = searchTerm.toLowerCase();
         if (searchTerm) {
           const nameIncludesSearchTerm =
-            token.name.toLowerCase().includes(searchTermLowerCase);
+            (token.name || '').toLowerCase().includes(searchTermLowerCase);
           const symbolIncludesSearchTerm =
-            symbol.toLowerCase().includes(searchTermLowerCase);
+            (symbol || '').toLowerCase().includes(searchTermLowerCase);
           if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm) {
             shouldBeAdded = false;
           }
