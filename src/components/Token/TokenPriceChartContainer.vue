@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BCard class="border-0">
+    <!-- <BCard class="border-0"> -->
       <!-- {{ stats }} -->
       <div class="stats-container">
         <StatElem
@@ -63,7 +63,7 @@
         </b-col>
       </b-row>
 
-    </BCard>
+    <!-- </BCard> -->
   </div>
 </template>
 

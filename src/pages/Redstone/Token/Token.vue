@@ -6,17 +6,29 @@
         {{ currentPriceValue | price }}
       </strong>
     </h1>
-    <TokenPriceChartContainer
-      :symbol="symbol"
-      :currentPrice="currentPrice" />
+    <b-tabs nav-class="bg-transparent">
+      <b-tab title="Chart" active>
+        <TokenPriceChartContainer
+          :symbol="symbol"
+          :currentPrice="currentPrice" />
+      </b-tab>
+      <b-tab title="Table">
+        <TokenPriceTableContainer
+          :symbol="symbol"
+          :currentPrice="currentPrice" />
+      </b-tab>
+    </b-tabs>
+
     <div class="space"></div>
     <CodeExample :symbol="symbol" />
+    
   </div>
 </template>
 
 <script>
 import limestone from "limestone-api";
 import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
+import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
 import CodeExample from "@/components/Token/CodeExample";
 import tokensData from "@/assets/data/tokens.json";
 
@@ -44,6 +56,7 @@ export default {
   components: {
     CodeExample,
     TokenPriceChartContainer,
+    TokenPriceTableContainer,
   },
 
   watch: {
