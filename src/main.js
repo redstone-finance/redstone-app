@@ -28,13 +28,22 @@ Vue.use(VueLoaders);
 
 Vue.config.productionTip = false;
 
-Vue.filter('price', (value) => {
-  if (isNaN(value)) {
-    return value;
-  } else {
-    return value.toFixed(2);
-  }
-});
+function setupFilters() {
+  Vue.filter('price', (value) => {
+    if (isNaN(value)) {
+      return value;
+    } else {
+      return value.toFixed(2);
+    }
+  });
+  
+  Vue.filter('tx', function (value) {
+    if (!value) return '';
+    return value.substr(0, 6) + "..." + value.substr(value.length - 6);
+  });
+}
+
+setupFilters();
 
 /* eslint-disable no-new */
 new Vue({
