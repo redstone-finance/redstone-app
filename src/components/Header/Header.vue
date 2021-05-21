@@ -1,25 +1,15 @@
 <template>
-  <b-navbar class="header d-print-none app-header navbar-floating-type">
-    <!--<b-nav>-->
-      <!--<b-nav-item>-->
-        <!--<a class="d-md-down-none px-2" href="#" @click="toggleSidebarMethod" id="barsTooltip">-->
-          <!--<i class='fi flaticon-menu' />-->
-        <!--</a>-->
-        <!--<a class="fs-lg d-lg-none" href="#" @click="switchSidebarMethod">-->
-          <!--<i class='fi flaticon-menu' />-->
-        <!--</a>-->
-      <!--</b-nav-item>-->
-      <!--<b-nav-item class="d-md-down-none">-->
-        <!--<a href="#" class="px-2">-->
-          <!--<i class='fi flaticon-flip' />-->
-        <!--</a>-->
-      <!--</b-nav-item>-->
-      <!--<b-nav-item class="d-md-down-none">-->
-        <!--<a href="#" class="px-2">-->
-          <!--<i class='fi flaticon-close' />-->
-        <!--</a>-->
-      <!--</b-nav-item>-->
-    <!--</b-nav>-->
+  <b-navbar class="header d-print-none app-header">
+    <b-nav>
+      <b-nav-item>
+        <a class="d-md-down-none px-2" href="#" @click="toggleSidebarMethod" id="barsTooltip">
+          <i class='fi flaticon-menu' />
+        </a>
+        <a class="fs-lg d-lg-none" href="#" @click="switchSidebarMethod">
+          <i class='fi flaticon-menu' />
+        </a>
+      </b-nav-item>
+    </b-nav>
     <b-nav>
       <b-form class="ml-5" inline>
         <b-form-group>

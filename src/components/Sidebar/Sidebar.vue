@@ -5,10 +5,21 @@
         style="height: 100%;"
     >
 
-      <h5 class="navTitle first">
+      <div class="logo-container">
+        <a target="_blank" href="https://redstone.finance">
+          <div class="logo-image-container">
+            <img class="logo-image first" src="/redstone-logo.png" />
+          </div>
+          <div class="logo-text-container">
+            <h3>
+              <span class="red-text">Red</span><span class="dark-blue-text">Stone</span>
+            </h3>
+          </div>
+        </a>
+      </div>
 
-      </h5>
       <ul class="nav" >
+
         <NavLink
             :activeItem="activeItem"
             header="Tokens"
@@ -19,7 +30,7 @@
         />
         <NavLink
             :activeItem="activeItem"
-            header="Typography"
+            header="Arweave"
             link="/app/token/AR"
             imgUrl="/ar-logo.png"
             index="typography"
@@ -27,7 +38,7 @@
         />
         <NavLink
             :activeItem="activeItem"
-            header="Notifications"
+            header="Ethereum"
             link="/app/token/ETH"
             imgUrl="https://cryptoicons.org/api/color/eth/400"
             index="notifications"
@@ -35,7 +46,7 @@
         />
         <NavLink
             :activeItem="activeItem"
-            header="Tables Basic"
+            header="Bitcoin"
             link="/app/token/BTC"
             imgUrl="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
             index="tables"

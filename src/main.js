@@ -8,6 +8,7 @@ import Trend from 'vuetrend';
 import Toasted from 'vue-toasted';
 import VueApexCharts from 'vue-apexcharts';
 import VueLoaders from 'vue-loaders';
+import VueTimers from 'vue-timers'
 import 'vue-loaders/dist/vue-loaders.css';
 
 import store from './store';
@@ -25,6 +26,7 @@ Vue.component('apexchart', VueApexCharts);
 Vue.mixin(layoutMixin);
 Vue.use(Toasted, {duration: 10000});
 Vue.use(VueLoaders);
+Vue.use(VueTimers)
 
 Vue.config.productionTip = false;
 
@@ -33,7 +35,18 @@ function setupFilters() {
     if (isNaN(value)) {
       return value;
     } else {
-      return value.toFixed(2);
+      if (value < 0.01) {
+        // Small prices
+        return '$' + Number(value).toFixed(6);
+      } else {
+        return new Intl.NumberFormat(
+          'en-US',
+          {
+            style: 'currency',
+            currency: 'USD',
+          }
+        ).format(value);
+      }
     }
   });
   

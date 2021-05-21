@@ -1,7 +1,7 @@
 <template>
   <div class="stat-elem">
     <div class="stat-value">
-      {{ value }}
+      {{ value | price }}
     </div>
     <div class="stat-title">
       {{ title }}
@@ -13,7 +13,7 @@
 export default {
   name: 'StatElem',
   props: {
-    value: null,
+    value: String,
     title: String,
   },
 

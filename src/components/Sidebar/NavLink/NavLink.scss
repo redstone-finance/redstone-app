@@ -11,7 +11,8 @@
 
   a {
     display: block;
-    color: white;
+    // color: white;
+    color: #555;
     text-decoration: none;
     cursor: pointer;
   }
@@ -46,7 +47,7 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 3px;
+    top: 1400px;
     left: 16px;
     width: 32px;
     height: 32px;
@@ -105,6 +106,7 @@
 
 a.router-link-active {
   color: var(--sidebar-item-active);
+
   font-size: $font-size-larger;
   font-weight: $font-weight-semi-bold;
 

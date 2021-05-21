@@ -13,23 +13,21 @@
 
       <hr />
 
-      <!-- {{ sources }} -->
-
       <div class="bar-below-chart">
         <div class="time-range-links">
           <a
-            v-for="interval in [1,3,7]"
-            :key="interval"
-            :class="{ 'selected': interval === lastDaysCount }"
-            @click="intervalSelected(interval)"
-          >
-            {{ interval }} day{{ interval > 1 ? 's' : '' }}
-          </a>
+            v-for="(range, index) in timeRanges"
+            :key="index"
+            :class="{ 'selected': index === selectedTimeRangeIndex }"
+            @click="selectTimeRange(index)"
+          >{{ range.title }}</a>
         </div>
 
         <div class="last-updated-note">
           Last updated
-          <strong>39 seconds ago</strong>
+          <strong>
+            {{ lastUpdatedTime }}
+          </strong>
         </div>
       </div>
 
@@ -39,27 +37,36 @@
         <b-col xs="12" lg="9">
           <div class="price-chart-container">
             <div v-show="loading">
-              <vue-loaders-ball-beat color="#432B97" scale="1"></vue-loaders-ball-beat>
+              <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
             </div>
             <TokenPriceChart v-show="!loading" :data="chartData" />
           </div>
         </b-col>
         <b-col xs="12" lg="3">
           <h3 style="margin-bottom: 20px;">Data sources</h3>
-          <div class="abc-checkbox" v-for="source in sources" :key="source">
-            <input
-              type="checkbox"
-              :id="source"
-              :value="source"
+          <b-form-group v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="checkbox-group-2"
               v-model="selectedSources"
-            />
-            <label :for="source" style="font-size: 1.2em;">
-                <span class="source-name text-muted">
-                  {{ source }}
-                </span>
-                <span style="float:right;" >${{ currentPrice.source[source] | price }}</span>
-            </label>
-          </div>
+              :aria-describedby="ariaDescribedby"
+              name="flavour-2"
+            >
+              <b-form-checkbox
+                class="source-checkbox"
+                v-for="source in sources" :key="source"
+                :value="source"
+              >
+                <div class="source-label">
+                  <div class="source-name">
+                    {{ source }}
+                  </div>
+                  <div class="source-value">
+                    {{ currentPrice.source[source] | price }}
+                  </div>
+                </div>
+              </b-form-checkbox>
+            </b-form-checkbox-group>
+          </b-form-group>
         </b-col>
       </b-row>
 
@@ -68,6 +75,7 @@
 </template>
 
 <script>
+// import Vue from 'vue';
 import limestone from 'limestone-api';
 import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
@@ -86,12 +94,38 @@ export default {
     currentPrice: Object,
   },
 
+  timers: {
+    updateLastUpdatedTime: { autostart: true, time: 1000, repeat: true },
+  },
+
   data() {
     return {
       prices: [],
       loading: false,
-      lastDaysCount: 1,
       selectedSources: [],
+
+      lastUpdatedTime: 'recently',
+
+      selectedTimeRangeIndex: 0,
+      timeRanges: [
+        {
+          title: 'Last hour',
+          hours: 1,
+          days: 0,
+        },
+        {
+          title: '1 day',
+          days: 1,
+        },
+        {
+          title: '3 days',
+          days: 3,
+        },
+        {
+          title: '7 days',
+          days: 7,
+        },
+      ]
     };
   },
 
@@ -103,32 +137,59 @@ export default {
     async loadPrices() {
       try {
         this.loading = true;
-        this.prices = await limestone
-          .query()
-          .symbol(this.symbol)
-          .forLastDays(this.lastDaysCount)
-          .exec({ provider: this.provider });
+        let query = limestone.query().symbol(this.symbol);
+        // TODO: fix limestone-api fluent interface for hours and refactor this place
+        if (this.selectedTimeRange.days === 0) {
+          this.prices = await limestone.getHistoricalPrice(this.symbol, {
+            startDate: Date.now() - 3600 * 1000 * this.selectedTimeRange.hours,
+            interval: 1,
+            endDate: Date.now(),
+          });
+        } else {
+          query = query.forLastDays(this.selectedTimeRange.days);
+          this.prices = await query.exec({ provider: this.provider });
+        }
       } finally {
         this.loading = false;
       }
     },
 
-    intervalSelected(interval) {
-      if (this.lastDaysCount !== interval) {
-        this.lastDaysCount = interval;
+    selectTimeRange(index) {
+      if (this.selectedTimeRangeIndex !== index) {
+        this.selectedTimeRangeIndex = index;
         this.loadPrices();
+      }
+    },
+
+    updateLastUpdatedTime() {
+      const secondsAfterLastUpdate = Math.round(
+        (Date.now() - this.currentPrice.timestamp) / 1000);
+
+      if (secondsAfterLastUpdate < 60) {
+        this.lastUpdatedTime = secondsAfterLastUpdate + ' seconds ago';
+      } else {
+        const minutesAfterLastUpdate = Math.round(secondsAfterLastUpdate / 60);
+        if (minutesAfterLastUpdate > 1) {
+          this.lastUpdatedTime = minutesAfterLastUpdate + ' minutes ago';  
+        } else {
+          this.lastUpdatedTime = minutesAfterLastUpdate + ' minute ago';
+        }
       }
     },
   },
 
   watch: {
-    lastDaysCount() {
-      // console.log(`Last days count updated to ${newVal}`);
+    symbol() {
       this.loadPrices();
     },
 
-    symbol() {
-      this.loadPrices();
+    currentPrice(newVal) {
+      // If 1 hour chart selected
+      if (this.selectedTimeRange.days === 0 && this.prices && this.prices.length > 0) {
+        if (_.last(this.prices).id !== newVal.id) {
+          this.prices.push(newVal);
+        }
+      }
     },
   },
 
@@ -148,6 +209,10 @@ export default {
       };
     },
 
+    selectedTimeRange() {
+      return this.timeRanges[this.selectedTimeRangeIndex];
+    },
+
     stats() {
       return {
         Minimum: formatPrice(_.min(this.chartData.values)),
@@ -157,15 +222,7 @@ export default {
     },
 
     sources() {
-      const result = new Set();
-
-      for (const price of this.prices) {
-        for (const source of _.keys(price.source)) {
-          result.add(source);
-        }
-      }
-
-      return Array.from(result);
+      return Object.keys(this.currentPrice.source || {});
     },
   },
 
@@ -181,11 +238,30 @@ export default {
 
 <style scoped lang="scss">
 
-.source-name {
-  margin-left: 10px;
-  font-weight: 300;
-  font-size: 16px;
-  text-transform: capitalize;
+.source-checkbox {
+  display: block;
+  margin-bottom: 5px;
+
+  .source-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    color: #777;
+    justify-content: space-between;
+    
+    .source-name {
+      font-weight: 300;
+      font-size: 16px;
+      text-transform: capitalize;
+    }
+
+    .source-value {
+      font-weight: 500;
+    }
+  }
+
+
 }
 
 .price-chart-container {
@@ -208,6 +284,7 @@ export default {
 .time-range-links {
   a {
     margin-right: 10px;
+    // color: var(--redstone-red-color);
 
     &.selected {
       text-decoration: underline;

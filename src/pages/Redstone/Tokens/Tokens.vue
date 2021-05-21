@@ -14,11 +14,6 @@
         <TokenCards :prices="prices" type="currencies" />
       </b-tab>
     </b-tabs>
-    <!-- <Widget
-      title="Tokens"
-      close collapse settings customHeader
-    >
-    </Widget> -->
   </div>
 </template>
 

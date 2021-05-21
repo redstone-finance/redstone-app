@@ -211,3 +211,50 @@
 .groupTitle {
   margin-bottom: 15px;
 }
+
+.logo-container {
+  height: 60px;
+  width: 64px;
+
+  a {
+    display: grid;
+    grid-template-columns: 64px auto;
+    text-decoration: none;
+
+    .logo-image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+
+      .logo-image {
+        width: 40px;
+    
+        // display: inline;
+      }
+    }
+
+    .logo-text-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+
+      h3 {
+        display: inline-block;
+        font-weight: bold;
+        margin-bottom: 0;
+        
+        .red-text {
+          color: var(--redstone-red-color);
+        }
+    
+        .dark-blue-text {
+          color: var(--redstone-dark-blue-color);
+        }
+      }
+
+    }
+  }
+
+}

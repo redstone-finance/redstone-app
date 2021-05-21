@@ -44,7 +44,7 @@
       :fields="fields"
     >
       <template #table-busy>
-        <vue-loaders-ball-beat color="#432B97" scale="1"></vue-loaders-ball-beat>
+        <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
       </template>
 
       <template #cell(permawebTx)="data">
@@ -104,13 +104,25 @@ export default {
       try {
         this.loading = true;
         this.prices = await limestone.getHistoricalPrice(this.symbol, {
-          offset: this.offset,
+          // offset: this.offset,
           limit: this.limit,
+          startDate: this.startDate,
+          endDate: this.toDate,
         });
       } finally {
         this.loading = false;
       }
       
+    },
+  },
+
+  watch: {
+    fromDate() {
+      this.loadPrices();
+    },
+
+    toDate() {
+      this.loadPrices();
     },
   },
 

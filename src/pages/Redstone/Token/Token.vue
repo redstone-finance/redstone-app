@@ -45,6 +45,10 @@ export default {
     this.loadCurrentPrice();
   },
 
+  timers: {
+    loadCurrentPrice: { autostart: true, time: 10000, repeat: true },
+  },
+
   methods: {
     async loadCurrentPrice() {
       this.currentPrice = await limestone.getPrice(this.symbol, {

@@ -4,12 +4,16 @@
     --body-bg: #f9fbfd;
     --light-color: #F6F6E9;
 
+    --redstone-red-color: #F55767;
+    --redstone-dark-blue-color: #242F51;
+
     --sidebar-bg-color: #E8EBEF;
     --sidebar-color: #C2C2C2;
     --sidebar-color-item: #FFFFFF;
     --sidebar-action-bg: #D6DFE5;
-    --sidebar-item-active: var(--light-color);
-    --sidebar-item-active-bg: #5CB0FF;
+    --sidebar-item-active: #777;
+    // --sidebar-item-active-bg: #5CB0FF;
+    --sidebar-item-active-bg: var(--redstone-red-color);
     --sidebar-badge-bg: #005792;
 
     --sidebar-nav-title-color: var(--light-color);

@@ -15,8 +15,8 @@
               {
                 data: chartData.values,
                 backgroundColor: "transparent",
-                borderColor: "#432B97",
-                pointBackgroundColor: "#B78ADB"
+                borderColor: "#F55767",
+                pointBackgroundColor: "#ffccbb"
               }
             ]
           },
