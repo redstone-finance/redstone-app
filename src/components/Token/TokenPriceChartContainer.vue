@@ -1,81 +1,76 @@
 <template>
   <div>
-    <!-- <BCard class="border-0"> -->
-      <!-- {{ stats }} -->
-      <div class="stats-container">
-        <StatElem
-          v-for="(value, title) in stats"
-          :key="title"
-          :value="value"
-          :title="title"
-        />
+    <div class="stats-container">
+      <StatElem
+        v-for="(value, title) in stats"
+        :key="title"
+        :value="value"
+        :title="title"
+      />
+    </div>
+
+    <hr />
+
+    <div class="bar-below-chart">
+      <div class="time-range-links">
+        <a
+          v-for="(range, index) in timeRanges"
+          :key="index"
+          :class="{ 'selected': index === selectedTimeRangeIndex }"
+          @click="selectTimeRange(index)"
+        >{{ range.title }}</a>
       </div>
 
-      <hr />
-
-      <div class="bar-below-chart">
-        <div class="time-range-links">
-          <a
-            v-for="(range, index) in timeRanges"
-            :key="index"
-            :class="{ 'selected': index === selectedTimeRangeIndex }"
-            @click="selectTimeRange(index)"
-          >{{ range.title }}</a>
-        </div>
-
-        <div class="last-updated-note">
-          Last updated
-          <strong>
-            {{ lastUpdatedTime }}
-          </strong>
-        </div>
+      <div class="last-updated-note">
+        Last updated
+        <strong>
+          {{ lastUpdatedTime }}
+        </strong>
       </div>
+    </div>
 
-      <hr />
+    <hr />
 
-      <b-row>
-        <b-col xs="12" lg="9">
-          <div class="price-chart-container">
-            <div v-show="loading">
-              <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
-            </div>
-            <TokenPriceChart v-show="!loading" :data="chartData" />
+    <b-row>
+      <b-col xs="12" lg="9">
+        <div class="price-chart-container">
+          <div v-show="loading">
+            <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
           </div>
-        </b-col>
-        <b-col xs="12" lg="3">
-          <h3 style="margin-bottom: 20px;">Data sources</h3>
-          <b-form-group v-slot="{ ariaDescribedby }">
-            <b-form-checkbox-group
-              id="checkbox-group-2"
-              v-model="selectedSources"
-              :aria-describedby="ariaDescribedby"
-              name="flavour-2"
+          <TokenPriceChart v-show="!loading" :data="chartData" />
+        </div>
+      </b-col>
+      <b-col xs="12" lg="3">
+        <h3 style="margin-bottom: 20px;">Data sources</h3>
+        <b-form-group v-slot="{ ariaDescribedby }">
+          <b-form-checkbox-group
+            id="checkbox-group-2"
+            v-model="selectedSources"
+            :aria-describedby="ariaDescribedby"
+            name="flavour-2"
+          >
+            <b-form-checkbox
+              class="source-checkbox"
+              v-for="source in sources" :key="source"
+              :value="source"
             >
-              <b-form-checkbox
-                class="source-checkbox"
-                v-for="source in sources" :key="source"
-                :value="source"
-              >
-                <div class="source-label" :style="{ color: sourceColors[source] }">
-                  <div class="source-name">
-                    {{ source }}
-                  </div>
-                  <div class="source-value">
-                    {{ getCurrentPriceForSource(source) | price }}
-                  </div>
+              <div class="source-label" :style="{ color: sourceColors[source] }">
+                <div class="source-name">
+                  {{ source }}
                 </div>
-              </b-form-checkbox>
-            </b-form-checkbox-group>
-          </b-form-group>
-        </b-col>
-      </b-row>
-
-    <!-- </BCard> -->
+                <div class="source-value">
+                  {{ getCurrentPriceForSource(source) | price }}
+                </div>
+              </div>
+            </b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
 <script>
-// import Vue from 'vue';
 import limestone from 'limestone-api';
 import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
