@@ -10,11 +10,13 @@
       <b-tab title="Chart" active>
         <TokenPriceChartContainer
           :symbol="symbol"
+          :provider="provider"
           :currentPrice="currentPrice" />
       </b-tab>
       <b-tab title="Table">
         <TokenPriceTableContainer
           :symbol="symbol"
+          :provider="provider"
           :currentPrice="currentPrice" />
       </b-tab>
     </b-tabs>

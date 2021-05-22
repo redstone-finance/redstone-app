@@ -47,6 +47,10 @@
         <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
       </template>
 
+      <template #cell(value)="data">
+        {{ data.item.value | price }}
+      </template>
+
       <template #cell(permawebTx)="data">
         <a
           target="_blank"

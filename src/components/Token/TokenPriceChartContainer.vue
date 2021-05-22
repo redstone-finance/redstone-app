@@ -56,12 +56,12 @@
                 v-for="source in sources" :key="source"
                 :value="source"
               >
-                <div class="source-label">
+                <div class="source-label" :style="{ color: sourceColors[source] }">
                   <div class="source-name">
                     {{ source }}
                   </div>
                   <div class="source-value">
-                    {{ currentPrice.source[source] | price }}
+                    {{ getCurrentPriceForSource(source) | price }}
                   </div>
                 </div>
               </b-form-checkbox>
@@ -81,10 +81,13 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
+import distinctColors from 'distinct-colors';
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
 }
+
+const palette = distinctColors({ count: 40 });
 
 export default {
   name: "TokenPriceChartContainer",
@@ -102,7 +105,7 @@ export default {
     return {
       prices: [],
       loading: false,
-      selectedSources: [],
+      selectedSources: ['aggregated'],
 
       lastUpdatedTime: 'recently',
 
@@ -144,6 +147,7 @@ export default {
             startDate: Date.now() - 3600 * 1000 * this.selectedTimeRange.hours,
             interval: 1,
             endDate: Date.now(),
+            provider: this.provider,
           });
         } else {
           query = query.forLastDays(this.selectedTimeRange.days);
@@ -158,6 +162,14 @@ export default {
       if (this.selectedTimeRangeIndex !== index) {
         this.selectedTimeRangeIndex = index;
         this.loadPrices();
+      }
+    },
+
+    getCurrentPriceForSource(source) {
+      if (source === 'aggregated') {
+        return this.currentPrice.value;
+      } else {
+        return this.currentPrice.source[source];
       }
     },
 
@@ -194,21 +206,6 @@ export default {
   },
 
   computed: {
-    chartData() {
-      const labels = [];
-      const values = [];
-
-      for (const price of this.prices) {
-        labels.push(price.timestamp);
-        values.push(price.value);
-      }
-
-      return {
-        labels,
-        values,
-      };
-    },
-
     selectedTimeRange() {
       return this.timeRanges[this.selectedTimeRangeIndex];
     },
@@ -222,7 +219,51 @@ export default {
     },
 
     sources() {
-      return Object.keys(this.currentPrice.source || {});
+      let sources = ['aggregated'];
+      if (this.prices[0] && this.prices[0].source) {
+        sources = sources.concat(Object.keys(this.prices[0].source));
+      }
+      return sources;
+    },
+
+    sourceColors() {
+      const result = {};
+      let count = 0;
+      for (const source of this.sources) {
+        result[source] = palette[count].hex();
+        count++;
+      }
+      return result;
+    },
+
+    chartData() {
+      const labels = [];
+      const datasets = {};
+
+      for (const source of this.selectedSources) {
+        if (!datasets[source]) {
+          datasets[source] = {
+            data: [],
+            backgroundColor: 'transparent',
+            borderColor: this.sourceColors[source],
+            pointBackgroundColor: '#fff',
+          };
+        }
+      }
+
+      for (const price of this.prices) {
+        labels.push(price.timestamp);
+
+        for (const source of this.selectedSources) {
+          const value = price.source[source] || price.value;
+          datasets[source].data.push(value);
+        }
+      }
+
+      return {
+        labels,
+        datasets: Object.values(datasets),
+      };
     },
   },
 
