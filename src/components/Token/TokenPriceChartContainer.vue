@@ -205,11 +205,15 @@ export default {
       return this.timeRanges[this.selectedTimeRangeIndex];
     },
 
+    priceValues() {
+      return this.prices.map(p => p.value);
+    },
+
     stats() {
       return {
-        Minimum: formatPrice(_.min(this.chartData.values)),
-        Maximum: formatPrice(_.max(this.chartData.values)),
-        Average: formatPrice(_.mean(this.chartData.values)),
+        Minimum: formatPrice(_.min(this.priceValues)),
+        Maximum: formatPrice(_.max(this.priceValues)),
+        Average: formatPrice(_.mean(this.priceValues)),
       };
     },
 

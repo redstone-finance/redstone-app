@@ -7,13 +7,13 @@
       </strong>
     </h1>
     <b-tabs nav-class="bg-transparent">
-      <b-tab title="Chart" active>
+      <b-tab title="Chart">
         <TokenPriceChartContainer
           :symbol="symbol"
           :provider="provider"
           :currentPrice="currentPrice" />
       </b-tab>
-      <b-tab title="Table">
+      <b-tab title="Table" active>
         <TokenPriceTableContainer
           :symbol="symbol"
           :provider="provider"

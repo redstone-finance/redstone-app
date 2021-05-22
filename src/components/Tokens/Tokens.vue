@@ -4,8 +4,6 @@
       <b-row>
         <b-col md="6" xl="4" lg="4" sm="6" xs="12" v-for="(token, index) in filteredTokens" :key="index">
           <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
-            
-
             <Widget class="mb-0 token-card">
               <div class="token-details">
                 <div class="token-logo">
@@ -28,24 +26,6 @@
                   ></vue-loaders-ball-beat>
                 </h2>
               </div>
-              <!-- <div class="d-flex align-items-center mb-lg">
-                <img :src="token.logoURI" style="height: 30px;">
-                <h4 class="token-name">
-                  {{token.name}}
-                </h4>
-                <h2
-                  style="position:absolute; right:20px; top: 22px; font-size: 16px;">
-                  <span v-if="prices[token.symbol]">
-                    {{ prices[token.symbol].value | price }}
-                  </span>
-                  <vue-loaders-ball-beat
-                    v-else
-                    color="var(--redstone-red-color)"
-                    scale="0.5"
-                  ></vue-loaders-ball-beat>
-                </h2>
-                
-              </div> -->
             </Widget>
           </div>
         </b-col>

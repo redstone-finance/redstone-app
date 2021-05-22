@@ -22,6 +22,24 @@ import limestone from 'limestone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from "@/components/Tokens/Tokens";
 
+async function getAllAvailableCurrentPrices() {
+  const mainPrices = await limestone.getAllPrices();
+  const rapidPrices = await limestone.getAllPrices({
+    provider: 'limestone-rapid',
+  });
+  const stocksPrices = await limestone.getAllPrices({
+    provider: 'limestone-stocks',
+  });
+
+  return {
+    ...mainPrices,
+    ...rapidPrices,
+    ...stocksPrices,
+  };
+}
+
+let currentPrices;
+
 export default {
   name: "Tokens",
 
@@ -33,30 +51,17 @@ export default {
 
   components: {
     TokenCards: Tokens,
-    // Widget,
     BTabs,
     BTab,
   },
 
-  mounted() {
-    this.loadPrices();
-  },
-
-  methods: {
-    async loadPrices() {
-      const mainPrices = await limestone.getAllPrices();
-      const rapidPrices = await limestone.getAllPrices({
-        provider: 'limestone-rapid',
-      });
-      const stocksPrices = await limestone.getAllPrices({
-        provider: 'limestone-stocks',
-      });
-      this.prices = {
-        ...mainPrices,
-        ...rapidPrices,
-        ...stocksPrices,
-      };
-    },
+  async mounted() {
+    if (currentPrices) {
+      this.prices = currentPrices;
+    } else {
+      currentPrices = await getAllAvailableCurrentPrices();
+      this.prices = currentPrices;
+    }
   },
 }
 </script>

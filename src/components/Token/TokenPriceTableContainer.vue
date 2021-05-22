@@ -4,13 +4,13 @@
       <b-row>
         <b-col xs="12" lg="6">
           <b-form inline>
-            <div class="datepicker-container">
+            <!-- <div class="datepicker-container">
               <label for="from-datepicker">From date</label>
               <b-datepicker id="from-datepicker" v-model="fromDate">
               </b-datepicker>
-            </div>
+            </div> -->
             <div class="datepicker-container">
-              <label for="to-datepicker">To date</label>
+              <label for="to-datepicker">Max date</label>
               <b-datepicker id="to-datepicker" v-model="toDate">
               </b-datepicker>
             </div>
@@ -52,11 +52,16 @@
       </template>
 
       <template #cell(permawebTx)="data">
+        <span
+          v-if="data.item.timestamp > lastConfirmedTxTimestamp">
+          {{ data.item.permawebTx }}
+          <b-badge variant="warning">Pending</b-badge>
+        </span>
         <a
+          v-else
           target="_blank"
-          :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx"
-        >
-          {{ data.item.permawebTx | tx }}
+          :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx">
+          {{ data.item.permawebTx }}
         </a>
       </template>
 
@@ -76,6 +81,7 @@
 <script>
 import limestone from 'limestone-api';
 import dateFormat from 'dateformat';
+import Arweave from 'arweave';
 
 export default {
   name: 'TokenPriceTableContainer',
@@ -94,6 +100,9 @@ export default {
       perPage: 10,
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
+      arweave: Arweave.init(),
+
+      lastConfirmedTxTimestamp: 0,
 
       fields: ['value', 'time', 'permawebTx', 'actions'],
     };
@@ -101,6 +110,14 @@ export default {
 
   created() {
     this.loadPrices();
+  },
+
+  timers: {
+    updateLastConfirmedTxTimestamp: {
+      autostart: true,
+      time: 10000,
+      repeat: true,
+    },
   },
 
   methods: {
@@ -116,7 +133,24 @@ export default {
       } finally {
         this.loading = false;
       }
-      
+    },
+
+    async isTxConfirmed(txId) {
+      const response = await this.arweave.transactions.getStatus(txId);
+      return response && response.confirmed;
+    },
+
+    async updateLastConfirmedTxTimestamp() {
+      let lastTimestamp = 0, index = 0;
+      while (lastTimestamp === 0) {
+        const price = this.prices[index];
+        const isConfirmed = await this.isTxConfirmed(price.permawebTx);
+        if (isConfirmed) {
+          lastTimestamp = price.timestamp;
+        }
+        index++;
+      }
+      this.lastConfirmedTxTimestamp = lastTimestamp;
     },
   },
 
@@ -136,12 +170,12 @@ export default {
         return {
           value: p.value,
           time: dateFormat(p.timestamp),
+          timestamp: p.timestamp,
           permawebTx: p.permawebTx,
         };
       });
     },
   },
-
 
 }
 </script>
