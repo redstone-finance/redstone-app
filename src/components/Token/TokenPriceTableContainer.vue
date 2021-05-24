@@ -4,29 +4,12 @@
       <b-row>
         <b-col xs="12" lg="6">
           <b-form inline>
-            <!-- <div class="datepicker-container">
-              <label for="from-datepicker">From date</label>
-              <b-datepicker id="from-datepicker" v-model="fromDate">
-              </b-datepicker>
-            </div> -->
             <div class="datepicker-container">
               <label for="to-datepicker">Max date</label>
               <b-datepicker id="to-datepicker" v-model="toDate">
               </b-datepicker>
             </div>
           </b-form>
-        </b-col>
-        <b-col xs="12" lg="6">
-          <div class="pagination-container overflow-auto">
-            <b-pagination
-              v-model="currentPage"
-              :per-page="perPage"
-              :total-rows="limit"
-              aria-controls="prices-table"
-              align="right"
-            >
-            </b-pagination>
-          </div>
         </b-col>
       </b-row>
     </div>
@@ -37,8 +20,6 @@
       id="prices-table"
       striped
       hover
-      :per-page="perPage"
-      :current-page="currentPage"
       :busy.sync="loading"
       :items="pricesDataForTable"
       :fields="fields"
@@ -53,18 +34,20 @@
 
       <template #cell(permawebTx)="data">
         <span
-          v-if="isTxPendingForPrice(data.item)">
+          v-if="isTxPendingForPrice(data.item)"
+          class="tx-link">
           <div class="pending-badge">
             <div class="badge-text">
               Pending
             </div>
             <div class="pending-tx-loader-container">
-              <vue-loaders-ball-beat scale="0.4" color="white" />
+              <img src="/white-loader.svg" alt="animated white loader" />
             </div>
           </div>
           {{ data.item.permawebTx }}
         </span>
         <a
+          class="tx-link"
           v-else
           target="_blank"
           :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx">
@@ -83,6 +66,27 @@
         </b-btn>
       </template>
     </b-table>
+
+    <div
+      v-if="prices.length > 0"
+      class="load-more-link-container"
+      v-observe-visibility="loadMoreButtonVisibilityChanged"
+    >
+      <!-- <b-btn
+        size="sm"
+        variant="outline-primary"
+        @click="loadMore()"
+      >
+        Load more
+      </b-btn> -->
+
+      <div class="loading-more-container" v-if="loadingMore">
+        <vue-loaders-ball-beat
+          color="#3e86ca"
+          scale="0.5"
+        ></vue-loaders-ball-beat>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -103,7 +107,8 @@ export default {
       prices: [],
       offset: 0,
       loading: false,
-      limit: 200,
+      loadingMore: false,
+      limit: 20,
       currentPage: 1,
       perPage: 10,
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
@@ -122,8 +127,9 @@ export default {
     };
   },
 
-  created() {
-    this.loadPrices();
+  async created() {
+    await this.loadPrices();
+    await this.updateLastConfirmedTxTimestamp();
   },
 
   timers: {
@@ -139,18 +145,43 @@ export default {
       return price.timestamp > this.lastConfirmedTxTimestamp;
     },
 
+    loadMoreButtonVisibilityChanged(visible) {
+      if (visible) {
+        this.loadMore();
+      }
+    },
+
     async loadPrices() {
       try {
         this.loading = true;
-        this.prices = await limestone.getHistoricalPrice(this.symbol, {
-          // offset: this.offset,
-          limit: this.limit,
-          startDate: this.startDate,
-          endDate: this.toDate,
-        });
+        this.offset = 0;
+        this.prices = await this.getPrices();
       } finally {
         this.loading = false;
       }
+    },
+
+    async loadMore() {
+      try {
+        this.loadingMore = true;
+        this.offset += this.limit;
+        const morePrices = await this.getPrices();
+        for (const price of morePrices) {
+          this.prices.push(price);
+        }
+      } finally {
+        this.loadingMore = false;
+      }
+    },
+
+    async getPrices() {
+      const nextPrices = await limestone.getHistoricalPrice(this.symbol, {
+        limit: this.limit,
+        startDate: this.startDate,
+        offset: this.offset,
+        endDate: this.toDate,
+      });
+      return nextPrices;
     },
 
     async isTxConfirmed(txId) {
@@ -188,7 +219,7 @@ export default {
       return this.prices.map(p => {
         return {
           value: p.value,
-          time: dateFormat(p.timestamp),
+          time: dateFormat(p.timestamp, 'isoUtcDateTime'),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
         };
@@ -201,28 +232,35 @@ export default {
 
 <style scoped lang="scss">
 
+.tx-link {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+
+}
+
 .pending-badge {
   background: var(--redstone-red-color);
   color: white;
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 95px;
   padding: 3px 10px;
-  margin-right: 5px;
   border-radius: 5px;
-
-  .badge-text {
-    position: relative;
-    bottom: 2px;
-    display: inline-block;
-  }
+  margin-right: 8px;
 
   .pending-tx-loader-container {
-    position: relative;
-    top: 3px;
-    color: white;
-    // border: 1px solid black;
-    display: inline-block;
-    // height: 15px;
+    img {
+      width: 20px;
+    }
   }
+}
+
+.load-more-link-container {
+  display: flex;
+  justify-content:center;
 }
 
 .datepicker-container {

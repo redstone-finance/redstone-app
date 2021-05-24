@@ -9,6 +9,7 @@ import Toasted from 'vue-toasted';
 import VueApexCharts from 'vue-apexcharts';
 import VueLoaders from 'vue-loaders';
 import VueTimers from 'vue-timers'
+import { ObserveVisibility } from 'vue-observe-visibility';
 import 'vue-loaders/dist/vue-loaders.css';
 
 import store from './store';
@@ -29,6 +30,8 @@ Vue.use(VueLoaders);
 Vue.use(VueTimers)
 
 Vue.config.productionTip = false;
+
+Vue.directive('observe-visibility', ObserveVisibility);
 
 function setupFilters() {
   Vue.filter('price', (value) => {

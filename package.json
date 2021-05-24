@@ -36,6 +36,7 @@
     "vue-chartjs": "^3.5.1",
     "vue-echarts": "^4.1.0",
     "vue-loaders": "^4.1.4",
+    "vue-observe-visibility": "^1.0.0",
     "vue-router": "^3.4.9",
     "vue-timers": "^2.0.4",
     "vue-toasted": "^1.1.28",
