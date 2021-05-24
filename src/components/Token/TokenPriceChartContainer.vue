@@ -269,9 +269,18 @@ export default {
         }
       }
 
+      let timeUnit = 'day';
+      if (this.selectedTimeRange.days === 1) {
+        timeUnit = 'hour';
+      }
+      if (this.selectedTimeRange.days === 0) {
+        timeUnit = 'minute';
+      }
+
       return {
         labels,
         datasets: Object.values(datasets),
+        timeUnit,
       };
     },
   },
