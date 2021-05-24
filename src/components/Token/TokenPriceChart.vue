@@ -20,9 +20,9 @@
             scales: {
               xAxes: [{
                 type: 'time',
-                time: {
-                  unit: 'day'
-                }
+                // time: {
+                //   unit: 'hour'
+                // }
               }]
             },
             legend: {

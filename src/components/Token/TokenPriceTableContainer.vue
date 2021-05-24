@@ -53,9 +53,16 @@
 
       <template #cell(permawebTx)="data">
         <span
-          v-if="data.item.timestamp > lastConfirmedTxTimestamp">
+          v-if="isTxPendingForPrice(data.item)">
+          <div class="pending-badge">
+            <div class="badge-text">
+              Pending
+            </div>
+            <div class="pending-tx-loader-container">
+              <vue-loaders-ball-beat scale="0.4" color="white" />
+            </div>
+          </div>
           {{ data.item.permawebTx }}
-          <b-badge variant="warning">Pending</b-badge>
         </span>
         <a
           v-else
@@ -70,6 +77,7 @@
           target="_blank"
           :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx"
           variant="outline-primary"
+          :disabled="isTxPendingForPrice(data.item)"
         >
           Raise dispute
         </b-btn>
@@ -100,7 +108,13 @@ export default {
       perPage: 10,
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
-      arweave: Arweave.init(),
+      arweave: Arweave.init({
+        host: 'arweave.dev',// Hostname or IP address for a Arweave host
+        port: 443,          // Port
+        protocol: 'https',  // Network protocol http or https
+        timeout: 20000,     // Network request timeouts in milliseconds
+        logging: false,     // Enable network request logging
+      }),
 
       lastConfirmedTxTimestamp: 0,
 
@@ -121,6 +135,10 @@ export default {
   },
 
   methods: {
+    isTxPendingForPrice(price) {
+      return price.timestamp > this.lastConfirmedTxTimestamp;
+    },
+
     async loadPrices() {
       try {
         this.loading = true;
@@ -137,12 +155,13 @@ export default {
 
     async isTxConfirmed(txId) {
       const response = await this.arweave.transactions.getStatus(txId);
-      return response && response.confirmed;
+      const result = response && response.confirmed;
+      return result;
     },
 
     async updateLastConfirmedTxTimestamp() {
       let lastTimestamp = 0, index = 0;
-      while (lastTimestamp === 0) {
+      while (lastTimestamp === 0 && index < this.prices.length) {
         const price = this.prices[index];
         const isConfirmed = await this.isTxConfirmed(price.permawebTx);
         if (isConfirmed) {
@@ -181,6 +200,30 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.pending-badge {
+  background: var(--redstone-red-color);
+  color: white;
+  display: inline-block;
+  padding: 3px 10px;
+  margin-right: 5px;
+  border-radius: 5px;
+
+  .badge-text {
+    position: relative;
+    bottom: 2px;
+    display: inline-block;
+  }
+
+  .pending-tx-loader-container {
+    position: relative;
+    top: 3px;
+    color: white;
+    // border: 1px solid black;
+    display: inline-block;
+    // height: 15px;
+  }
+}
 
 .datepicker-container {
   label {

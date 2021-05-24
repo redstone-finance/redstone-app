@@ -7,15 +7,18 @@
       </strong>
     </h1>
     <b-tabs nav-class="bg-transparent">
-      <b-tab title="Chart">
+      <b-tab title="Chart" active>
+        <!-- We use :key="symbol" to rerender components on each symbol change -->
         <TokenPriceChartContainer
           :symbol="symbol"
+          :key="symbol"
           :provider="provider"
           :currentPrice="currentPrice" />
       </b-tab>
-      <b-tab title="Table" active>
+      <b-tab title="Table">
         <TokenPriceTableContainer
           :symbol="symbol"
+          :key="symbol"
           :provider="provider"
           :currentPrice="currentPrice" />
       </b-tab>
@@ -48,7 +51,7 @@ export default {
   },
 
   timers: {
-    loadCurrentPrice: { autostart: true, time: 10000, repeat: true },
+    loadCurrentPrice: { autostart: true, time: 2000, repeat: true },
   },
 
   methods: {
@@ -63,12 +66,6 @@ export default {
     CodeExample,
     TokenPriceChartContainer,
     TokenPriceTableContainer,
-  },
-
-  watch: {
-    '$route.params.symbol': function() {
-      this.loadCurrentPrice();
-    },
   },
 
   computed: {

@@ -18,7 +18,6 @@
     "chart.js": "2",
     "css-loader": "^1.0.1",
     "dateformat": "^4.5.1",
-    "distinct-colors": "^3.0.0",
     "echarts": "^4.9.0",
     "expose-loader": "^0.7.5",
     "font-awesome": "4.7.0",

@@ -8,7 +8,7 @@
         <router-view />
       </transition>
       <footer class="contentFooter">
-        Limestone 2021
+        Redstone 2021
       </footer>
     </v-touch>
   </div>

@@ -76,13 +76,13 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
-import distinctColors from 'distinct-colors';
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
 }
 
-const palette = distinctColors({ count: 40 });
+// const palette = distinctColors({ count: 40 }).map(c => c.hex());
+const palette = getRedstoneColorPaletteForChart();
 
 export default {
   name: "TokenPriceChartContainer",
@@ -227,12 +227,20 @@ export default {
 
     sourceColors() {
       const result = {};
-      let count = 0;
+      let counter = 0;
       for (const source of this.sources) {
-        result[source] = palette[count].hex();
-        count++;
+        result[source] = palette[counter];
+        counter++;
       }
       return result;
+    },
+    
+    pointRadius() {
+      if (this.selectedTimeRange.days === 0) {
+        return 2;
+      } else {
+        return 3;
+      }
     },
 
     chartData() {
@@ -244,6 +252,8 @@ export default {
           datasets[source] = {
             data: [],
             backgroundColor: 'transparent',
+            pointHoverRadius: 5,
+            pointRadius: this.pointRadius,
             borderColor: this.sourceColors[source],
             pointBackgroundColor: '#fff',
           };
@@ -274,6 +284,36 @@ export default {
     StatElem,
   },
 }
+
+function getRedstoneColorPaletteForChart() {
+  return [
+    '#f55767',
+    '#f16e76',
+    '#ec8285',
+    '#e59495',
+    '#dda6a5',
+    '#d3b6b6',
+    '#ceb2b2',
+    '#d39d9d',
+    '#d68889',
+    '#d77276',
+    '#d65a63',
+    '#d43d51',
+    '#f55767',
+    '#f16e76',
+    '#ec8285',
+    '#e59495',
+    '#dda6a5',
+    '#d3b6b6',
+    '#ceb2b2',
+    '#d39d9d',
+    '#d68889',
+    '#d77276',
+    '#d65a63',
+    '#d43d51',
+  ];
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -297,6 +337,7 @@ export default {
     }
 
     .source-value {
+      color: #777;
       font-weight: 500;
     }
   }
