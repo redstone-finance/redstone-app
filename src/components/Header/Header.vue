@@ -2,9 +2,9 @@
   <b-navbar class="header d-print-none app-header">
     <b-nav>
       <b-nav-item>
-        <a class="d-md-down-none px-2" href="#" @click="toggleSidebarMethod" id="barsTooltip">
+        <!-- <a class="d-md-down-none px-2" href="#" @click="toggleSidebarMethod" id="barsTooltip">
           <i class='fi flaticon-menu' />
-        </a>
+        </a> -->
         <a class="fs-lg d-lg-none" href="#" @click="switchSidebarMethod">
           <i class='fi flaticon-menu' />
         </a>
