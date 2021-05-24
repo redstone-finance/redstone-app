@@ -1,8 +1,8 @@
 <template>
   <div class="sidebar-wrapper">
     <nav
-        :class="{sidebar: true, sidebarStatic, sidebarClose}"
-        style="height: 100%;"
+      :class="{sidebar: true, sidebarStatic, sidebarClose}"
+      style="height: 100%;"
     >
 
       <div class="logo-container">

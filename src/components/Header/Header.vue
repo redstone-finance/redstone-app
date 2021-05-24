@@ -11,8 +11,8 @@
       </b-nav-item>
     </b-nav>
     <b-nav>
-      <b-form class="ml-5" inline>
-        <b-form-group>
+      <b-form class="ml-1" inline>
+        <b-form-group style="margin-bottom: 0">
           <b-input-group v-if="showSearchInputInHeader" class="input-group-no-border">
             <template v-slot:prepend>
               <b-input-group-text><i class='fi flaticon-search-2'/></b-input-group-text>
@@ -44,7 +44,7 @@ export default {
   created() {
     // Expand sidebar on desktops
     if (window.innerWidth > 1024) {
-      // this.switchSidebarMethod();
+      this.toggleSidebarMethod();
     }
   },
   computed: {
