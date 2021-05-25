@@ -100,6 +100,7 @@ export default {
 
   props: {
     symbol: String,
+    provider: String,
   },
 
   data() {
@@ -176,6 +177,7 @@ export default {
 
     async getPrices() {
       const nextPrices = await limestone.getHistoricalPrice(this.symbol, {
+        provider: this.provider,
         limit: this.limit,
         startDate: this.startDate,
         offset: this.offset,
