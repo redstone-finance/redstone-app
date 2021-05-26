@@ -1,25 +1,37 @@
 <template>
   <div>
-    <h1>
-      {{ tokenDetails.name }}:
-      <strong>
-        {{ currentPriceValue | price }}
-      </strong>
-    </h1>
+    <b-row>
+      <b-col md="6" sm="6" xs="12">
+        <h1>
+          {{ tokenDetails.name }}:
+          <strong>
+            {{ currentPriceValue | price }}
+          </strong>    
+        </h1>
+      </b-col>
+      <b-col md="6" sm="6" xs="12" class="d-flex flex-row-reverse">
+        <b-form inline>
+          <b-form-group description="Financial data provider">
+            <b-form-select v-model="selectedProvider" :options="providers"></b-form-select>
+          </b-form-group>          
+        </b-form>
+      </b-col>
+    </b-row>
+    
     <b-tabs nav-class="bg-transparent">
       <b-tab title="Chart" active>
         <!-- We use :key="symbol" to rerender components on each symbol change -->
         <TokenPriceChartContainer
           :symbol="symbol"
-          :key="symbol"
-          :provider="provider"
+          :key="symbol + selectedProvider"
+          :provider="selectedProvider"
           :currentPrice="currentPrice" />
       </b-tab>
       <b-tab title="Table">
         <TokenPriceTableContainer
           :symbol="symbol"
-          :key="symbol"
-          :provider="provider"
+          :key="symbol + selectedProvider"
+          :provider="selectedProvider"
           :currentPrice="currentPrice" />
       </b-tab>
     </b-tabs>
@@ -41,8 +53,18 @@ export default {
   name: "Token",
 
   data() {
+    const symbol = this.$route.params.symbol;
+
+    const tokenDetails = {
+      ...tokensData[symbol],
+      symbol,
+    };
+
     return {
+      symbol,
       currentPrice: {},
+      tokenDetails,
+      selectedProvider: tokenDetails.providers[0],
     };
   },
 
@@ -57,7 +79,7 @@ export default {
   methods: {
     async loadCurrentPrice() {
       this.currentPrice = await limestone.getPrice(this.symbol, {
-        provider: this.provider,
+        provider: this.selectedProvider,
       });
     },
   },
@@ -69,19 +91,8 @@ export default {
   },
 
   computed: {
-    symbol() {
-      return this.$route.params.symbol;
-    },
-
-    tokenDetails() {
-      return {
-        ...tokensData[this.symbol],
-        symbol: this.symbol,
-      };
-    },
-
-    provider() {
-      return this.tokenDetails.providers[0];
+    providers() {
+      return this.tokenDetails.providers;
     },
 
     currentPriceValue() {

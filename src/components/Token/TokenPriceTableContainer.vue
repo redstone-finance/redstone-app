@@ -221,7 +221,7 @@ export default {
       return this.prices.map(p => {
         return {
           value: p.value,
-          time: dateFormat(p.timestamp, 'isoUtcDateTime'),
+          time: dateFormat(p.timestamp),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
         };

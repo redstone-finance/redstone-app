@@ -220,7 +220,9 @@ export default {
     sources() {
       let sources = ['aggregated'];
       if (this.prices[0] && this.prices[0].source) {
-        sources = sources.concat(Object.keys(this.prices[0].source));
+        const sortedSources = Object.keys(this.prices[0].source);
+        sortedSources.sort();
+        sources = sources.concat(sortedSources);
       }
       return sources;
     },

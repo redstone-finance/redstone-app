@@ -12,7 +12,7 @@
                 </div>
                 
                 <h4 class="token-name">
-                  {{token.name}}
+                  {{ getTokenName(token) }}
                 </h4>
                 <h2
                   style="position:absolute; right:20px; top: 22px; font-size: 16px;">
@@ -83,7 +83,15 @@ export default {
     },
   },
 
-  methods: {},
+  methods: {
+    getTokenName(token) {
+      if (token.name.length > 10) {
+        return token.symbol;
+      } else {
+        return token.name;
+      }
+    }
+  },
 
   components: {
     Widget,

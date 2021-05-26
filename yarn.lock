@@ -1480,16 +1480,6 @@ array-unique@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
 
-arweave@^1.10.11:
-  version "1.10.13"
-  resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.10.13.tgz#88205154524b30a22b18f011f7241b2ddc22413c"
-  integrity sha512-FfM9CAF5msAk/12d87KDKu+00/ZriEf/S3ei2FTPMKCOdOb++SwLx7F3kAKO74obAgIGzL8X4Y0D/aV8oNNJDA==
-  dependencies:
-    asn1.js "^5.4.1"
-    axios "^0.21.1"
-    base64-js "^1.3.1"
-    bignumber.js "^9.0.1"
-
 arweave@^1.10.13, arweave@^1.10.14:
   version "1.10.14"
   resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.10.14.tgz#9d34bc92aeb9e974639be51198b697d783bc7927"
@@ -4850,13 +4840,13 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-limestone-api@^3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/limestone-api/-/limestone-api-3.0.5.tgz#16a9f8bbf40975ef7cc8c0a80202b1afcf85d32d"
-  integrity sha512-4f2DC5+elMsYoHyCJxSPv8jhBmYcSrfDF/MAmXNfNeeRnQtU31BuBmqDWuCDLbnGYLuVbGIkP081s+jKLENmFQ==
+limestone-api@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/limestone-api/-/limestone-api-3.0.7.tgz#a00a36171c0ac2b740758d8047446421ed545b7a"
+  integrity sha512-KpyqCWQMscrWZIbXDQPH2RQRDwxA4YniR7+QK0W9CG/GPc0xU23sgMMNxEYdupRW83SzFvDk/rh7tfgiDr1MJg==
   dependencies:
     ar-gql "^0.0.6"
-    arweave "^1.10.11"
+    arweave "^1.10.14"
     axios "^0.21.1"
     deep-sort-object "^1.0.2"
     lodash "^4.17.21"
