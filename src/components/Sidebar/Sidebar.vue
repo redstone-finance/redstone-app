@@ -32,7 +32,7 @@
             :activeItem="activeItem"
             header="Arweave"
             link="/app/token/AR"
-            imgUrl="/ar-logo.png"
+            imgUrl="https://cryptologos.cc/logos/arweave-ar-logo.svg?v=010"
             index="typography"
             isHeader
         />
@@ -40,7 +40,7 @@
             :activeItem="activeItem"
             header="Ethereum"
             link="/app/token/ETH"
-            imgUrl="https://cryptoicons.org/api/color/eth/400"
+            imgUrl="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=010"
             index="notifications"
             isHeader
         />
@@ -48,7 +48,7 @@
             :activeItem="activeItem"
             header="Bitcoin"
             link="/app/token/BTC"
-            imgUrl="https://assets.coingecko.com/coins/images/1/small/bitcoin.png"
+            imgUrl="https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=010"
             index="tables"
             isHeader
         />

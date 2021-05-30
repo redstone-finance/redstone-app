@@ -55,7 +55,8 @@
     text-align: center;
 
     img {
-      width: 28px;
+      max-width: 28px;
+      max-height: 28px;
     }
 
     @media (min-width: map_get($grid-breakpoints, lg))

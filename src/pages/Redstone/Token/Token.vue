@@ -6,12 +6,12 @@
           {{ tokenDetails.name }}:
           <strong>
             {{ currentPriceValue | price }}
-          </strong>    
+          </strong>
         </h1>
       </b-col>
       <b-col md="6" sm="6" xs="12" class="d-flex flex-row-reverse">
         <b-form inline>
-          <b-form-group description="Financial data provider">
+          <b-form-group description="Select data provider">
             <b-form-select v-model="selectedProvider" :options="providers"></b-form-select>
           </b-form-group>          
         </b-form>
@@ -53,18 +53,9 @@ export default {
   name: "Token",
 
   data() {
-    const symbol = this.$route.params.symbol;
-
-    const tokenDetails = {
-      ...tokensData[symbol],
-      symbol,
-    };
-
     return {
-      symbol,
       currentPrice: {},
-      tokenDetails,
-      selectedProvider: tokenDetails.providers[0],
+      selectedProvider: this.getInitialProvider(),
     };
   },
 
@@ -82,6 +73,10 @@ export default {
         provider: this.selectedProvider,
       });
     },
+
+    getInitialProvider() {
+      return tokensData[this.$route.params.symbol].providers[0];
+    },
   },
 
   components: {
@@ -91,12 +86,23 @@ export default {
   },
 
   computed: {
-    providers() {
-      return this.tokenDetails.providers;
-    },
-
     currentPriceValue() {
       return this.currentPrice.value || "Loading...";
+    },
+
+    symbol() {
+      return this.$route.params.symbol;
+    },
+
+    tokenDetails() {
+      return {
+        ...tokensData[this.symbol],
+        symbol: this.symbol,
+      };
+    },
+
+    providers() {
+      return this.tokenDetails.providers;
     },
   },
 }

@@ -7,7 +7,7 @@
             <Widget class="mb-0 token-card">
               <div class="token-details">
                 <div class="token-logo">
-                  <img v-if="token.logoURI" :src="token.logoURI" style="height: 30px;">
+                  <img v-if="token.logoURI" :src="token.logoURI" style="max-height: 30px; max-width: 30px;">
                   <span class="no-token-emoji" v-else>🤔</span>
                 </div>
                 
