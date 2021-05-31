@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import limestone from 'limestone-api';
+import redstone from 'redstone-api';
 import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
@@ -135,10 +135,10 @@ export default {
     async loadPrices() {
       try {
         this.loading = true;
-        let query = limestone.query().symbol(this.symbol);
-        // TODO: fix limestone-api fluent interface for hours and refactor this place
+        let query = redstone.query().symbol(this.symbol);
+        // TODO: fix redstone-api fluent interface for hours and refactor this place
         if (this.selectedTimeRange.days === 0) {
-          this.prices = await limestone.getHistoricalPrice(this.symbol, {
+          this.prices = await redstone.getHistoricalPrice(this.symbol, {
             startDate: Date.now() - 3600 * 1000 * this.selectedTimeRange.hours,
             interval: 1,
             endDate: Date.now(),

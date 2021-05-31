@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import limestone from 'limestone-api';
+import redstone from 'redstone-api';
 import dateFormat from 'dateformat';
 import Arweave from 'arweave';
 
@@ -176,7 +176,7 @@ export default {
     },
 
     async getPrices() {
-      const nextPrices = await limestone.getHistoricalPrice(this.symbol, {
+      const nextPrices = await redstone.getHistoricalPrice(this.symbol, {
         provider: this.provider,
         limit: this.limit,
         startDate: this.startDate,

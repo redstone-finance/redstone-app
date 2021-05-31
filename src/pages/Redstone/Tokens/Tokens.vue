@@ -18,17 +18,17 @@
 </template>
 
 <script>
-import limestone from 'limestone-api';
+import redstone from 'redstone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from "@/components/Tokens/Tokens";
 
 async function getAllAvailableCurrentPrices() {
-  const mainPrices = await limestone.getAllPrices();
-  const rapidPrices = await limestone.getAllPrices({
-    provider: 'limestone-rapid',
+  const mainPrices = await redstone.getAllPrices();
+  const rapidPrices = await redstone.getAllPrices({
+    provider: 'redstone-rapid',
   });
-  const stocksPrices = await limestone.getAllPrices({
-    provider: 'limestone-stocks',
+  const stocksPrices = await redstone.getAllPrices({
+    provider: 'redstone-stocks',
   });
 
   return {
