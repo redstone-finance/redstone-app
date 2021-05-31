@@ -34,7 +34,6 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { BIconArrowLeft } from "bootstrap-vue";
-import Notifications from '@/components/Notifications/Notifications';
 
 export default {
   name: 'Header',
@@ -92,7 +91,6 @@ export default {
 
   components: {
     BIconArrowLeft,
-    Notifications,
   },
 };
 </script>

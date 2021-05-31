@@ -6566,10 +6566,10 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
-redstone-api@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.0.tgz#40a7d6fc498c0fb0427b55ded84e76636f4953e9"
-  integrity sha512-97JHsab/L6W3UIsJfZZOQ+pbA62PLnsPdQcXjJvK4lsCk/lilhA879Ugxj1ar1su07E7NWJb+s4WbPtlHkc6rw==
+redstone-api@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.1.tgz#bd68b1e8916e9a5e0a7c3fa601201f247ef4f4c9"
+  integrity sha512-AUfbksXjr1DXlbsxj7QhxjQCe6SNmF493tWVXuZ+WS5Fxeb5mj4j5BDy0fOByG0sUaeCebAWvtJjXiPHW9D29w==
   dependencies:
     ar-gql "^0.0.6"
     arweave "^1.10.14"
