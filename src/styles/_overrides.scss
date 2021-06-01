@@ -740,3 +740,17 @@ pre {
 .echarts {
   width: 100%;
 }
+
+
+////// Bootstrap checkboxes //////
+.custom-checkbox {
+  cursor: pointer !important;
+
+  label.custom-control-label {
+    width: 100%;
+  }
+
+  .custom-control-label::before {
+    border-radius: 0.15rem;
+  }
+}

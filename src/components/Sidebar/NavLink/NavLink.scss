@@ -11,7 +11,8 @@
 
   a {
     display: block;
-    color: white;
+    // color: white;
+    color: #555;
     text-decoration: none;
     cursor: pointer;
   }
@@ -46,12 +47,17 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 3px;
+    top: 1400px;
     left: 16px;
     width: 32px;
     height: 32px;
     line-height: 28px;
     text-align: center;
+
+    img {
+      max-width: 28px;
+      max-height: 28px;
+    }
 
     @media (min-width: map_get($grid-breakpoints, lg))
     and (min-height: $screen-lg-height), (max-width: map_get($grid-breakpoints, md) - 1px) {
@@ -101,6 +107,7 @@
 
 a.router-link-active {
   color: var(--sidebar-item-active);
+
   font-size: $font-size-larger;
   font-weight: $font-weight-semi-bold;
 

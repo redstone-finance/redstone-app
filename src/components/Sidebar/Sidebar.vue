@@ -1,43 +1,54 @@
 <template>
   <div class="sidebar-wrapper">
     <nav
-        :class="{sidebar: true, sidebarStatic, sidebarClose}"
-        style="height: 100%;"
+      :class="{sidebar: true, sidebarStatic, sidebarClose}"
+      style="height: 100%;"
     >
 
-      <h5 class="navTitle first">
+      <div class="logo-container">
+        <a target="_blank" href="https://redstone.finance">
+          <div class="logo-image-container">
+            <img class="logo-image first" src="/redstone-logo.png" />
+          </div>
+          <div class="logo-text-container">
+            <h3>
+              <span class="red-text">Red</span><span class="dark-blue-text">Stone</span>
+            </h3>
+          </div>
+        </a>
+      </div>
 
-      </h5>
       <ul class="nav" >
+
         <NavLink
             :activeItem="activeItem"
-            header="Dashboard"
-            link="/app/dashboard"
-            iconName="flaticon-list"
-            index="dashboard"
+            header="Tokens"
+            link="/app/tokens"
+            iconName="flaticon-search-2"
+            index="tokens"
             isHeader
         />
         <NavLink
-                :activeItem="activeItem"
-                header="Notifications"
-                link="/app/components/charts"
-                iconName="flaticon-bell"
-                index="notifications"
-                isHeader
-        />
-        <NavLink
             :activeItem="activeItem"
-            header="Typography"
-            link="/app/typography"
-            iconName="flaticon-home"
+            header="Arweave"
+            link="/app/token/AR"
+            imgUrl="https://cryptologos.cc/logos/arweave-ar-logo.svg?v=010"
             index="typography"
             isHeader
         />
         <NavLink
             :activeItem="activeItem"
-            header="Tables Basic"
-            link="/app/tables"
-            iconName="flaticon-equal-1"
+            header="Ethereum"
+            link="/app/token/ETH"
+            imgUrl="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=010"
+            index="notifications"
+            isHeader
+        />
+        <NavLink
+            :activeItem="activeItem"
+            header="Bitcoin"
+            link="/app/token/BTC"
+            imgUrl="https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=010"
             index="tables"
             isHeader
         />
@@ -103,6 +114,7 @@ export default {
     ...mapState('layout', {
       sidebarStatic: state => state.sidebarStatic,
       sidebarOpened: state => !state.sidebarClose,
+      sidebarClose: state => state.sidebarClose,
       activeItem: state => state.sidebarActiveElement,
     }),
   },

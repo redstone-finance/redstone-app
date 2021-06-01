@@ -8,7 +8,7 @@
         <router-view />
       </transition>
       <footer class="contentFooter">
-        Limestone 2021
+        Redstone 2021
       </footer>
     </v-touch>
   </div>
@@ -21,13 +21,12 @@ const { mapState, mapActions } = createNamespacedHelpers('layout');
 
 import Sidebar from '@/components/Sidebar/Sidebar';
 import Header from '@/components/Header/Header';
-import BreadcrumbHistory from '@/components/BreadcrumbHistory/BreadcrumbHistory';
 
 import './Layout.scss';
 
 export default {
   name: 'Layout',
-  components: { Sidebar, Header, BreadcrumbHistory },
+  components: { Sidebar, Header },
   methods: {
     ...mapActions(['switchSidebar', 'handleSwipe', 'changeSidebarActive', 'toggleSidebar'],
     ),
