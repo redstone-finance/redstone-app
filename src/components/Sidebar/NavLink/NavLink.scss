@@ -1,5 +1,10 @@
 @import '../../../styles/app';
 
+
+.sidebar-link {
+  height: 59px;
+}
+
 .headerLink {
   width: 100%;
   overflow-x: hidden;
@@ -47,7 +52,7 @@
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 1400px;
+    top: 12px;
     left: 16px;
     width: 32px;
     height: 32px;
@@ -57,11 +62,6 @@
     img {
       max-width: 28px;
       max-height: 28px;
-    }
-
-    @media (min-width: map_get($grid-breakpoints, lg))
-    and (min-height: $screen-lg-height), (max-width: map_get($grid-breakpoints, md) - 1px) {
-      top: 12px;
     }
   }
 

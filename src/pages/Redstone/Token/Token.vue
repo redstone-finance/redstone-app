@@ -48,6 +48,7 @@ import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContaine
 import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
 import CodeExample from "@/components/Token/CodeExample";
 import tokensData from "@/assets/data/tokens.json";
+import _ from 'lodash';
 
 export default {
   name: "Token",
@@ -102,7 +103,14 @@ export default {
     },
 
     providers() {
-      return this.tokenDetails.providers;
+      return this.tokenDetails.providers.map(
+        provider => {
+          return {
+            value: provider,
+            text: _.startCase(provider)
+          }
+        }
+      );
     },
   },
 }
