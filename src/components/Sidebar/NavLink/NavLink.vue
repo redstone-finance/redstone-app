@@ -5,7 +5,8 @@
         <i v-if="iconName" :class="fullIconName"></i>
         <img v-if="imgUrl" :src="imgUrl" />
       </span>
-      {{header}} <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{label}}</sup>
+      <span v-if="showHeader">{{header}}</span>
+      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{label}}</sup>
       <b-badge v-if="badge" variant="primary" pill>{{badge}}</b-badge>
     </router-link>
   </li>
@@ -16,7 +17,8 @@
           <i v-if="iconName" :class="fullIconName"></i>
           <img v-if="imgUrl" :src="imgUrl" />
         </span>
-        {{header}} <sup v-if="label" :class="'text-' + labelColor" class="ml-1 headerLabel">{{label}}</sup>
+        <span v-if="showHeader">{{header}}</span>
+        <sup v-if="label" :class="'text-' + labelColor" class="ml-1 headerLabel">{{label}}</sup>
         <div :class="{caretWrapper: true, carretActive: isActive}">
           <i class="fa fa-angle-right" />
         </div>
@@ -43,7 +45,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'NavLink',
@@ -86,6 +88,9 @@ export default {
       && this.activeItem.includes(this.index)
       && this.headerLinkWasClicked);
     },
+    ...mapState('layout', {
+      showHeader: state => !state.sidebarClose || state.sidebarStatic
+    })
   },
 };
 </script>

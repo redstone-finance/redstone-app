@@ -43,6 +43,7 @@
             imgUrl="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=010"
             index="notifications"
             isHeader
+
         />
         <NavLink
             :activeItem="activeItem"

@@ -43,6 +43,9 @@ const router = new Router({
       ],
     },
   ],
+  scrollBehavior: () => {
+    document.getElementsByClassName('sing-dashboard')[0].scrollIntoView();
+  }
 });
 
 router.beforeEach((to, from, next) => {

@@ -71,6 +71,11 @@ export default {
           }
         }
 
+        //TODO: remove when price fetching is corrected
+        if (['BTMX', 'NPXS', 'MDX', 'AMP'].includes(symbol)) {
+          shouldBeAdded = false;
+        }
+
         if (shouldBeAdded) {
           result.push({
             ...token,
