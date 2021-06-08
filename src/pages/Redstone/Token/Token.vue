@@ -7,6 +7,7 @@
           <strong>
             {{ currentPriceValue | price }}
           </strong>
+            ({{ dayChange | percentage(true) }})
         </h1>
       </b-col>
       <b-col md="6" sm="6" xs="12" class="d-flex flex-row-reverse">
@@ -18,26 +19,26 @@
       </b-col>
     </b-row>
     
-    <b-tabs nav-class="bg-transparent">
-      <b-tab title="Chart" active>
+
         <!-- We use :key="symbol" to rerender components on each symbol change -->
-        <TokenPriceChartContainer
-          :symbol="symbol"
-          :key="symbol + selectedProvider"
-          :provider="selectedProvider"
-          :currentPrice="currentPrice" />
-      </b-tab>
-      <b-tab title="Table">
-        <TokenPriceTableContainer
-          :symbol="symbol"
-          :key="symbol + selectedProvider"
-          :provider="selectedProvider"
-          :currentPrice="currentPrice" />
-      </b-tab>
-    </b-tabs>
+    <TokenPriceChartContainer
+      :symbol="symbol"
+      :key="symbol + selectedProvider + '-chart'"
+      :provider="selectedProvider"
+      :currentPrice="currentPrice" />
+      
+  <b-button class="btn-lg btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Integrate now!</b-button>
+  <b-modal id="modal-1" title="Code snippet" size="xl" ok-only>
+    <CodeExample :symbol="symbol" />
+  </b-modal>
+
+    <TokenPriceTableContainer
+      :symbol="symbol"
+      :key="symbol + selectedProvider + '-table'"
+      :provider="selectedProvider"
+      :currentPrice="currentPrice" />
 
     <div class="space"></div>
-    <CodeExample :symbol="symbol" />
     
   </div>
 </template>
@@ -50,29 +51,37 @@ import CodeExample from "@/components/Token/CodeExample";
 import tokensData from "@/assets/data/tokens.json";
 import _ from 'lodash';
 
+const DAY_IN_MILISECONDS = 24 * 60 * 60 * 1000;
+
 export default {
   name: "Token",
 
   data() {
     return {
       currentPrice: {},
+      oldPrice: {},
       selectedProvider: this.getInitialProvider(),
     };
   },
 
   created() {
-    this.loadCurrentPrice();
+    this.loadPrices();
   },
 
   timers: {
-    loadCurrentPrice: { autostart: true, time: 2000, repeat: true },
+    loadPrices: { autostart: true, time: 2000, repeat: true },
   },
 
   methods: {
-    async loadCurrentPrice() {
+    async loadPrices() {
       this.currentPrice = await redstone.getPrice(this.symbol, {
-        provider: this.selectedProvider,
+        provider: this.selectedProvider
       });
+      this.oldPrice = await redstone.getHistoricalPrice(this.symbol, {
+        date: new Date().getTime() - DAY_IN_MILISECONDS,
+        provider: this.selectedProvider
+      });
+      console.log(this.oldPrice)
     },
 
     getInitialProvider() {
@@ -89,6 +98,10 @@ export default {
   computed: {
     currentPriceValue() {
       return this.currentPrice.value || "Loading...";
+    },
+
+    dayChange() {
+      return (this.currentPrice.value - this.oldPrice.value) / this.oldPrice.value || "";
     },
 
     symbol() {
@@ -116,14 +129,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-h1 {
-  margin-bottom: 20px;
-}
-
-.space {
-  margin-top: 20px;
-}
-
-</style>
+<style src="./Token.scss" lang="scss" scoped />

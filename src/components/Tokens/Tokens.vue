@@ -2,7 +2,7 @@
   <div>
     <div class="mb-lg">
       <b-row>
-        <b-col md="6" xl="4" lg="4" sm="6" xs="12" v-for="(token, index) in filteredTokens" :key="index">
+        <b-col md="6" xl="4" lg="4" sm="6" xs="12" v-for="(token, index) in tokens" :key="index">
           <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
             <Widget class="mb-0 token-card">
               <div class="token-details">
@@ -16,8 +16,8 @@
                 </h4>
                 <h2
                   style="position:absolute; right:20px; top: 22px; font-size: 16px;">
-                  <span v-if="prices[token.symbol]">
-                    {{ prices[token.symbol].value | price }}
+                  <span v-if="token.price">
+                    {{ token.price | price }}
                   </span>
                   <vue-loaders-ball-beat
                     v-else
@@ -36,56 +36,12 @@
 
 <script>
 import Widget from "@/components/Widget/Widget";
-import tokensData from "@/assets/data/tokens.json";
 
 export default {
   name: 'Tokens',
 
   props: {
-    type: String,
-    prices: Object,
-  },
-
-  computed: {
-    filteredTokens() {
-      const result = [];
-      for (const symbol of Object.keys(tokensData)) {
-        const token = tokensData[symbol];
-        let shouldBeAdded = true;
-
-        if (this.type) {
-          if (!token.tags || !token.tags.includes(this.type)) {
-            shouldBeAdded = false;
-          }
-        }
-
-        const { searchTerm } = this.$store.state.layout;
-        const searchTermLowerCase = searchTerm.toLowerCase();
-        if (searchTerm) {
-          const nameIncludesSearchTerm =
-            (token.name || '').toLowerCase().includes(searchTermLowerCase);
-          const symbolIncludesSearchTerm =
-            (symbol || '').toLowerCase().includes(searchTermLowerCase);
-          if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm) {
-            shouldBeAdded = false;
-          }
-        }
-
-        //TODO: remove when price fetching is corrected
-        if (['BTMX', 'NPXS', 'MDX', 'AMP'].includes(symbol)) {
-          shouldBeAdded = false;
-        }
-
-        if (shouldBeAdded) {
-          result.push({
-            ...token,
-            symbol,
-          });
-        }
-      }
-
-      return result;
-    },
+    tokens: Array,
   },
 
   methods: {

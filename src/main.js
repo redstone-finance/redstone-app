@@ -57,6 +57,11 @@ function setupFilters() {
     if (!value) return '';
     return value.substr(0, 6) + "..." + value.substr(value.length - 6);
   });
+
+  Vue.filter('percentage', function (value, showPlus) {
+    if (!value) return '';
+    return ((showPlus && value > 0) ? "+" : "") + (value * 100).toFixed(2) + "%";
+  });
 }
 
 setupFilters();
