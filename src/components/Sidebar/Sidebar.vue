@@ -6,7 +6,7 @@
     >
 
       <div class="logo-container">
-        <a target="_blank" href="https://redstone.finance">
+        <a href="/">
           <div class="logo-image-container">
             <img class="logo-image first" src="/redstone-logo.png" />
           </div>

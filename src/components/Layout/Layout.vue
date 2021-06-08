@@ -8,7 +8,7 @@
         <router-view />
       </transition>
       <footer class="contentFooter">
-        Redstone 2021
+        Redstone 2021 - learn more at <a href="https://redstone.finance">redstone.finance</a>
       </footer>
     </v-touch>
   </div>
