@@ -3,27 +3,27 @@
     <b-tabs nav-class="bg-transparent">
       <b-tab active>
         <template #title>
-          All <span class="tokens-number">{{ allTokens.length }}</span>
+          All <span class="tokens-number">{{ allTokens(prices).length }}</span>
         </template>
-        <TokenCards :tokens="allTokens" />
+        <TokenCards :tokens="allTokens(prices)" />
       </b-tab>
       <b-tab>
         <template #title>
-          Crypto <span class="tokens-number">{{ cryptoTokens.length }}</span>
+          Crypto <span class="tokens-number">{{ cryptoTokens(prices).length }}</span>
         </template>
-        <TokenCards :tokens="cryptoTokens" />
+        <TokenCards :tokens="cryptoTokens(prices)" />
       </b-tab>
       <b-tab>
         <template #title>
-          Stocks <span class="tokens-number">{{ stockTokens.length }}</span>
+          Stocks <span class="tokens-number">{{ stockTokens(prices).length }}</span>
         </template>
-        <TokenCards :tokens="stockTokens" />
+        <TokenCards :tokens="stockTokens(prices)" />
       </b-tab>
       <b-tab>
         <template #title>
-          Currencies <span class="tokens-number">{{ currencyTokens.length }}</span>
+          Currencies <span class="tokens-number">{{ currencyTokens(prices).length }}</span>
         </template>
-        <TokenCards :tokens="currencyTokens" />
+        <TokenCards :tokens="currencyTokens(prices)" />
       </b-tab>
     </b-tabs>
   </div>
@@ -58,11 +58,7 @@ export default {
 
   data() {
     return {
-      prices: {},
-      allTokens: [],
-      cryptoTokens: [],
-      stockTokens: [],
-      currencyTokens: []
+      prices: {}
     };
   },
 
@@ -100,7 +96,7 @@ export default {
           const nameIncludesSearchTerm =
             (token.name || '').toLowerCase().includes(searchTermLowerCase);
           const symbolIncludesSearchTerm =
-            (symbol || '').toLowerCase().includes0(searchTermLowerCase);
+            (symbol || '').toLowerCase().includes(searchTermLowerCase);
           if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm) {
             shouldBeAdded = false;
           }
@@ -123,21 +119,20 @@ export default {
 
       return result;
     },
+    allTokens(prices) {
+      return this.filteredTokenWithPrices(prices);
+    },
+    cryptoTokens(prices) {
+      return this.filteredTokenWithPrices(prices, 'crypto');
+    },
+    stockTokens(prices) {
+      return this.filteredTokenWithPrices(prices, 'stocks');
+    },
+    currencyTokens(prices) {
+      return this.filteredTokenWithPrices(prices, 'currencies');
+    },
+
   },
-
-  watch: {
-    prices: {
-        immediate: true,
-        handler: function(val) {
-        this.allTokens = this.filteredTokenWithPrices(val)
-        this.cryptoTokens = this.filteredTokenWithPrices(val, 'crypto')
-        this.stockTokens = this.filteredTokenWithPrices(val, 'stocks')
-        this.currencyTokens = this.filteredTokenWithPrices(val, 'currencies')
-        console.log(this.allTokens)
-      }
-    }
-
-  }
 }
 </script>
 

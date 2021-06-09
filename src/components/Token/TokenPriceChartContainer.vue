@@ -1,5 +1,20 @@
 <template>
   <div>
+    <b-row>
+      <b-col xs="12">
+        <div class="h1">
+          <img class="token-logo" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
+          {{ tokenDetails.name }} ({{tokenDetails.symbol}}):
+          <strong>
+            {{ currentPriceValue | price }}
+          </strong>
+          <div class="percentage h5 d-inline-block">
+            <span v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
+              {{ priceChange().toFixed(2) | price(true) }} ({{ priceRelativeChange().toFixed(2) | percentage(true) }})</span>   
+          </div>  
+        </div>
+      </b-col>
+    </b-row>
     <div class="stats-container">
       <StatElem
         v-for="(value, title) in stats"
@@ -76,6 +91,7 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
+import tokensData from "@/assets/data/tokens.json";
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
@@ -134,6 +150,7 @@ export default {
   methods: {
     async loadPrices() {
       try {
+        this.currentPrice = {};
         this.loading = true;
         let query = redstone.query().symbol(this.symbol);
         // TODO: fix redstone-api fluent interface for hours and refactor this place
@@ -183,6 +200,16 @@ export default {
         }
       }
     },
+
+    priceChange() {
+      let oldPrice = this.prices[0]?.value;
+      return (this.currentPrice.value && oldPrice) ? (this.currentPrice.value - oldPrice): null;
+    },
+
+    priceRelativeChange() {
+      let oldPrice = this.prices[0]?.value;
+      return this.priceChange() / oldPrice;
+    },
   },
 
   watch: {
@@ -210,11 +237,15 @@ export default {
     },
 
     stats() {
-      return {
-        Minimum: formatPrice(_.min(this.priceValues)),
-        Maximum: formatPrice(_.max(this.priceValues)),
-        Average: formatPrice(_.mean(this.priceValues)),
-      };
+      if (this.priceValues.length > 0) {
+        return {
+          Minimum: formatPrice(_.min(this.priceValues)),
+          Maximum: formatPrice(_.max(this.priceValues)),
+          Average: formatPrice(_.mean(this.priceValues)),
+        };
+      } else {
+        return {};
+      }
     },
 
     sources() {
@@ -285,6 +316,17 @@ export default {
         timeUnit,
       };
     },
+
+    currentPriceValue() {
+      return this.currentPrice?.value || "Loading..."
+    },
+
+    tokenDetails() {
+      return {
+        ...tokensData[this.symbol],
+        symbol: this.symbol
+      };
+    },
   },
 
   components: {
@@ -317,6 +359,7 @@ function getRedstoneColorPaletteForChart() {
 </script>
 
 <style scoped lang="scss">
+@import '~@/styles/app';
 
 .source-checkbox {
   display: block;
@@ -371,5 +414,29 @@ function getRedstoneColorPaletteForChart() {
       text-decoration: underline;
     }
   }
+}
+
+.percentage {
+  transform: translateY(-2px);
+  margin-bottom: 0;
+
+  .positive {
+    color: $teal;
+  }
+
+  .negative {
+    color: $red-redstone;
+  }
+
+  .period {
+    font-size: $font-size-index;
+    font-weight: $font-weight-semi-bold;
+  }
+}
+
+.token-logo {
+  width: 30px;
+  height: 30px;
+  transform: translateY(-4px);
 }
 </style>

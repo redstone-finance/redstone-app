@@ -21,6 +21,10 @@
     margin-left: 0;
     left: $sidebar-width-open;
   }
+
+  @media (min-width: breakpoint-min(md)) {
+    width: calc(100% - #{$sidebar-width-open});
+  }
 }
 
 .sidebarClose div.wrap {

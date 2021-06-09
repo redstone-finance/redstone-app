@@ -1,9 +1,8 @@
-import isScreen from '@/core/screenHelper';
 
 export default {
   namespaced: true,
   state: {
-    sidebarClose: true,
+    sidebarClose: false,
     sidebarStatic: false,
     sidebarActiveElement: null,
     chatOpen: false,
@@ -18,10 +17,6 @@ export default {
 
       localStorage.sidebarStatic = nextState;
       state.sidebarStatic = nextState;
-
-      if (!nextState && (isScreen('lg') || isScreen('xl'))) {
-        state.sidebarClose = true;
-      }
     },
     switchSidebar(state, value) {
       if (value) {

@@ -11,8 +11,8 @@ h1 {
   border-radius: 0.7rem;
   display: inline-block;
   text-align: center;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: $font-size-index;
+  font-weight: $font-weight-semi-bold;
   background-color: #D7DFE6;
   -webkit-transform: translateY(-0.1rem);
   transform: translateY(-0.1rem);

@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div class="price-table">
+    <h2 class="table-title">
+      Price table
+    </h2>
     <div class="table-filters-container">
       <b-row>
         <b-col xs="12" lg="6">
@@ -277,6 +280,10 @@ export default {
 
 .pagination-container {
   margin-top: 10px;
+}
+
+.price-table {
+  margin-top: 40px;
 }
 
 </style>

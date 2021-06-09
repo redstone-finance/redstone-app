@@ -39,6 +39,11 @@
         }
       }
     }
+
+    .btn-modal {
+      height: fit-content;
+      margin-right: 15px;
+    }
   }
 
   &.header-dark {
@@ -82,7 +87,12 @@
   }
 
   .form-group {
-    width: 300px;
+    width: 200px;
+
+    @media (main-width: breakpoint-min(md)) {
+      width: 300px;
+    }
+
     input {
       background-color: #F9FAFE;
       &::placeholder {
@@ -92,7 +102,11 @@
     }
 
     .input-group {
-      width: 350px;
+      width: 220px;
+
+      @media (main-width: breakpoint-min(md)) {
+        width: 350px;
+      }
     }
 
     .input-group-prepend {

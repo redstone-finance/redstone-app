@@ -7,9 +7,6 @@
       <transition name="router-animation">
         <router-view />
       </transition>
-      <footer class="contentFooter">
-        Redstone 2021 - learn more at <a target="_blank" href="https://redstone.finance">redstone.finance</a>
-      </footer>
     </v-touch>
   </div>
 </div>

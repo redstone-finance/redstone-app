@@ -34,15 +34,15 @@ Vue.config.productionTip = false;
 Vue.directive('observe-visibility', ObserveVisibility);
 
 function setupFilters() {
-  Vue.filter('price', (value) => {
+  Vue.filter('price', (value, showPlus) => {
     if (isNaN(value)) {
       return value;
     } else {
-      if (value < 0.01) {
+      if (Math.abs(value) < 0.01) {
         // Small prices
-        return '$' + Number(value).toFixed(6);
+        return addPlus(value, showPlus) + '$' + Number(value).toFixed(6);
       } else {
-        return new Intl.NumberFormat(
+        return addPlus(value, showPlus) + new Intl.NumberFormat(
           'en-US',
           {
             style: 'currency',
@@ -60,7 +60,7 @@ function setupFilters() {
 
   Vue.filter('percentage', function (value, showPlus) {
     if (!value) return '';
-    return ((showPlus && value > 0) ? "+" : "") + (value * 100).toFixed(2) + "%";
+    return addPlus(value, showPlus) + (value * 100).toFixed(2) + "%";
   });
 }
 
@@ -73,3 +73,7 @@ new Vue({
   router,
   render: h => h(App),
 });
+
+function addPlus(value, show) {
+  return ((show && value > 0) ? "+" : "");
+}

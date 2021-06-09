@@ -26,7 +26,11 @@
         </b-form-group>
       </b-form>
     </b-nav>
-    <b-nav class="ml-auto">
+    <b-nav class="align-items-center flex-grow-1 justify-content-end">
+        <b-button class="btn-lg btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Integrate now!</b-button>
+        <b-modal id="modal-1" title="Code snippet" size="xl" ok-only>
+          <CodeExample />
+        </b-modal>
     </b-nav>
   </b-navbar>
 </template>
@@ -34,6 +38,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import { BIconArrowLeft } from "bootstrap-vue";
+import CodeExample from "@/components/Token/CodeExample";
 
 export default {
   name: 'Header',
@@ -91,6 +96,7 @@ export default {
 
   components: {
     BIconArrowLeft,
+    CodeExample
   },
 };
 </script>

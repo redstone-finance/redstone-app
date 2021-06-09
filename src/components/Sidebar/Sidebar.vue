@@ -57,6 +57,9 @@
 
       </ul>
 
+      <footer class="contentFooter d-none d-md-block">
+        Redstone 2021 <br/>Learn more at <a target="_blank" href="https://redstone.finance">our website</a>
+      </footer>
     </nav>
   </div>
 </template>
