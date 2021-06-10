@@ -10,7 +10,7 @@
         </a>
       </b-nav-item>
     </b-nav>
-    <b-nav>
+    <b-nav class="w-25 w-md-auto">
       <b-form class="ml-1" inline>
         <b-form-group style="margin-bottom: 0">
           <b-input-group v-if="showSearchInputInHeader" class="input-group-no-border">

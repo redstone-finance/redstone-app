@@ -55,7 +55,7 @@
           <TokenPriceChart v-show="!loading" :data="chartData" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3">
+      <b-col xs="12" lg="3" class="mt-4 mt-md-0">
         <h3 style="margin-bottom: 20px;">Data sources</h3>
         <b-form-group v-slot="{ ariaDescribedby }">
           <b-form-checkbox-group
