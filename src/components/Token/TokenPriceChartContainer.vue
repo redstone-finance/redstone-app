@@ -193,10 +193,11 @@ export default {
         this.lastUpdatedTime = secondsAfterLastUpdate + ' seconds ago';
       } else {
         const minutesAfterLastUpdate = Math.round(secondsAfterLastUpdate / 60);
-        if (minutesAfterLastUpdate > 1) {
-          this.lastUpdatedTime = minutesAfterLastUpdate + ' minutes ago';  
+        if (minutesAfterLastUpdate && minutesAfterLastUpdate > 0) {
+          this.lastUpdatedTime = minutesAfterLastUpdate +
+           (minutesAfterLastUpdate > 1) ? ' minutes ago' : ' minute ago';
         } else {
-          this.lastUpdatedTime = minutesAfterLastUpdate + ' minute ago';
+          ''
         }
       }
     },

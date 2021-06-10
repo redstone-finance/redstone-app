@@ -1,7 +1,7 @@
 <template>
   <div class="price-table">
     <h2 class="table-title">
-      Price table
+      Data Feeds
     </h2>
     <div class="table-filters-container">
       <b-row>
@@ -47,7 +47,9 @@
               <img src="/white-loader.svg" alt="animated white loader" />
             </div>
           </div>
-          {{ data.item.permawebTx }}
+          <div class="link">
+            {{ data.item.permawebTx }}
+          </div>
         </span>
         <a
           class="tx-link"
@@ -235,13 +237,20 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 .tx-link {
   font-size: 12px;
   display: flex;
   align-items: center;
+}
 
+a.tx-link, .tx-link > .link {
+  display: block;
+  max-width: 30vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pending-badge {
@@ -285,5 +294,12 @@ export default {
 .price-table {
   margin-top: 40px;
 }
+
+tr {
+  td:nth-of-type(3) {
+    max-width: 30vw;
+  }
+}
+
 
 </style>
