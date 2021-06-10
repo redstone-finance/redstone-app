@@ -36,10 +36,10 @@
       </template>
 
       <template #cell(permawebTx)="data">
-        <span
+        <div
           v-if="isTxPendingForPrice(data.item)"
-          class="tx-link">
-          <div class="pending-badge">
+          class="tx-link d-flex flex-column flex-md-row align-items-md-center">
+          <div class="pending-badge align-self-start">
             <div class="badge-text">
               Pending
             </div>
@@ -47,10 +47,10 @@
               <img src="/white-loader.svg" alt="animated white loader" />
             </div>
           </div>
-          <div class="link">
+          <div class="link align-self-start mt-2 mt-md-0">
             {{ data.item.permawebTx }}
           </div>
-        </span>
+        </div>
         <a
           class="tx-link"
           v-else
@@ -241,8 +241,6 @@ export default {
 
 .tx-link {
   font-size: 12px;
-  display: flex;
-  align-items: center;
 }
 
 a.tx-link, .tx-link > .link {
@@ -281,7 +279,7 @@ a.tx-link, .tx-link > .link {
   label {
     font-size: 12px;
     text-align: left;
-    justify-content: left;
+    justify-content: left !important;
     color: #777;
   }
   margin-right: 20px;
@@ -295,9 +293,11 @@ a.tx-link, .tx-link > .link {
   margin-top: 40px;
 }
 
-tr {
-  td:nth-of-type(3) {
-    max-width: 30vw;
+@media (max-width: breakpoint-max(sm)) {
+  tr {
+    td:nth-of-type(3) {
+      max-width: 25vw;
+    }
   }
 }
 

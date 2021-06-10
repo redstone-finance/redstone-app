@@ -89,7 +89,7 @@
   .form-group {
     width: 200px;
 
-    @media (main-width: breakpoint-min(md)) {
+    @media (min-width: breakpoint-min(md)) {
       width: 300px;
     }
 
@@ -104,7 +104,7 @@
     .input-group {
       width: 220px;
 
-      @media (main-width: breakpoint-min(md)) {
+      @media (min-width: breakpoint-min(md)) {
         width: 350px;
       }
     }
