@@ -1,5 +1,6 @@
 @import '../../styles/app';
 .sidebar {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -7,6 +8,10 @@
   background-color: var(--sidebar-bg-color);
   color: var(--sidebar-color);
   transition: $transition-base;
+
+  &.showSidebar {
+    display: block;
+  }
 }
 
 .sidebar-wrapper {
@@ -21,18 +26,6 @@
   transition: width $sidebar-transition-time ease-in-out, left $sidebar-transition-time ease-in-out;
 
   @include sidebar-scrollbar();
-}
-
-.sidebarClose .sidebar-wrapper {
-  width: $sidebar-width-closed;
-
-  @include media-breakpoint-down(sm) {
-    width: 0;
-  }
-}
-
-.sidebarStatic .sidebar-wrapper {
-  width: $sidebar-width-open;
 }
 
 .logo {

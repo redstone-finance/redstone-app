@@ -12,6 +12,6 @@ h1 {
   @media (min-width: breakpoint-min(md)) {
     z-index: 1;
     position: absolute;
-    width: calc(100% - 78px);
+    right: 40px;
   }
 }

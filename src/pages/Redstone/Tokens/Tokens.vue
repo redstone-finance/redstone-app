@@ -1,29 +1,11 @@
 <template>
-  <div>
-    <b-tabs nav-class="bg-transparent">
-      <b-tab active>
+  <div class="token-tabs">
+    <b-tabs sm-pills md-tabs nav-class="bg-transparent">
+      <b-tab v-for="type in tokenTypes" :key="type.label">
         <template #title>
-          All <span class="tokens-number">{{ allTokens(prices).length }}</span>
+          {{type.label}} <span class="tokens-number">{{ filteredTokenWithPrices(prices, type.tag).length }}</span>
         </template>
-        <TokenCards :tokens="allTokens(prices)" />
-      </b-tab>
-      <b-tab>
-        <template #title>
-          Crypto <span class="tokens-number">{{ cryptoTokens(prices).length }}</span>
-        </template>
-        <TokenCards :tokens="cryptoTokens(prices)" />
-      </b-tab>
-      <b-tab>
-        <template #title>
-          Stocks <span class="tokens-number">{{ stockTokens(prices).length }}</span>
-        </template>
-        <TokenCards :tokens="stockTokens(prices)" />
-      </b-tab>
-      <b-tab>
-        <template #title>
-          Currencies <span class="tokens-number">{{ currencyTokens(prices).length }}</span>
-        </template>
-        <TokenCards :tokens="currencyTokens(prices)" />
+        <TokenCards :tokens="filteredTokenWithPrices(prices, type.tag)" />
       </b-tab>
     </b-tabs>
   </div>
@@ -34,6 +16,49 @@ import redstone from 'redstone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from "@/components/Tokens/Tokens";
 import tokensData from "@/assets/data/tokens.json";
+
+const TOKEN_TYPES = [
+  {
+    label: "All",
+    tag: null
+  },
+  {
+    label: "Cryptos",
+    tag: "crypto"
+  },
+  {
+    label: "Stocks",
+    tag: "stocks"
+  },
+  {
+    label: "Currencies",
+    tag: "currencies"
+  },
+  {
+    label: "ETFs",
+    tag: "etfs"
+  },
+  {
+    label: "Grains",
+    tag: "grains"
+  },
+  {
+    label: "Energies",
+    tag: "energies"
+  },
+  {
+    label: "Metals",
+    tag: "metals"
+  },
+  {
+    label: "Livestocks",
+    tag: "livestocks"
+  },
+  {
+    label: "Softs",
+    tag: "softs"
+  },
+]
 
 async function getAllAvailableCurrentPrices() {
   const mainPrices = await redstone.getAllPrices();
@@ -58,7 +83,8 @@ export default {
 
   data() {
     return {
-      prices: {}
+      prices: {},
+      tokenTypes: TOKEN_TYPES
     };
   },
 
@@ -119,21 +145,35 @@ export default {
 
       return result;
     },
-    allTokens(prices) {
-      return this.filteredTokenWithPrices(prices);
-    },
-    cryptoTokens(prices) {
-      return this.filteredTokenWithPrices(prices, 'crypto');
-    },
-    stockTokens(prices) {
-      return this.filteredTokenWithPrices(prices, 'stocks');
-    },
-    currencyTokens(prices) {
-      return this.filteredTokenWithPrices(prices, 'currencies');
-    },
-
   },
 }
 </script>
 
 <style src="./Tokens.scss" lang="scss" scoped />
+<style lang="scss">
+//scrollable tabs
+.token-tabs {
+  .nav-tabs {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    max-width: 500px;
+    overflow-y: clip;
+    overflow-x: scroll;
+  }
+
+  a {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      outline: none !important;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>

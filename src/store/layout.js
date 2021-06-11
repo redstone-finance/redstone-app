@@ -1,9 +1,9 @@
+import isScreen from '@/core/screenHelper';
 
 export default {
   namespaced: true,
   state: {
-    sidebarClose: false,
-    sidebarStatic: false,
+    showSidebar: false,
     sidebarActiveElement: null,
     chatOpen: false,
     chatNotificationIcon: false,
@@ -13,26 +13,21 @@ export default {
   },
   mutations: {
     toggleSidebar(state) {
-      const nextState = !state.sidebarStatic;
-
-      localStorage.sidebarStatic = nextState;
-      state.sidebarStatic = nextState;
+      state.showSidebar = !state.showSidebar;
     },
     switchSidebar(state, value) {
       if (value) {
-        state.sidebarClose = value;
-      } else {
-        state.sidebarClose = !state.sidebarClose;
+        state.showSidebar = value;
       }
     },
     handleSwipe(state, e) {
       if ('ontouchstart' in window) {
         if (e.direction === 4) {
-          state.sidebarClose = false;
+          state.showSidebar = true;
         }
 
-        if (e.direction === 2 && !state.sidebarClose) {
-          state.sidebarClose = true;
+        if (e.direction === 2 && state.showSidebar) {
+          state.showSidebar = false;
         }
       }
     },

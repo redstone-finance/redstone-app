@@ -21,7 +21,7 @@
 
     <b-table
       id="prices-table"
-      striped
+      stacked="md"
       hover
       :busy.sync="loading"
       :items="pricesDataForTable"
@@ -245,10 +245,10 @@ export default {
 
 a.tx-link, .tx-link > .link {
   display: block;
-  max-width: 30vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .pending-badge {

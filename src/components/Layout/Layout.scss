@@ -11,30 +11,23 @@
   position: relative;
   min-height: 100%;
   display: flex;
-  margin-left: 64px;
   flex-direction: column;
-  left: $sidebar-width-open - $sidebar-width-closed;
+  left: $sidebar-width-open;
   right: 0;
   transition: left $sidebar-transition-time ease-in-out, margin-left $sidebar-transition-time ease-in-out;
-
-  @media (max-width: breakpoint-max(sm)) {
-    margin-left: 0;
-    left: $sidebar-width-open;
-  }
 
   @media (min-width: breakpoint-min(md)) {
     width: calc(100% - #{$sidebar-width-open});
   }
 }
 
-.sidebarClose div.wrap {
+div.wrap {
   left: 0;
 }
 
-.sidebarStatic .wrap {
-  //transition: none;
-  left: 0;
-  margin-left: $sidebar-width-open;
+.showSidebar div.wrap {
+  margin-left: 0;
+  left: $sidebar-width-open;
 }
 
 .content {

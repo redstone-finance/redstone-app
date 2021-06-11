@@ -2,20 +2,31 @@
   <div>
     <div class="mb-lg">
       <b-row>
-        <b-col md="6" xl="4" lg="4" sm="6" xs="12" v-for="(token, index) in tokens" :key="index">
+        <b-col xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in tokens" :key="index">
           <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
             <Widget class="mb-0 token-card">
-              <div class="token-details">
-                <div class="token-logo">
-                  <img v-if="token.logoURI" :src="token.logoURI" style="max-height: 30px; max-width: 30px;">
+              <b-row class="token-details">
+                <b-col cols="2" class="token-logo">
+                  <img v-if="token.logoURI" :src="token.logoURI">
                   <span class="no-token-emoji" v-else>🤔</span>
-                </div>
+                </b-col>
                 
-                <h4 class="token-name">
+                <b-col 
+                cols="5" 
+                sm="4" 
+                md="5"
+                class="h4 token-title">
                   {{ getTokenName(token) }}
-                </h4>
-                <h2
-                  style="position:absolute; right:20px; top: 22px; font-size: 16px;">
+                  <br>
+                  <div class="token-name">
+                  {{ token.name }}
+                  </div>
+                </b-col>
+                <b-col
+                  cols="5"
+                  sm="6"
+                  md="5"
+                  class="token-price">
                   <span v-if="token.price">
                     {{ token.price | price }}
                   </span>
@@ -24,8 +35,8 @@
                     color="var(--redstone-red-color)"
                     scale="0.5"
                   ></vue-loaders-ball-beat>
-                </h2>
-              </div>
+                </b-col>
+              </b-row>
             </Widget>
           </div>
         </b-col>
@@ -72,7 +83,7 @@ export default {
   }
 
   .token-details {
-    display: grid;
+    display: flex;
     align-items: center;
     grid-template-columns: 40px auto 80px;
 
@@ -80,10 +91,30 @@ export default {
       font-size: 20px;
     }
 
-    .token-name {
+    .token-logo img {
+      width: 30px;
+      max-width: 30px;
+      height: 30px;
+      max-height: 30px;
+    }
+
+    .token-title {
       margin-bottom: 0px;
-      margin-left: 10px;
       font-size: 18px;
+      white-space: nowrap;
+
+      .token-name {
+        font-size: 12px; 
+        color: gray;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .token-price {
+      font-size: 16px;
+      text-align: right;
     }
   }
 }

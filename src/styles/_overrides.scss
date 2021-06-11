@@ -52,6 +52,12 @@ legend {
   font-weight: $font-weight-normal;
 }
 
+form label {
+  font-size: 12px;
+  border-bottom: none;
+  color: var(--sidebar-item-active);
+}
+
 .input-sm {
   font-size: 13px;
 }
@@ -484,6 +490,10 @@ small {
   }
 }
 
+footer {
+  font-size: 12px;
+}
+
 ////////// Headings //////////
 
 h1,
@@ -752,5 +762,14 @@ pre {
 
   .custom-control-label::before {
     border-radius: 0.15rem;
+  }
+}
+
+//overriding classes of unkown source...
+@media (min-width: breakpoint-min(sm)) {
+  .form-inline .form-control {
+    width: initial;
+    display: block;
+    vertical-align: initial;
   }
 }

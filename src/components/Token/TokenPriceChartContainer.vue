@@ -2,16 +2,20 @@
   <div>
     <b-row>
       <b-col xs="12">
-        <div class="h1">
-          <img class="token-logo" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-          {{ tokenDetails.name }} ({{tokenDetails.symbol}}):
-          <strong>
-            {{ currentPriceValue | price }}
-          </strong>
-          <div class="percentage h5 d-inline-block">
-            <span v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
-              {{ priceChange().toFixed(2) | price(true) }} ({{ priceRelativeChange().toFixed(2) | percentage(true) }})</span>   
-          </div>  
+        <div class="h1 d-flex flex-column flex-md-row">
+          <div class="mb-2 mb-md-0">
+            <img class="token-logo" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
+            {{ tokenDetails.name }} ({{tokenDetails.symbol}}):
+          </div>
+          <div class="mb-2 mb-md-0">
+            <strong>
+              {{ currentPriceValue | price }}
+            </strong>
+            <div class="percentage h5 d-inline-block">
+              <span v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
+                {{ priceChange().toFixed(2) | price(true) }} ({{ priceRelativeChange() | percentage(true) }})</span>   
+            </div>  
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -26,7 +30,7 @@
 
     <hr />
 
-    <div class="bar-below-chart">
+    <div class="bar-below-chart flex-column flex-md-row">
       <div class="time-range-links">
         <a
           v-for="(range, index) in timeRanges"
@@ -55,7 +59,7 @@
           <TokenPriceChart v-show="!loading" :data="chartData" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-4 mt-md-0">
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0">
         <h3 style="margin-bottom: 20px;">Data sources</h3>
         <b-form-group v-slot="{ ariaDescribedby }">
           <b-form-checkbox-group
@@ -150,7 +154,6 @@ export default {
   methods: {
     async loadPrices() {
       try {
-        this.currentPrice = {};
         this.loading = true;
         let query = redstone.query().symbol(this.symbol);
         // TODO: fix redstone-api fluent interface for hours and refactor this place
