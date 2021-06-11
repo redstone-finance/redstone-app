@@ -283,6 +283,12 @@ a.tx-link, .tx-link > .link {
     color: #777;
   }
   margin-right: 20px;
+
+  .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
 }
 
 .pagination-container {
