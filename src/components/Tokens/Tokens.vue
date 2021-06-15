@@ -74,7 +74,7 @@ export default {
 <style lang="scss" scoped>
 
 .token-card {
-  min-height: 75px;
+  min-height: 65px;
   cursor: pointer;
   transition: all 0.5s ease;
 
