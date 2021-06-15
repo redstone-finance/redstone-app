@@ -3,9 +3,9 @@
     <b-row>
       <b-col xs="12">
         <div class="h1 d-flex flex-column flex-md-row">
-          <div class="mb-2 mb-md-0">
+          <div class="mb-2 mb-md-0 mr-3">
             <img class="token-logo" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            {{ tokenDetails.name }} ({{tokenDetails.symbol}}):
+            {{ tokenDetails.name }} ({{tokenDetails.symbol}}): 
           </div>
           <div class="mb-2 mb-md-0">
             <strong>

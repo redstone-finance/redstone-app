@@ -70,7 +70,7 @@
           <a href="https://github.com/redstone-finance" class="mr-2" target="_blank"><img width="24px" src="/github.svg" /></a>
           <a href="https://discord.com/invite/PVxBZKFr46" target="_blank"><img width="24px" src="/discord.svg" /></a>
         </div>
-          © Redstone 2021
+          © RedStone 2021
       </footer>
     </nav>
   </div>

@@ -14,19 +14,19 @@
                 <b-col 
                 cols="5" 
                 sm="4" 
-                md="5"
-                class="h4 token-title">
+                md="6"
+                class="h4 token-title pr-0">
                   {{ getTokenName(token) }}
                   <br>
                   <div class="token-name">
-                  {{ token.name }}
+                  {{ token.name != getTokenName(token) ? token.name : ""}}
                   </div>
                 </b-col>
                 <b-col
                   cols="5"
                   sm="6"
-                  md="5"
-                  class="token-price">
+                  md="4"
+                  class="token-price pl-0">
                   <span v-if="token.price">
                     {{ token.price | price }}
                   </span>
@@ -74,7 +74,7 @@ export default {
 <style lang="scss" scoped>
 
 .token-card {
-  min-height: 60px;
+  min-height: 75px;
   cursor: pointer;
   transition: all 0.5s ease;
 

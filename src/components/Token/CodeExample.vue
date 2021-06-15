@@ -1,8 +1,8 @@
 <template>
   <BCard class="border-0">
     Fetch the token price with just one line of code using
-    <a target="_blank" href="https://github.com/limestone-finance/limestone-api">
-      Redstone API
+    <a target="_blank" href="https://github.com/redstone-finance/redstone-api">
+      RedStone API
     </a>
     <hr />
     

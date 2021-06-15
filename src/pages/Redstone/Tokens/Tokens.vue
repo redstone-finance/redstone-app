@@ -156,9 +156,12 @@ export default {
   .nav-tabs {
     flex-wrap: nowrap;
     white-space: nowrap;
-    max-width: 500px;
     overflow-y: clip;
     overflow-x: scroll;
+
+    @media (max-width: breakpoint-max(sm)) {
+      max-width: 500px;
+    }
   }
 
   a {

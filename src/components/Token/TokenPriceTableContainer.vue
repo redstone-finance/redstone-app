@@ -47,7 +47,7 @@
               <img src="/white-loader.svg" alt="animated white loader" />
             </div>
           </div>
-          <div class="link align-self-start mt-2 mt-md-0">
+          <div class="link align-center mt-2 mt-md-0">
             {{ data.item.permawebTx }}
           </div>
         </div>

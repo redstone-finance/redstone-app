@@ -765,11 +765,30 @@ pre {
   }
 }
 
-//overriding classes of unkown source...
+// //overriding classes of unkown source...
 @media (min-width: breakpoint-min(sm)) {
-  .form-inline .form-control {
+  .b-calendar .form-control {
     width: initial;
     display: block;
     vertical-align: initial;
   }
+}
+
+@media (max-width: breakpoint-max(sm)) {
+  .table.b-table.b-table-stacked-md > tbody > tr > [data-label]::before {
+    align-self: center;
+  }
+
+  .table.b-table.b-table-stacked-md > tbody > tr > td {
+    display: flex !important;
+  }
+}
+
+.table.b-table.b-table-stacked-md > tbody > tr > [data-label]::before {
+  @media (max-width: breakpoint-min(md)) {
+  }
+}
+
+.table th, .table td {
+  vertical-align: middle;
 }
