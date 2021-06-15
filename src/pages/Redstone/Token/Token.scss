@@ -9,7 +9,7 @@ h1 {
 }
 
 .select-provider {
-  @media (min-width: breakpoint-min(md)) {
+  @media (min-width: breakpoint-min(lg)) {
     z-index: 1;
     position: absolute;
     right: 40px;

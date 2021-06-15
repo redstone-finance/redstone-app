@@ -2,10 +2,10 @@
   <div>
     <b-row>
       <b-col xs="12">
-        <div class="h1 d-flex flex-column flex-md-row">
-          <div class="mb-2 mb-md-0 mr-3">
-            <img class="token-logo" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            {{ tokenDetails.name }} ({{tokenDetails.symbol}}): 
+        <div class="token-price-wrapper h1 d-flex flex-column flex-md-row">
+          <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
+            <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
+            <div class="d-inline-block">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
           <div class="mb-2 mb-md-0">
             <strong>
@@ -441,6 +441,15 @@ function getRedstoneColorPaletteForChart() {
 .token-logo {
   width: 30px;
   height: 30px;
-  transform: translateY(-4px);
+}
+
+.token-price-wrapper {
+  flex-wrap: wrap;
+}
+
+@media (min-width: breakpoint-min(lg)) and (max-width: breakpoint-max(lg)) {
+  .token-price-wrapper {
+    max-width: calc(100% - 160px);
+  }
 }
 </style>

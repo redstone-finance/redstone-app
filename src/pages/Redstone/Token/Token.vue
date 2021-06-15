@@ -1,9 +1,9 @@
 <template>
 
   <div class="token">
-    <div xs="12" class="d-flex flex-md-row-reverse select-provider">
+    <div xs="12" class="d-flex flex-lg-row-reverse select-provider">
       <b-form>
-        <b-form-group label="Select data provider" label-align="left" label-align-md="right" label-for="select-provider">
+        <b-form-group label="Select data provider" label-align="left" label-align-lg="right" label-for="select-provider">
           <b-form-select v-model="selectedProvider" :options="providers" id="select-provider"></b-form-select>
         </b-form-group>          
       </b-form>
