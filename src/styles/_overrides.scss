@@ -784,11 +784,6 @@ pre {
   }
 }
 
-.table.b-table.b-table-stacked-md > tbody > tr > [data-label]::before {
-  @media (max-width: breakpoint-min(md)) {
-  }
-}
-
 .table th, .table td {
   vertical-align: middle;
 }
