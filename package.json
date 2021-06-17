@@ -90,7 +90,6 @@
     "**/browserslist": "^4.16.5",
     "**/minimist": "^1.2.3",
     "**/dns-packet": "^5.2.2",
-    "**/websocket-extensions": "^0.1.4",
-    "**/postcss": "^8.2.10"
+    "**/websocket-extensions": "^0.1.4"
   }
 }

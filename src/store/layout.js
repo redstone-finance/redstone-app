@@ -1,5 +1,3 @@
-import isScreen from '@/core/screenHelper';
-
 export default {
   namespaced: true,
   state: {

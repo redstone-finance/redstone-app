@@ -16,10 +16,10 @@
                 sm="4" 
                 md="6"
                 class="h4 token-title pr-0">
-                  {{ getTokenName(token) }}
+                  {{ token.symbol }}
                   <br>
                   <div class="token-name">
-                  {{ token.name != getTokenName(token) ? token.name : ""}}
+                  {{ token.name }}
                   </div>
                 </b-col>
                 <b-col
@@ -53,16 +53,6 @@ export default {
 
   props: {
     tokens: Array,
-  },
-
-  methods: {
-    getTokenName(token) {
-      if (token.name.length > 10) {
-        return token.symbol;
-      } else {
-        return token.name;
-      }
-    }
   },
 
   components: {
