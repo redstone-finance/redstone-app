@@ -66,7 +66,7 @@
         </div>  
         <div class="mt-2 mb-2">
           <a href="mailto:hello@redstone.finance" class="mr-2"><img width="24px" src="/mail.svg" /></a>
-          <a href="https://twitter.com/limestone_defi" class="mr-2" target="_blank"><img width="24px" src="/twitter.svg" /></a>
+          <a href="https://twitter.com/redstone_defi" class="mr-2" target="_blank"><img width="24px" src="/twitter.svg" /></a>
           <a href="https://github.com/redstone-finance" class="mr-2" target="_blank"><img width="24px" src="/github.svg" /></a>
           <a href="https://discord.com/invite/PVxBZKFr46" target="_blank"><img width="24px" src="/discord.svg" /></a>
         </div>
@@ -110,18 +110,6 @@ export default {
       paths.pop();
       this.changeSidebarActive(paths.join('/'));
     },
-    // sidebarMouseEnter() {
-    //   if (!this.sidebarStatic && (isScreen('lg') || isScreen('xl'))) {
-    //     this.switchSidebar(false);
-    //     this.setActiveByRoute();
-    //   }
-    // },
-    // sidebarMouseLeave() {
-    //   if (!this.sidebarStatic && (isScreen('lg') || isScreen('xl'))) {
-    //     this.switchSidebar(true);
-    //     this.changeSidebarActive(null);
-    //   }
-    // },
   },
   created() {
     this.setActiveByRoute();

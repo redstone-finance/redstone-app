@@ -120,7 +120,7 @@ export default {
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
       arweave: Arweave.init({
-        host: 'arweave.dev',// Hostname or IP address for a Arweave host
+        host: 'arweave.net',// Hostname or IP address for a Arweave host
         port: 443,          // Port
         protocol: 'https',  // Network protocol http or https
         timeout: 20000,     // Network request timeouts in milliseconds

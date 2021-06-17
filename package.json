@@ -30,7 +30,6 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^1.6.0",
     "node-sass": "^4.14.1",
-    "normalize-url": "^6.0.1",
     "npm": "^7.17.0",
     "redstone-api": "^0.4.1",
     "rickshaw": "1.7.1",
@@ -82,7 +81,7 @@
     "not ie <= 8"
   ],
   "resolutions": {
-    "**/normalize-url": "^4.5.1",
+    "**/normalize-url": "^6.0.1",
     "**/css-what": "^5.0.1",
     "**/lodash": "^4.17.21",
     "**/trim-newlines": "^4.0.1",

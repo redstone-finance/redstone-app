@@ -246,7 +246,8 @@ export default {
   .arrow {
     padding: 10px;
     position: absolute;
-    z-index: 2
+    z-index: 2;
+    cursor: pointer;
   } 
 
   #leftArr {
