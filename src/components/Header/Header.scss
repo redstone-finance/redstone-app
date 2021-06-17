@@ -3,13 +3,17 @@
 .app-header.navbar {
   height: $navbar-height;
   z-index: 100;
-  padding: 0 1.85rem 0;
+  padding: 00;
   background: var(--navbar-bg);
   box-shadow: var(--navbar-shadow);
   transition: $transition-base;
   border: none;
   font-weight: 500;
   justify-content: flex-start;
+
+  @media (min-width: breakpoint-min(md)) {
+    padding: 0 1.85rem 0;
+  }
 
   .nav {
     height: 100%;
@@ -37,6 +41,16 @@
             font-size: 27px;
           }
         }
+      }
+    }
+
+    .btn-modal {
+      height: fit-content;
+      margin-right: 15px;
+      font-size: $font-size-mini;
+
+      @media (min-width: breakpoint-min(md)) {
+        font-size: $font-size-larger;
       }
     }
   }
@@ -67,10 +81,6 @@
     }
   }
 
-  @include media-breakpoint-down(md) {
-    padding: 0 $spacer/2;
-  }
-
   &.navbar-floating-type {
     margin: $spacer $content-padding 0;
     border-radius: $border-radius;
@@ -82,7 +92,12 @@
   }
 
   .form-group {
-    width: 300px;
+    width: 200px;
+
+    @media (min-width: breakpoint-min(md)) {
+      width: 300px;
+    }
+
     input {
       background-color: #F9FAFE;
       &::placeholder {
@@ -92,7 +107,19 @@
     }
 
     .input-group {
-      width: 350px;
+      width: 45vw;
+
+      @media (min-width: breakpoint-min(xs)) {
+        width: 45vw;
+      }
+
+      @media (min-width: breakpoint-min(sm)) {
+        width: 40vw;
+      }
+
+      @media (min-width: breakpoint-min(lg)) {
+        width: 50vw;
+      }
     }
 
     .input-group-prepend {

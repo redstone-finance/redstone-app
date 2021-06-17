@@ -2,30 +2,41 @@
   <div>
     <div class="mb-lg">
       <b-row>
-        <b-col md="6" xl="4" lg="4" sm="6" xs="12" v-for="(token, index) in filteredTokens" :key="index">
+        <b-col xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in tokens" :key="index">
           <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
             <Widget class="mb-0 token-card">
-              <div class="token-details">
-                <div class="token-logo">
-                  <img v-if="token.logoURI" :src="token.logoURI" style="max-height: 30px; max-width: 30px;">
+              <b-row class="token-details">
+                <b-col cols="2" class="token-logo">
+                  <img v-if="token.logoURI" :src="token.logoURI">
                   <span class="no-token-emoji" v-else>🤔</span>
-                </div>
+                </b-col>
                 
-                <h4 class="token-name">
-                  {{ getTokenName(token) }}
-                </h4>
-                <h2
-                  style="position:absolute; right:20px; top: 22px; font-size: 16px;">
-                  <span v-if="prices[token.symbol]">
-                    {{ prices[token.symbol].value | price }}
+                <b-col 
+                cols="5" 
+                sm="4" 
+                md="6"
+                class="h4 token-title pr-0">
+                  {{ token.symbol }}
+                  <br>
+                  <div class="token-name">
+                  {{ token.name }}
+                  </div>
+                </b-col>
+                <b-col
+                  cols="5"
+                  sm="6"
+                  md="4"
+                  class="token-price pl-0">
+                  <span v-if="token.price">
+                    {{ token.price | price }}
                   </span>
                   <vue-loaders-ball-beat
                     v-else
                     color="var(--redstone-red-color)"
                     scale="0.5"
                   ></vue-loaders-ball-beat>
-                </h2>
-              </div>
+                </b-col>
+              </b-row>
             </Widget>
           </div>
         </b-col>
@@ -36,66 +47,12 @@
 
 <script>
 import Widget from "@/components/Widget/Widget";
-import tokensData from "@/assets/data/tokens.json";
 
 export default {
   name: 'Tokens',
 
   props: {
-    type: String,
-    prices: Object,
-  },
-
-  computed: {
-    filteredTokens() {
-      const result = [];
-      for (const symbol of Object.keys(tokensData)) {
-        const token = tokensData[symbol];
-        let shouldBeAdded = true;
-
-        if (this.type) {
-          if (!token.tags || !token.tags.includes(this.type)) {
-            shouldBeAdded = false;
-          }
-        }
-
-        const { searchTerm } = this.$store.state.layout;
-        const searchTermLowerCase = searchTerm.toLowerCase();
-        if (searchTerm) {
-          const nameIncludesSearchTerm =
-            (token.name || '').toLowerCase().includes(searchTermLowerCase);
-          const symbolIncludesSearchTerm =
-            (symbol || '').toLowerCase().includes(searchTermLowerCase);
-          if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm) {
-            shouldBeAdded = false;
-          }
-        }
-
-        //TODO: remove when price fetching is corrected
-        if (['BTMX', 'NPXS', 'MDX', 'AMP'].includes(symbol)) {
-          shouldBeAdded = false;
-        }
-
-        if (shouldBeAdded) {
-          result.push({
-            ...token,
-            symbol,
-          });
-        }
-      }
-
-      return result;
-    },
-  },
-
-  methods: {
-    getTokenName(token) {
-      if (token.name.length > 10) {
-        return token.symbol;
-      } else {
-        return token.name;
-      }
-    }
+    tokens: Array,
   },
 
   components: {
@@ -107,7 +64,7 @@ export default {
 <style lang="scss" scoped>
 
 .token-card {
-  min-height: 60px;
+  min-height: 65px;
   cursor: pointer;
   transition: all 0.5s ease;
 
@@ -116,7 +73,7 @@ export default {
   }
 
   .token-details {
-    display: grid;
+    display: flex;
     align-items: center;
     grid-template-columns: 40px auto 80px;
 
@@ -124,10 +81,30 @@ export default {
       font-size: 20px;
     }
 
-    .token-name {
+    .token-logo img {
+      width: 30px;
+      max-width: 30px;
+      height: 30px;
+      max-height: 30px;
+    }
+
+    .token-title {
       margin-bottom: 0px;
-      margin-left: 10px;
       font-size: 18px;
+      white-space: nowrap;
+
+      .token-name {
+        font-size: 12px; 
+        color: gray;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .token-price {
+      font-size: 16px;
+      text-align: right;
     }
   }
 }

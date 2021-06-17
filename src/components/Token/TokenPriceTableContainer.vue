@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div class="price-table">
+    <h2 class="table-title">
+      Data Feeds
+    </h2>
     <div class="table-filters-container">
       <b-row>
         <b-col xs="12" lg="6">
@@ -18,7 +21,7 @@
 
     <b-table
       id="prices-table"
-      striped
+      stacked="md"
       hover
       :busy.sync="loading"
       :items="pricesDataForTable"
@@ -33,10 +36,10 @@
       </template>
 
       <template #cell(permawebTx)="data">
-        <span
+        <div
           v-if="isTxPendingForPrice(data.item)"
-          class="tx-link">
-          <div class="pending-badge">
+          class="tx-link d-flex flex-column flex-md-row align-items-md-center">
+          <div class="pending-badge align-self-start">
             <div class="badge-text">
               Pending
             </div>
@@ -44,8 +47,10 @@
               <img src="/white-loader.svg" alt="animated white loader" />
             </div>
           </div>
-          {{ data.item.permawebTx }}
-        </span>
+          <div class="link align-center mt-2 mt-md-0">
+            {{ data.item.permawebTx }}
+          </div>
+        </div>
         <a
           class="tx-link"
           v-else
@@ -115,7 +120,7 @@ export default {
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
       arweave: Arweave.init({
-        host: 'arweave.dev',// Hostname or IP address for a Arweave host
+        host: 'arweave.net',// Hostname or IP address for a Arweave host
         port: 443,          // Port
         protocol: 'https',  // Network protocol http or https
         timeout: 20000,     // Network request timeouts in milliseconds
@@ -232,13 +237,18 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 .tx-link {
   font-size: 12px;
-  display: flex;
-  align-items: center;
+}
 
+a.tx-link, .tx-link > .link {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .pending-badge {
@@ -269,14 +279,33 @@ export default {
   label {
     font-size: 12px;
     text-align: left;
-    justify-content: left;
+    justify-content: left !important;
     color: #777;
   }
   margin-right: 20px;
+
+  .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
 }
 
 .pagination-container {
   margin-top: 10px;
 }
+
+.price-table {
+  margin-top: 40px;
+}
+
+@media (max-width: breakpoint-max(sm)) {
+  tr {
+    td:nth-of-type(3) {
+      max-width: 25vw;
+    }
+  }
+}
+
 
 </style>

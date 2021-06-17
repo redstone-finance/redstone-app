@@ -38,18 +38,19 @@ $gray-900: #29323a !default;
 $black:    #000 !default;
 $gray-light: $gray-100 !default;
 
-$blue:    #3E86CA !default;
-$indigo:  #7f3ddb !default;
-$purple:  #9964e3 !default;
-$pink:    #e54e9a !default;
-$red:     #FD5F00 !default;
-$orange:  #ff7d47 !default;
-$yellow:  #FDA700 !default;
-$green:   #68ca66 !default;
-$teal:    #21AE8C !default;
-$cyan:    #1A86D0 !default;
-$default: #E9ECEF !default;
-$inverse: #0D2B47 !default;
+$blue:        #3E86CA !default;
+$indigo:      #7f3ddb !default;
+$purple:      #9964e3 !default;
+$pink:        #e54e9a !default;
+$red:         #FD5F00 !default;
+$red-redstone:#F55767 !default;
+$orange:      #ff7d47 !default;
+$yellow:      #FDA700 !default;
+$green:       #68ca66 !default;
+$teal:        #21AE8C !default;
+$cyan:        #1A86D0 !default;
+$default:     #E9ECEF !default;
+$inverse:     #0D2B47 !default;
 
 $theme-colors: (
   primary: $blue,
@@ -57,7 +58,7 @@ $theme-colors: (
   success: $teal,
   info: $cyan,
   warning: $yellow,
-  danger: $red,
+  danger: $red-redstone,
   dark: $gray-800,
   inverse: $inverse,
   gray: $gray-300,
@@ -148,7 +149,7 @@ $dropdown-link-color: $text-color;
 
 // Widgets
 // -------------------------
-$widget-padding-vertical: 15px !default;
+$widget-padding-vertical: 20px !default;
 $widget-padding-horizontal: 20px !default;
 $widget-bg-color: $white;
 

@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-wrapper">
     <nav
-      :class="{sidebar: true, sidebarStatic, sidebarClose}"
+      :class="{sidebar: true, showSidebar}"
       style="height: 100%;"
     >
 
@@ -57,6 +57,21 @@
 
       </ul>
 
+      <footer class="contentFooter">
+        <div class="mb-2">
+          Learn more at <a target="_blank" href="https://redstone.finance">our website</a>
+        </div>  
+        <div class="mb-2">
+          Check out our <a target="_blank" href="https://api.docs.redstone.finance" >API documentation</a>
+        </div>  
+        <div class="mt-2 mb-2">
+          <a href="mailto:hello@redstone.finance" class="mr-2"><img width="24px" src="/mail.svg" /></a>
+          <a href="https://twitter.com/redstone_defi" class="mr-2" target="_blank"><img width="24px" src="/twitter.svg" /></a>
+          <a href="https://github.com/redstone-finance" class="mr-2" target="_blank"><img width="24px" src="/github.svg" /></a>
+          <a href="https://discord.com/invite/PVxBZKFr46" target="_blank"><img width="24px" src="/discord.svg" /></a>
+        </div>
+          © RedStone 2021
+      </footer>
     </nav>
   </div>
 </template>
@@ -95,27 +110,13 @@ export default {
       paths.pop();
       this.changeSidebarActive(paths.join('/'));
     },
-    // sidebarMouseEnter() {
-    //   if (!this.sidebarStatic && (isScreen('lg') || isScreen('xl'))) {
-    //     this.switchSidebar(false);
-    //     this.setActiveByRoute();
-    //   }
-    // },
-    // sidebarMouseLeave() {
-    //   if (!this.sidebarStatic && (isScreen('lg') || isScreen('xl'))) {
-    //     this.switchSidebar(true);
-    //     this.changeSidebarActive(null);
-    //   }
-    // },
   },
   created() {
     this.setActiveByRoute();
   },
   computed: {
     ...mapState('layout', {
-      sidebarStatic: state => state.sidebarStatic,
-      sidebarOpened: state => !state.sidebarClose,
-      sidebarClose: state => state.sidebarClose,
+      showSidebar: state => state.showSidebar,
       activeItem: state => state.sidebarActiveElement,
     }),
   },

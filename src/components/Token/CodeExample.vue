@@ -1,8 +1,8 @@
 <template>
   <BCard class="border-0">
     Fetch the token price with just one line of code using
-    <a href="https://github.com/limestone-finance/limestone-api">
-      Redstone API
+    <a target="_blank" href="https://github.com/redstone-finance/redstone-api">
+      RedStone API
     </a>
     <hr />
     
@@ -16,6 +16,10 @@
       CodeBox displaying is disabled in dev environment.
       It made a mess in console.
     </b-alert>
+      Check out our
+    <a target="_blank" href="https://api.docs.redstone.finance/">
+      API documentation
+    </a>
 
   </BCard>
 </template>

@@ -1,5 +1,24 @@
 <template>
   <div>
+    <b-row>
+      <b-col xs="12">
+        <div class="token-price-wrapper h1 d-flex flex-column flex-md-row">
+          <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
+            <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
+            <div class="d-inline-block">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
+          </div>
+          <div class="mb-2 mb-md-0">
+            <strong>
+              {{ currentPriceValue | price }}
+            </strong>
+            <div class="percentage h5 d-inline-block">
+              <span v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
+                {{ priceChange().toFixed(2) | price(true) }} ({{ priceRelativeChange() | percentage(true) }})</span>   
+            </div>  
+          </div>
+        </div>
+      </b-col>
+    </b-row>
     <div class="stats-container">
       <StatElem
         v-for="(value, title) in stats"
@@ -11,7 +30,7 @@
 
     <hr />
 
-    <div class="bar-below-chart">
+    <div class="bar-below-chart flex-column flex-md-row">
       <div class="time-range-links">
         <a
           v-for="(range, index) in timeRanges"
@@ -40,7 +59,7 @@
           <TokenPriceChart v-show="!loading" :data="chartData" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3">
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0">
         <h3 style="margin-bottom: 20px;">Data sources</h3>
         <b-form-group v-slot="{ ariaDescribedby }">
           <b-form-checkbox-group
@@ -76,6 +95,7 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
+import tokensData from "@/assets/data/tokens.json";
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
@@ -176,12 +196,23 @@ export default {
         this.lastUpdatedTime = secondsAfterLastUpdate + ' seconds ago';
       } else {
         const minutesAfterLastUpdate = Math.round(secondsAfterLastUpdate / 60);
-        if (minutesAfterLastUpdate > 1) {
-          this.lastUpdatedTime = minutesAfterLastUpdate + ' minutes ago';  
+        if (minutesAfterLastUpdate && minutesAfterLastUpdate > 0) {
+          this.lastUpdatedTime = minutesAfterLastUpdate +
+           (minutesAfterLastUpdate > 1) ? ' minutes ago' : ' minute ago';
         } else {
-          this.lastUpdatedTime = minutesAfterLastUpdate + ' minute ago';
+          ''
         }
       }
+    },
+
+    priceChange() {
+      let oldPrice = this.prices[0]?.value;
+      return (this.currentPrice.value && oldPrice) ? (this.currentPrice.value - oldPrice): null;
+    },
+
+    priceRelativeChange() {
+      let oldPrice = this.prices[0]?.value;
+      return this.priceChange() / oldPrice;
     },
   },
 
@@ -210,11 +241,15 @@ export default {
     },
 
     stats() {
-      return {
-        Minimum: formatPrice(_.min(this.priceValues)),
-        Maximum: formatPrice(_.max(this.priceValues)),
-        Average: formatPrice(_.mean(this.priceValues)),
-      };
+      if (this.priceValues.length > 0) {
+        return {
+          Minimum: formatPrice(_.min(this.priceValues)),
+          Maximum: formatPrice(_.max(this.priceValues)),
+          Average: formatPrice(_.mean(this.priceValues)),
+        };
+      } else {
+        return {};
+      }
     },
 
     sources() {
@@ -285,6 +320,17 @@ export default {
         timeUnit,
       };
     },
+
+    currentPriceValue() {
+      return this.currentPrice?.value || "Loading..."
+    },
+
+    tokenDetails() {
+      return {
+        ...tokensData[this.symbol],
+        symbol: this.symbol
+      };
+    },
   },
 
   components: {
@@ -317,6 +363,7 @@ function getRedstoneColorPaletteForChart() {
 </script>
 
 <style scoped lang="scss">
+@import '~@/styles/app';
 
 .source-checkbox {
   display: block;
@@ -370,6 +417,39 @@ function getRedstoneColorPaletteForChart() {
     &.selected {
       text-decoration: underline;
     }
+  }
+}
+
+.percentage {
+  transform: translateY(-2px);
+  margin-bottom: 0;
+
+  .positive {
+    color: $teal;
+  }
+
+  .negative {
+    color: $red-redstone;
+  }
+
+  .period {
+    font-size: $font-size-index;
+    font-weight: $font-weight-semi-bold;
+  }
+}
+
+.token-logo {
+  width: 30px;
+  height: 30px;
+}
+
+.token-price-wrapper {
+  flex-wrap: wrap;
+}
+
+@media (min-width: breakpoint-min(lg)) and (max-width: breakpoint-max(lg)) {
+  .token-price-wrapper {
+    max-width: calc(100% - 160px);
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div :class="[{root: true, sidebarClose, sidebarStatic}, 'sing-dashboard']">
+<div :class="[{root: true, showSidebar}, 'sing-dashboard']">
   <Sidebar />
   <div class="wrap">
     <Header />
@@ -7,9 +7,6 @@
       <transition name="router-animation">
         <router-view />
       </transition>
-      <footer class="contentFooter">
-        Redstone 2021 - learn more at <a target="_blank" href="https://redstone.finance">redstone.finance</a>
-      </footer>
     </v-touch>
   </div>
 </div>
@@ -33,27 +30,18 @@ export default {
     handleWindowResize() {
       const width = window.innerWidth;
 
-      if (width <= 768 && this.sidebarStatic) {
-        this.toggleSidebar();
+      if (width <= 768) {
+        this.switchSidebar(false);
         this.changeSidebarActive(null);
+      } else {
+        this.switchSidebar(true);
       }
     },
   },
   computed: {
-    ...mapState(["sidebarClose", "sidebarStatic"]),
+    ...mapState(["showSidebar"]),
   },
   created() {
-    const staticSidebar = JSON.parse(localStorage.getItem('sidebarStatic'));
-
-    if (staticSidebar) {
-      this.$store.state.layout.sidebarStatic = true;
-    } else if (!this.sidebarClose) {
-      setTimeout(() => {
-        this.switchSidebar(true);
-        this.changeSidebarActive(null);
-      }, 2500);
-    }
-
     this.handleWindowResize();
     window.addEventListener('resize', this.handleWindowResize);
   },

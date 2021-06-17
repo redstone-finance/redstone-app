@@ -3,3 +3,20 @@
 h1 {
   background: red;
 }
+
+.tokens-number {
+  margin-left: 0.5rem;
+  height: 1.2rem;
+  min-width: 1.2rem;
+  border-radius: 0.7rem;
+  display: inline-block;
+  text-align: center;
+  font-size: $font-size-index;
+  font-weight: $font-weight-semi-bold;
+  background-color: #D7DFE6;
+  -webkit-transform: translateY(-0.1rem);
+  transform: translateY(-0.1rem);
+  padding-top: 0.15rem;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
