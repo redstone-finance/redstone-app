@@ -120,7 +120,7 @@ export default {
     return {
       prices: [],
       loading: false,
-      selectedSources: ['aggregated'],
+      selectedSources: [],
 
       lastUpdatedTime: 'recently',
 
@@ -214,6 +214,24 @@ export default {
       let oldPrice = this.prices[0]?.value;
       return this.priceChange() / oldPrice;
     },
+
+    updatedSources() {
+      let sources = [];
+
+      if (this.prices[0] && this.prices[0].source) {
+        const sortedSources = Object.keys(this.prices[0].source);
+        sortedSources.sort();
+
+        if (sortedSources.length > 1) {
+          sources.push('aggregated');
+        }
+
+        sources.push(...sortedSources);
+
+        this.selectedSources = [sources[0]];
+      }
+      return sources;
+    }
   },
 
   watch: {
@@ -253,13 +271,7 @@ export default {
     },
 
     sources() {
-      let sources = ['aggregated'];
-      if (this.prices[0] && this.prices[0].source) {
-        const sortedSources = Object.keys(this.prices[0].source);
-        sortedSources.sort();
-        sources = sources.concat(sortedSources);
-      }
-      return sources;
+      return this.updatedSources();
     },
 
     sourceColors() {

@@ -19,17 +19,18 @@
             </template>
             <b-form-input v-model="searchTerm" id="search-input" placeholder="Search Tokens" />
           </b-input-group>
-          <a href="/#/app/tokens" v-else>
+          <router-link :to="routerLink" v-else>            
             <BIconArrowLeft />
             Explore data
-          </a>
+          </router-link>
         </b-form-group>
       </b-form>
     </b-nav>
     <b-nav class="align-items-center flex-grow-1 justify-content-end">
-        <b-button class="btn-lg btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Integrate now</b-button>
-        <b-modal id="modal-1" title="Code snippet" size="xl" ok-only>
+        <b-button class="btn-lg btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Use our data</b-button>
+        <b-modal id="modal-1" title="Code snippet" size="xl" >
           <CodeExample />
+          <template #modal-footer ><div></div></template>
         </b-modal>
     </b-nav>
   </b-navbar>
@@ -43,7 +44,9 @@ import CodeExample from "@/components/Token/CodeExample";
 export default {
   name: 'Header',
   data() {
-    return {};
+    return {
+      search: this.$route.query.search
+    };
   },
   computed: {
     ...mapState('layout', ['sidebarClose', 'sidebarStatic', 'showSearchInputInHeader']),
@@ -54,8 +57,28 @@ export default {
       },
       set(value) {
         this.updateSearchTerm(value);
+
+        if (value) {
+          this.$router.push({query: {search: value}})
+        } else {
+          this.$router.push({query: {}})
+        }
       },
     },
+
+    routerLink() {
+      let config = { path: '/app/tokens' }
+      let searchTerm = this.$store.state.layout.searchTerm;
+
+      if (searchTerm) {
+        config.query = { search: searchTerm }
+      }
+      return config;
+    }
+  },
+
+  created() {
+    this.updateSearchTerm(this.$route.query.search);
   },
 
   methods: {

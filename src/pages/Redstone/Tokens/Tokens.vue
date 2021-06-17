@@ -1,5 +1,5 @@
 <template>
-  <div class="token-tabs" ref="tabWrapper" :class="{visible: showTabs}">
+  <div class="token-tabs" ref="tabWrapper">
       <div id="leftArr" class="arrow" @click="scrollLeft()" v-if="showArrows">
         <i class="fa fa-angle-left"></i>
       </div>
@@ -92,8 +92,7 @@ export default {
       prices: {},
       tokenTypes: TOKEN_TYPES,
       back: false,
-      showArrows: false,
-      showTabs: false
+      showArrows: false
     };
   },
 
@@ -116,7 +115,6 @@ export default {
 
   created() {
     window.addEventListener("resize", this.resize);
-    this.showTabs = true;
     this.resize();
   },
 
@@ -138,7 +136,7 @@ export default {
           }
         }
 
-        const { searchTerm } = this.$store.state.layout;
+        const searchTerm = this.searchPhrase;
         const searchTermLowerCase = searchTerm.toLowerCase();
         if (searchTerm) {
           const nameIncludesSearchTerm =
@@ -182,26 +180,37 @@ export default {
     },
     isOverflowing() {
       let tabWrapper =  this.$refs.tabWrapper;
-      let tabs = [...this.$refs.tabScroll.$el.getElementsByTagName("li")];
+      let tabElements = this.$refs.tabScroll?.$el.getElementsByTagName("li");
+      let tabs = tabElements ? [...tabElements] : [];
 
       let tabsWidth = 0;
 
-      tabs.forEach(
-        tab => {
-          tabsWidth += tab.offsetWidth
-        }
-      )
+      if (tabs) {
+        tabs.forEach(
+          tab => {
+            tabsWidth += tab.offsetWidth
+          }
+        )
 
-      tabs.reduce( (a, b) => {
-        return a + b.offsetWidth;
-      }, 0)
+        tabs.reduce( (a, b) => {
+          return a + b.offsetWidth;
+        }, 0)
+      }
 
-      return tabWrapper.offsetWidth < tabsWidth
+      return tabWrapper?.offsetWidth < tabsWidth
     },
     resize() {
       this.showArrows = this.isOverflowing();
     }
   },
+
+  computed: {
+    searchPhrase() {
+      let search = this.$route.query.search;
+      return search != null ? search : '';
+    }
+    
+  }
 }
 </script>
 
@@ -211,10 +220,6 @@ export default {
 
 //scrollable tabs
 .token-tabs {
-  visibility: hidden;
-  &.visible {
-    visibility: visible;
-  }
 
   .nav-tabs {
     flex-wrap: nowrap;
