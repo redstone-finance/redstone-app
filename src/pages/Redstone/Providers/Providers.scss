@@ -1,0 +1,86 @@
+@import '~@/styles/app';
+
+.provider-card {
+    cursor: pointer;
+    transition: all 0.5s ease;
+
+    &:hover {
+        transform: scale(1.03);
+    }
+}
+
+.provider-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    label {
+        font-size: 12px;
+        border-bottom: none;
+        color: var(--sidebar-item-active);
+    }
+
+    .provider-stake, .provider-active-date, .provider-interval {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .provider-name, .provider-www {
+        margin-left: 10px;
+        margin-bottom: 0;
+    }
+
+    .provider-name {
+        font-weight: 600;
+        flex: 0 0 12%;
+    }
+
+    .provider-www {
+        font-size: $font-size-larger;
+        flex: 0 0 5%;
+
+        .flaticon-www {
+            width: 24px;
+            height: 24px;
+            display: block;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .provider-description {
+        margin-bottom: 0;
+        flex: 0 0 32%;
+    }
+
+    // .provider-categories {
+    //     flex: 0 0 15%;
+    // }
+
+    // .provider-tokens {
+    //     flex: 0 0 15%;
+
+    //     img {
+    //         width: 20px;
+    //         margin-right: 5px;
+    //     }
+    // }
+
+    .provider-logo {
+        flex: 0 0 5%;
+
+        img {
+            width: 50px;
+        }
+    }
+
+    .btn-www {
+        background-color: white;
+        color: #F55767;
+        flex: 0 0 12%;
+        font-size: $font-size-base;
+    }
+}

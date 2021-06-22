@@ -17,7 +17,7 @@
             <template v-slot:prepend>
               <b-input-group-text><i class='fi flaticon-search-2'/></b-input-group-text>
             </template>
-            <b-form-input v-model="searchTerm" id="search-input" placeholder="Search Tokens" />
+            <b-form-input v-model="searchTerm" id="search-input" placeholder="Search..." />
           </b-input-group>
           <router-link :to="routerLink" v-else>            
             <BIconArrowLeft />

@@ -22,38 +22,21 @@
 
         <NavLink
             :activeItem="activeItem"
-            header="Tokens"
+            header="Browse data"
             link="/app/tokens"
             iconName="flaticon-search-2"
             index="tokens"
             isHeader
         />
-        <NavLink
-            :activeItem="activeItem"
-            header="Arweave"
-            link="/app/token/AR"
-            imgUrl="https://cryptologos.cc/logos/arweave-ar-logo.svg?v=010"
-            index="typography"
-            isHeader
-        />
-        <NavLink
-            :activeItem="activeItem"
-            header="Ethereum"
-            link="/app/token/ETH"
-            imgUrl="https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=010"
-            index="notifications"
-            isHeader
 
-        />
         <NavLink
             :activeItem="activeItem"
-            header="Bitcoin"
-            link="/app/token/BTC"
-            imgUrl="https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=010"
-            index="tables"
+            header="Providers"
+            link="/app/providers"
+            iconName="flaticon-database-solid"
+            index="providers"
             isHeader
         />
-
 
       </ul>
 

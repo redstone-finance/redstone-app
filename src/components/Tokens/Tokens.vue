@@ -47,6 +47,7 @@
 
 <script>
 import Widget from "@/components/Widget/Widget";
+import _ from 'lodash';
 
 export default {
   name: 'Tokens',
@@ -55,58 +56,23 @@ export default {
     tokens: Array,
   },
 
+  methods: {
+    getTokenName(token) {
+      if (token.name.length > 10) {
+        return token.symbol;
+      } else {
+        return token.name;
+      }
+    },
+    providerLabel(provider) {
+      return _.startCase(provider)
+    }
+  },
+
   components: {
     Widget,
   },
 }
 </script>
 
-<style lang="scss" scoped>
-
-.token-card {
-  min-height: 65px;
-  cursor: pointer;
-  transition: all 0.5s ease;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  .token-details {
-    display: flex;
-    align-items: center;
-    grid-template-columns: 40px auto 80px;
-
-    .no-token-emoji {
-      font-size: 20px;
-    }
-
-    .token-logo img {
-      width: 30px;
-      max-width: 30px;
-      height: 30px;
-      max-height: 30px;
-    }
-
-    .token-title {
-      margin-bottom: 0px;
-      font-size: 18px;
-      white-space: nowrap;
-
-      .token-name {
-        font-size: 12px; 
-        color: gray;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-    }
-
-    .token-price {
-      font-size: 16px;
-      text-align: right;
-    }
-  }
-}
-
-</style>
+<style lang="scss" src="./Tokens.scss" scoped />
