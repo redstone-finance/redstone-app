@@ -4,12 +4,12 @@
       <img class="provider-logo" :src="provider.imgUrl" />
       <h1 class="ml-3">{{ provider.name }}</h1>
     </div>
-    <div class="provider-tabs">
+    <div class="provider-tabs" v-if="provider && provider.manifests">
       <b-tabs>
         <b-tab title="Details">
           <ProviderDetails :provider="provider"/>
         </b-tab>
-        <b-tab title="Manifests"  v-if="provider && provider.manifests">
+        <b-tab title="Manifests">
           <Manifests :manifests="provider.manifests"/>
         </b-tab>
       </b-tabs>
