@@ -44,8 +44,13 @@
     <div class="upload-wrapper">
       <input type="file" id="manifest-upload" class="manifest-input" accept="application/JSON" @input="fileUploaded"/>
       <b-button v-on:click="loadFile()" id="import" class="btn-danger btn-modal rounded-pill" variant="primary">Add new manifest</b-button>
-      <b-modal id="manifest-modal" title="Check your manifest" size="xl" >
+      <b-modal id="manifest-modal" title="Check your manifest" size="xl" class="manifest-modal">
+          <label for="message-input">Name:</label>
+          <b-form-input v-model="manifestChangeMessage" id="message-input" placeholder="Manifest change message" />
+          <label for="locked-hours-input" class="mt-3">Locked hours:</label>
+          <b-form-input v-model="manifestLockedHours" min="0" type="number" id="locked-hours-input" placeholder="Locked hours" />
           <json-viewer
+          class="mt-3"
           :value="newManifest"
           :expand-depth=1
           copyable
@@ -56,6 +61,10 @@
             </div>
             </template>
         </b-modal>
+        <b-modal id="missing-wallet-modal" title="Please load your wallet" size="xl" >
+          Please install an Arweave wallet extension to your browser and load your wallet. We recommend using <a href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>
+          <template #modal-footer><div></div></template>
+        </b-modal>
     </div>  
   </div>
 </template>
@@ -63,7 +72,8 @@
 <script>
 import JsonViewer from 'vue-json-viewer'
 import Arweave from 'arweave';
-// const providersRegistry = require("redstone-smartweave-contracts/src/tools/providers-registry.api");
+
+const {interactWrite} = require("smartweave");
 
 export default {
   name: "Provider",
@@ -82,7 +92,10 @@ export default {
         'status',
         { key: 'actions', label: ''}
       ],
-      manifestsDataForTable: []
+      manifestsDataForTable: [],
+      contractId: "CbGCxBJn6jLeezqDl1w3o8oCSeRCb-MmtZNKPodla-0",
+      manifestChangeMessage: "",
+      manifestLockedHours: 0 
     }; 
   },
 
@@ -91,6 +104,71 @@ export default {
   },
 
   methods: {
+    uploadManifest() {
+      if (window.arweaveWallet) {
+        this.uploadToArweave();
+      } else {
+        this.$bvModal.show('missing-wallet-modal');
+      }
+    },
+
+    async uploadToArweave() {
+        await window.arweaveWallet.connect(['ACCESS_ADDRESS']);
+
+        const arweave = Arweave.init({
+          host: "arweave.net",
+          protocol: "https",
+          port: 443,
+        });
+
+        const dataTransaction = await arweave.createTransaction({data: JSON.stringify(this.newManifest)});
+        await arweave.transactions.sign(dataTransaction)
+        await arweave.transactions.post(dataTransaction)
+
+        console.log("Waiting for block mining...");
+        let resultManifestId =  dataTransaction.id;
+
+        await this.waitForConfirmation(resultManifestId, arweave);
+
+        console.log(resultManifestId)
+
+        const providerId = await window.arweaveWallet.getActiveAddress();
+
+        const resultManifestUpload = await interactWrite(
+            arweave, 
+            'use_wallet', 
+            this.contractId,
+          {
+            function: "addProviderManifest",
+            data: {
+              providerId: providerId,
+              manifestData: {
+                changeMessage: this.manifestChangeMessage,
+                manifestTxId: resultManifestId,
+                lockedHours: this.manifestLockedHours
+              }
+            }
+          });
+
+        await this.waitForConfirmation(resultManifestUpload, arweave);
+
+        console.log(resultManifestUpload)
+    },
+
+    async waitForConfirmation (transactionId, arweave) {
+      const statusAfterMine = await arweave.transactions.getStatus(transactionId);
+
+      if (statusAfterMine.confirmed === null) {
+        console.log(`Transaction ${transactionId} not yet confirmed. Waiting another 30 seconds before next check.`);
+        setTimeout(() => {
+          this.waitForConfirmation(transactionId, arweave);
+        }, 30000);
+      } else {
+        console.log(`Transaction ${transactionId} confirmed`, statusAfterMine);
+        return statusAfterMine;
+      }
+  },
+
     getManifestsData() {
       this.manifestsDataForTable = this.manifests.slice().reverse().map((manifest, index) => {
         return {
@@ -110,30 +188,6 @@ export default {
           this.$refs.table.refresh();
         }
       )
-    },
-
-    async uploadManifest() {
-      // const result = await providersRegistry.currentManifest('provider_qZfxiw8Rl3ywD9e4F-nxLOCzZqU1MibNcep4DWvTgkQ"', true);
-      console.log(result)
-
-      // if (!window.arweaveWallet)
-
-      // const connectResult = await window.arweaveWallet.connect(['ACCESS_ADDRESS']);
-
-      const arweave = Arweave.init({
-        host: "arweave.net",
-        protocol: "https",
-        port: 443,
-      });
-
-      let transaction = await arweave.createTransaction({
-          // target: 'I-5rWUehEv-MjdK9gFw09RxfSLQX9DIHxG614Wf8qo0',
-          // quantity: arweave.ar.arToWinston('0.001')
-      });
-
-      await arweave.transactions.sign(transaction);
-
-      // const response = await arweave.transactions.post(transaction);
     },
 
     loadFile() {
@@ -240,6 +294,10 @@ export default {
     color: $white;
     text-transform: uppercase;
   }
+}
+
+#message-input, #locked-hours-input {
+  width: 50%;
 }
 
 </style>
