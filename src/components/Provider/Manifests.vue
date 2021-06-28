@@ -24,12 +24,12 @@
           </template>
 
           <template #cell(status)="data">
-            <label v-if="data.item.status === 'active'" class="manifest-status active">Active</label>
+            <label v-if="data.item.status" :class="'manifest-status ' + data.item.status">{{ data.item.status }}</label>
           </template>
 
           <template #cell(actions)="data">
-            <i v-if="!data.item._showDetails" class="fa fa-plus" />
-            <i v-else class="fa fa-minus" />
+            <i v-if="!data.item._showDetails" class="fa fa-chevron-down" />
+            <i v-else class="fa fa-chevron-up" />
           </template>
 
           <template slot="row-details" slot-scope="data">
@@ -45,25 +45,38 @@
       <input type="file" id="manifest-upload" class="manifest-input" accept="application/JSON" @input="fileUploaded"/>
       <b-button v-on:click="loadFile()" id="import" class="btn-danger btn-modal rounded-pill" variant="primary">Add new manifest</b-button>
       <b-modal id="manifest-modal" title="Check your manifest" size="xl" class="manifest-modal">
-          <label for="message-input">Name:</label>
-          <b-form-input v-model="manifestChangeMessage" id="message-input" placeholder="Manifest change message" />
+        <b-form @submit="onSubmit">
+          <label for="message-input">Change message:</label>
+          <b-form-input v-model="manifestChangeMessage" id="message-input" placeholder="Manifest change message" required />
           <label for="locked-hours-input" class="mt-3">Locked hours:</label>
           <b-form-input v-model="manifestLockedHours" min="0" type="number" id="locked-hours-input" placeholder="Locked hours" />
+          <b-form-invalid-feedback :state="lockedHoursValidation">
+            Locked hours should be a non-negative integer number.
+          </b-form-invalid-feedback>
           <json-viewer
           class="mt-3"
           :value="newManifest"
           :expand-depth=1
           copyable
           sort></json-viewer>
-          <template #modal-footer >
-            <div>
-              <b-button v-on:click="uploadManifest()" class="btn-danger btn-modal rounded-pill" variant="primary">Upload manifest</b-button>
-            </div>
-            </template>
+          <div class="mt-3 manifest-btn-wrapper">
+            <b-button type="submit" class="btn-danger btn-modal rounded-pill" variant="primary">Upload manifest</b-button>
+          </div>
+        </b-form>
+        <template #modal-footer >
+          <div>
+          </div>
+          </template>
         </b-modal>
         <b-modal id="missing-wallet-modal" title="Please load your wallet" size="xl" >
-          Please install an Arweave wallet extension to your browser and load your wallet. We recommend using <a href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>
+          Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
+          <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
           <template #modal-footer><div></div></template>
+        </b-modal>
+        <b-modal id="mining-transaction" title="Transaction status" size="xl" ok-only>
+          <div>
+            Your manifest is being mined into Arweave blockchain. This can take a couple of minutes.
+          </div>
         </b-modal>
     </div>  
   </div>
@@ -85,6 +98,7 @@ export default {
   data() {
     return {
       newManifest: "",
+      newManifestData: {},
       fields: [
         'manifestTxId',
         'changeMessage', 
@@ -104,6 +118,10 @@ export default {
   },
 
   methods: {
+    onSubmit(event) {
+      event.preventDefault();
+      this.uploadManifest();
+    },
     uploadManifest() {
       if (window.arweaveWallet) {
         this.uploadToArweave();
@@ -113,26 +131,38 @@ export default {
     },
 
     async uploadToArweave() {
-        await window.arweaveWallet.connect(['ACCESS_ADDRESS']);
+      this.$bvModal.hide('manifest-modal');
+      this.$bvModal.show('mining-transaction');
 
-        const arweave = Arweave.init({
-          host: "arweave.net",
-          protocol: "https",
-          port: 443,
-        });
+      await window.arweaveWallet.connect(['ACCESS_ADDRESS']);
 
+      const arweave = Arweave.init({
+        host: "arweave.net",
+        protocol: "https",
+        port: 443,
+      });
+
+      const providerId = await window.arweaveWallet.getActiveAddress();
+
+      //TODO: make a real check
+      if (await this.checkAdminPriviliges(providerId, arweave)) {
         const dataTransaction = await arweave.createTransaction({data: JSON.stringify(this.newManifest)});
         await arweave.transactions.sign(dataTransaction)
         await arweave.transactions.post(dataTransaction)
 
-        console.log("Waiting for block mining...");
-        let resultManifestId =  dataTransaction.id;
+        let jsonUploadTxId =  dataTransaction.id;
 
-        await this.waitForConfirmation(resultManifestId, arweave);
+        const uploadedManifestData = 
+        {
+          changeMessage: this.manifestChangeMessage,
+          manifestTxId: jsonUploadTxId,
+          lockedHours: this.manifestLockedHours,
+          manifest: this.newManifest,
+          uploadDate: (new Date()).toLocaleDateString("en-GB")
+        };
 
-        console.log(resultManifestId)
-
-        const providerId = await window.arweaveWallet.getActiveAddress();
+        sessionStorage.setItem('minedManifest', JSON.stringify(uploadedManifestData));
+        this.getManifestsData();
 
         const resultManifestUpload = await interactWrite(
             arweave, 
@@ -142,32 +172,29 @@ export default {
             function: "addProviderManifest",
             data: {
               providerId: providerId,
-              manifestData: {
-                changeMessage: this.manifestChangeMessage,
-                manifestTxId: resultManifestId,
-                lockedHours: this.manifestLockedHours
-              }
+              manifestData: uploadedManifestData
             }
           });
-
-        await this.waitForConfirmation(resultManifestUpload, arweave);
-
-        console.log(resultManifestUpload)
+      }
     },
 
-    async waitForConfirmation (transactionId, arweave) {
-      const statusAfterMine = await arweave.transactions.getStatus(transactionId);
+    async checkAdminPriviliges(walletId, arweave) {
+      return true;
+    },
 
-      if (statusAfterMine.confirmed === null) {
-        console.log(`Transaction ${transactionId} not yet confirmed. Waiting another 30 seconds before next check.`);
-        setTimeout(() => {
-          this.waitForConfirmation(transactionId, arweave);
-        }, 30000);
-      } else {
-        console.log(`Transaction ${transactionId} confirmed`, statusAfterMine);
-        return statusAfterMine;
-      }
-  },
+  //   async waitForConfirmation (transactionId, arweave) {
+  //     const statusAfterMine = await arweave.transactions.getStatus(transactionId);
+
+  //     if (statusAfterMine.confirmed === null) {
+  //       console.log(`Transaction ${transactionId} not yet confirmed. Waiting another 30 seconds before next check.`);
+  //       setTimeout(() => {
+  //         this.waitForConfirmation(transactionId, arweave);
+  //       }, 10000);
+  //     } else {
+  //       console.log(`Transaction ${transactionId} confirmed`, statusAfterMine);
+  //       return statusAfterMine;
+  //     }
+  // },
 
     getManifestsData() {
       this.manifestsDataForTable = this.manifests.slice().reverse().map((manifest, index) => {
@@ -181,11 +208,33 @@ export default {
         };
       });
 
+      const minedManifest = JSON.parse(sessionStorage.getItem('minedManifest'));
+
+      if (minedManifest && minedManifest.manifestTxId) {
+        const manifestAlreadyMined = 
+          this.manifests.some(
+            manifest => {
+              return manifest.manifestTxId === minedManifest.manifestTxId;
+            });
+
+        if (manifestAlreadyMined) {
+          sessionStorage.removeItem('minedManifest');
+        } else {
+          this.manifestsDataForTable.push(
+            {
+              ...minedManifest,
+              status: 'mining'
+            });
+        }
+      }
+
       this.manifestsDataForTable.forEach(
         async (manifest, index) => {
-          let time = await this.transactionTime(manifest.manifestTxId);
-          this.manifestsDataForTable[index].uploadDate = time;
-          this.$refs.table.refresh();
+          if (manifest.status !== 'mining') {
+            let time = await this.transactionTime(manifest.manifestTxId);
+            this.manifestsDataForTable[index].uploadDate = time;
+            this.$refs.table.refresh();
+          }
         }
       )
     },
@@ -242,6 +291,10 @@ export default {
     getManifest(id) {
       return this.manifests.find(el => el.manifestTxId === id);
     },
+
+    lockedHoursValidation() {
+      return this.manifestLockedHours && parseInt(this.manifestLockedHours) > 0;
+    }
   }
 }
 </script>
@@ -282,22 +335,32 @@ export default {
 }
 
 .manifest-status {
+  font-size: $font-size-index;
+  font-weight: $font-weight-semi-bold;
+  color: $white;
+  text-transform: uppercase;
+  height: 20px;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 4px;
+
   &.active {
-    height: 20px;
-    border-radius: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 4px;
     background-color: $teal;
-    font-size: $font-size-index;
-    font-weight: $font-weight-semi-bold;
-    color: $white;
-    text-transform: uppercase;
+  }
+
+  &.mining {
+    background-color: $yellow;
   }
 }
 
 #message-input, #locked-hours-input {
   width: 50%;
+}
+
+.manifest-btn-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 </style>
