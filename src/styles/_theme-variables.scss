@@ -6,14 +6,14 @@
 
     --redstone-red-color: #F55767;
     --redstone-dark-blue-color: #242F51;
+    --redstone-dark-red-color: #ca4e62;
 
-    --sidebar-bg-color: #E8EBEF;
+    --sidebar-bg-color: #FFFFFF;
     --sidebar-color: #C2C2C2;
     --sidebar-color-item: #FFFFFF;
     --sidebar-action-bg: #D6DFE5;
-    --sidebar-item-active: #777;
+    --sidebar-item-active: var(--redstone-dark-blue-color);
     --sidebar-item-active-bg: #fefefe;
-    // --sidebar-item-active-bg: var(--redstone-red-color);
     --sidebar-badge-bg: #005792;
 
     --sidebar-nav-title-color: var(--light-color);

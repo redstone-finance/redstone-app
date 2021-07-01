@@ -8,12 +8,7 @@
       <div class="logo-container">
         <a href="/">
           <div class="logo-image-container">
-            <img class="logo-image first" src="/redstone-logo.png" />
-          </div>
-          <div class="logo-text-container">
-            <h3>
-              <span class="red-text">Red</span><span class="dark-blue-text">Stone</span>
-            </h3>
+            <img class="logo-image first" src="/redstone-logo-full.svg" />
           </div>
         </a>
       </div>
@@ -48,10 +43,10 @@
           Check out our <a target="_blank" href="https://api.docs.redstone.finance" >API documentation</a>
         </div>  
         <div class="mt-2 mb-2">
-          <a href="mailto:hello@redstone.finance" class="mr-2"><img width="24px" src="/mail.svg" /></a>
-          <a href="https://twitter.com/redstone_defi" class="mr-2" target="_blank"><img width="24px" src="/twitter.svg" /></a>
-          <a href="https://github.com/redstone-finance" class="mr-2" target="_blank"><img width="24px" src="/github.svg" /></a>
-          <a href="https://discord.com/invite/PVxBZKFr46" target="_blank"><img width="24px" src="/discord.svg" /></a>
+          <a href="mailto:hello@redstone.finance" class="mr-2"><img width="20px" src="/mail.svg" /></a>
+          <a href="https://twitter.com/redstone_defi" class="mr-2" target="_blank"><img width="20px" src="/twitter.svg" /></a>
+          <a href="https://github.com/redstone-finance" class="mr-2" target="_blank"><img width="20px" src="/github.svg" /></a>
+          <a href="https://discord.com/invite/PVxBZKFr46" target="_blank"><img width="20px" src="/discord.svg" /></a>
         </div>
           © RedStone 2021
       </footer>

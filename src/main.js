@@ -16,6 +16,7 @@ import store from './store';
 import router from './Routes';
 import App from './App';
 import layoutMixin from './mixins/layout';
+import arweaveMixin from './mixins/arweave';
 import Widget from './components/Widget/Widget';
 
 Vue.use(BootstrapVue);
@@ -25,6 +26,7 @@ Vue.component('Widget', Widget);
 
 Vue.component('apexchart', VueApexCharts);
 Vue.mixin(layoutMixin);
+Vue.mixin(arweaveMixin);
 Vue.use(Toasted, {duration: 10000});
 Vue.use(VueLoaders);
 Vue.use(VueTimers)
@@ -61,6 +63,16 @@ function setupFilters() {
   Vue.filter('percentage', function (value, showPlus) {
     if (!value) return '';
     return addPlus(value, showPlus) + (value * 100).toFixed(2) + "%";
+  });
+
+  Vue.filter('date', function (value) {
+    if (!value) {
+      return null;
+    }
+    if (typeof value === 'string') {
+      value = new Date(value)
+    }
+    return value.toLocaleDateString("en-GB");
   });
 }
 

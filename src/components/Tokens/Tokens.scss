@@ -4,7 +4,7 @@
     min-height: 65px;
     cursor: pointer;
     transition: all 0.5s ease;
-  
+    padding: 24px 20px 12px 20px;  
     &:hover {
       transform: scale(1.1);
     }
@@ -44,4 +44,28 @@
         text-align: right;
       }
     }
+
+  .see-more-wrapper {
+    height: 12px;
+  }  
+
+  .see-more {
+    display: none;
+  }  
+
+  &:hover {
+    .see-more {
+      display: block;
+      color: var(--redstone-red-color);
+      margin-right: 20px;
+      font-size: $font-size-mini;
+      transform: translateY(-3px);
+
+      i {
+        margin-left: 5px;
+        font-size: 1.25rem;
+        transform: translateY(2px);
+      }
+    }
+  }  
 }

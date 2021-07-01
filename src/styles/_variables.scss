@@ -20,21 +20,26 @@ $font-size-larger:        1.1rem;
 $font-size-mini:          0.9rem;
 $font-size-index:         0.7rem;
 
-$font-family-base: 'Montserrat', sans-serif;
+$font-family-base: 'Poppins';
 
 // Color system
 //
 
 $white:    #fff !default;
-$gray-100: #f8f9fa !default;
-$gray-200: #EAF0F6 !default;
-$gray-300: #D7DFE6 !default;
-$gray-400: #c1ccd3 !default;
-$gray-500: #a3aeb7 !default;
-$gray-600: #798892 !default;
-$gray-700: #495057 !default;
-$gray-800: #3c484f !default;
-$gray-900: #29323a !default;
+$gray-100: #fcfcfc !default;
+$gray-200: #f7f7f7 !default;
+$gray-300: #f2f2f2 !default;
+$gray-400: #e8e8e8 !default;
+$gray-450: #d9d9d9 !default;
+$gray-500: #cccccc !default;
+$gray-550: #bdbdbd !default;
+$gray-600: #a8a8a8 !default;
+$gray-650: #999999 !default;
+$gray-700: #7d7d7d !default;
+$gray-750: #6b6b6b !default;
+$gray-800: #5e5e5e !default;
+$gray-850: #505050 !default;
+$gray-900: #424242 !default;
 $black:    #000 !default;
 $gray-light: $gray-100 !default;
 
@@ -73,7 +78,7 @@ $theme-colors: (
 
 $link-color: $cyan;
 
-$text-color: $gray-700 !default;
+$text-color: $gray-800 !default;
 
 $font-weight-bold: 700 !default;
 $font-weight-semi-bold: 600 !default;

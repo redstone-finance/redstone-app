@@ -37,6 +37,9 @@
                   ></vue-loaders-ball-beat>
                 </b-col>
               </b-row>
+              <b-row class="d-flex justify-content-end see-more-wrapper">
+                <div class="see-more">See more<i class="fa fa-angle-right" /></div>  
+              </b-row>
             </Widget>
           </div>
         </b-col>

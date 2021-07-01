@@ -20,6 +20,16 @@
   height: 5px;
 }
 
+a {
+  color: var(--redstone-red-color);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--redstone-dark-red-color);
+    text-decoration: underline;
+  }
+}
+
 .form-control {
   font-family: $font-family-base;
   box-shadow: none;
@@ -396,7 +406,7 @@ small {
   margin-top: 0;
 
   a {
-    color: inherit;
+    color: var(--redstone-red-color);
   }
 
   > .active {

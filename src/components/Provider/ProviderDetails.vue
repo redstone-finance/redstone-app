@@ -8,11 +8,11 @@
         <a :href="provider.url" target="_blank">{{ provider.url }}</a>
       </div>   
       <div class="d-flex justify-content-between mt-5 mb-5">
-        <LabelValue label="Stake" :value="provider.stake" />
-        <LabelValue label="Activation date" :value="provider.activeDate" />
-        <LabelValue label="Interval" :value="provider.interval" />
-        <LabelValue label="Data points" :value="provider.datapoints" />
-        <LabelValue label="Default source" :value="currentManifest.defaultSource[0]" />
+        <LabelValue label="Stake" :value="provider.stakedTokens.toString()" />
+        <LabelValue label="Activation date" :value="active | date" />
+        <LabelValue label="Interval" :value="currentManifest.interval.toString()" />
+        <LabelValue label="Data points" :value="points ? points.toString() : ''" />
+        <LabelValue label="Default source" :value="currentManifest.defaultSource ? currentManifest.defaultSource[0] : ''" />
         <LabelValue label="Disputes" :value="provider.disputes" />
       </div>
     </div>  
@@ -49,6 +49,8 @@
 import LabelValue from '@/components/Provider/LabelValue';
 import tokensData from "@/assets/data/tokens.json";
 import _ from 'lodash';
+const axios = require('axios');
+import providerMixin from "@/mixins/provider";
 
 export default {
   name: "Provider",
@@ -57,17 +59,28 @@ export default {
     provider: {}
   },
 
+  mixins: [providerMixin],
+
   data() {
     return {
       fields: ['logo', 'symbol', 'name', 'sources'],
+      active: "",
+      points: ""
     }
   },
 
-  mounted() {
+  async mounted() {
+    const firstManifestTxId = this.provider.manifests[0].manifestTxId;
+    const firstManifest = await axios.get(`https://arweave.net/tx/${firstManifestTxId}/data.json`);
+    const transactionTime = await this.transactionTime(firstManifestTxId);
+    const lockedHours = firstManifest.data.lockedHours ? firstManifest.data.lockedHours : 0;
+
+    this.active = this.activeFrom(transactionTime, lockedHours);
+    this.points = this.dataPoints(this.currentManifest.interval, this.active);
   },
 
   created() {
-
+    console.log(this.provider)
   },
 
   methods: {
@@ -94,7 +107,7 @@ export default {
     },
 
     currentManifest() {
-      return this.provider?.manifests?.slice(-1).pop().manifest;
+      return this.provider.manifests.slice(-1).pop().activeManifestContent;
     }
   }
 }
