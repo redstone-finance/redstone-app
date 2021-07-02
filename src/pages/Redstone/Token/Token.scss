@@ -1,5 +1,17 @@
 @import '../../../styles/app';
 
 h1 {
-  background: red;
+  margin-bottom: 20px;
+}
+
+.space {
+  margin-top: 20px;
+}
+
+.select-provider {
+  @media (min-width: breakpoint-min(lg)) {
+    z-index: 1;
+    position: absolute;
+    right: 40px;
+  }
 }

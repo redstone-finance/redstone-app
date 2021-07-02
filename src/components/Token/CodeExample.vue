@@ -1,9 +1,18 @@
 <template>
   <BCard class="border-0">
-    Fetch the token price with just one line of code using
-    <a href="https://github.com/limestone-finance/limestone-api">
-      Redstone API
-    </a>
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        Fetch the token price with just one line of code using
+        <a target="_blank" href="https://github.com/redstone-finance/redstone-api">
+          RedStone API
+        </a>
+      </div>
+      <div>
+        <b-button class="btn-danger btn-docs rounded-pill" target="_blank" href="https://api.docs.redstone.finance/" variant="primary">Check documentation</b-button>
+      </div>
+    </div>
+
+
     <hr />
     
     <iframe v-if="shouldLoadCodeBox" src="https://codesandbox.io/embed/limestone-api-demo-0h4oo?fontsize=14&hidenavigation=1&theme=dark"
@@ -33,6 +42,14 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import '../../styles/app';
 
+.btn-docs {
+  font-size: $font-size-mini;
+
+  @media (min-width: breakpoint-min(md)) {
+    font-size: $font-size-larger;
+  }
+}
 </style>
