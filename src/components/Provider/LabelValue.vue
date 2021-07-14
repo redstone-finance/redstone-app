@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="label-value">
     <div>
-      <label>
+      <label class="label">
         {{ label }}
       </label>
     </div>
-    <div>
-      {{ value }}
+    <div class="value">
+      {{ value ? value : '-' }}
     </div>
   </div>
 </template>

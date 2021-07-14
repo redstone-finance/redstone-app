@@ -1,10 +1,10 @@
 <template>
   <div class="stat-elem">
+    <div class="stat-title">
+      {{ title }}:&nbsp;
+    </div>
     <div class="stat-value">
       {{ value | price }}
-    </div>
-    <div class="stat-title">
-      {{ title }}
     </div>
   </div>
 </template>
@@ -21,17 +21,21 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '~@/styles/app';
+
 .stat-elem {
   margin-right: 30px;
-  color: gray;
-
-  .stat-value {
-    font-size: 16px;
-    font-weight: 600;
-  }
+  color: $gray-750;
+  display: flex;
 
   .stat-title {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: $font-weight-ultra-thin;
+  }
+
+  .stat-value {
+    font-size: 14px;
+    font-weight: $font-weight-soft-bold;
   }
 }
 </style>

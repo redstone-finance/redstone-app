@@ -13,6 +13,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: $gray-750;
 
     label {
         font-size: 12px;
@@ -32,8 +33,10 @@
     }
 
     .provider-name {
-        font-weight: 600;
+        font-weight: $font-weight-semi-bold;
+        font-size: $font-size-larger;
         flex: 0 0 12%;
+        color: var(--redstone-dark-blue-color);
     }
 
     .provider-www {
@@ -41,8 +44,8 @@
         flex: 0 0 5%;
 
         .flaticon-www {
-            width: 24px;
-            height: 24px;
+            width: 27px;
+            height: 27px;
             display: block;
 
             &:hover {
@@ -54,20 +57,11 @@
     .provider-description {
         margin-bottom: 0;
         flex: 0 0 32%;
+        font-family: Poppins;
+        font-size: $font-size-mini;
+        font-weight: $font-weight-thin;
+        font-style: italic;
     }
-
-    // .provider-categories {
-    //     flex: 0 0 15%;
-    // }
-
-    // .provider-tokens {
-    //     flex: 0 0 15%;
-
-    //     img {
-    //         width: 20px;
-    //         margin-right: 5px;
-    //     }
-    // }
 
     .provider-logo {
         flex: 0 0 5%;

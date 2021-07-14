@@ -7,7 +7,8 @@ export default {
   data() {
     return {
       arweaveObj: null,
-      registryContractId: null
+      registryContractId: null,
+      kyvePoolId: constants.kyvePoolId
     }
   },
   methods: {
@@ -43,7 +44,6 @@ export default {
     },
     async providersRegistryContractId() {
       if (this.registryContractId) {
-        console.log(this.registryContractId)
         return this.registryContractId;
       } else {
         let contractRegistryData = await interactRead(

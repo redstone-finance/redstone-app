@@ -73,10 +73,28 @@ i.fi {
 
 .flaticon-archive-3::before { content: '\f10e'; }
 
+.flaticon-assets {
+  background-image: url('../../src/assets/icons/assets.png');
+
+  &.fi {
+    background-size: 27px;
+    width: 27px;
+    height: 27px;
+  }
+}
+
 .flaticon-attachment::before { content: '\f10f'; }
 
 .flaticon-arrow-down {
   background-image: url('../../src/assets/icons/arrow-down.svg');
+}
+
+.flaticon-arrow-left {
+  background-image: url('../../src/assets/icons/arrow-left.svg');
+}
+
+.flaticon-arrow-left-active {
+  background-image: url('../../src/assets/icons/arrow-left-active.svg');
 }
 
 .flaticon-back::before { content: '\f110'; }
@@ -595,6 +613,15 @@ i.fi {
 
 .flaticon-print::before { content: '\f1fb'; }
 
+.flaticon-providers {
+  background-image: url('../../src/assets/icons/providers.svg');
+
+  &.fi {
+    width: 27px;
+    height: 27px;
+  }
+}
+
 .flaticon-push-pin::before { content: '\f1fc'; }
 
 .flaticon-radar::before { content: '\f1fd'; }
@@ -856,7 +883,7 @@ i.fi {
 .flaticon-worldwide-1::before { content: '\f279'; }
 
 .flaticon-www {
-  background-image: url('../../src/assets/icons/www.svg');
+  background-image: url('../../src/assets/icons/website.svg');
 }
 
 .flaticon-zoom-in::before { content: '\f27a'; }

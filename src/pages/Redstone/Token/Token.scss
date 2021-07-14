@@ -7,11 +7,3 @@ h1 {
 .space {
   margin-top: 20px;
 }
-
-.select-provider {
-  @media (min-width: breakpoint-min(lg)) {
-    z-index: 1;
-    position: absolute;
-    right: 40px;
-  }
-}

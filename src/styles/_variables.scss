@@ -27,9 +27,12 @@ $font-family-base: 'Poppins';
 
 $white:    #fff !default;
 $gray-100: #fcfcfc !default;
+$gray-150: #ebebeb !default;
 $gray-200: #f7f7f7 !default;
+$gray-250: #e8e8e8 !default;
 $gray-300: #f2f2f2 !default;
-$gray-400: #e8e8e8 !default;
+$gray-350: #fafafa !default;
+$gray-400: #000000 !default;
 $gray-450: #d9d9d9 !default;
 $gray-500: #cccccc !default;
 $gray-550: #bdbdbd !default;
@@ -48,7 +51,8 @@ $indigo:      #7f3ddb !default;
 $purple:      #9964e3 !default;
 $pink:        #e54e9a !default;
 $red:         #FD5F00 !default;
-$red-redstone:#F55767 !default;
+$red-redstone:#FD627A !default;
+$error-red:    #c81742 !default;
 $orange:      #ff7d47 !default;
 $yellow:      #FDA700 !default;
 $green:       #68ca66 !default;
@@ -56,6 +60,7 @@ $teal:        #21AE8C !default;
 $cyan:        #1A86D0 !default;
 $default:     #E9ECEF !default;
 $inverse:     #0D2B47 !default;
+$navy:        #233562 !default;
 
 $theme-colors: (
   primary: $blue,
@@ -73,7 +78,7 @@ $theme-colors: (
   success-light: #ecfaec,
   info-light: #f2fafa,
   warning-light: #fdf7e6,
-  danger-light: #fff2ef,
+  danger-light: #fff2ef
 );
 
 $link-color: $cyan;
@@ -85,11 +90,12 @@ $font-weight-semi-bold: 600 !default;
 $font-weight-soft-bold: 500 !default;
 $font-weight-normal: 400 !default;
 $font-weight-thin: 300 !default;
+$font-weight-ultra-thin: 200 !default;
 $font-weight-base: $font-weight-thin !default;
 
 $addition-bg: $gray-100 !default;
 
-$body-bg: #f9fbfd !default;
+$body-bg: $gray-300 !default;
 $body-bg-light: lighten($body-bg, 3%);
 
 //== Components

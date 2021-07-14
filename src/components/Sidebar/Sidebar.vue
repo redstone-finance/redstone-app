@@ -17,9 +17,9 @@
 
         <NavLink
             :activeItem="activeItem"
-            header="Browse data"
+            header="Assets data"
             link="/app/tokens"
-            iconName="flaticon-search-2"
+            iconName="flaticon-assets"
             index="tokens"
             isHeader
         />
@@ -28,7 +28,7 @@
             :activeItem="activeItem"
             header="Providers"
             link="/app/providers"
-            iconName="flaticon-database-solid"
+            iconName="flaticon-providers"
             index="providers"
             isHeader
         />

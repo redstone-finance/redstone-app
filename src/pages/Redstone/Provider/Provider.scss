@@ -5,6 +5,11 @@
         width: 35px;
     }
 
+    .provider-name {
+        color: $navy;
+        font-size: 34px;
+    }
+
     .provider-www {
         i {
             display: block;
@@ -17,7 +22,5 @@
 }
 
 .loader {
-    // margin-top: 50%;
-    // margin-left: 50%;
     width: 60px;
 }

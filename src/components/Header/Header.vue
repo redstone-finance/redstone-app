@@ -21,13 +21,13 @@
           </b-input-group>
           <router-link :to="routerLink" v-else>            
             <BIconArrowLeft />
-            Explore data
+            <span class="link-back">Back</span>
           </router-link>
         </b-form-group>
       </b-form>
     </b-nav>
     <b-nav class="align-items-center flex-grow-1 justify-content-end">
-        <b-button class="btn-lg btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Use our data</b-button>
+        <b-button class="btn btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Use our data</b-button>
         <b-modal id="modal-1" title="Code snippet" size="xl" >
           <CodeExample />
           <template #modal-footer ><div></div></template>

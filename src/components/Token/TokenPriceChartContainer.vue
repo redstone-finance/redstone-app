@@ -1,37 +1,35 @@
 <template>
-  <div>
+  <div class="chart-wrapper">
+    <div class="last-updated-note">
+        Last updated
+        <strong>
+          {{ lastUpdatedTime }}
+        </strong>
+      </div>
     <b-row>
       <b-col xs="12">
-        <div class="token-price-wrapper h1 d-flex flex-column flex-md-row">
+        <div class="token-price-wrapper d-flex flex-column flex-md-row">
           <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
             <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            <div class="d-inline-block">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
+            <div class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
           <div class="mb-2 mb-md-0">
-            <strong>
+            <div class="current-price">
               {{ currentPriceValue | price }}
-            </strong>
-            <div class="percentage h5 d-inline-block">
-              <span v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
-                {{ priceChange().toFixed(2) | price(true) }} ({{ priceRelativeChange() | percentage(true) }})</span>   
+            </div>
+            <div class="percentage ml-3 d-inline-block">
+              <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
+                <span>{{ priceChange().toFixed(2) | price(true) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)</div>   
             </div>  
           </div>
         </div>
       </b-col>
     </b-row>
-    <div class="stats-container">
-      <StatElem
-        v-for="(value, title) in stats"
-        :key="title"
-        :value="value"
-        :title="title"
-      />
-    </div>
 
     <hr />
 
-    <div class="bar-below-chart flex-column flex-md-row">
-      <div class="time-range-links">
+    <div class="bar-below-chart flex-column flex-md-row justify-content-start">
+      <div class="time-range-links mr-4">
         <a
           v-for="(range, index) in timeRanges"
           :key="index"
@@ -40,11 +38,13 @@
         >{{ range.title }}</a>
       </div>
 
-      <div class="last-updated-note">
-        Last updated
-        <strong>
-          {{ lastUpdatedTime }}
-        </strong>
+      <div class="stats-container ml-4">
+        <StatElem
+          v-for="(value, title) in stats"
+          :key="title"
+          :value="value"
+          :title="title"
+        />
       </div>
     </div>
 
@@ -60,7 +60,7 @@
         </div>
       </b-col>
       <b-col xs="12" lg="3" class="mt-5 mt-md-0">
-        <h3 style="margin-bottom: 20px;">Data sources</h3>
+        <div class="data-sources">Data sources</div>
         <b-form-group v-slot="{ ariaDescribedby }">
           <b-form-checkbox-group
             id="checkbox-group-2"
@@ -72,8 +72,9 @@
               class="source-checkbox"
               v-for="source in sources" :key="source"
               :value="source"
+              :style="{ color: sourceColors[source] }"
             >
-              <div class="source-label" :style="{ color: sourceColors[source] }">
+              <div class="source-label">
                 <div class="source-name">
                   {{ source }}
                 </div>
@@ -109,7 +110,7 @@ export default {
   props: {
     symbol: String,
     provider: String,
-    currentPrice: Object,
+    currentPrice: Object
   },
 
   timers: {
@@ -121,6 +122,7 @@ export default {
       prices: [],
       loading: false,
       selectedSources: [],
+      sources: [],
 
       lastUpdatedTime: 'recently',
 
@@ -169,6 +171,10 @@ export default {
           this.prices = await query.exec({ provider: this.provider });
         }
       } finally {
+        if (!this.sources || this.sources.length == 0) {
+          this.sources = this.updatedSources();
+          this.selectedSources = [this.sources[0]];
+        }
         this.loading = false;
       }
     },
@@ -227,8 +233,6 @@ export default {
         }
 
         sources.push(...sortedSources);
-
-        this.selectedSources = [sources[0]];
       }
       return sources;
     }
@@ -261,17 +265,13 @@ export default {
     stats() {
       if (this.priceValues.length > 0) {
         return {
-          Minimum: formatPrice(_.min(this.priceValues)),
-          Maximum: formatPrice(_.max(this.priceValues)),
+          Min: formatPrice(_.min(this.priceValues)),
+          Max: formatPrice(_.max(this.priceValues)),
           Average: formatPrice(_.mean(this.priceValues)),
         };
       } else {
         return {};
       }
-    },
-
-    sources() {
-      return this.updatedSources();
     },
 
     sourceColors() {
@@ -283,14 +283,7 @@ export default {
       }
       return result;
     },
-    
-    pointRadius() {
-      if (this.selectedTimeRange.days === 0) {
-        return 2;
-      } else {
-        return 3;
-      }
-    },
+  
 
     chartData() {
       const labels = [];
@@ -302,7 +295,7 @@ export default {
             data: [],
             backgroundColor: 'transparent',
             pointHoverRadius: 5,
-            pointRadius: this.pointRadius,
+            pointRadius: 0,
             borderColor: this.sourceColors[source],
             pointBackgroundColor: '#fff',
           };
@@ -356,10 +349,10 @@ export default {
 
 function getRedstoneColorPaletteForChart() {
   return [
-    '#F55767',
-    '#3cb44b',
-    '#4363d8',
-    '#f58231',
+    '#fd627a',
+    '#3cb44c',
+    '#4364d8',
+    '#f58232',
     '#911eb4',
     '#46f0f0',
     '#f032e6',
@@ -377,20 +370,42 @@ function getRedstoneColorPaletteForChart() {
 <style scoped lang="scss">
 @import '~@/styles/app';
 
+.chart-wrapper {
+  position: relative;
+}
+
+.last-updated-note {
+  position: absolute;
+  color: $gray-600;
+  right: 0;
+  top: -42px;
+  font-size: 12px;
+}
+
+.data-sources {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: $navy;
+}
+
 .source-checkbox {
   display: block;
   margin-bottom: 5px;
+
+  .custom-control-input {
+    color: currentColor;
+  }
 
   .source-label {
     cursor: pointer;
     display: flex;
     flex-direction: row;
     width: 100%;
-    color: #777;
+    color: currentColor;
     justify-content: space-between;
     
     .source-name {
-      font-weight: 300;
+      font-weight: $font-weight-normal;
       font-size: 16px;
       text-transform: capitalize;
     }
@@ -400,8 +415,6 @@ function getRedstoneColorPaletteForChart() {
       font-weight: 500;
     }
   }
-
-
 }
 
 .price-chart-container {
@@ -411,10 +424,6 @@ function getRedstoneColorPaletteForChart() {
 .bar-below-chart {
   display: flex;
   justify-content: space-between;
-
-  .last-updated-note {
-    color: #adb5bd;
-  }
 }
 
 .stats-container {
@@ -424,10 +433,13 @@ function getRedstoneColorPaletteForChart() {
 .time-range-links {
   a {
     margin-right: 10px;
-    // color: var(--redstone-red-color);
+    color: $gray-750;
+    font-weight: $font-weight-ultra-thin;
 
     &.selected {
+      color: $navy;
       text-decoration: underline;
+      font-weight: $font-weight-bold;
     }
   }
 }
@@ -435,13 +447,20 @@ function getRedstoneColorPaletteForChart() {
 .percentage {
   transform: translateY(-2px);
   margin-bottom: 0;
+  font-weight: $font-weight-normal;
+  font-size: 16px;
+  color: $gray-500;
 
   .positive {
-    color: $teal;
+    span {
+      color: $teal;
+    }
   }
 
   .negative {
-    color: $red-redstone;
+    span {
+      color: $error-red;
+    }
   }
 
   .period {
@@ -451,17 +470,56 @@ function getRedstoneColorPaletteForChart() {
 }
 
 .token-logo {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
 }
 
 .token-price-wrapper {
   flex-wrap: wrap;
 }
 
+.token-name {
+  color: $navy;
+  font-size: 34px;
+}
+
+.current-price {
+  color: $navy;
+  font-size: 34px;
+  font-weight: $font-weight-bold;
+  display: inline-block;
+}
+
+.stats-container {
+  position: relative;
+
+  &:before {
+    content: " ";
+    height: 30px;
+    border-right: 1px solid #d9d9d9;
+    border-top-width: 0;
+    position: absolute;
+    left: -1.75rem;
+    bottom: -4px;
+  }
+}
+
 @media (min-width: breakpoint-min(lg)) and (max-width: breakpoint-max(lg)) {
   .token-price-wrapper {
     max-width: calc(100% - 160px);
   }
+}
+</style>
+<style lang="scss">
+.custom-control-input:checked ~ .custom-control-label {
+  &::before {
+    color: currentColor !important;
+    border-color: currentColor !important;
+    background-color: currentColor !important;
+  }
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+    background-image: url('../../assets/icons/check.svg') !important;
 }
 </style>

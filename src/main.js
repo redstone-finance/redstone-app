@@ -19,7 +19,9 @@ import layoutMixin from './mixins/layout';
 import arweaveMixin from './mixins/arweave';
 import Widget from './components/Widget/Widget';
 
-Vue.use(BootstrapVue);
+Vue.use(BootstrapVue, {
+  breakpoints: [`xs`, 'sm', 'md', 'lg', 'xl', 'xxl']
+});
 Vue.use(VueTouch);
 Vue.use(Trend);
 Vue.component('Widget', Widget);

@@ -50,7 +50,7 @@
       font-size: $font-size-mini;
 
       @media (min-width: breakpoint-min(md)) {
-        font-size: $font-size-larger;
+        font-size: $font-size-base;
       }
     }
   }
@@ -191,6 +191,12 @@
       }
     }
   }
+}
+
+.link-back {
+  font-size: 14px;
+  font-weight: $font-weight-normal;
+  margin-left: 10px;
 }
 
 

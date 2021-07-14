@@ -1,8 +1,8 @@
 <template>
   <div class="price-table">
-    <h2 class="table-title">
-      Data Feeds
-    </h2>
+    <div class="table-title">
+      Data feeds
+    </div>
     <div class="table-filters-container">
       <b-row>
         <b-col xs="12" lg="6">
@@ -32,21 +32,40 @@
       </template>
 
       <template #cell(value)="data">
-        {{ data.item.value | price }}
+        <div class="price">
+          {{ data.item.value | price }} 
+        </div>
+      </template>
+
+      <template #cell(time)="data">
+        <div class="time">
+          {{ data.item.time }} 
+        </div>
+      </template>
+
+      <template #cell(status)="data">
+        <div v-if="isTxPendingForPrice(data.item)"
+            class="badge mining align-self-start">
+          <div class="badge-text">
+            Mining
+          </div>
+          <div class="pending-tx-loader-container">
+            <img src="/white-loader.svg" alt="animated white loader" />
+          </div>
+        </div>
+        <div v-else
+            class="badge mined align-self-start">
+          <div class="badge-text">
+            Mined
+          </div>
+          <i class="fa fa-check"/>
+        </div>
       </template>
 
       <template #cell(permawebTx)="data">
         <div
           v-if="isTxPendingForPrice(data.item)"
           class="tx-link d-flex flex-column flex-md-row align-items-md-center">
-          <div class="pending-badge align-self-start">
-            <div class="badge-text">
-              Pending
-            </div>
-            <div class="pending-tx-loader-container">
-              <img src="/white-loader.svg" alt="animated white loader" />
-            </div>
-          </div>
           <div class="link align-center mt-2 mt-md-0">
             {{ data.item.permawebTx }}
           </div>
@@ -60,11 +79,11 @@
         </a>
       </template>
 
-      <template #cell(actions)="data">
+      <template #cell(dispute)="data">
         <b-btn
           target="_blank"
           :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx"
-          variant="outline-primary"
+          variant="dispute"
           :disabled="isTxPendingForPrice(data.item)"
         >
           Raise dispute
@@ -77,13 +96,6 @@
       class="load-more-link-container"
       v-observe-visibility="loadMoreButtonVisibilityChanged"
     >
-      <!-- <b-btn
-        size="sm"
-        variant="outline-primary"
-        @click="loadMore()"
-      >
-        Load more
-      </b-btn> -->
 
       <div class="loading-more-container" v-if="loadingMore">
         <vue-loaders-ball-beat
@@ -129,7 +141,7 @@ export default {
 
       lastConfirmedTxTimestamp: 0,
 
-      fields: ['value', 'time', 'permawebTx', 'actions'],
+      fields: ['value', 'time', 'status', 'permawebTx', 'dispute'],
     };
   },
 
@@ -226,7 +238,7 @@ export default {
       return this.prices.map(p => {
         return {
           value: p.value,
-          time: dateFormat(p.timestamp),
+          time: dateFormat(p.timestamp, "dd/mm/yyyy, h:MM:ss"),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
         };
@@ -238,6 +250,11 @@ export default {
 </script>
 
 <style lang="scss">
+@import '~@/styles/app';
+
+.price, .time {
+  color: $gray-750;
+}
 
 .tx-link {
   font-size: 12px;
@@ -249,12 +266,16 @@ a.tx-link, .tx-link > .link {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  color: $gray-600
 }
 
-.pending-badge {
-  background: var(--redstone-red-color);
+a.tx-link {
+  color: var(--redstone-red-color);
+}
+
+.badge {
   color: white;
-  display: flex;
+  display: flex !important;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -262,6 +283,20 @@ a.tx-link, .tx-link > .link {
   padding: 3px 10px;
   border-radius: 5px;
   margin-right: 8px;
+  height: 28px;
+
+  &.mining {
+    background: $gray-600;  
+  }
+
+  &.mined {
+    background: var(--redstone-red-color); 
+  }
+
+  .badge-text {
+    font-size: 14px;
+    font-weight: $font-weight-normal;
+  }
 
   .pending-tx-loader-container {
     img {
@@ -282,12 +317,15 @@ a.tx-link, .tx-link > .link {
     justify-content: left !important;
     color: #777;
   }
+
   margin-right: 20px;
 
   .form-control {
     display: inline-block;
     width: auto;
     vertical-align: middle;
+    background-color: transparent;
+    border: 1px solid $gray-450;
   }
 }
 
@@ -297,6 +335,24 @@ a.tx-link, .tx-link > .link {
 
 .price-table {
   margin-top: 40px;
+}
+
+.table-title {
+  font-size: 24px;
+  color: $navy;
+  font-weight: $font-weight-semi-bold;
+}
+
+a.btn-dispute {
+  padding: 2px 10px 4px 11px;
+  border-radius: 7px;
+  border: solid 1px var(--redstone-red-color);
+  color: var(--redstone-red-color);
+
+  &.disabled {
+    border: solid 1px $gray-600;
+    color: $gray-600;
+  }
 }
 
 @media (max-width: breakpoint-max(sm)) {

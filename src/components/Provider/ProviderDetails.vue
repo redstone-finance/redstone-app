@@ -7,7 +7,7 @@
       <div>
         <a :href="provider.url" target="_blank">{{ provider.url }}</a>
       </div>   
-      <div class="d-flex justify-content-between mt-5 mb-5">
+      <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
         <LabelValue label="Stake" :value="provider.stakedTokens.toString()" />
         <LabelValue label="Activation date" :value="active | date" />
         <LabelValue label="Interval" :value="currentManifest.interval.toString()" />
@@ -16,7 +16,11 @@
         <LabelValue label="Disputes" :value="provider.disputes" />
       </div>
     </div>  
+    <hr />
     <div>
+      <div class="table-title mt-4 mb-2">
+        Provided data:
+      </div>
       <b-table
       id="assets-table"
       stacked="md"
@@ -34,11 +38,11 @@
       </template>
 
       <template #cell(name)="data">
-        {{ data.item.name }}
+        <span class="token-name">{{ data.item.name }}</span> 
       </template>
 
       <template #cell(sources)="data">
-        {{ formatSources(data.item.sources) }}
+        {{ formatSources(data.item.source) }}
       </template>
     </b-table>
     </div>
@@ -63,7 +67,7 @@ export default {
 
   data() {
     return {
-      fields: ['logo', 'symbol', 'name', 'sources'],
+      fields: ['logo', { key: 'name', label: ''}, 'symbol', 'sources'],
       active: "",
       points: ""
     }
@@ -80,12 +84,11 @@ export default {
   },
 
   created() {
-    console.log(this.provider)
   },
 
   methods: {
-    formatSources(sources) {
-      return sources.map(s => _.startCase(s)).join(', ');
+    formatSources(source) {
+      return source.map(s => _.startCase(s)).join(', ');
     },
   },
 
@@ -101,7 +104,7 @@ export default {
           logoURI: tokenInfo.logoURI,
           symbol: token[0],
           name: tokenInfo.name,
-          sources: token[1].source
+          source: token[1].source
         };
       });
     },
@@ -114,6 +117,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/styles/app';
+
   .provider-details {
     .token-logo {
       height: 30px; 
@@ -132,4 +137,54 @@ export default {
       margin-bottom: 10px;
     }
   }
+
+  .provider-values {
+    margin-left: 10px;
+
+    & > div {
+      flex: 0 0 12%;
+    }
+  }
+
+  .token-name {
+    font-size: 14px;
+    font-weight: $font-weight-soft-bold;
+    color: $navy;
+  }
+
+  hr {
+    border-top: 1px solid $gray-300;
+  }
+
+  .table-title {
+    margin-left: 10px;
+    color: $navy;
+    font-size: 20px;
+    font-weight: $font-weight-soft-bold;
+  }
+</style>
+
+<style lang="scss">
+@import '~@/styles/app';
+
+.label-value {
+  .value {
+    color: $gray-750;
+    font-weight: $font-weight-normal;
+  }
+
+  .label {
+    font-weight:  $font-weight-soft-bold;
+    color: $navy;
+  }
+}
+
+.provider-details #assets-table {
+  th {
+    text-transform: none;
+    color: $navy;
+    font-size: 12px;
+    font-weight:  $font-weight-soft-bold;
+  }
+}
 </style>

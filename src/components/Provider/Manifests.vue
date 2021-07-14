@@ -34,7 +34,7 @@
           </template>
 
           <template slot="row-details" slot-scope="data">
-              <b-button v-on:click="initNewManifest(data.item)" id="import" class="btn-danger btn-modal rounded-pill mr-3 mb-3" variant="primary">Use as a manifest template</b-button>
+              <b-button v-on:click="initNewManifest(data.item)" id="import" class="btn-danger btn-modal rounded-pill mr-3 mb-3" variant="primary">Use as template</b-button>
               <b-button v-on:click="setActive(data.item)" id="import" class="btn-danger btn-modal rounded-pill mb-3" variant="primary">Set active</b-button>
               <json-viewer
                 :value="data.item.manifestData"
@@ -47,9 +47,9 @@
     <b-modal id="upload-new-modal" title="Upload new manifest" size="xl" class="upload-new-manifest-modal">
       <div class="d-flex flex-column align-items-center">
         <div>You can either upload manifest from a JSON file...</div>
-        <b-button v-on:click="loadFile()" id="import" class="btn-danger btn-modal rounded-pill" variant="primary">Upload</b-button>
+        <b-button v-on:click="loadFile();$bvModal.hide('upload-new-modal');" id="import" class="btn-danger btn-modal rounded-pill" variant="primary">Upload</b-button>
         <div class="mt-5">...or start with an empty template</div>
-        <b-button v-on:click="initNewManifest(manifest)" id="start-empty" class="btn-danger btn-modal rounded-pill" variant="primary">Start</b-button>    
+        <b-button v-on:click="initNewManifest();$bvModal.hide('upload-new-modal');" id="start-empty" class="btn-danger btn-modal rounded-pill" variant="primary">Start</b-button>    
       </div>  
       <template #modal-footer><div></div></template>
     </b-modal>
@@ -97,7 +97,7 @@
 import JsonViewer from 'vue-json-viewer'
 const axios = require('axios');
 import ManifestForm from "./ManifestForm.vue";
-const {interactWrite} = require("smartweave");
+import { interactWrite } from 'smartweave';
 
 export default {
   name: "Manifests",
@@ -129,9 +129,9 @@ export default {
       this.templateManifest = {};
       this.showManifestForm = false;
     });
-    this.$root.$on('manifestSubmitted', () => {
-      this.templateManifest = {};
+    this.$root.$on('manifestSubmitted', (manifest) => {
       this.showManifestForm = false;
+      this.uploadManifest(manifest); 
     });
     this.getManifestsData();
   },

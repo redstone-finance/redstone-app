@@ -7,7 +7,7 @@
       scale="0.5"></vue-loaders-ball-beat>
     <div class="d-flex align-items-center mb-3" v-if="provider && provider.profile">
       <img class="provider-logo" :src="provider.profile.imgUrl" />
-      <h1 class="ml-3">{{ provider.profile.name }}</h1>
+      <div class="provider-name ml-3">{{ provider.profile.name }}</div>
     </div>
     <div class="provider-tabs" v-if="provider && provider.manifests">
       <b-tabs>
@@ -25,7 +25,7 @@
 <script>
 import ProviderDetails from '@/components/Provider/ProviderDetails';
 import Manifests from '@/components/Provider/Manifests';
-const {interactRead} = require("smartweave");
+const {interactRead} = require("@kyve/query");
 import dummyWallet from '@/dummy-wallet.json';
 
 export default {
@@ -55,18 +55,18 @@ export default {
   methods: {
     async getProviderInfo() {
       let providerData = await interactRead(
-        this.arweave, 
-        dummyWallet,
-        await this.providersRegistryContractId(),
+          this.kyvePoolId,
+          await this.providersRegistryContractId(),
         {
           function: "providerData",
           data: {
             providerId: this.providerId,
             eagerManifestLoad: true
           }
-        }
+        },
+        dummyWallet
       );
-      console.log(providerData)
+
       return providerData.provider;
     }
   },

@@ -1,12 +1,12 @@
 <template>
   <div class="token-tabs" ref="tabWrapper">
       <div id="leftArr" class="arrow" @click="scrollLeft()" v-if="showArrows">
-        <i class="fa fa-angle-left"></i>
+        <i :class="`fi flaticon-arrow-left${leftScrollActive ? '-active' : ''}`"></i>
       </div>
       <div id="rightArr" class="arrow" @click="scrollRight()" v-if="showArrows">
-        <i class="fa fa-angle-right"></i>
+        <i :class="`fi flaticon-arrow-left${rightScrollActive ? '-active' : ''}`"></i>
       </div>
-      <b-tabs sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" :class="[{showArrows}]">                
+      <b-tabs sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
         <b-tab v-for="type in tokenTypes" :key="type.label">
           <template #title>
             {{type.label}} <span class="tokens-number">{{ filteredTokenWithPrices(prices, type.tag).length }}</span>
@@ -92,7 +92,10 @@ export default {
       prices: {},
       tokenTypes: TOKEN_TYPES,
       back: false,
-      showArrows: false
+      showArrows: false,
+      leftScrollActive: false,
+      rightScrollActive: true,
+      tabsLength: 0
     };
   },
 
@@ -111,6 +114,11 @@ export default {
       currentPrices = await getAllAvailableCurrentPrices();
       this.prices = currentPrices;
     }
+
+    document.getElementsByClassName("nav-tabs")[0].addEventListener('scroll', (e) =>  {
+      this.leftScrollActive = this.leftScrollAvailable();
+      this.rightScrollActive = this.rightScrollAvailable();
+    });
   },
 
   created() {
@@ -123,6 +131,9 @@ export default {
   },
   
   methods: {
+    setTabsWidth() {
+      this.tabsLength = this.calculateTabsLength();
+    },
     filteredTokenWithPrices(fetchedPrices, type) {
       const result = [];
 
@@ -164,6 +175,26 @@ export default {
       }
       return result;
     },
+    calculateTabsLength() {
+      const tabElements = this.$refs.tabScroll?.$el.getElementsByTagName("li");
+      const tabs = tabElements ? [...tabElements] : [];
+
+      let tabsWidth = 0;
+
+      if (tabs) {
+        tabs.forEach(
+          tab => {
+            tabsWidth += tab.offsetWidth
+          }
+        )
+
+        tabs.reduce( (a, b) => {
+          return a + b.offsetWidth;
+        }, 0)
+      }
+
+      return tabsWidth;
+    },
     scrollLeft() {
       let content = document.querySelector(".nav-tabs");
       content.scrollBy({ 
@@ -180,27 +211,27 @@ export default {
     },
     isOverflowing() {
       let tabWrapper =  this.$refs.tabWrapper;
-      let tabElements = this.$refs.tabScroll?.$el.getElementsByTagName("li");
-      let tabs = tabElements ? [...tabElements] : [];
 
-      let tabsWidth = 0;
-
-      if (tabs) {
-        tabs.forEach(
-          tab => {
-            tabsWidth += tab.offsetWidth
-          }
-        )
-
-        tabs.reduce( (a, b) => {
-          return a + b.offsetWidth;
-        }, 0)
-      }
-
-      return tabWrapper?.offsetWidth < tabsWidth
+      return tabWrapper?.offsetWidth < this.tabsLength;
     },
     resize() {
       this.showArrows = this.isOverflowing();
+    },
+    leftScrollAvailable() {
+      const tabs = document.getElementsByClassName("nav-tabs")[0];
+      if (tabs) {
+        return tabs.scrollLeft != 0;
+      } else {
+        return true;
+      }
+    },
+    rightScrollAvailable() {
+      const tabs = document.getElementsByClassName("nav-tabs")[0];
+      if (tabs) {
+        return tabs.scrollLeft + document.getElementsByClassName("nav-tabs")[0].offsetWidth < this.tabsLength;
+      } else {
+        return false;
+      }
     }
   },
 
@@ -209,7 +240,6 @@ export default {
       let search = this.$route.query.search;
       return search != null ? search : '';
     }
-    
   }
 }
 </script>
@@ -220,47 +250,38 @@ export default {
 
 //scrollable tabs
 .token-tabs {
-
-  .nav-tabs {
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    overflow-y: clip;
-    overflow-x: scroll;
-  }
-
-  .showArrows .nav-tabs {
-    margin-left: 30px;
-    max-width: calc(100% - 58px);
-  }
-
-  a {
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      outline: none !important;
-  }
+  position: relative;
 
   ::-webkit-scrollbar {
     display: none;
   }
 
   .arrow {
-    padding: 10px;
+    height: 35px;
+    width: 30px;
     position: absolute;
     z-index: 2;
     cursor: pointer;
+    border-bottom: 1px solid $gray-250;
+    background-color: $gray-350;
+    top: 9px;
+    display: flex;
   } 
 
   #leftArr {
-    left: 40px;
+    left: 0;
+    border-top-left-radius: 5px;
+    padding: 8px 5px 10px 5px;
   }
 
   #rightArr {
-    right: 40px;
+    right: 0;
+    border-top-right-radius: 5px;
+    padding: 8px 5px 10px 5px;
+
+    i {
+      transform: rotate(180deg);
+    }
   }
 
   @media (max-width: breakpoint-max(sm)) {

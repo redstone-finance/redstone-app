@@ -2,7 +2,7 @@
   <div>
     <div class="mb-lg">
       <b-row>
-        <b-col xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in tokens" :key="index">
+        <b-col xxl="3" xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in tokens" :key="index">
           <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
             <Widget class="mb-0 token-card">
               <b-row class="token-details">

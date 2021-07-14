@@ -9,7 +9,8 @@
   color: var(--sidebar-color);
   transition: $transition-base;
   position: relative;
-  box-shadow: inset -5px 5px 5px 0px #e8e8e8;
+  -webkit-box-shadow: 1px 0 20px 2px #e8e8e8;
+  box-shadow: 1px 0 20px 2px #e8e8e8;
 
   &.showSidebar {
     display: block;
@@ -24,8 +25,8 @@
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  z-index: 300;
   width: $sidebar-width-open;
-  transition: width $sidebar-transition-time ease-in-out, left $sidebar-transition-time ease-in-out;
 
   @include sidebar-scrollbar();
 }
