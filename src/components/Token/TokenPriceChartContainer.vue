@@ -294,7 +294,7 @@ export default {
           datasets[source] = {
             data: [],
             backgroundColor: 'transparent',
-            pointHoverRadius: 5,
+            pointHoverRadius: 0,
             pointRadius: 0,
             borderColor: this.sourceColors[source],
             pointBackgroundColor: '#fff',

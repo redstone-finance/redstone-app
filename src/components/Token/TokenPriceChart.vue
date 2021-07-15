@@ -8,11 +8,12 @@
       Chart.controllers.line.prototype.draw.call(this, ease);
 
       if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
-         var activePoint = this.chart.tooltip._active[0],
-             ctx = this.chart.ctx,
-             x = activePoint.tooltipPosition().x,
-             topY = this.chart.scales['y-axis-0'].top,
-             bottomY = this.chart.scales['y-axis-0'].bottom;
+        var activePoint = this.chart.tooltip._active[0],
+        ctx = this.chart.ctx,
+        x = activePoint.tooltipPosition().x,
+        y = activePoint.tooltipPosition().y,
+        topY = this.chart.scales['y-axis-0'].top,
+        bottomY = this.chart.scales['y-axis-0'].bottom;
 
          // draw line
          ctx.save();
@@ -22,6 +23,17 @@
          ctx.lineWidth = 1;
          ctx.strokeStyle = '#ababab';
          ctx.stroke();
+
+        // draw point
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.fill();   
+
+
          ctx.restore();
       }
    }
@@ -56,7 +68,16 @@
                   // forces step size to be 5 units
                   stepSize: 12 // <----- This prop sets the stepSize
                 }
-              }]
+              }],
+              yAxes: [
+                {
+                    ticks: {
+                        userCallback: function(value, index, values) {
+                            return '$' + value.toLocaleString('en-US', {minimumFractionDigits: 2});   // this is all we need
+                        }
+                    }
+                }
+              ]
             },
             legend: {
               display: false
@@ -75,8 +96,8 @@
                   if (label) {
                     label += ': ';
                   }
-                  label += Math.round(tooltipItem.yLabel * 100) / 100;
-                  return label;
+                  label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
+                  return '$' + label;
                 }
               }
             }

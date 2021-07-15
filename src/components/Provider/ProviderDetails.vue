@@ -8,10 +8,10 @@
         <a :href="provider.url" target="_blank">{{ provider.url }}</a>
       </div>   
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
-        <LabelValue label="Stake" :value="provider.stakedTokens.toString()" />
-        <LabelValue label="Activation date" :value="active | date" />
-        <LabelValue label="Interval" :value="currentManifest.interval.toString()" />
-        <LabelValue label="Data points" :value="points ? points.toString() : ''" />
+        <LabelValue label="Active from" :value="active | date" />
+        <LabelValue label="Interval" :value="formatInterval(interval)" :alignRight="true"/>
+        <LabelValue label="Data points" :value="points ? points.toLocaleString('en-US') : ''" :alignRight="true"/>
+        <LabelValue label="Stake" :value="provider.stakedTokens ? provider.stakedTokens.toLocaleString('en-US') : ''" :alignRight="true"/>
         <LabelValue label="Default source" :value="currentManifest.defaultSource ? currentManifest.defaultSource[0] : ''" />
         <LabelValue label="Disputes" :value="provider.disputes" />
       </div>
@@ -22,12 +22,12 @@
         Provided data:
       </div>
       <b-table
-      id="assets-table"
-      stacked="md"
-      hover
-      :items="tokensDataForTable"
-      :fields="fields"
-    >
+        id="assets-table"
+        stacked="md"
+        hover
+        :items="tokensDataForTable"
+        :fields="fields"
+        >
 
       <template #cell(logo)="data">
         <img class="token-logo" :src="data.item.logoURI" />
@@ -42,7 +42,9 @@
       </template>
 
       <template #cell(sources)="data">
-        {{ formatSources(data.item.source) }}
+        <a class="source-link" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
+          <img class="source-logo" :src="source.imgURI" :title="source.name" />
+        </a>
       </template>
     </b-table>
     </div>
@@ -52,6 +54,7 @@
 <script>
 import LabelValue from '@/components/Provider/LabelValue';
 import tokensData from "@/assets/data/tokens.json";
+import sourcesData from "@/assets/data/sources-list.json";
 import _ from 'lodash';
 const axios = require('axios');
 import providerMixin from "@/mixins/provider";
@@ -98,15 +101,26 @@ export default {
 
   computed: {
     tokensDataForTable() {
-      return Object.entries(this.currentManifest.tokens).map(function (token) {
+      let tokens =  Object.entries(this.currentManifest.tokens).map(function (token) {
         let tokenInfo = tokensData[token[0]]
         return {
           logoURI: tokenInfo.logoURI,
           symbol: token[0],
           name: tokenInfo.name,
-          source: token[1].source
+          source: token[1].source ? token[1].source.map(
+            el => {
+              return {
+                name: el,
+                ...sourcesData[el]
+              }
+            }
+          ) : []
         };
       });
+            console.log(tokens) 
+
+            return tokens;
+
     },
 
     currentManifest() {
@@ -142,7 +156,7 @@ export default {
     margin-left: 10px;
 
     & > div {
-      flex: 0 0 12%;
+      flex: 0 0 10%;
     }
   }
 
@@ -162,6 +176,16 @@ export default {
     font-size: 20px;
     font-weight: $font-weight-soft-bold;
   }
+
+.source-link {
+  min-width: 30px;
+  display: inline-block;
+  text-align: center;
+}
+
+.source-logo {
+  height: 20px;
+}
 </style>
 
 <style lang="scss">

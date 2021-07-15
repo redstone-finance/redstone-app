@@ -3,14 +3,41 @@
     <div class="table-title">
       Data feeds
     </div>
-    <div class="table-filters-container">
+    <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
-        <b-col xs="12" lg="6">
+        <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label for="to-datepicker">Max date</label>
-              <b-datepicker id="to-datepicker" v-model="toDate">
+              <label for="from-datepicker">Show feeds from: </label>
+              <b-datepicker 
+                id="from-datepicker" 
+                v-model="fromDate"
+                :value-as-date="true"
+                locale="en-GB"
+                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
               </b-datepicker>
+              <b-form-timepicker 
+                v-model="fromTime" 
+                locale="en"
+                no-close-button></b-form-timepicker>
+            </div>
+          </b-form>
+        </b-col>
+        <b-col xs="12" md="6">
+          <b-form inline>
+            <div class="datepicker-container">
+              <label for="to-datepicker">to:</label>
+              <b-datepicker 
+                id="to-datepicker" 
+                v-model="toDate"
+                :value-as-date="true"
+                locale="en-GB"
+                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+              </b-datepicker>
+              <b-form-timepicker 
+                v-model="toTime" 
+                locale="en"
+                no-close-button></b-form-timepicker>
             </div>
           </b-form>
         </b-col>
@@ -110,7 +137,6 @@
 <script>
 import redstone from 'redstone-api';
 import dateFormat from 'dateformat';
-import Arweave from 'arweave';
 
 export default {
   name: 'TokenPriceTableContainer',
@@ -129,16 +155,10 @@ export default {
       limit: 20,
       currentPage: 1,
       perPage: 10,
+      fromTime: (new Date()).toLocaleTimeString(),
+      toTime: (new Date()).toLocaleTimeString(),
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
-      arweave: Arweave.init({
-        host: 'arweave.net',// Hostname or IP address for a Arweave host
-        port: 443,          // Port
-        protocol: 'https',  // Network protocol http or https
-        timeout: 20000,     // Network request timeouts in milliseconds
-        logging: false,     // Enable network request logging
-      }),
-
       lastConfirmedTxTimestamp: 0,
 
       fields: ['value', 'time', 'status', 'permawebTx', 'dispute'],
@@ -198,7 +218,7 @@ export default {
         limit: this.limit,
         startDate: this.startDate,
         offset: this.offset,
-        endDate: this.toDate,
+        endDate: this.endDate,
       });
       return nextPrices;
     },
@@ -220,15 +240,20 @@ export default {
         index++;
       }
       this.lastConfirmedTxTimestamp = lastTimestamp;
-    },
+    }
   },
 
   watch: {
     fromDate() {
       this.loadPrices();
     },
-
     toDate() {
+      this.loadPrices();
+    },
+    fromTime() {
+      this.loadPrices();
+    },
+    toTime() {
       this.loadPrices();
     },
   },
@@ -244,6 +269,14 @@ export default {
         };
       });
     },
+    startDate() {
+      const [hours, minutes, seconds] = this.fromTime.split(':');
+      return new Date(this.fromDate.setHours(hours, minutes, seconds));
+    },
+    endDate() {
+      const [hours, minutes, seconds] = this.toTime.split(':');
+      return new Date(this.toDate.setHours(hours, minutes, seconds));
+    }
   },
 
 }
@@ -311,14 +344,26 @@ a.tx-link {
 }
 
 .datepicker-container {
+  margin-right: 20px;
+  display: flex;
+
   label {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: $font-weight-thin;
     text-align: left;
     justify-content: left !important;
-    color: #777;
+    color: $gray-750;
+    white-space: nowrap;
+    margin-right: 10px;
   }
 
-  margin-right: 20px;
+  .b-form-btn-label-control.form-control {
+    height: 35px;
+  }
+
+  .b-form-datepicker {
+    margin-right: 10px;
+  }
 
   .form-control {
     display: inline-block;
@@ -326,6 +371,41 @@ a.tx-link {
     vertical-align: middle;
     background-color: transparent;
     border: 1px solid $gray-450;
+  }
+
+  .b-form-btn-label-control {
+    flex-direction: row-reverse;
+
+    &.show {
+      // svg {
+      //   display: none;
+      // }
+    }
+
+    & > button {
+      padding: 0 10px 0 0 ;
+
+      svg {
+        fill: $gray-550;
+      }
+    }
+  }
+
+  .b-form-btn-label-control.form-control > .form-control {
+    word-break: normal;
+    white-space: nowrap;
+  }
+
+  .b-form-btn-label-control.form-control > label.form-control {
+    margin-top: 2px;
+    padding-left: 10px;
+    font-weight: $font-weight-soft-bold;
+  }
+}
+
+.b-time {
+  output {
+    justify-content: center;
   }
 }
 
@@ -363,5 +443,26 @@ a.btn-dispute {
   }
 }
 
+.b-form-datepicker {
+  .dropdown-menu {
+    left: -100px !important;
+  }
+}
+
+.b-form-timepicker {
+  .dropdown-menu {
+    left: -78px !important;
+  }
+}
+
+#prices-table {
+  td {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  th {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
 
 </style>

@@ -17,7 +17,7 @@
 
         <NavLink
             :activeItem="activeItem"
-            header="Assets data"
+            header="Prices"
             link="/app/tokens"
             iconName="flaticon-assets"
             index="tokens"

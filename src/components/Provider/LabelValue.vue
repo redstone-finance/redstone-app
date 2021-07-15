@@ -1,11 +1,11 @@
 <template>
-  <div class="label-value">
+  <div :class="'label-value ' + (alignRight ? 'align-right' : '')">
     <div>
       <label class="label">
         {{ label }}
       </label>
     </div>
-    <div class="value">
+    <div :class="'value'">
       {{ value ? value : '-' }}
     </div>
   </div>
@@ -18,7 +18,8 @@ export default {
 
   props: {
     label: String,
-    value: String
+    value: String | Number,
+    alignRight: false
   },
 }
 </script>
@@ -30,5 +31,10 @@ export default {
       font-size: 12px;
       border-bottom: none;
       color: var(--sidebar-item-active);
+  }
+
+  .label-value.align-right {
+    text-align: right;
+    padding-right: 35px;
   }
 </style>

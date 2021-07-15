@@ -58,7 +58,7 @@
                 target="_blank"
                 @click.stop="() => {}"
               >
-                <i class="fi flaticon-www" />
+              <i class="fa fa-external-link" />
               </a>
             </div>
           </div>
