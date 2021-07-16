@@ -1,5 +1,18 @@
 <template>
   <div class="provider-manifests">
+    <div v-if="!isAdmin">
+      To gain access to provider functions, please log in using your Arweave wallet. We recommend using 
+      <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
+      Remember that you must have admin rights for this provider to perform any actions.
+    </div>  
+    <div v-else>
+      You are logged in as an admin for this provider, which allows you to administrate manifests. You can create or uploade a new manifest clicking on a button below or use existing
+      one as a template by selecting one from the lists and clicking "Use as template" button.
+    </div>  
+    <div class="upload-wrapper">
+      <b-button v-if="isAdmin" v-on:click="$bvModal.show('upload-new-modal')" id="upload" class="btn-danger btn-modal rounded-pill" variant="primary">Create new</b-button>
+      <input type="file" id="manifest-upload" class="manifest-input" accept="application/JSON" @input="fileUploaded"/>
+    </div>
     <div class="manifest-list">
       <b-table
         ref="table"
@@ -34,8 +47,7 @@
           </template>
 
           <template slot="row-details" slot-scope="data">
-              <b-button v-on:click="initNewManifest(data.item)" id="import" class="btn-danger btn-modal rounded-pill mr-3 mb-3" variant="primary">Use as template</b-button>
-              <b-button v-on:click="setActive(data.item)" id="import" class="btn-danger btn-modal rounded-pill mb-3" variant="primary">Set active</b-button>
+              <b-button v-if="isAdmin" v-on:click="initNewManifest(data.item)" id="import" class="btn-danger btn-modal rounded-pill mr-3 mb-3" variant="primary">Use as template</b-button>
               <json-viewer
                 :value="data.item.manifestData"
                 :expand-depth=1
@@ -53,42 +65,20 @@
       </div>  
       <template #modal-footer><div></div></template>
     </b-modal>
-
-    <div class="upload-wrapper">
-      <b-button v-on:click="$bvModal.show('upload-new-modal')" id="upload" class="btn-danger btn-modal rounded-pill" variant="primary">Create new</b-button>
-      <input type="file" id="manifest-upload" class="manifest-input" accept="application/JSON" @input="fileUploaded"/>
-      <b-modal id="manifest-modal" title="Check your manifest" size="xl" class="manifest-modal">
-        <b-form @submit="onSubmit">
-          <label for="message-input">Change message:</label>
-          <b-form-input v-model="manifestChangeMessage" id="message-input" placeholder="Manifest change message" required />
-          <label for="locked-hours-input" class="mt-3">Locked hours:</label>
-          <b-form-input v-model="manifestLockedHours" min="0" type="number" id="locked-hours-input" placeholder="Locked hours" />
-          <b-form-invalid-feedback :state="lockedHoursValidation">
-            Locked hours should be a non-negative integer number.
-          </b-form-invalid-feedback>
-          <json-viewer
-          class="mt-3"
-          :value="newManifest"
-          :expand-depth=1
-          copyable
-          sort></json-viewer>
-          <div class="mt-3 manifest-btn-wrapper">
-            <b-button type="submit" class="btn-danger btn-modal rounded-pill" variant="primary">Upload manifest</b-button>
-          </div>
-        </b-form>
-        <template #modal-footer ><div></div></template>
-      </b-modal>
-        <b-modal id="missing-wallet-modal" title="Please load your wallet" size="xl" >
+    <b-modal id="missing-wallet-modal" title="Please load your wallet" size="xl" >
+        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
           Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-          <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
-          <template #modal-footer><div></div></template>
-        </b-modal>
-        <b-modal id="mining-transaction" title="Transaction status" size="xl" ok-only>
-          <div>
-            Your manifest is being mined into Arweave blockchain. This can take a couple of minutes.
-          </div>
-        </b-modal>
-    </div>  
+        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
+          Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
+        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
+        <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
+        <template #modal-footer><div></div></template>
+      </b-modal>
+      <b-modal id="mining-transaction" title="Transaction status" size="xl" ok-only>
+        <div>
+          Your manifest is being mined into Arweave blockchain. This can take a couple of minutes.
+        </div>
+      </b-modal>
     <ManifestForm :initialManifest="templateManifest" v-if="showManifestForm"/>
   </div>
 </template>
@@ -117,14 +107,27 @@ export default {
         { key: 'actions', label: ''}
       ],
       manifestsDataForTable: [],
-      manifestChangeMessage: "",
-      manifestLockedHours: 0,
       showManifestForm: false,
-      templateManifest: {} 
+      templateManifest: {},
+      isAdmin: false
     }; 
   },
 
-  mounted() {
+  async mounted() {
+    window.addEventListener("walletSwitch", async () => {
+      await this.checkIfAdmin();
+    });
+
+    window.addEventListener("arweaveWalletLoaded", () => {
+      /** Handle ArConnect load event **/
+      alert('loaded')
+    });
+
+    window.addEventListener("walletSwitch", (e) => {
+        alert('switch')
+    });
+
+
     this.$root.$on('manifestFormClosed', () => {
       this.templateManifest = {};
       this.showManifestForm = false;
@@ -134,9 +137,13 @@ export default {
       this.uploadManifest(manifest); 
     });
     this.getManifestsData();
+    await this.checkIfAdmin();
   },
 
   methods: {
+    async checkIfAdmin() {
+      this.isAdmin = this.provider.adminsPool.includes(await window.arweaveWallet.getActiveAddress());
+    },
     onSubmit(event) {
       event.preventDefault();
       this.uploadManifest();
@@ -158,11 +165,8 @@ export default {
 
       await window.arweaveWallet.connect(['ACCESS_ADDRESS']);
 
-      const userId = await window.arweaveWallet.getActiveAddress();
-
-      //TODO: make a real check
-      if (await this.checkAdminPriviliges(userId, this.arweave)) {
-        const dataTransaction = await this.arweave.createTransaction({data: JSON.stringify(manifest)});
+      if (await this.isAdmin) {
+        const dataTransaction = await this.arweave.createTransaction({data: JSON.stringify(manifest.manifestData)});
         await this.arweave.transactions.sign(dataTransaction)
         await this.arweave.transactions.post(dataTransaction)
 
@@ -308,10 +312,6 @@ export default {
   computed: {
     getManifest(id) {
       return this.manifests.find(el => el.manifestTxId === id);
-    },
-
-    lockedHoursValidation() {
-      return parseInt(this.manifestLockedHours) >= 0;
     },
 
     providerId() {

@@ -263,7 +263,7 @@ export default {
       return this.prices.map(p => {
         return {
           value: p.value,
-          time: dateFormat(p.timestamp, "dd/mm/yyyy, h:MM:ss"),
+          time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
         };
@@ -361,8 +361,9 @@ a.tx-link {
     height: 35px;
   }
 
-  .b-form-datepicker {
+  .b-form-datepicker, .b-form-timepicker {
     margin-right: 10px;
+    display: flex;
   }
 
   .form-control {

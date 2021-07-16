@@ -26,6 +26,7 @@
 import ProviderDetails from '@/components/Provider/ProviderDetails';
 import Manifests from '@/components/Provider/Manifests';
 const {interactRead} = require("@kyve/query");
+// const {interactRead} = require("smartweave");
 import dummyWallet from '@/dummy-wallet.json';
 
 export default {
@@ -41,7 +42,7 @@ export default {
 
   async mounted() {
     this.getProviderInfo().then(
-      info => {
+      info => { 
         this.provider = info;
         this.fetching = false;
       }
@@ -67,6 +68,22 @@ export default {
         dummyWallet
       );
 
+//for Smartweave library
+      // let providerData = await interactRead(
+      //   this.arweave,
+      //   dummyWallet,
+      //   await this.providersRegistryContractId(),
+      //    {
+      //       function: "providerData",
+      //       data: {
+      //         providerId: this.providerId,
+      //         eagerManifestLoad: true
+      //       }
+      //     }
+      // );
+
+      console.log(providerData)
+
       return providerData.provider;
     }
   },
@@ -85,3 +102,9 @@ export default {
 </script>
 
 <style src="./Provider.scss" lang="scss" scoped />
+<style lang="scss"  >
+.provider-tabs > .tabs > div:first-of-type {
+   height: 44px; 
+}
+</style>
+

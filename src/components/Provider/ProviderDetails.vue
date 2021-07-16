@@ -9,7 +9,7 @@
       </div>   
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
         <LabelValue label="Active from" :value="active | date" />
-        <LabelValue label="Interval" :value="formatInterval(interval)" :alignRight="true"/>
+        <LabelValue label="Interval" :value="formatInterval(currentManifest.interval)" :alignRight="true"/>
         <LabelValue label="Data points" :value="points ? points.toLocaleString('en-US') : ''" :alignRight="true"/>
         <LabelValue label="Stake" :value="provider.stakedTokens ? provider.stakedTokens.toLocaleString('en-US') : ''" :alignRight="true"/>
         <LabelValue label="Default source" :value="currentManifest.defaultSource ? currentManifest.defaultSource[0] : ''" />
@@ -43,7 +43,7 @@
 
       <template #cell(sources)="data">
         <a class="source-link" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-          <img class="source-logo" :src="source.imgURI" :title="source.name" />
+          <img class="source-logo" :src="source.imgURI" v-b-tooltip.hover :title="source.name" />
         </a>
       </template>
     </b-table>
@@ -101,7 +101,7 @@ export default {
 
   computed: {
     tokensDataForTable() {
-      let tokens =  Object.entries(this.currentManifest.tokens).map(function (token) {
+      let tokens =  this.currentManifest.tokens ? Object.entries(this.currentManifest.tokens).map(function (token) {
         let tokenInfo = tokensData[token[0]]
         return {
           logoURI: tokenInfo.logoURI,
@@ -116,7 +116,7 @@ export default {
             }
           ) : []
         };
-      });
+      }) : [];
             console.log(tokens) 
 
             return tokens;
@@ -156,7 +156,7 @@ export default {
     margin-left: 10px;
 
     & > div {
-      flex: 0 0 10%;
+      flex: 0 0 12%;
     }
   }
 

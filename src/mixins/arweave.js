@@ -60,6 +60,8 @@ export default {
         this.registryContractId = contractRegistryData['providers-registry'];
         return this.registryContractId;
       }
+      // for testing
+      // return "CbGCxBJn6jLeezqDl1w3o8oCSeRCb-MmtZNKPodla-0";
     }
   },
   computed: {

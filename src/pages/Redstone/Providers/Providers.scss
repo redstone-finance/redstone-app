@@ -21,12 +21,6 @@
         color: var(--sidebar-item-active);
     }
 
-    .provider-stake, .provider-active-date, .provider-interval {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
     .provider-name, .provider-www {
         margin-left: 10px;
         margin-bottom: 0;
@@ -38,6 +32,18 @@
         flex: 0 0 12%;
         color: var(--redstone-dark-blue-color);
     }
+
+    .provider-active-date {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .provider-interval, .provider-points, .provider-stake {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }    
 
     .provider-www {
         font-size: $font-size-larger;

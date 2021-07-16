@@ -33,7 +33,7 @@
                 <label> Interval </label>
               </div>
               <div>
-                {{ provider.currentManifest.interval ? provider.currentManifest.interval : '-'}}
+                {{ provider.currentManifest.interval ? formatInterval(provider.currentManifest.interval) : '-'}}
               </div>
             </div>
             <div class="provider-points">
@@ -79,6 +79,7 @@ import Rating from "@/components/Rating/Rating";
 import _ from "lodash";
 const axios = require("axios");
 const {interactRead} = require("@kyve/query");
+// const {interactRead} = require("smartweave");
 import dummyWallet from "@/dummy-wallet.json";
 import providerMixin from "@/mixins/provider";
 import { mapState, mapActions } from "vuex";
@@ -131,8 +132,19 @@ export default {
               eagerManifestLoad: true
             }
           },
-          dummyWallet
+        dummyWallet
       );
+      // let providersData = await interactRead(
+      //   this.arweave,
+      //   dummyWallet,
+      //   await this.providersRegistryContractId(),
+      //    {
+      //       function: "providersData",
+      //       data: {
+      //         eagerManifestLoad: true
+      //       }
+      //     }
+      // );
 
 
       let providersArray = [];

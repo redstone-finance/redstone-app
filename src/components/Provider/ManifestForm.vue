@@ -4,7 +4,7 @@
     title="Prepare your manifest"
     size="xl"
     class="manifest-modal"
-    @close="close"
+    @hidden="close"
   >
     <template #modal-header>
       <div></div>
@@ -164,7 +164,6 @@
                     v-model="manifest.manifestChangeMessage"
                     id="change-message"
                     placeholder="Manifest change message"
-                    required
                   />
                 </b-input-group>
                 <b-input-group>
@@ -172,7 +171,7 @@
                     >Locked hours:</label
                   >
                   <b-form-input
-                    v-model="manifest.manifestLockedHours"
+                    v-model="manifest.lockedHours"
                     min="0"
                     type="number"
                     id="locked-hours-input"
@@ -197,7 +196,6 @@
                       v-model="manifest.manifestData.evmChainId"
                       id="evmChainId"
                       placeholder=""
-                      required
                     />
                   </b-input-group>
                   <b-input-group> 
@@ -207,7 +205,6 @@
                       id="interval"
                       type="number"
                       placeholder=""
-                      required
                     />
                   </b-input-group>
                   <b-input-group>
@@ -218,7 +215,6 @@
                       type="number"
                       id="maxPriceDeviationPercent"
                       placeholder=""
-                      required
                     />
                   </b-input-group>
                   <b-input-group>
@@ -227,7 +223,6 @@
                       v-model="manifest.manifestData.priceAggregator"
                       id="priceAggregator"
                       placeholder=""
-                      required
                       disabled
                     />
                   </b-input-group>
@@ -238,7 +233,6 @@
                       type="number"
                       id="sourceTimeout"
                       placeholder=""
-                      required
                     />
                   </b-input-group>
                 </div>
@@ -304,7 +298,7 @@ export default {
     return {
       manifest: {
         manifestChangeMessage: null,
-        manifestLockedHours: null,
+        manifestLockedHours: 0,
         manifestData: {},
       },
       tokenSymbol: null,
@@ -338,7 +332,7 @@ export default {
       if (this.initialManifest) {
         this.manifest = {};
         this.manifest.changeMessage = this.initialManifest.changeMessage;
-        this.manifest.lockedHours = this.initialManifest.lockedHours;
+        this.manifest.lockedHours = this.initialManifest.lockedHours ? this.initialManifest.lockedHours : 0;
         if (this.initialManifest.manifestData) {
           this.manifest.manifestData = {};
           this.manifest.manifestData.evmChainId =
@@ -382,8 +376,37 @@ export default {
         this.manifest.manifestData.sourceTimeout = 50000;
       }
     },
-    onSubmit() {
-      this.$root.$emit("manifestSubmitted", this.manifest);
+    onSubmit(e) {
+      e.preventDefault();
+
+      const errors = [];
+
+      if (!this.manifest.manifestChangeMessage) {
+        errors.push('Change message required.');
+      }
+      if (!this.lockedHoursValidation) {
+        errors.push('Wrong locked hours value.');
+      }
+      if (!this.manifest.manifestData.evmChainId) {
+        errors.push('evmChainId required.');
+      }
+      if (!this.manifest.manifestData.interval) {
+        errors.push('Interval required.');
+      }
+      if (!this.manifest.manifestData.maxPriceDeviationPercent) {
+        errors.push('Maximum Price Deviation Percent required.');
+      }
+      if (!this.manifest.manifestData.sourceTimeout) {
+        errors.push('Source timeout required.');
+      }
+
+      console.log(errors)
+
+      if (errors.length == 0) {
+        this.$root.$emit("manifestSubmitted", this.manifest);
+      } else {
+        alert(errors.join("\r\n"))
+      }
     },
     close(bvModalEvt) {
       bvModalEvt.preventDefault();
@@ -424,7 +447,7 @@ export default {
 
   computed: {
     lockedHoursValidation() {
-      return parseInt(this.manifest.manifestLockedHours) >= 0;
+      return parseInt(this.manifest.lockedHours) >= 0;
     },
     visibleAvailableTokens() {
       return this.filterBySearch(
