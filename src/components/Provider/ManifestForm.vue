@@ -6,9 +6,6 @@
     class="manifest-modal"
     @hidden="close"
   >
-    <template #modal-header>
-      <div></div>
-    </template>
     <b-form @submit="onSubmit">
       <div class="accordion" role="tablist">
         <b-card no-body class="mb-1">

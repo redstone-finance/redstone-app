@@ -8,7 +8,10 @@
       Remember that you must have admin rights for this provider to access and perform any actions.
     </div>  
     <div v-else>
-      You are logged in as an admin for this provider, which allows you to administrate manifests. You can create or uploade a new manifest clicking on a button below or use existing
+      You are logged in as an admin for this provider, which allows you to administrate manifests. 
+      <br/>
+      <br/>
+      You can create or upload a new manifest clicking on a button below or use existing
       one as a template by selecting one from the lists and clicking "Use as template" button.
     </div>  
     <div class="upload-wrapper">

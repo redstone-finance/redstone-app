@@ -21,7 +21,7 @@
           </b-input-group>
           <router-link :to="routerLink" v-else>            
             <BIconArrowLeft />
-            <span class="link-back">Back</span>
+            <span class="link-back">{{routerLinkLabel}}</span>
           </router-link>
         </b-form-group>
       </b-form>
@@ -67,13 +67,17 @@ export default {
     },
 
     routerLink() {
-      let config = { path: '/app/tokens' }
+      let config = { path: this.$route.name == 'TokenPage' ? '/app/tokens' : '/app/providers' }
       let searchTerm = this.$store.state.layout.searchTerm;
 
       if (searchTerm) {
         config.query = { search: searchTerm }
       }
       return config;
+    },
+
+    routerLinkLabel() {
+      return this.$route.name ? 'Back to Prices' : 'Back to Providers'
     }
   },
 

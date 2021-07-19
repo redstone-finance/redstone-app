@@ -117,7 +117,6 @@ export default {
           ) : []
         };
       }) : [];
-            console.log(tokens) 
 
             return tokens;
 
