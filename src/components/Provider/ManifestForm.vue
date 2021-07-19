@@ -232,6 +232,20 @@
                       placeholder=""
                     />
                   </b-input-group>
+                  <div>Sources:</div>
+                    <div>
+                      <multiselect
+                        v-model="manifest.manifestData.defaultSource"
+                        @input="onDefaultSourceChange($event)"
+                        :options="availableDefaultSources"
+                        :selectLabel="''"
+                        :deselectLabel="''"
+                        :taggable="true" 
+                        @tag="addSourceTag"
+                        :multiple="true"
+                        :close-on-select="false"
+                      ></multiselect>
+                    </div>
                 </div>
               </div>
             </b-card-body>
@@ -306,6 +320,23 @@ export default {
       addedTokens: [],
       availableTokens: [],
       clickedTokenIndex: Number,
+      availableDefaultSources: [
+        'barchart',
+        'binance',
+        'bitfinex',
+        'bitmart',
+        'coinbase',
+        'coingecko',
+        'ecb',
+        'ftx',
+        'huobi',
+        'kraken',
+        'kyber',
+        'sushiswap',
+        'uniswap',
+        'verto',
+        'yahoo-finance',
+      ]
     };
   },
 
@@ -343,6 +374,7 @@ export default {
           this.manifest.manifestData.sourceTimeout =
             this.initialManifest.manifestData.sourceTimeout;
           this.manifest.manifestData.tokens = this.initialManifest.manifestData.tokens;
+          if (this.initialManifest.manifestData.defaultSource) this.manifest.manifestData.defaultSource = this.initialManifest.manifestData.defaultSource;
 
           this.addedTokens = this.availableTokens
             .filter(
@@ -371,6 +403,7 @@ export default {
         this.manifest.manifestData.maxPriceDeviationPercent = 25;
         this.manifest.manifestData.priceAggregator = "median";
         this.manifest.manifestData.sourceTimeout = 50000;
+        this.manifest.manifestData.defaultSource = [];
       }
     },
     onSubmit(e) {
@@ -432,6 +465,13 @@ export default {
     },
     onSourceChange(value, token) {
       Vue.set(this.manifest.manifestData.tokens[token.symbol], 'source', value);
+    },
+    onDefaultSourceChange(value) {
+      Vue.set(this.manifest.manifestData, 'defaultSource', value);
+    },
+    addSourceTag(newTag) {
+      this.availableDefaultSources.push(newTag);
+      this.manifest.manifestData.defaultSource.push(newTag);
     }
   },
 
@@ -463,7 +503,7 @@ export default {
         this.addedTokens,
         this.searchAddedTokens
       );
-    },
+    }
   },
 };
 </script>
