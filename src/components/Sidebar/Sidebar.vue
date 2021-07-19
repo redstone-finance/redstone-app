@@ -19,7 +19,7 @@
             :activeItem="activeItem"
             header="Prices"
             link="/app/tokens"
-            iconName="flaticon-assets"
+            iconName="flaticon-prices"
             index="tokens"
             isHeader
         />
