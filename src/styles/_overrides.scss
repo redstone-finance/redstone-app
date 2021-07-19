@@ -29,7 +29,7 @@
   height: 5px;
 }
 
-a {
+a, a:not([href]):not([class]) {
   color: var(--redstone-red-color);
   text-decoration: none;
 

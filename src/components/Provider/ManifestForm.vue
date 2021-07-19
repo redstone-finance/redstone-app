@@ -400,8 +400,6 @@ export default {
         errors.push('Source timeout required.');
       }
 
-      console.log(errors)
-
       if (errors.length == 0) {
         this.$root.$emit("manifestSubmitted", this.manifest);
       } else {

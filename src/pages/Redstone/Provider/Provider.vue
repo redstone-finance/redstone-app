@@ -15,7 +15,7 @@
           <ProviderDetails :provider="provider"/>
         </b-tab>
         <b-tab title="Manifests">
-          <Manifests :provider="provider"/>
+          <Manifests :provider="provider" :providerId="providerId" />
         </b-tab>
       </b-tabs>
     </div>
@@ -81,8 +81,6 @@ export default {
       //       }
       //     }
       // );
-
-      console.log(providerData)
 
       return providerData.provider;
     }

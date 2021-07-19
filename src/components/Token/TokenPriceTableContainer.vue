@@ -361,7 +361,7 @@ a.tx-link {
     height: 35px;
   }
 
-  .b-form-datepicker, .b-form-timepicker {
+  .form-control.b-form-datepicker, .form-control.b-form-timepicker {
     margin-right: 10px;
     display: flex;
   }
@@ -376,12 +376,6 @@ a.tx-link {
 
   .b-form-btn-label-control {
     flex-direction: row-reverse;
-
-    &.show {
-      // svg {
-      //   display: none;
-      // }
-    }
 
     & > button {
       padding: 0 10px 0 0 ;

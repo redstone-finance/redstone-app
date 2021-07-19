@@ -2,8 +2,10 @@
   <div class="provider-manifests">
     <div v-if="!isAdmin">
       To gain access to provider functions, please log in using your Arweave wallet. We recommend using 
-      <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
-      Remember that you must have admin rights for this provider to perform any actions.
+      <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a> Chrome plugin. If you installed it already, 
+      <a @click="connectToArconnect">connect to your wallet</a>.
+      <br />
+      Remember that you must have admin rights for this provider to access and perform any actions.
     </div>  
     <div v-else>
       You are logged in as an admin for this provider, which allows you to administrate manifests. You can create or uploade a new manifest clicking on a button below or use existing
@@ -67,10 +69,6 @@
     </b-modal>
     <b-modal id="missing-wallet-modal" title="Please load your wallet" size="xl" >
         Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-          Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-          Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
         <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
         <template #modal-footer><div></div></template>
       </b-modal>
@@ -93,7 +91,8 @@ export default {
   name: "Manifests",
 
   props: {
-    provider: {}
+    provider: {},
+    providerId: String
   },
 
   data() {
@@ -114,20 +113,6 @@ export default {
   },
 
   async mounted() {
-    window.addEventListener("walletSwitch", async () => {
-      await this.checkIfAdmin();
-    });
-
-    window.addEventListener("arweaveWalletLoaded", () => {
-      /** Handle ArConnect load event **/
-      alert('loaded')
-    });
-
-    window.addEventListener("walletSwitch", (e) => {
-        alert('switch')
-    });
-
-
     this.$root.$on('manifestFormClosed', () => {
       this.templateManifest = {};
       this.showManifestForm = false;
@@ -137,12 +122,14 @@ export default {
       this.uploadManifest(manifest); 
     });
     this.getManifestsData();
+    await this.connectToArconnect();
     await this.checkIfAdmin();
   },
 
   methods: {
     async checkIfAdmin() {
-      this.isAdmin = this.provider.adminsPool.includes(await window.arweaveWallet.getActiveAddress());
+      const userAddress = await window.arweaveWallet.getActiveAddress();
+      this.isAdmin = window.arweaveWallet ? (this.provider.adminsPool.includes(userAddress) || userAddress == this.providerId) : false;
     },
     onSubmit(event) {
       event.preventDefault();
@@ -302,6 +289,13 @@ export default {
     rowClicked(record) {
       this.$set(record, '_showDetails', !record._showDetails)
     },
+
+    async connectToArconnect() {
+      await window.arweaveWallet.connect(["ACCESS_ADDRESS","ACCESS_ALL_ADDRESSES"]);
+      window.addEventListener("walletSwitch", async () => {
+        await this.checkIfAdmin();
+      });
+    }
   },
 
   components: {
@@ -312,10 +306,6 @@ export default {
   computed: {
     getManifest(id) {
       return this.manifests.find(el => el.manifestTxId === id);
-    },
-
-    providerId() {
-      return this.$route.params.id;
     }
   }
 }
