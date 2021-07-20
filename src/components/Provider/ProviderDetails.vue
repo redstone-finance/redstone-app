@@ -78,7 +78,7 @@ export default {
 
   async mounted() {
     const firstManifestTxId = this.provider.manifests[0].manifestTxId;
-    const firstManifest = await axios.get(`https://arweave.net/tx/${firstManifestTxId}/data.json`);
+    const firstManifest = await axios.get(`https://dh48zl0solow5.cloudfront.net/tx/${firstManifestTxId}/data.json`);
     const transactionTime = await this.transactionTime(firstManifestTxId);
     const lockedHours = firstManifest.data.lockedHours ? firstManifest.data.lockedHours : 0;
 

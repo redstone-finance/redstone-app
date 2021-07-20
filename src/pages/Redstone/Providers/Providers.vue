@@ -78,8 +78,8 @@
 import Rating from "@/components/Rating/Rating";
 import _ from "lodash";
 const axios = require("axios");
-const {interactRead} = require("@kyve/query");
-// const {interactRead} = require("smartweave");
+// const {interactRead} = require("@kyve/query");
+const {interactRead} = require("smartweave");
 import dummyWallet from "@/dummy-wallet.json";
 import providerMixin from "@/mixins/provider";
 import { mapState, mapActions } from "vuex";
@@ -123,28 +123,28 @@ export default {
     },
 
     async getProviders() {
-      let providersData = await interactRead(
-        this.kyvePoolId,
-        await this.providersRegistryContractId(),
-         {
-            function: "providersData",
-            data: {
-              eagerManifestLoad: true
-            }
-          },
-        dummyWallet
-      );
       // let providersData = await interactRead(
-      //   this.arweave,
-      //   dummyWallet,
+      //   this.kyvePoolId,
       //   await this.providersRegistryContractId(),
       //    {
       //       function: "providersData",
       //       data: {
       //         eagerManifestLoad: true
       //       }
-      //     }
+      //     },
+      //   dummyWallet
       // );
+      let providersData = await interactRead(
+        this.arweave,
+        dummyWallet,
+        await this.providersRegistryContractId(),
+         {
+            function: "providersData",
+            data: {
+              eagerManifestLoad: true
+            }
+          }
+      );
 
 
       let providersArray = [];
@@ -156,10 +156,10 @@ export default {
         const firstManifestTxId =
           providersData.providers[o].manifests[0].manifestTxId;
         const currentManifest = await axios.get(
-          `https://arweave.net/tx/${currentManifestTxId}/data.json`
+          `https://dh48zl0solow5.cloudfront.net/tx/${currentManifestTxId}/data.json`
         );
         const firstManifest = await axios.get(
-          `https://arweave.net/tx/${firstManifestTxId}/data.json`
+          `https://dh48zl0solow5.cloudfront.net/tx/${firstManifestTxId}/data.json`
         );
 
         const transactionTime = await this.transactionTime(firstManifestTxId);

@@ -25,8 +25,8 @@
 <script>
 import ProviderDetails from '@/components/Provider/ProviderDetails';
 import Manifests from '@/components/Provider/Manifests';
-const {interactRead} = require("@kyve/query");
-// const {interactRead} = require("smartweave");
+// const {interactRead} = require("@kyve/query");
+const {interactRead} = require("smartweave");
 import dummyWallet from '@/dummy-wallet.json';
 
 export default {
@@ -55,32 +55,32 @@ export default {
 
   methods: {
     async getProviderInfo() {
-      let providerData = await interactRead(
-          this.kyvePoolId,
-          await this.providersRegistryContractId(),
-        {
-          function: "providerData",
-          data: {
-            providerId: this.providerId,
-            eagerManifestLoad: true
-          }
-        },
-        dummyWallet
-      );
+    //   let providerData = await interactRead(
+    //       this.kyvePoolId,
+    //       await this.providersRegistryContractId(),
+    //     {
+    //       function: "providerData",
+    //       data: {
+    //         providerId: this.providerId,
+    //         eagerManifestLoad: true
+    //       }
+    //     },
+    //     dummyWallet
+    //   );
 
 //for Smartweave library
-      // let providerData = await interactRead(
-      //   this.arweave,
-      //   dummyWallet,
-      //   await this.providersRegistryContractId(),
-      //    {
-      //       function: "providerData",
-      //       data: {
-      //         providerId: this.providerId,
-      //         eagerManifestLoad: true
-      //       }
-      //     }
-      // );
+      let providerData = await interactRead(
+        this.arweave,
+        dummyWallet,
+        await this.providersRegistryContractId(),
+         {
+            function: "providerData",
+            data: {
+              providerId: this.providerId,
+              eagerManifestLoad: true
+            }
+          }
+      );
 
       return providerData.provider;
     }

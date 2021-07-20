@@ -230,7 +230,7 @@ export default {
       this.provider.manifests.slice().reverse()
         .forEach(
           (manifest, index) => {
-            axios.get(`https://arweave.net/tx/${manifest.manifestTxId}/data.json`).then(
+            axios.get(`https://dh48zl0solow5.cloudfront.net/tx/${manifest.manifestTxId}/data.json`).then(
               async fetchedManifest => {
                 const uploadDate = await this.transactionTime(manifest.manifestTxId);
                 this.manifestsDataForTable.push({

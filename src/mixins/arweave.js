@@ -14,7 +14,7 @@ export default {
   methods: {
     arweaveInit() {
       return Arweave.init({
-        host: "arweave.net",
+        host: "dh48zl0solow5.cloudfront.net",
         protocol: "https",
         port: 443,
       });
@@ -23,14 +23,14 @@ export default {
       return this.arweave.transactions.get(transactionId);
     },
     transactionTime(id) {
-      return fetch(`https://arweave.net/tx/${id}/status`)
+      return fetch(`https://dh48zl0solow5.cloudfront.net/tx/${id}/status`)
         .then(
           response => {
             return response.json()
           })
         .then(
           status => {
-            return fetch(`https://arweave.net/block/hash/${status.block_indep_hash}`);
+            return fetch(`https://dh48zl0solow5.cloudfront.net/block/hash/${status.block_indep_hash}`);
           })
         .then(
           response => {
