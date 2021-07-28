@@ -5,9 +5,14 @@
         {{ label }}
       </label>
     </div>
-    <div :class="'value'">
+    <div :class="'value'" v-if="value !== undefined">
       {{ value ? value : '-' }}
     </div>
+    <vue-loaders-ball-beat
+      v-else
+      color="var(--redstone-red-color)"
+      scale="0.5"
+      ></vue-loaders-ball-beat>
   </div>
 </template>
 
@@ -35,6 +40,20 @@ export default {
 
   .label-value.align-right {
     text-align: right;
-    padding-right: 35px;
+    padding-right: 55px;
+  }
+</style>
+
+<style lang="scss">
+  .label-value {
+    .vue-loaders {
+      transform-origin: left;
+    }
+
+    &.align-right {
+      .vue-loaders {
+        transform-origin: right;
+      }
+    }
   }
 </style>

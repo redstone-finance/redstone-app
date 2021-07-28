@@ -2340,10 +2340,10 @@ arweave-bundles@^1.0.3:
   dependencies:
     arweave "^1.10.5"
 
-arweave@1.10.14:
-  version "1.10.14"
-  resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.10.14.tgz#9d34bc92aeb9e974639be51198b697d783bc7927"
-  integrity sha512-0xEjsrhSqqQNa6bDGztO+PhFOn5JkUiC5B/WSu+2KszdGXMuekos3XVkirIgrH4VKqLq84kLmN1ckXuiLkIWgQ==
+arweave@1.10.16:
+  version "1.10.16"
+  resolved "https://registry.yarnpkg.com/arweave/-/arweave-1.10.16.tgz#b968590cb413242636196d2339562dd106840bb9"
+  integrity sha512-j2UM7C/2MHO7Mv7wbzhihgVs8uN2+QltA+3cYaM82dNNEBBJylIClJUHHMqsK/2ejCnziQm4FofiUFbsQDdQDg==
   dependencies:
     arconnect "^0.2.8"
     asn1.js "^5.4.1"
@@ -9477,7 +9477,7 @@ redstone-node@^0.4.9:
     yahoo-finance "^0.3.7"
     yargs "^16.2.0"
 
-"redstone-smartweave-contracts@github:redstone-finance/redstone-smartweave-contracts", redstone-smartweave-contracts@redstone-finance/redstone-smartweave-contracts:
+redstone-smartweave-contracts@redstone-finance/redstone-smartweave-contracts:
   version "0.4.0"
   resolved "https://codeload.github.com/redstone-finance/redstone-smartweave-contracts/tar.gz/e5af048ae5fd2c38f6ebb3f68d31e8d1af0b2f83"
   dependencies:

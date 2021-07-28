@@ -67,10 +67,6 @@
     </b-modal>
     <b-modal id="missing-wallet-modal" title="Please load your wallet" size="xl" >
         Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-          Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-          Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
-        Please install an Arweave wallet extension to your browser, load your Arweave wallet and try again. We recommend using 
         <a target="_blank" href="https://chrome.google.com/webstore/detail/arconnect/einnioafmpimabjcddiinlhmijaionap">ArConnect</a>.
         <template #modal-footer><div></div></template>
       </b-modal>
@@ -88,6 +84,8 @@ import JsonViewer from 'vue-json-viewer'
 const axios = require('axios');
 import ManifestForm from "./ManifestForm.vue";
 import { interactWrite } from 'smartweave';
+import utils from "@/utils";
+import constants from "@/constants";
 
 export default {
   name: "Manifests",
@@ -136,13 +134,12 @@ export default {
       this.showManifestForm = false;
       this.uploadManifest(manifest); 
     });
-    this.getManifestsData();
     await this.checkIfAdmin();
   },
 
   methods: {
     async checkIfAdmin() {
-      this.isAdmin = this.provider.adminsPool.includes(await window.arweaveWallet.getActiveAddress());
+      this.isAdmin = (this.provider && this.provider.adminsPool && window.arweaveWallet) ? this.provider.adminsPool.includes(await window.arweaveWallet.getActiveAddress()) : null;
     },
     onSubmit(event) {
       event.preventDefault();
@@ -240,9 +237,9 @@ export default {
       this.provider.manifests.slice().reverse()
         .forEach(
           (manifest, index) => {
-            axios.get(`https://arweave.net/tx/${manifest.manifestTxId}/data.json`).then(
+            axios.get(`https://${constants.arweaveUrl}/tx/${manifest.manifestTxId}/data.json`).then(
               async fetchedManifest => {
-                const uploadDate = await this.transactionTime(manifest.manifestTxId);
+                const uploadDate = await utils.transactionTime(manifest.manifestTxId);
                 this.manifestsDataForTable.push({
                   id: index,
                   manifestTxId: manifest.manifestTxId,
@@ -311,11 +308,21 @@ export default {
 
   computed: {
     getManifest(id) {
-      return this.manifests.find(el => el.manifestTxId === id);
+      return this.manifests ? this.manifests.find(el => el.manifestTxId === id) : null;
     },
 
     providerId() {
       return this.$route.params.id;
+    }
+  },
+  watch: {
+    provider: {
+      handler: function () {
+        if (this.provider) {
+          this.getManifestsData();
+        }
+      },
+      immediate: true
     }
   }
 }

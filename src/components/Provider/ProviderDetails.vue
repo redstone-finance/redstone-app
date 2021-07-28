@@ -2,18 +2,26 @@
   <div class="provider-details">
     <div class="provider-info mt-2">
       <div class="mb-3">
-        <h6>{{ provider.description }}</h6>
+        <h6 v-if="provider">{{ provider.profile.description }}</h6>
+        <div
+        v-else
+        class="preloader text-preloader"
+      ></div>
       </div> 
       <div>
-        <a :href="provider.url" target="_blank">{{ provider.url }}</a>
+        <a v-if="provider" :href="provider.profile.url" target="_blank">{{ provider.profile.url }}</a>
+        <div
+        v-else
+        class="preloader text-preloader"
+      ></div>
       </div>   
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
-        <LabelValue label="Active from" :value="active | date" />
-        <LabelValue label="Interval" :value="formatInterval(currentManifest.interval)" :alignRight="true"/>
-        <LabelValue label="Data points" :value="points ? points.toLocaleString('en-US') : ''" :alignRight="true"/>
-        <LabelValue label="Stake" :value="provider.stakedTokens ? provider.stakedTokens.toLocaleString('en-US') : ''" :alignRight="true"/>
-        <LabelValue label="Default source" :value="currentManifest.defaultSource ? currentManifest.defaultSource[0] : ''" />
-        <LabelValue label="Disputes" :value="provider.disputes" />
+        <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" />
+        <LabelValue label="Interval" :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined" :alignRight="true"/>
+        <LabelValue label="Data points" :value="provider ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/>
+        <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/>
+        <LabelValue label="Default source" :value="(provider && provider.currentManifest) ? (provider.currentManifest.defaultSource ? provider.currentManifest.defaultSource[0] : '') : undefined" />
+        <LabelValue label="Disputes" :value="provider ? null : undefined" />
       </div>
     </div>  
     <hr />
@@ -58,6 +66,8 @@ import sourcesData from "@/assets/data/sources-list.json";
 import _ from 'lodash';
 const axios = require('axios');
 import providerMixin from "@/mixins/provider";
+import utils from "@/utils";
+import constants from "@/constants";
 
 export default {
   name: "Provider",
@@ -71,19 +81,9 @@ export default {
   data() {
     return {
       fields: ['logo', { key: 'name', label: ''}, 'symbol', 'sources'],
-      active: "",
-      points: ""
+      firstManifest: null,
+      transactionTime: null
     }
-  },
-
-  async mounted() {
-    const firstManifestTxId = this.provider.manifests[0].manifestTxId;
-    const firstManifest = await axios.get(`https://arweave.net/tx/${firstManifestTxId}/data.json`);
-    const transactionTime = await this.transactionTime(firstManifestTxId);
-    const lockedHours = firstManifest.data.lockedHours ? firstManifest.data.lockedHours : 0;
-
-    this.active = this.activeFrom(transactionTime, lockedHours);
-    this.points = this.dataPoints(this.currentManifest.interval, this.active);
   },
 
   created() {
@@ -101,7 +101,7 @@ export default {
 
   computed: {
     tokensDataForTable() {
-      let tokens =  this.currentManifest.tokens ? Object.entries(this.currentManifest.tokens).map(function (token) {
+      let tokens = (this.provider && this.provider.currentManifest && this.provider.currentManifest.tokens) ? Object.entries(this.provider.currentManifest.tokens).map(function (token) {
         let tokenInfo = tokensData[token[0]]
         return {
           logoURI: tokenInfo.logoURI,
@@ -117,15 +117,30 @@ export default {
           ) : []
         };
       }) : [];
-            console.log(tokens) 
 
-            return tokens;
-
+      return tokens;
     },
 
-    currentManifest() {
-      return this.provider.manifests.slice(-1).pop().activeManifestContent;
+    firstManifestTxId() {
+      return this.provider ? this.provider.manifests[0].manifestTxId : undefined;
+    },
+    lockedHours() {
+      return (this.firstManifest && this.firstManifest.data.lockedHours) ? this.firstManifest.data.lockedHours : undefined
     }
+  },
+
+  watch: {
+    firstManifestTxId() {
+      if (this.firstManifestTxId) {
+        axios.get(`https://${constants.arweaveUrl}/tx/${this.firstManifestTxId}/data.json`).then(
+          result => this.firstManifest = result
+        );
+
+        utils.transactionTime(this.firstManifestTxId).then(
+          result => this.transactionTime = result
+        );
+      }
+    },
   }
 }
 </script>
@@ -141,10 +156,6 @@ export default {
 
     .provider-info {
       margin-bottom: 30px;
-
-      & > div {
-        margin-bottom: 15px;
-      }
     }
 
     LabelValue {
@@ -156,7 +167,7 @@ export default {
     margin-left: 10px;
 
     & > div {
-      flex: 0 0 12%;
+      flex: 0 0 13%;
     }
   }
 
@@ -185,6 +196,20 @@ export default {
 
 .source-logo {
   height: 20px;
+}
+
+.text-preloader {
+  width: 350px;
+
+  &:first-of-type {
+    height: 16px;
+    margin-bottom: 6px;
+  }
+
+  &:nth-of-type(2) {
+    height: 16px;
+    margin-bottom: 5px;
+  }
 }
 </style>
 

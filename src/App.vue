@@ -3,8 +3,14 @@
 </template>
 
 <script>
+
+import { mapActions } from "vuex";
+
 export default {
   name: "App",
+  mounted() {
+    this.prefetchAll().then();
+  },
   created() {
     const currentPath = this.$router.history.current.path;
 
@@ -12,6 +18,9 @@ export default {
       this.$router.push("/app/tokens");
     }
   },
+  methods: {
+    ...mapActions("prefetch", ["prefetchAll"]),
+  }
 };
 </script>
 
