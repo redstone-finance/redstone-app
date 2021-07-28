@@ -16,7 +16,6 @@ import store from './store';
 import router from './Routes';
 import App from './App';
 import layoutMixin from './mixins/layout';
-import arweaveMixin from './mixins/arweave';
 import utilsMixin from './mixins/utils';
 import Widget from './components/Widget/Widget';
 
@@ -29,7 +28,6 @@ Vue.component('Widget', Widget);
 
 Vue.component('apexchart', VueApexCharts);
 Vue.mixin(layoutMixin);
-Vue.mixin(arweaveMixin);
 Vue.mixin(utilsMixin);
 Vue.use(Toasted, {duration: 10000});
 Vue.use(VueLoaders);

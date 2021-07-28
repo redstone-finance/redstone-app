@@ -84,3 +84,9 @@
         font-size: $font-size-base;
     }
 }
+
+.provider-card-preloader {
+    height: 88px;
+    border-radius: $border-radius-sm;
+    margin-bottom: 40px;
+}

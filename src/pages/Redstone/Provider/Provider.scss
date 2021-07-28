@@ -24,3 +24,23 @@
 .loader {
     width: 60px;
 }
+
+.logo-preloader {
+    width: 35px;
+    height: 35px;
+}
+
+.preloaders {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    
+    .preloader {
+        margin-right: 10px;
+    }
+
+    .text-preloader {
+        height: 34px;
+        width: 250px;
+    }
+}

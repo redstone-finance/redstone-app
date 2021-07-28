@@ -569,3 +569,12 @@ $i: 0;
     opacity: 1;
   }
 }
+
+.preloader {
+  content: '';
+  background-color: $gray-250;
+}
+
+.logo-preloader {
+  border-radius: 50%;
+}

@@ -1,15 +1,14 @@
 <template>
   <div class="provider d-flex flex-column">
-    <vue-loaders-ball-beat
-      v-if="fetching"
-      class="mt-5 loader align-self-center"
-      color="var(--redstone-red-color)"
-      scale="0.5"></vue-loaders-ball-beat>
     <div class="d-flex align-items-center mb-3" v-if="provider && provider.profile">
       <img class="provider-logo" :src="provider.profile.imgUrl" />
       <div class="provider-name ml-3">{{ provider.profile.name }}</div>
     </div>
-    <div class="provider-tabs" v-if="provider && provider.manifests">
+    <div v-else class="preloaders">
+      <div class="preloader logo-preloader"></div>
+      <div class="preloader text-preloader"></div>
+    </div>
+    <div class="provider-tabs">
       <b-tabs>
         <b-tab title="Details">
           <ProviderDetails :provider="provider"/>
@@ -25,28 +24,16 @@
 <script>
 import ProviderDetails from '@/components/Provider/ProviderDetails';
 import Manifests from '@/components/Provider/Manifests';
-// const {interactRead} = require("@kyve/query");
-const {interactRead} = require("smartweave");
-import dummyWallet from '@/dummy-wallet.json';
+import { mapState } from 'vuex';
 
 export default {
   name: "Provider",
 
   data() {
     return {
-      provider: {},
       selectedManifest: {},
       fetching: true
     }; 
-  },
-
-  async mounted() {
-    this.getProviderInfo().then(
-      info => { 
-        this.provider = info;
-        this.fetching = false;
-      }
-    )
   },
 
   created() {
@@ -54,36 +41,6 @@ export default {
   },
 
   methods: {
-    async getProviderInfo() {
-    //   let providerData = await interactRead(
-    //       this.kyvePoolId,
-    //       await this.providersRegistryContractId(),
-    //     {
-    //       function: "providerData",
-    //       data: {
-    //         providerId: this.providerId,
-    //         eagerManifestLoad: true
-    //       }
-    //     },
-    //     dummyWallet
-    //   );
-
-//for Smartweave library
-      let providerData = await interactRead(
-        this.arweave,
-        dummyWallet,
-        await this.providersRegistryContractId(),
-         {
-            function: "providerData",
-            data: {
-              providerId: this.providerId,
-              eagerManifestLoad: true
-            }
-          }
-      );
-
-      return providerData.provider;
-    }
   },
 
   components: {
@@ -94,8 +51,14 @@ export default {
   computed: {
     providerId() {
       return this.$route.params.id;
+    },
+    ...mapState("prefetch", {
+      providers: (state) => state.providers,
+    }),
+    provider() {
+      return this.providers ? this.providers[this.providerId] : null;
     }
-  }
+  },
 }
 </script>
 
