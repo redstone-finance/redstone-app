@@ -9,7 +9,7 @@ import { mapActions } from "vuex";
 export default {
   name: "App",
 
-  created() {
+  beforeMount() {
     this.prefetchAll();
     const currentPath = this.$router.history.current.path;
 

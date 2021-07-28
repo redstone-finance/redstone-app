@@ -76,6 +76,7 @@ export default {
       //   getters.getArweave
       // );
 
+      console.time('interactRead providersData')
       let providersData = await interactRead(
         getters.getArweave,
         dummyWallet,
@@ -87,6 +88,7 @@ export default {
             }
           }
       );
+      console.timeEnd('interactRead providersData')
 
       let providers = {};
 

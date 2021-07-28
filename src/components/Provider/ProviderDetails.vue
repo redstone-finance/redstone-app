@@ -200,6 +200,7 @@ export default {
 
 .text-preloader {
   width: 350px;
+  @include preload-animation(2.5s, 350px);
 
   &:first-of-type {
     height: 16px;

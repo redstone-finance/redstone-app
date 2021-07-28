@@ -37,6 +37,7 @@
     
     .preloader {
         margin-right: 10px;
+        @include preload-animation(2.5s, 350px);
     }
 
     .text-preloader {

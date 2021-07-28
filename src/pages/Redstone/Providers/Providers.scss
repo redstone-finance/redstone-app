@@ -89,4 +89,6 @@
     height: 88px;
     border-radius: $border-radius-sm;
     margin-bottom: 40px;
+
+    @include preload-animation(2s, 100vw);
 }

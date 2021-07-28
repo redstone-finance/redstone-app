@@ -572,7 +572,11 @@ $i: 0;
 
 .preloader {
   content: '';
-  background-color: $gray-250;
+  background-color: $gray-150;
+}
+
+.text-preloader {
+  border-radius: 3px;
 }
 
 .logo-preloader {
