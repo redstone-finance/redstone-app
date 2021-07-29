@@ -1,16 +1,43 @@
 <template>
   <div class="price-table">
-    <h2 class="table-title">
-      Data Feeds
-    </h2>
-    <div class="table-filters-container">
+    <div class="table-title">
+      Data feeds
+    </div>
+    <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
-        <b-col xs="12" lg="6">
+        <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label for="to-datepicker">Max date</label>
-              <b-datepicker id="to-datepicker" v-model="toDate">
+              <label class="mt-2 mt-md-0" for="from-datepicker">Show feeds from: </label>
+              <b-datepicker 
+                id="from-datepicker" 
+                v-model="fromDate"
+                :value-as-date="true"
+                locale="en-GB"
+                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
               </b-datepicker>
+              <b-form-timepicker 
+                v-model="fromTime" 
+                locale="en"
+                no-close-button></b-form-timepicker>
+            </div>
+          </b-form>
+        </b-col>
+        <b-col xs="12" md="6">
+          <b-form inline>
+            <div class="datepicker-container">
+              <label class="mt-2 mt-md-0" for="to-datepicker">to:</label>
+              <b-datepicker 
+                id="to-datepicker" 
+                v-model="toDate"
+                :value-as-date="true"
+                locale="en-GB"
+                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+              </b-datepicker>
+              <b-form-timepicker 
+                v-model="toTime" 
+                locale="en"
+                no-close-button></b-form-timepicker>
             </div>
           </b-form>
         </b-col>
@@ -32,21 +59,40 @@
       </template>
 
       <template #cell(value)="data">
-        {{ data.item.value | price }}
+        <div class="price">
+          {{ data.item.value | price }} 
+        </div>
+      </template>
+
+      <template #cell(time)="data">
+        <div class="time">
+          {{ data.item.time }} 
+        </div>
+      </template>
+
+      <template #cell(status)="data">
+        <div v-if="isTxPendingForPrice(data.item)"
+            class="badge mining align-self-start">
+          <div class="badge-text">
+            Mining
+          </div>
+          <div class="pending-tx-loader-container">
+            <img src="/white-loader.svg" alt="animated white loader" />
+          </div>
+        </div>
+        <div v-else
+            class="badge mined align-self-start">
+          <div class="badge-text">
+            Mined
+          </div>
+          <i class="fa fa-check"/>
+        </div>
       </template>
 
       <template #cell(permawebTx)="data">
         <div
           v-if="isTxPendingForPrice(data.item)"
           class="tx-link d-flex flex-column flex-md-row align-items-md-center">
-          <div class="pending-badge align-self-start">
-            <div class="badge-text">
-              Pending
-            </div>
-            <div class="pending-tx-loader-container">
-              <img src="/white-loader.svg" alt="animated white loader" />
-            </div>
-          </div>
           <div class="link align-center mt-2 mt-md-0">
             {{ data.item.permawebTx }}
           </div>
@@ -60,11 +106,11 @@
         </a>
       </template>
 
-      <template #cell(actions)="data">
+      <template #cell(dispute)="data">
         <b-btn
           target="_blank"
           :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx"
-          variant="outline-primary"
+          variant="dispute"
           :disabled="isTxPendingForPrice(data.item)"
         >
           Raise dispute
@@ -77,13 +123,6 @@
       class="load-more-link-container"
       v-observe-visibility="loadMoreButtonVisibilityChanged"
     >
-      <!-- <b-btn
-        size="sm"
-        variant="outline-primary"
-        @click="loadMore()"
-      >
-        Load more
-      </b-btn> -->
 
       <div class="loading-more-container" v-if="loadingMore">
         <vue-loaders-ball-beat
@@ -98,7 +137,6 @@
 <script>
 import redstone from 'redstone-api';
 import dateFormat from 'dateformat';
-import Arweave from 'arweave';
 
 export default {
   name: 'TokenPriceTableContainer',
@@ -117,19 +155,13 @@ export default {
       limit: 20,
       currentPage: 1,
       perPage: 10,
+      fromTime: (new Date()).toLocaleTimeString(),
+      toTime: (new Date()).toLocaleTimeString(),
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
-      arweave: Arweave.init({
-        host: 'arweave.net',// Hostname or IP address for a Arweave host
-        port: 443,          // Port
-        protocol: 'https',  // Network protocol http or https
-        timeout: 20000,     // Network request timeouts in milliseconds
-        logging: false,     // Enable network request logging
-      }),
-
       lastConfirmedTxTimestamp: 0,
 
-      fields: ['value', 'time', 'permawebTx', 'actions'],
+      fields: ['value', 'time', 'status', 'permawebTx', 'dispute'],
     };
   },
 
@@ -186,7 +218,7 @@ export default {
         limit: this.limit,
         startDate: this.startDate,
         offset: this.offset,
-        endDate: this.toDate,
+        endDate: this.endDate,
       });
       return nextPrices;
     },
@@ -208,15 +240,20 @@ export default {
         index++;
       }
       this.lastConfirmedTxTimestamp = lastTimestamp;
-    },
+    }
   },
 
   watch: {
     fromDate() {
       this.loadPrices();
     },
-
     toDate() {
+      this.loadPrices();
+    },
+    fromTime() {
+      this.loadPrices();
+    },
+    toTime() {
       this.loadPrices();
     },
   },
@@ -226,18 +263,31 @@ export default {
       return this.prices.map(p => {
         return {
           value: p.value,
-          time: dateFormat(p.timestamp),
+          time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
         };
       });
     },
+    startDate() {
+      const [hours, minutes, seconds] = this.fromTime.split(':');
+      return new Date(this.fromDate.setHours(hours, minutes, seconds));
+    },
+    endDate() {
+      const [hours, minutes, seconds] = this.toTime.split(':');
+      return new Date(this.toDate.setHours(hours, minutes, seconds));
+    }
   },
 
 }
 </script>
 
 <style lang="scss">
+@import '~@/styles/app';
+
+.price, .time {
+  color: $gray-750;
+}
 
 .tx-link {
   font-size: 12px;
@@ -249,12 +299,16 @@ a.tx-link, .tx-link > .link {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  color: $gray-600
 }
 
-.pending-badge {
-  background: var(--redstone-red-color);
+a.tx-link {
+  color: var(--redstone-red-color);
+}
+
+.badge {
   color: white;
-  display: flex;
+  display: flex !important;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -262,6 +316,20 @@ a.tx-link, .tx-link > .link {
   padding: 3px 10px;
   border-radius: 5px;
   margin-right: 8px;
+  height: 28px;
+
+  &.mining {
+    background: $gray-600;  
+  }
+
+  &.mined {
+    background: var(--redstone-red-color); 
+  }
+
+  .badge-text {
+    font-size: 14px;
+    font-weight: $font-weight-normal;
+  }
 
   .pending-tx-loader-container {
     img {
@@ -276,18 +344,72 @@ a.tx-link, .tx-link > .link {
 }
 
 .datepicker-container {
+  margin-right: 20px;
+  display: flex;
+
   label {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: $font-weight-thin;
     text-align: left;
     justify-content: left !important;
-    color: #777;
+    color: $gray-750;
+    white-space: nowrap;
+    margin-right: 10px;
   }
-  margin-right: 20px;
+
+  @media (max-width: breakpoint-max(sm)) {
+    flex-wrap: wrap;
+
+    > label {
+      flex: 0 0 100%;
+    }
+  }
+
+
+  .b-form-btn-label-control.form-control {
+    height: 35px;
+  }
+
+  .form-control.b-form-datepicker, .form-control.b-form-timepicker {
+    margin-right: 10px;
+    display: flex;
+  }
 
   .form-control {
     display: inline-block;
     width: auto;
     vertical-align: middle;
+    background-color: transparent;
+    border: 1px solid $gray-450;
+  }
+
+  .b-form-btn-label-control {
+    flex-direction: row-reverse;
+
+    & > button {
+      padding: 0 10px 0 0 ;
+
+      svg {
+        fill: $gray-550;
+      }
+    }
+  }
+
+  .b-form-btn-label-control.form-control > .form-control {
+    word-break: normal;
+    white-space: nowrap;
+  }
+
+  .b-form-btn-label-control.form-control > label.form-control {
+    margin-top: 2px;
+    padding-left: 10px;
+    font-weight: $font-weight-soft-bold;
+  }
+}
+
+.b-time {
+  output {
+    justify-content: center;
   }
 }
 
@@ -296,16 +418,48 @@ a.tx-link, .tx-link > .link {
 }
 
 .price-table {
-  margin-top: 40px;
+  margin-top: 20px;
+  padding: 20px;
 }
 
-@media (max-width: breakpoint-max(sm)) {
-  tr {
-    td:nth-of-type(3) {
-      max-width: 25vw;
-    }
+.table-title {
+  font-size: 24px;
+  color: $navy;
+  font-weight: $font-weight-semi-bold;
+}
+
+a.btn-dispute {
+  padding: 2px 10px 4px 11px;
+  border-radius: 7px;
+  border: solid 1px var(--redstone-red-color);
+  color: var(--redstone-red-color);
+
+  &.disabled {
+    border: solid 1px $gray-600;
+    color: $gray-600;
   }
 }
 
+.b-form-datepicker {
+  .dropdown-menu {
+    left: -100px !important;
+  }
+}
+
+.b-form-timepicker {
+  .dropdown-menu {
+    left: -78px !important;
+  }
+}
+
+#prices-table {
+  td {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  th {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
 
 </style>

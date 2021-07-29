@@ -17,17 +17,16 @@
             <template v-slot:prepend>
               <b-input-group-text><i class='fi flaticon-search-2'/></b-input-group-text>
             </template>
-            <b-form-input v-model="searchTerm" id="search-input" placeholder="Search Tokens" />
+            <b-form-input v-model="searchTerm" id="search-input" placeholder="Search..." />
           </b-input-group>
           <router-link :to="routerLink" v-else>            
-            <BIconArrowLeft />
-            Explore data
+            <i class="fa flaticon-chevron-back"/>
           </router-link>
         </b-form-group>
       </b-form>
     </b-nav>
     <b-nav class="align-items-center flex-grow-1 justify-content-end">
-        <b-button class="btn-lg btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Use our data</b-button>
+        <b-button class="btn btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Use our data</b-button>
         <b-modal id="modal-1" title="Code snippet" size="xl" >
           <CodeExample />
           <template #modal-footer ><div></div></template>
@@ -38,7 +37,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { BIconArrowLeft } from "bootstrap-vue";
 import CodeExample from "@/components/Token/CodeExample";
 
 export default {
@@ -67,14 +65,14 @@ export default {
     },
 
     routerLink() {
-      let config = { path: '/app/tokens' }
+      let config = { path: this.$route.name == 'TokenPage' ? '/app/tokens' : '/app/providers' }
       let searchTerm = this.$store.state.layout.searchTerm;
 
       if (searchTerm) {
         config.query = { search: searchTerm }
       }
       return config;
-    }
+    },
   },
 
   created() {
@@ -93,7 +91,6 @@ export default {
   },
 
   components: {
-    BIconArrowLeft,
     CodeExample
   },
 };

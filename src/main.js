@@ -16,15 +16,19 @@ import store from './store';
 import router from './Routes';
 import App from './App';
 import layoutMixin from './mixins/layout';
+import utilsMixin from './mixins/utils';
 import Widget from './components/Widget/Widget';
 
-Vue.use(BootstrapVue);
+Vue.use(BootstrapVue, {
+  breakpoints: [`xs`, 'sm', 'md', 'lg', 'xl', 'xxl']
+});
 Vue.use(VueTouch);
 Vue.use(Trend);
 Vue.component('Widget', Widget);
 
 Vue.component('apexchart', VueApexCharts);
 Vue.mixin(layoutMixin);
+Vue.mixin(utilsMixin);
 Vue.use(Toasted, {duration: 10000});
 Vue.use(VueLoaders);
 Vue.use(VueTimers)
@@ -61,6 +65,16 @@ function setupFilters() {
   Vue.filter('percentage', function (value, showPlus) {
     if (!value) return '';
     return addPlus(value, showPlus) + (value * 100).toFixed(2) + "%";
+  });
+
+  Vue.filter('date', function (value) {
+    if (!value) {
+      return null;
+    }
+    if (typeof value === 'string') {
+      value = new Date(value)
+    }
+    return value.toLocaleDateString("en-GB");
   });
 }
 

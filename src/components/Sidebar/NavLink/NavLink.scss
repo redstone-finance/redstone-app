@@ -17,7 +17,7 @@
   a {
     display: block;
     // color: white;
-    color: #555;
+    color: var(--redstone-dark-blue-color);
     text-decoration: none;
     cursor: pointer;
   }
@@ -113,7 +113,6 @@ a.router-link-active {
 
   .icon {
     border-radius: 50%;
-    background-color: var(--sidebar-item-active-bg);
 
     i {
       color: var(--sidebar-icon-active);

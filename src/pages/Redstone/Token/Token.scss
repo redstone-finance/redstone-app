@@ -8,10 +8,7 @@ h1 {
   margin-top: 20px;
 }
 
-.select-provider {
-  @media (min-width: breakpoint-min(lg)) {
-    z-index: 1;
-    position: absolute;
-    right: 40px;
-  }
+.token-data-wrapper {
+  background-color: #fcfcfc;
+  border-radius: 10px;
 }

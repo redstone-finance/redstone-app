@@ -7,6 +7,8 @@ import ErrorPage from '@/pages/Error/Error';
 // Redstone
 import Tokens from "@/pages/Redstone/Tokens/Tokens";
 import Token from "@/pages/Redstone/Token/Token";
+import Providers from "@/pages/Redstone/Providers/Providers";
+import Provider from "@/pages/Redstone/Provider/Provider";
 
 // Store
 import store from "./store";
@@ -39,6 +41,19 @@ const router = new Router({
           path: 'token/:symbol',
           name: 'TokenPage',
           component: Token,
+        },
+        {
+          path: 'providers',
+          name: 'ProvidersPage',
+          component: Providers,
+          meta: {
+            showSearchInputInNavbar: true,
+          },
+        },
+        {
+          path: 'provider/:id',
+          name: 'ProviderPage',
+          component: Provider,
         },
       ],
     },

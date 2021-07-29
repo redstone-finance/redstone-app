@@ -53,5 +53,19 @@ div.wrap {
   text-align: center;
   position: absolute;
   bottom: 15px;
-  color: $text-muted;
+  color: #8c8c8c;
+
+  .links > a {
+    margin-right: 11px;
+
+    svg {
+      fill: $gray-550;
+    }
+
+    svg:hover {
+      fill: $gray-750;
+      transform: scale(1.1);
+      transition: 0.3s;
+    }
+  }
 }

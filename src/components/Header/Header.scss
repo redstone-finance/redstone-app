@@ -46,11 +46,11 @@
 
     .btn-modal {
       height: fit-content;
-      margin-right: 15px;
+      margin-right: 10px;
       font-size: $font-size-mini;
 
       @media (min-width: breakpoint-min(md)) {
-        font-size: $font-size-larger;
+        font-size: $font-size-base;
       }
     }
   }
@@ -99,9 +99,9 @@
     }
 
     input {
-      background-color: #F9FAFE;
+      background-color: $gray-350;
       &::placeholder {
-        color: #4A5056;
+        color: $gray-750;
         font-weight: $font-weight-normal;
       }
     }
@@ -193,4 +193,15 @@
   }
 }
 
+.link-back {
+  font-size: 14px;
+  font-weight: $font-weight-normal;
+  margin-left: 10px;
+}
+
+i.flaticon-chevron-back {
+  display: block;
+  height: 24px;
+  width: 14px;
+}
 

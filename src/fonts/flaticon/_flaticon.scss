@@ -73,10 +73,28 @@ i.fi {
 
 .flaticon-archive-3::before { content: '\f10e'; }
 
+.flaticon-prices {
+  background-image: url('../../src/assets/icons/prices.svg');
+
+  &.fi {
+    background-size: 27px;
+    width: 27px;
+    height: 27px;
+  }
+}
+
 .flaticon-attachment::before { content: '\f10f'; }
 
 .flaticon-arrow-down {
   background-image: url('../../src/assets/icons/arrow-down.svg');
+}
+
+.flaticon-arrow-left {
+  background-image: url('../../src/assets/icons/arrow-left.svg');
+}
+
+.flaticon-arrow-left-active {
+  background-image: url('../../src/assets/icons/arrow-left-active.svg');
 }
 
 .flaticon-back::before { content: '\f110'; }
@@ -141,6 +159,10 @@ i.fi {
 
 .flaticon-checked-1::before { content: '\f12e'; }
 
+.flaticon-chevron-back {
+  background-image: url('../../src/assets/icons/chevron-back.svg');
+}
+
 .flaticon-clock::before { content: '\f12f'; }
 
 .flaticon-clock-1::before { content: '\f130'; }
@@ -202,6 +224,10 @@ i.fi {
 .flaticon-database-2::before { content: '\f14b'; }
 
 .flaticon-database-3::before { content: '\f14c'; }
+
+.flaticon-database-solid {
+  background-image: url('../../src/assets/icons/database-solid.svg');
+}
 
 .flaticon-diamond::before { content: '\f14d'; }
 
@@ -591,6 +617,15 @@ i.fi {
 
 .flaticon-print::before { content: '\f1fb'; }
 
+.flaticon-providers {
+  background-image: url('../../src/assets/icons/providers.svg');
+
+  &.fi {
+    width: 27px;
+    height: 27px;
+  }
+}
+
 .flaticon-push-pin::before { content: '\f1fc'; }
 
 .flaticon-radar::before { content: '\f1fd'; }
@@ -850,6 +885,10 @@ i.fi {
 .flaticon-worldwide::before { content: '\f278'; }
 
 .flaticon-worldwide-1::before { content: '\f279'; }
+
+.flaticon-www {
+  background-image: url('../../src/assets/icons/website.svg');
+}
 
 .flaticon-zoom-in::before { content: '\f27a'; }
 

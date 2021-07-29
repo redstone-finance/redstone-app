@@ -1,0 +1,47 @@
+@import '~@/styles/app';
+
+.provider{
+    .provider-logo {
+        width: 35px;
+    }
+
+    .provider-name {
+        color: $navy;
+        font-size: 34px;
+    }
+
+    .provider-www {
+        i {
+            display: block;
+        }
+    }
+
+    h1 {
+        margin-bottom: 0;
+    }
+}
+
+.loader {
+    width: 60px;
+}
+
+.logo-preloader {
+    width: 35px;
+    height: 35px;
+}
+
+.preloaders {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    
+    .preloader {
+        margin-right: 10px;
+        @include preload-animation(2.5s, 350px);
+    }
+
+    .text-preloader {
+        height: 34px;
+        width: 250px;
+    }
+}

@@ -8,6 +8,9 @@
   background-color: var(--sidebar-bg-color);
   color: var(--sidebar-color);
   transition: $transition-base;
+  position: relative;
+  -webkit-box-shadow: 1px 0 20px 2px #e8e8e8;
+  box-shadow: 1px 0 20px 2px #e8e8e8;
 
   &.showSidebar {
     display: block;
@@ -22,9 +25,9 @@
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  width: $sidebar-width-open;
-  transition: width $sidebar-transition-time ease-in-out, left $sidebar-transition-time ease-in-out;
-
+  z-index: 300;
+  box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.1);
+  
   @include sidebar-scrollbar();
 }
 
@@ -38,12 +41,6 @@
   text-shadow: 4px 4px 15px rgba(92, 176, 255, 0.6);
   text-transform: uppercase;
 
-  a {
-    color: var(--logo-color);
-    padding: 0 9px;
-    text-decoration: none;
-    white-space: nowrap;
-  }
   .secondary-word {
     opacity: 1;
     transition: all $sidebar-transition-time;
@@ -207,47 +204,20 @@
 
 .logo-container {
   height: 60px;
-  width: 64px;
 
   a {
-    display: grid;
-    grid-template-columns: 64px auto;
     text-decoration: none;
 
     .logo-image-container {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       height: 60px;
 
       .logo-image {
-        width: 40px;
-    
-        // display: inline;
+        margin-left: 7px;
+        margin-top: 5px;
+        width: 180px;
       }
-    }
-
-    .logo-text-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 60px;
-
-      h3 {
-        display: inline-block;
-        font-weight: bold;
-        margin-bottom: 0;
-        
-        .red-text {
-          color: var(--redstone-red-color);
-        }
-    
-        .dark-blue-text {
-          color: var(--redstone-dark-blue-color);
-        }
-      }
-
     }
   }
-
 }
