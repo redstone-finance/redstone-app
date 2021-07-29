@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row class="justify-content-center">
-      <b-col cols="12" v-for="(provider, index) in providers" :key="index">
+      <b-col cols="12" v-for="(provider, index) in filteredProviders" :key="index">
         <div class="pb-xlg" @click="$router.push('/app/provider/' + index)">
           <Widget class="mb-0 provider-card">
             <div class="provider-details">
@@ -104,6 +104,9 @@
         <div class="preloader provider-card-preloader"></div>
       </b-col>
     </b-row>
+    <b-row v-if="filteredProviders && Object.keys(filteredProviders) == 0" class="justify-content-center">
+      No results matching criteria
+    </b-row>
   </div>
 </template>
 
@@ -131,6 +134,27 @@ export default {
         return state.providers; 
       }
     }),
+
+    searchPhrase() {
+      let search = this.$route.query.search;
+      return search != null ? search : '';
+    },
+
+    filteredProviders() {
+      if (this.providers) {
+        let filterProviders = {};
+
+        Object.entries(this.providers).forEach(
+          ([key, value]) => {
+            if (value.profile.name.toLowerCase().includes(this.searchPhrase.toLowerCase())) {
+              filterProviders[key] = value;
+            }
+          }
+        )
+
+        return filterProviders;
+      }
+    }
   },
 
   methods: {

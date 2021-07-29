@@ -60,7 +60,17 @@
                 sort></json-viewer>
           </template>
       </b-table>
+      <div v-if="!manifestsDataForTable">
+        <div
+          v-for="n in 3"
+          :key="n"
+          class="preloader text-preloader manifest-preloader"
+        ></div>
+      </div>  
     </div> 
+
+
+
     <b-modal id="upload-new-modal" title="Upload new manifest" size="xl" class="upload-new-manifest-modal">
       <div class="d-flex flex-column align-items-center">
         <div>You can either upload manifest from a JSON file...</div>
@@ -109,7 +119,7 @@ export default {
         'status',
         { key: 'actions', label: ''}
       ],
-      manifestsDataForTable: [],
+      manifestsDataForTable: null,
       showManifestForm: false,
       templateManifest: {},
       isAdmin: false
@@ -209,22 +219,6 @@ export default {
         console.log(`Transaction ${transactionId} confirmed`, statusAfterMine);
         return statusAfterMine;
       }
-    },
-
-    async checkAdminPriviliges(userId, arweave) {
-      // const admins = await interactRead(
-      //     arweave, 
-      //     'use_wallet', 
-      //     await this.providersRegistryContractId(),
-      //   {
-      //     function: "providerAdmins",
-      //     data: {
-      //       providerId: this.provider.providerId
-      //     }
-      //   }
-      // );
-      // return admins.includes(providerId);
-      return true;
     },
 
     async getManifestsData() {
@@ -392,6 +386,12 @@ export default {
 .manifest-btn-wrapper {
   display: flex;
   flex-direction: row-reverse;
+}
+
+.manifest-preloader {
+  height: 35px;
+  margin-bottom: 20px;
+  @include preload-animation(2.5s, 100vw);
 }
 
 </style>
