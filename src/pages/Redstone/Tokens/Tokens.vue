@@ -251,6 +251,7 @@ export default {
 //scrollable tabs
 .token-tabs {
   position: relative;
+  box-shadow: 1px 10px 6px 4px #e8e8e8;
 
   ::-webkit-scrollbar {
     display: none;
@@ -281,16 +282,6 @@ export default {
 
     i {
       transform: rotate(180deg);
-    }
-  }
-
-  @media (max-width: breakpoint-max(sm)) {
-    #leftArr {
-      left: 20px;
-    }
-
-    #rightArr {
-      right: 20px;
     }
   }
 }

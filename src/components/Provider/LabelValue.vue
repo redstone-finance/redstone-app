@@ -41,10 +41,16 @@ export default {
   .label-value.align-right {
     text-align: right;
     padding-right: 55px;
+
+  @media (max-width: breakpoint-max(sm)) {
+    text-align: left;
   }
+}
 </style>
 
 <style lang="scss">
+  @import '~@/styles/app';
+
   .label-value {
     .vue-loaders {
       transform-origin: left;
@@ -53,6 +59,10 @@ export default {
     &.align-right {
       .vue-loaders {
         transform-origin: right;
+
+        @media (max-width: breakpoint-max(sm)) {
+          transform-origin: left;
+        }
       }
     }
   }

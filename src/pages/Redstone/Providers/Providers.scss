@@ -83,6 +83,24 @@
         flex: 0 0 12%;
         font-size: $font-size-base;
     }
+
+    @media (max-width: breakpoint-max(sm)) {
+        flex-wrap: wrap;
+        
+        .provider-logo {
+            flex: 0 0 20%;
+        }
+
+        .provider-name {
+            flex: 0 0 76%;
+        }
+
+        .provider-description {
+            flex: 0 0 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    }   
 }
 
 .provider-card-preloader {

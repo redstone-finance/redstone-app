@@ -1,11 +1,5 @@
 <template>
   <div class="chart-wrapper">
-    <div class="last-updated-note">
-        Last updated
-        <strong>
-          {{ lastUpdatedTime }}
-        </strong>
-      </div>
     <b-row>
       <b-col xs="12">
         <div class="token-price-wrapper d-flex flex-column flex-md-row">
@@ -28,23 +22,32 @@
 
     <hr />
 
-    <div class="bar-below-chart flex-column flex-md-row justify-content-start">
-      <div class="time-range-links mr-4">
-        <a
-          v-for="(range, index) in timeRanges"
-          :key="index"
-          :class="{ 'selected': index === selectedTimeRangeIndex }"
-          @click="selectTimeRange(index)"
-        >{{ range.title }}</a>
-      </div>
+    <div class="bar-below-chart row">
+      <div class="d-flex flex-column flex-md-row justify-content-start col-12 col-lg-9">
+        <div class="time-range-links mr-4">
+          <a
+            v-for="(range, index) in timeRanges"
+            :key="index"
+            :class="{ 'selected': index === selectedTimeRangeIndex }"
+            @click="selectTimeRange(index)"
+          >{{ range.title }}</a>
+        </div>
 
-      <div class="stats-container ml-4">
-        <StatElem
-          v-for="(value, title) in stats"
-          :key="title"
-          :value="value"
-          :title="title"
-        />
+        <div class="stats-container ml-0 mt-2 mb-2 mt-md-0 mb-md-0 ml-md-4">
+          <StatElem
+            v-for="(value, title) in stats"
+            :key="title"
+            :value="value"
+            :title="title"
+            class="mr-2 mr-md-4"
+          />
+        </div>
+      </div>
+      <div class="last-updated-note col-lg-3 align-self-center">
+        Last updated
+        <strong>
+          {{ lastUpdatedTime }}
+        </strong>
       </div>
     </div>
 
@@ -372,13 +375,12 @@ function getRedstoneColorPaletteForChart() {
 
 .chart-wrapper {
   position: relative;
+  padding: 20px;
 }
 
 .last-updated-note {
-  position: absolute;
   color: $gray-600;
-  right: 0;
-  top: -42px;
+  justify-self: flex-end;
   font-size: 12px;
 }
 
@@ -394,6 +396,7 @@ function getRedstoneColorPaletteForChart() {
 
   .custom-control-input {
     color: currentColor;
+    cursor: pointer;
   }
 
   .source-label {
@@ -516,6 +519,11 @@ function getRedstoneColorPaletteForChart() {
     color: currentColor !important;
     border-color: currentColor !important;
     background-color: currentColor !important;
+    cursor: pointer;
+  }
+
+  &::after {
+    cursor: pointer;
   }
 }
 

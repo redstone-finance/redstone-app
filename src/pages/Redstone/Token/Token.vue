@@ -1,7 +1,7 @@
 <template>
   <div class="token-wrapper">
     <div class="token">
-      <div class="d-flex justify-content-between">
+      <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0">
         <div class="select-provider">
           <b-form>
             <b-form-group
@@ -24,20 +24,22 @@
       </div>
 
       <!-- We use :key="symbol" to rerender components on each symbol change -->
-      <TokenPriceChartContainer
-        :symbol="symbol"
-        :key="symbol + selectedProvider + '-chart'"
-        :provider="selectedProvider"
-        :currentPrice="currentPrice"
-      />
+      <div class="token-data-wrapper">
+        <TokenPriceChartContainer
+          :symbol="symbol"
+          :key="symbol + selectedProvider + '-chart'"
+          :provider="selectedProvider"
+          :currentPrice="currentPrice"
+        />
 
-      <TokenPriceTableContainer
-        id="token-price-table"
-        :symbol="symbol"
-        :key="symbol + selectedProvider + '-table'"
-        :provider="selectedProvider"
-        :currentPrice="currentPrice"
-      />
+        <TokenPriceTableContainer
+          id="token-price-table"
+          :symbol="symbol"
+          :key="symbol + selectedProvider + '-table'"
+          :provider="selectedProvider"
+          :currentPrice="currentPrice"
+        />
+      </div>
 
       <div class="space"></div>
     </div>
@@ -117,12 +119,21 @@ export default {
 <style lang="scss">
 @import "~@/styles/app";
 
+.select-provider-wrapper {
+  height: 24px;
+  transform: translateY(-22px);
+}
+
 .select-provider {
+  padding-left: 20px;
+
   .form-group {
     width: 500px;
+    margin-bottom: 12px;
   }
 
   label {
+    padding-top: 4px;
     font-weight: $font-weight-ultra-thin;
     font-size: $font-size-base;
     color: $gray-750;
@@ -140,15 +151,18 @@ export default {
     font-weight: $font-weight-soft-bold;
     background: transparent url("../../../assets/icons/select-down.svg") right 1rem center/16px 16px no-repeat;
     border-radius: 7px;
+    height: 28px;
+    padding: 0 0 0 11px;
   }
 }
 
 .data-feeds-wrapper {
-  transform: translateY(24px);
+  line-height: 32px;
 }
 
 .data-feeds {
   font-size: $font-size-sm;
+  margin-right: 18px;
 }
 
 .token-wrapper {

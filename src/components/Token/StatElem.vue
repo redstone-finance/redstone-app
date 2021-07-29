@@ -24,7 +24,6 @@ export default {
 @import '~@/styles/app';
 
 .stat-elem {
-  margin-right: 30px;
   color: $gray-750;
   display: flex;
 

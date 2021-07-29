@@ -20,8 +20,7 @@
             <b-form-input v-model="searchTerm" id="search-input" placeholder="Search..." />
           </b-input-group>
           <router-link :to="routerLink" v-else>            
-            <BIconArrowLeft />
-            <span class="link-back">{{routerLinkLabel}}</span>
+            <i class="fa flaticon-chevron-back"/>
           </router-link>
         </b-form-group>
       </b-form>
@@ -38,7 +37,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { BIconArrowLeft } from "bootstrap-vue";
 import CodeExample from "@/components/Token/CodeExample";
 
 export default {
@@ -75,10 +73,6 @@ export default {
       }
       return config;
     },
-
-    routerLinkLabel() {
-      return this.$route.name ? 'Back to Prices' : 'Back to Providers'
-    }
   },
 
   created() {
@@ -97,7 +91,6 @@ export default {
   },
 
   components: {
-    BIconArrowLeft,
     CodeExample
   },
 };

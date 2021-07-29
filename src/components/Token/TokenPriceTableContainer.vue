@@ -8,7 +8,7 @@
         <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label for="from-datepicker">Show feeds from: </label>
+              <label class="mt-2 mt-md-0" for="from-datepicker">Show feeds from: </label>
               <b-datepicker 
                 id="from-datepicker" 
                 v-model="fromDate"
@@ -26,7 +26,7 @@
         <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label for="to-datepicker">to:</label>
+              <label class="mt-2 mt-md-0" for="to-datepicker">to:</label>
               <b-datepicker 
                 id="to-datepicker" 
                 v-model="toDate"
@@ -346,6 +346,7 @@ a.tx-link {
 .datepicker-container {
   margin-right: 20px;
   display: flex;
+  flex-wrap: wrap;
 
   label {
     font-size: 14px;
@@ -356,6 +357,13 @@ a.tx-link {
     white-space: nowrap;
     margin-right: 10px;
   }
+
+  @media (max-width: breakpoint-max(sm)) {
+    > label {
+      flex: 0 0 100%;
+    }
+  }
+
 
   .b-form-btn-label-control.form-control {
     height: 35px;
@@ -409,7 +417,8 @@ a.tx-link {
 }
 
 .price-table {
-  margin-top: 40px;
+  margin-top: 20px;
+  padding: 20px;
 }
 
 .table-title {
@@ -427,14 +436,6 @@ a.btn-dispute {
   &.disabled {
     border: solid 1px $gray-600;
     color: $gray-600;
-  }
-}
-
-@media (max-width: breakpoint-max(sm)) {
-  tr {
-    td:nth-of-type(3) {
-      max-width: 25vw;
-    }
   }
 }
 

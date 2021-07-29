@@ -864,7 +864,7 @@ pre {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     position: relative;
-    box-shadow: inset 0px -6px 2px -4px $gray-250;
+    box-shadow: inset 0px -6px 2px -4px $gray-250, 5px -5px 6px -2px $gray-250;
   }
 
   &.active {
@@ -877,12 +877,12 @@ pre {
 .nav-tabs > .nav-item:not(:first-of-type) > .nav-link:not(.active) {
   &:after {
     content: " ";
-    height: 24px;
+    height: 23px;
     border-right: 1px solid $gray-450;
     border-top-width: 0;
     position: absolute;
     left: -1px;
-    bottom: 5px;
+    bottom: 7px;
   }
 }
 

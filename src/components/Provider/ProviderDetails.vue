@@ -50,7 +50,7 @@
       </template>
 
       <template #cell(sources)="data">
-        <a class="source-link" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
+        <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
           <img class="source-logo" :src="source.imgURI" v-b-tooltip.hover :title="source.name" />
         </a>
       </template>
@@ -168,6 +168,14 @@ export default {
 
     & > div {
       flex: 0 0 13%;
+    }
+
+    @media (max-width: breakpoint-max(sm)) {
+      flex-wrap: wrap;
+      
+      & > div {
+        flex: 0 0 50%;
+      }
     }
   }
 

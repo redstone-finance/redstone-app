@@ -99,9 +99,9 @@
     }
 
     input {
-      background-color: #F9FAFE;
+      background-color: $gray-350;
       &::placeholder {
-        color: #4A5056;
+        color: $gray-750;
         font-weight: $font-weight-normal;
       }
     }
@@ -199,4 +199,9 @@
   margin-left: 10px;
 }
 
+i.flaticon-chevron-back {
+  display: block;
+  height: 24px;
+  width: 14px;
+}
 
