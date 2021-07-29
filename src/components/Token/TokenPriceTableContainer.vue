@@ -346,7 +346,6 @@ a.tx-link {
 .datepicker-container {
   margin-right: 20px;
   display: flex;
-  flex-wrap: wrap;
 
   label {
     font-size: 14px;
@@ -359,6 +358,8 @@ a.tx-link {
   }
 
   @media (max-width: breakpoint-max(sm)) {
+    flex-wrap: wrap;
+
     > label {
       flex: 0 0 100%;
     }

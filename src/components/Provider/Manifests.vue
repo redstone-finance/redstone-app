@@ -309,12 +309,16 @@ export default {
 
     providerId() {
       return this.$route.params.id;
+    },
+
+    providerManifests() {
+      return this.provider ? this.provider.manifests : null;
     }
   },
   watch: {
-    provider: {
+    providerManifests: {
       handler: function () {
-        if (this.provider) {
+        if (this.providerManifests && !this.manifestsDataForTable) {
           this.getManifestsData();
         }
       },

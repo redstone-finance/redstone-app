@@ -55,6 +55,13 @@
         </a>
       </template>
     </b-table>
+    <div v-if="!tokensDataForTable">
+      <div
+        v-for="n in 5"
+        :key="n"
+        class="preloader token-preloader"
+      ></div>
+    </div>  
     </div>
   </div>
 </template>
@@ -116,7 +123,7 @@ export default {
             }
           ) : []
         };
-      }) : [];
+      }) : null;
 
       return tokens;
     },
@@ -219,6 +226,13 @@ export default {
     height: 16px;
     margin-bottom: 5px;
   }
+}
+
+.token-preloader {
+  height: 35px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+  @include preload-animation(2.5s, 100vw);
 }
 </style>
 

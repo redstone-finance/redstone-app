@@ -2,7 +2,7 @@
   <div class="star-rating">
     <label class="star-rating__star" v-for="rating in ratings" v-bind:key="rating"
       :class="{'is-selected': ((value >= rating) && value != null), 'is-disabled': disabled}" 
-      v-on:click="set(rating)" v-on:mouseover="star_over(rating)" v-on:mouseout="star_out">
+      v-on:click="set(rating)" v-on:mouseover="starOver(rating)" v-on:mouseout="starOut">
       <input class="star-rating star-rating__checkbox" type="radio" :value="rating"
       v-model="value" :disabled="disabled">★
       </label>
@@ -28,7 +28,7 @@ export default {
     /*
      * Behaviour of the stars on mouseover.
      */
-    star_over: function(index) {
+    starOver(index) {
       if (!this.disabled) {
         this.temp_value = this.value;
         return this.value = index;
@@ -39,7 +39,7 @@ export default {
     /*
      * Behaviour of the stars on mouseout.
      */
-    star_out: function() {
+    starOut() {
       if (!this.disabled) {
         return this.value = this.temp_value;
       }
@@ -48,7 +48,7 @@ export default {
     /*
      * Set the rating.
      */
-    set: function(value) {
+    set(value) {
       if (!this.disabled) {
         this.temp_value = value;
         return this.value = value;
