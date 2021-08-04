@@ -24,7 +24,7 @@
 
     <div class="bar-below-chart row">
       <div class="d-flex flex-column flex-md-row justify-content-start col-12 col-lg-9">
-        <div class="time-range-links mr-4">
+        <div class="time-range-links mr-3">
           <a
             v-for="(range, index) in timeRanges"
             :key="index"
@@ -429,20 +429,29 @@ function getRedstoneColorPaletteForChart() {
   justify-content: space-between;
 }
 
-.stats-container {
-  display: flex;
-}
-
 .time-range-links {
   a {
-    margin-right: 10px;
     color: $gray-750;
     font-weight: $font-weight-ultra-thin;
+    width: 60px;
+    display: inline-block;
+
+    &:first-of-type {
+      width: 75px;
+    }
+
+    &:nth-of-type(2) {
+      width: 45px;
+    }
 
     &.selected {
       color: $navy;
-      text-decoration: underline;
       font-weight: $font-weight-bold;
+    }
+
+    &:hover {
+      color: $navy;
+      text-decoration: none;
     }
   }
 }
@@ -495,6 +504,8 @@ function getRedstoneColorPaletteForChart() {
 
 .stats-container {
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
 
   &:before {
     content: " ";

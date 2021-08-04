@@ -916,3 +916,7 @@ a {
 .input-group:not(.has-validation) > input.form-control:not(.no-radius):nth-of-type(1n) {
   border-radius: $border-radius;
 }
+
+#search-input {
+  border-radius: 0 0.5rem 0.5rem 0;
+}

@@ -40,7 +40,7 @@ export default {
 
   .label-value.align-right {
     text-align: right;
-    padding-right: 55px;
+    padding-right: 50px;
 
   @media (max-width: breakpoint-max(sm)) {
     text-align: left;

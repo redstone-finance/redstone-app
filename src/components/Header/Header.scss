@@ -10,6 +10,8 @@
   border: none;
   font-weight: 500;
   justify-content: flex-start;
+  position: sticky;
+  top: 0;
 
   @media (min-width: breakpoint-min(md)) {
     padding: 0 1.85rem 0;
@@ -128,7 +130,6 @@
 
     .input-group-text {
       border: none;
-      background-color: #F9FAFE!important;
       transition: background-color ease-in-out 0.15s;
     }
 

@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="providers-wrapper">
     <b-row class="justify-content-center">
-      <b-col cols="12" v-for="(provider, index) in filteredProviders" :key="index">
-        <div class="pb-xlg" @click="$router.push('/app/provider/' + index)">
+      <b-col cols="12" class="widget-col" v-for="(provider, index) in filteredProviders" :key="index">
+        <div class="widget-wrapper" @click="$router.push('/app/provider/' + index)">
           <Widget class="mb-0 provider-card">
             <div class="provider-details">
               <div class="provider-logo">
