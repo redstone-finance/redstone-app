@@ -451,6 +451,7 @@ function getRedstoneColorPaletteForChart() {
 
     &:hover {
       color: $navy;
+      font-weight: $font-weight-thin;
       text-decoration: none;
     }
   }
