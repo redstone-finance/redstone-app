@@ -1,14 +1,14 @@
 <template>
   <div class="provider-details">
     <div class="provider-info mt-2">
-      <div class="mb-3">
+      <div class="mb-3 provider-description">
         <h6 v-if="provider">{{ provider.profile.description }}</h6>
         <div
         v-else
         class="preloader text-preloader"
       ></div>
       </div> 
-      <div>
+      <div class="provider-www">
         <a v-if="provider" :href="provider.profile.url" target="_blank">{{ provider.profile.url }}</a>
         <div
         v-else
@@ -37,16 +37,13 @@
         :fields="fields"
         >
 
-      <template #cell(logo)="data">
+      <template #cell(name)="data">
         <img class="token-logo" :src="data.item.logoURI" />
+        <span class="token-name ml-3">{{ data.item.name }}</span> 
       </template>
 
       <template #cell(symbol)="data">
         {{ data.item.symbol }}
-      </template>
-
-      <template #cell(name)="data">
-        <span class="token-name">{{ data.item.name }}</span> 
       </template>
 
       <template #cell(sources)="data">
@@ -87,7 +84,7 @@ export default {
 
   data() {
     return {
-      fields: ['logo', { key: 'name', label: ''}, 'symbol', 'sources'],
+      fields: [{ key: 'name', label: 'Asset'}, 'symbol', 'sources'],
       firstManifest: null,
       transactionTime: null
     }
@@ -167,6 +164,10 @@ export default {
 
     LabelValue {
       margin-bottom: 10px;
+    }
+
+    .provider-www, .provider-description {
+      margin-left: 10px;
     }
   }
 

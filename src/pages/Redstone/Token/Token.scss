@@ -9,6 +9,7 @@ h1 {
 }
 
 .token-data-wrapper {
-  background-color: #fcfcfc;
+  background-color: $gray-100;
   border-radius: 10px;
+  box-shadow: var(--content-shadow);
 }

@@ -89,6 +89,7 @@
             tooltips: {
               intersect: false, 
               mode: "index",
+              backgroundColor: '#242F51',
               callbacks: {
                 label: function(tooltipItem, data) {
                   var label = data.datasets[tooltipItem.datasetIndex].label || '';

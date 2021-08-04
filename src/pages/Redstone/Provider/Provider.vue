@@ -67,5 +67,11 @@ export default {
 .provider-tabs > .tabs > div:first-of-type {
    height: 44px; 
 }
+
+.provider-tabs {
+  .nav-tabs > .nav-item {
+    flex: 0 0 150px;
+  }
+}
 </style>
 

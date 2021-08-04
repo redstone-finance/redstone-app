@@ -251,7 +251,7 @@ export default {
 //scrollable tabs
 .token-tabs {
   position: relative;
-  box-shadow: 1px 10px 6px 4px #e8e8e8;
+  box-shadow: var(--tabs-shadow);
 
   ::-webkit-scrollbar {
     display: none;
