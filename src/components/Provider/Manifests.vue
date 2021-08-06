@@ -101,6 +101,7 @@ import ManifestForm from "./ManifestForm.vue";
 import { interactWrite } from 'smartweave';
 import utils from "@/utils";
 import constants from "@/constants";
+import { mapState } from 'vuex';
 
 export default {
   name: "Manifests",
@@ -136,15 +137,21 @@ export default {
       this.uploadManifest(manifest); 
     });
 
-    await this.connectToArconnect();
-    await this.checkIfAdmin();
+    //waiting until Arweave wallet is loaded
+    setTimeout(async () => {
+      await this.connectToArconnect();
+    }, 1000)
   },
 
   methods: {
     async checkIfAdmin() {
+      if (!window.arweaveWallet) {
+        this.isAdmin = false;
+        return
+      }
       const userAddress = await window.arweaveWallet.getActiveAddress();
 
-      this.isAdmin = (this.provider && this.provider.adminsPool && window.arweaveWallet) ? (this.provider.adminsPool.includes(await window.arweaveWallet.getActiveAddress())  || userAddress == this.providerId) : null;
+      this.isAdmin = (window.arweaveWallet) ? (this.provider && this.provider.adminsPool && this.provider.adminsPool.includes(userAddress)  || userAddress == this.providerId) : null;
     },
     onSubmit(event) {
       event.preventDefault();
@@ -184,13 +191,13 @@ export default {
           manifestTxId: jsonUploadTxId
         };
 
-        sessionStorage.setItem('minedManifest', JSON.stringify({ ...uploadedManifestData, manifest: manifest, uploadDate: new Date()}));
+        sessionStorage.setItem('minedManifest', JSON.stringify({ ...uploadedManifestData, ...manifest, uploadDate: new Date(), providerId: this.providerId}));
         this.getManifestsData();
 
         let newManifestTxId = await interactWrite(
             this.arweave, 
             'use_wallet', 
-            await this.providersRegistryContractId(),
+            this.providersRegistryContractId,
           {
             function: "addProviderManifest",
             data: {
@@ -245,7 +252,7 @@ export default {
 
       const minedManifest = JSON.parse(sessionStorage.getItem('minedManifest'));
 
-      if (minedManifest && minedManifest.manifestTxId) {
+      if (minedManifest && minedManifest.manifestTxId && minedManifest.providerId == this.providerId) {
         const manifestAlreadyMined = 
           this.provider.manifests.some(
             manifest => {
@@ -290,10 +297,17 @@ export default {
     },
 
     async connectToArconnect() {
-      await window.arweaveWallet.connect(["ACCESS_ADDRESS","ACCESS_ALL_ADDRESSES"]);
-      window.addEventListener("walletSwitch", async () => {
+      if (window.arweaveWallet) {
+        window.addEventListener("walletSwitch", async () => {
+          await this.checkIfAdmin();
+        });
+        window.addEventListener("arweaveWalletLoaded", async () => {
+          await this.checkIfAdmin();
+        });
+
+        await window.arweaveWallet.connect(["ACCESS_ADDRESS","ACCESS_ALL_ADDRESSES"]);
         await this.checkIfAdmin();
-      });
+      }
     }
   },
 
@@ -303,6 +317,15 @@ export default {
   },
 
   computed: {
+    ...mapState("prefetch", {
+      arweave: (state) => { 
+        return state.arweave; 
+      },
+      providersRegistryContractId: (state) => { 
+        return state.providersRegistryContractId; 
+      }
+    }),
+    
     getManifest(id) {
       return this.manifests ? this.manifests.find(el => el.manifestTxId === id) : null;
     },

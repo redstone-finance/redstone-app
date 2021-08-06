@@ -158,7 +158,7 @@
                 <b-input-group>
                   <label for="message-input">Change message:</label>
                   <b-form-input
-                    v-model="manifest.manifestChangeMessage"
+                    v-model="manifest.changeMessage"
                     id="change-message"
                     placeholder="Manifest change message"
                   />
@@ -373,7 +373,7 @@ export default {
             this.initialManifest.manifestData.priceAggregator;
           this.manifest.manifestData.sourceTimeout =
             this.initialManifest.manifestData.sourceTimeout;
-          this.manifest.manifestData.tokens = this.initialManifest.manifestData.tokens;
+          this.manifest.manifestData.tokens = JSON.parse(JSON.stringify(this.initialManifest.manifestData.tokens));
           if (this.initialManifest.manifestData.defaultSource) this.manifest.manifestData.defaultSource = this.initialManifest.manifestData.defaultSource;
 
           this.addedTokens = this.availableTokens
@@ -411,14 +411,11 @@ export default {
 
       const errors = [];
 
-      if (!this.manifest.manifestChangeMessage) {
+      if (!this.manifest.changeMessage) {
         errors.push('Change message required.');
       }
       if (!this.lockedHoursValidation) {
         errors.push('Wrong locked hours value.');
-      }
-      if (!this.manifest.manifestData.evmChainId) {
-        errors.push('evmChainId required.');
       }
       if (!this.manifest.manifestData.interval) {
         errors.push('Interval required.');

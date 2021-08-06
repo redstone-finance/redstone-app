@@ -2,14 +2,14 @@
   <div class="provider-details">
     <div class="provider-info mt-2">
       <div class="mb-3 provider-description">
-        <h6 v-if="provider">{{ provider.profile.description }}</h6>
+        <div v-if="provider">{{ provider.profile.description }}</div>
         <div
         v-else
         class="preloader text-preloader"
       ></div>
       </div> 
       <div class="provider-www">
-        <a v-if="provider" :href="provider.profile.url" target="_blank">{{ provider.profile.url }}</a>
+        <a v-if="provider" :href="provider.profile.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
         <div
         v-else
         class="preloader text-preloader"
@@ -18,7 +18,7 @@
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
         <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" />
         <LabelValue label="Interval" :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined" :alignRight="true"/>
-        <LabelValue label="Data points" :value="provider ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/>
+        <LabelValue label="Data points" :value="(provider && provider.dataPoints) ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/>
         <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/>
         <LabelValue label="Default source" :value="(provider && provider.currentManifest) ? (provider.currentManifest.defaultSource ? provider.currentManifest.defaultSource[0] : '') : undefined" />
         <LabelValue label="Disputes" :value="provider ? null : undefined" />
@@ -105,9 +105,9 @@ export default {
       let tokens = (this.provider && this.provider.currentManifest && this.provider.currentManifest.tokens) ? Object.entries(this.provider.currentManifest.tokens).map(function (token) {
         let tokenInfo = tokensData[token[0]]
         return {
-          logoURI: tokenInfo.logoURI,
+          logoURI: tokenInfo ? tokenInfo.logoURI : 'https://static.thenounproject.com/png/3094257-200.png',
           symbol: token[0],
-          name: tokenInfo.name,
+          name: tokenInfo ? tokenInfo.name : '',
           source: token[1].source ? token[1].source.map(
             el => {
               return {
@@ -165,6 +165,18 @@ export default {
 
     .provider-www, .provider-description {
       margin-left: 10px;
+    }
+
+    .provider-description {
+      font-weight: $font-weight-normal;
+    }
+
+    .provider-www {
+      font-weight: $font-weight-soft-bold;
+
+      i {
+        transform: translate(3px, 1px);
+      }
     }
   }
 

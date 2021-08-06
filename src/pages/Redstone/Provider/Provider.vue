@@ -70,7 +70,7 @@ export default {
 
 .provider-tabs {
   .nav-tabs > .nav-item {
-    flex: 0 0 150px;
+    flex: 0 0 124px;
   }
 }
 </style>

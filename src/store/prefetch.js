@@ -1,4 +1,3 @@
-// const {interactRead} = require("@kyve/query");
 const {interactRead} = require("smartweave");
 const axios = require("axios");
 import dummyWallet from "@/dummy-wallet.json";
