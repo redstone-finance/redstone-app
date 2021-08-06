@@ -113,7 +113,6 @@
 <script>
 import Rating from "@/components/Rating/Rating";
 import _ from "lodash";
-import providerMixin from "@/mixins/provider";
 import { mapState } from 'vuex';
 
 export default {
@@ -123,8 +122,6 @@ export default {
     return {
     };
   },
-
-  mixins: [providerMixin],
 
   created() {},
 

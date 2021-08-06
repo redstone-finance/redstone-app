@@ -11,6 +11,7 @@ export default {
   namespaced: true,
   state: {
     arweave: null,
+    contractsRegistryContractId: null,
     providersRegistryContractId: null,
     providers: null
   },
@@ -23,22 +24,29 @@ export default {
     },
     setArweave(state, arweave) {
       state.arweave = arweave;
+    },
+    setContractsRegistryContractId(state, id) {
+      state.contractsRegistryContractId = id;
     }
   },
   getters: {
     getArweave(state){
-      return state.arweave
+      return state.arweave;
     },
     getProviders(state){
-      return state.providers
+      return state.providers;
     },
     getProvidersRegistryContractId(state){
-      return state.providersRegistryContractId
+      return state.providersRegistryContractId;
+    },
+    getContractsRegistryContractId(state){
+      return state.contractsRegistryContractId;
     }
   },
   actions: {
     async prefetchAll({ dispatch }) {
       dispatch('initArweave')
+        .then(() => { return dispatch('contractsRegistryContract') })
         .then(() => { return dispatch('providersRegistryContract', {contractName: 'providers-registry', mutation: 'setProvidersRegistryContractId'}) })
         .then(() => { dispatch('fetchProviders');}
       );
@@ -59,24 +67,6 @@ export default {
     },
     async fetchProviders({ commit, getters, dispatch }) {
 
-      // let providersData = await interactRead(
-      //   constants.kyvePoolId,
-      //   //"CbGCxBJn6jLeezqDl1w3o8oCSeRCb-MmtZNKPodla-0"
-      //   getters.getProvidersRegistryContractId,
-      //    {
-      //       function: "providersData",
-      //       data: {
-      //         eagerManifestLoad: true
-      //       }
-      //     },
-      //   dummyWallet,
-      //   null,
-      //   null,
-      //   null,
-      //   getters.getArweave
-      // );
-
-      console.time('interactRead providersData')
       let providersData = await interactRead(
         getters.getArweave,
         dummyWallet,
@@ -88,8 +78,7 @@ export default {
             }
           }
       );
-      console.timeEnd('interactRead providersData')
-
+      
       let providers = {};
 
       for (let o in providersData.providers) {
@@ -147,7 +136,7 @@ export default {
       return interactRead(
         getters.getArweave,
         dummyWallet,
-        constants.contractsRegistryContractId,
+        getters.getContractsRegistryContractId,
          {
             function: "contractsCurrentTxId",
             data: {
@@ -159,27 +148,10 @@ export default {
           commit(mutation, result[contractName]);
         }
     );
-
-
-    //  return interactRead(
-    //     constants.kyvePoolId,
-    //     constants.contractsRegistryContractId,
-    //     {
-    //       function: "contractsCurrentTxId",
-    //       data: {
-    //         contractNames: [contractName]
-    //       }
-    //     },
-    //     dummyWallet,
-    //     null,
-    //     null,
-    //     null,
-    //     getters.getArweave
-    //     ).then(
-    //       result => {
-    //         commit(mutation, result[contractName]);
-    //       }
-    //   );
+    },
+    async contractsRegistryContract({ commit }) {
+      const contractsRegistryContractId = await (await fetch("https://raw.githubusercontent.com/redstone-finance/redstone-smartweave-contracts/main/contracts-registry.address.txt")).text();
+      commit('setContractsRegistryContractId', contractsRegistryContractId);
     }
   },
 };

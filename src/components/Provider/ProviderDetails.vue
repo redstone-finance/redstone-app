@@ -69,7 +69,6 @@ import tokensData from "@/assets/data/tokens.json";
 import sourcesData from "@/assets/data/sources-list.json";
 import _ from 'lodash';
 const axios = require('axios');
-import providerMixin from "@/mixins/provider";
 import utils from "@/utils";
 import constants from "@/constants";
 
@@ -79,8 +78,6 @@ export default {
   props: {
     provider: {}
   },
-
-  mixins: [providerMixin],
 
   data() {
     return {
