@@ -9,9 +9,12 @@
       <b-tabs sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
         <b-tab v-for="type in tokenTypes" :key="type.label">
           <template #title>
-            {{type.label}} <span class="tokens-number">{{ filteredTokenWithPrices(prices, type.tag).length }}</span>
+            {{ type.label }}
+            <span class="tokens-number">
+              {{ getFilteredTokensWithPrices(type.tag).length }}
+            </span>
           </template>
-          <TokenCards :tokens="filteredTokenWithPrices(prices, type.tag)" />
+          <TokenCards :tokens="getFilteredTokensWithPrices(type.tag)" />
         </b-tab>
       </b-tabs> 
   </div>
@@ -20,8 +23,9 @@
 <script>
 import redstone from 'redstone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
-import Tokens from "@/components/Tokens/Tokens";
-import tokensData from "@/assets/data/tokens.json";
+import Tokens from '@/components/Tokens/Tokens';
+import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
+import { mapActions, mapState } from 'vuex';
 
 const TOKEN_TYPES = [
   {
@@ -60,36 +64,27 @@ const TOKEN_TYPES = [
     label: "Livestocks",
     tag: "livestocks"
   },
-  {
-    label: "Softs",
-    tag: "softs"
-  },
-]
+  // {
+  //   label: "Softs",
+  //   tag: "softs"
+  // },
+];
 
-async function getAllAvailableCurrentPrices() {
-  const mainPrices = await redstone.getAllPrices();
-  const rapidPrices = await redstone.getAllPrices({
-    provider: 'redstone-rapid',
-  });
-  const stocksPrices = await redstone.getAllPrices({
-    provider: 'redstone-stocks',
-  });
-
-  return {
-    ...mainPrices,
-    ...rapidPrices,
-    ...stocksPrices,
-  };
+function simplifyPricesObject(pricesObj) {
+  const simplifiedObj = {};
+  for (const symbol in pricesObj) {
+    simplifiedObj[symbol] = pricesObj[symbol].value;
+  }
+  return simplifiedObj;
 }
 
-let currentPrices;
+const tokensData = getAllSupportedTokens();
 
 export default {
   name: "Tokens",
 
   data() {
     return {
-      prices: {},
       tokenTypes: TOKEN_TYPES,
       back: false,
       showArrows: false,
@@ -108,12 +103,7 @@ export default {
   async mounted() {
     setTimeout(() => this.resize(), 0);
 
-    if (currentPrices) {
-      this.prices = currentPrices;
-    } else {
-      currentPrices = await getAllAvailableCurrentPrices();
-      this.prices = currentPrices;
-    }
+    await this.lazyLoadPricesForAllTokens();
 
     document.getElementsByClassName("nav-tabs")[0].addEventListener('scroll', (e) =>  {
       this.leftScrollActive = this.leftScrollAvailable();
@@ -131,10 +121,24 @@ export default {
   },
   
   methods: {
+    ...mapActions({
+      setPricesLoadingAsCompleted: 'prices/setPricesLoadingAsCompleted',
+      addPrices: 'prices/addPrices',
+    }),
+    async lazyLoadPricesForAllTokens() {
+      const providersSorted = getOrderedProviders();
+      if (!this.pricesLoadingCompleted) {
+        for (const provider of providersSorted) {
+          const prices = await redstone.getAllPrices({ provider });
+          this.addPrices(simplifyPricesObject(prices));
+        }
+        this.setPricesLoadingAsCompleted();
+      }
+    },
     setTabsWidth() {
       this.tabsLength = this.calculateTabsLength();
     },
-    filteredTokenWithPrices(fetchedPrices, type) {
+    getFilteredTokensWithPrices(type) {
       const result = [];
 
       for (const symbol of Object.keys(tokensData)) {
@@ -159,16 +163,13 @@ export default {
           }
         }
 
-        //TODO: remove when price fetching is corrected
-        if (['BTMX', 'NPXS', 'MDX', 'AMP'].includes(symbol)) {
-          shouldBeAdded = false;
-        }
+        console.log(this.prices);
 
         if (shouldBeAdded) {
           result.push({
               symbol: symbol,
               ...token,
-              price: fetchedPrices[symbol]?.value
+              price: this.prices[symbol]
             }
           );
         }
@@ -236,6 +237,10 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      prices: state => state.prices.prices,
+      pricesLoadingCompleted: state => state.prices.pricesLoadingCompleted,
+    }),
     searchPhrase() {
       let search = this.$route.query.search;
       return search != null ? search : '';
