@@ -221,6 +221,7 @@ export default {
 
 .source-logo {
   height: 20px;
+  margin: 4px;
 }
 
 .text-preloader {
