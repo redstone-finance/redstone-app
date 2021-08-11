@@ -63,8 +63,11 @@
         </div>
       </b-col>
       <b-col xs="12" lg="3" class="mt-5 mt-md-0">
-        <div class="data-sources">Data sources</div>
-        <b-form-group v-slot="{ ariaDescribedby }">
+        <div class="data-sources">
+          Data sources
+          ({{ sourcesCount }})
+        </div>
+        <b-form-group class="data-sources-container" v-slot="{ ariaDescribedby }">
           <b-form-checkbox-group
             id="checkbox-group-2"
             v-model="selectedSources"
@@ -79,7 +82,17 @@
             >
               <div class="source-label">
                 <div class="source-name">
-                  {{ source }}
+                  <img
+                    :src="getImageForSource(source)"
+                    :alt="source"
+                    :title="source"
+                    loading="lazy"
+                    class="source-logo" />
+
+                  <span v-if="source == 'aggregated'">Median</span>
+                  <span v-else>{{ source }}</span>
+                  
+                  
                 </div>
                 <div class="source-value">
                   {{ getCurrentPriceForSource(source) | price }}
@@ -99,14 +112,30 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
-import tokensData from "@/assets/data/tokens.json";
+import tokensData from "redstone-node/src/config/tokens.json";
+import sources from "redstone-node/src/config/sources.json";
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
 }
 
-// const palette = distinctColors({ count: 40 }).map(c => c.hex());
-const palette = getRedstoneColorPaletteForChart();
+function getSourceColor(source) {
+  if (source === "aggregated") {
+    return "#fd627a";
+  } else {
+    return getSourceDetail(source, "color", "#000");
+  }
+}
+
+function getSourceDetail(source, property, defaultVal) {
+  const details = sources[source];
+  if (!details || !details[property]) {
+    console.warn(`${property} not found for source: ${source}`);
+    return defaultVal;
+  }
+
+  return details[property];
+}
 
 export default {
   name: "TokenPriceChartContainer",
@@ -197,6 +226,15 @@ export default {
       }
     },
 
+    getImageForSource(source) {
+      if (source == "aggregated") {
+        return "https://cdn.redstone.finance/redstone-logo.svg";
+      } else {
+        const notFoundImageUrl = "https://cdn.redstone.finance/logo-not-found.png";
+        return getSourceDetail(source, "logoURI", notFoundImageUrl);
+      }
+    },
+
     updateLastUpdatedTime() {
       const secondsAfterLastUpdate = Math.round(
         (Date.now() - this.currentPrice.timestamp) / 1000);
@@ -279,14 +317,19 @@ export default {
 
     sourceColors() {
       const result = {};
-      let counter = 0;
       for (const source of this.sources) {
-        result[source] = palette[counter];
-        counter++;
+        result[source] = getSourceColor(source);
       }
       return result;
     },
-  
+
+    sourcesCount() {
+      if (this.sources && this.sources.length > 0) {
+        return this.sources.length - 1;
+      } else {
+        return 0;
+      }
+    },
 
     chartData() {
       const labels = [];
@@ -350,24 +393,6 @@ export default {
   },
 }
 
-function getRedstoneColorPaletteForChart() {
-  return [
-    '#fd627a',
-    '#3cb44c',
-    '#4364d8',
-    '#f58232',
-    '#911eb4',
-    '#46f0f0',
-    '#f032e6',
-    '#008080',
-    '#808080',
-    '#9a6324',
-    '#800000',
-    '#808000',
-    '#000075',
-  ];
-}
-
 </script>
 
 <style scoped lang="scss">
@@ -390,6 +415,11 @@ function getRedstoneColorPaletteForChart() {
   color: $navy;
 }
 
+.data-sources-container {
+  max-height: 330px;
+  overflow-y: scroll;
+}
+
 .source-checkbox {
   display: block;
   margin-bottom: 5px;
@@ -406,10 +436,19 @@ function getRedstoneColorPaletteForChart() {
     width: 100%;
     color: currentColor;
     justify-content: space-between;
+    font-size: 9px;
+    line-height: 22px;
+
+    img.source-logo {
+      width: 14px;
+      height: 14px;
+      position: relative;
+      bottom: 2px;
+      margin-right: 4px;
+    }
     
     .source-name {
       font-weight: $font-weight-normal;
-      font-size: 16px;
       text-transform: capitalize;
     }
 

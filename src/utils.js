@@ -11,5 +11,5 @@ export default {
     },
     dataPoints(interval, activeFrom) {
         return interval ? Math.floor((new Date().getTime() - activeFrom.getTime()) / interval): 0;
-    } 
+    },
 }

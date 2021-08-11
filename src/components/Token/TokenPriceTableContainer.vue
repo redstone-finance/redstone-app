@@ -224,9 +224,14 @@ export default {
     },
 
     async isTxConfirmed(txId) {
-      const response = await this.arweave.transactions.getStatus(txId);
-      const result = response && response.confirmed;
-      return result;
+      const arweave = this.$store.state.prefetch.arweave;
+      if (arweave) {
+        const response = await arweave.transactions.getStatus(txId);
+        const result = response && response.confirmed;
+        return result;
+      } else {
+        return false;
+      }
     },
 
     async updateLastConfirmedTxTimestamp() {

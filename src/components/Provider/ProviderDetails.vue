@@ -48,7 +48,7 @@
 
       <template #cell(sources)="data">
         <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-          <img class="source-logo" :src="source.imgURI" v-b-tooltip.hover :title="source.name" />
+          <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name" />
         </a>
       </template>
     </b-table>
@@ -65,8 +65,8 @@
 
 <script>
 import LabelValue from '@/components/Provider/LabelValue';
-import tokensData from "@/assets/data/tokens.json";
-import sourcesData from "@/assets/data/sources-list.json";
+import tokensData from "redstone-node/src/config/tokens.json";
+import sourcesData from "redstone-node/src/config/sources.json";
 import _ from 'lodash';
 const axios = require('axios');
 import utils from "@/utils";

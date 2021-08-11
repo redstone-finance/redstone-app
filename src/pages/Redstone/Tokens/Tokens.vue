@@ -146,7 +146,7 @@ export default {
         let shouldBeAdded = true;
 
         if (type) {
-          if (!token.tags || !token.tags.includes(type)) {
+          if (!token || !token.tags || !token.tags.includes(type)) {
             shouldBeAdded = false;
           }
         }
@@ -162,8 +162,6 @@ export default {
             shouldBeAdded = false;
           }
         }
-
-        console.log(this.prices);
 
         if (shouldBeAdded) {
           result.push({
