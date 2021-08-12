@@ -9476,9 +9476,9 @@ redstone-api@^0.4.2:
     pako "^2.0.3"
     redstone-node redstone-finance/redstone-node#ae78874
 
-"redstone-node@github:redstone-finance/redstone-node#ae78874":
+redstone-node@redstone-finance/redstone-node#8d79951a358e2e45a71fdc43636a81c05fbf488d:
   version "0.4.4"
-  resolved "https://codeload.github.com/redstone-finance/redstone-node/tar.gz/ae78874756dfad8d02eeee16a4dc252a9cce2112"
+  resolved "https://codeload.github.com/redstone-finance/redstone-node/tar.gz/8d79951a358e2e45a71fdc43636a81c05fbf488d"
   dependencies:
     arql-ops "^1.0.0"
     arweave "^1.10.15"
@@ -9504,9 +9504,9 @@ redstone-api@^0.4.2:
     yahoo-finance "^0.3.7"
     yargs "^16.2.0"
 
-redstone-node@redstone-finance/redstone-node#8d79951a358e2e45a71fdc43636a81c05fbf488d:
+redstone-node@redstone-finance/redstone-node#ae78874:
   version "0.4.4"
-  resolved "https://codeload.github.com/redstone-finance/redstone-node/tar.gz/8d79951a358e2e45a71fdc43636a81c05fbf488d"
+  resolved "https://codeload.github.com/redstone-finance/redstone-node/tar.gz/ae78874756dfad8d02eeee16a4dc252a9cce2112"
   dependencies:
     arql-ops "^1.0.0"
     arweave "^1.10.15"

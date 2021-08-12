@@ -29,7 +29,7 @@
         :fields="fields"
         @row-clicked="rowClicked">
           <template #cell(manifestTxId)="data">
-            <a :href="'https://viewblock.io/arweave/tx/' + data.item.manifestTxId" target="_blank">
+            <a :href="'https://viewblock.io/arweave/' + data.item.manifestTxId" target="_blank">
               {{ data.item.manifestTxId | tx }}
             </a>
           </template>
@@ -233,7 +233,7 @@ export default {
       this.provider.manifests.slice().reverse()
         .forEach(
           (manifest, index) => {
-            axios.get(`https://${constants.arweaveUrl}/tx/${manifest.manifestTxId}/data.json`).then(
+            axios.get(`https://${constants.arweaveUrl}/${manifest.manifestTxId}`).then(
               async fetchedManifest => {
                 const uploadDate = await utils.transactionTime(manifest.manifestTxId);
                 this.manifestsDataForTable.push({

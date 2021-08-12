@@ -14,7 +14,7 @@
               {{ getFilteredTokensWithPrices(type.tag).length }}
             </span>
           </template>
-          <TokenCards :tokens="getFilteredTokensWithPrices(type.tag)" />
+          <TokenCards :key="searchTerm + type.tag" :tokens="getFilteredTokensWithPrices(type.tag)" />
         </b-tab>
       </b-tabs> 
   </div>
@@ -145,13 +145,17 @@ export default {
         const token = tokensData[symbol];
         let shouldBeAdded = true;
 
+        if (!token) {
+          continue;
+        }
+
         if (type) {
           if (!token || !token.tags || !token.tags.includes(type)) {
             shouldBeAdded = false;
           }
         }
 
-        const searchTerm = this.searchPhrase;
+        const searchTerm = this.searchTerm || "";
         const searchTermLowerCase = searchTerm.toLowerCase();
         if (searchTerm) {
           const nameIncludesSearchTerm =
@@ -236,13 +240,10 @@ export default {
 
   computed: {
     ...mapState({
+      searchTerm: state => state.layout.searchTerm,
       prices: state => state.prices.prices,
       pricesLoadingCompleted: state => state.prices.pricesLoadingCompleted,
     }),
-    searchPhrase() {
-      let search = this.$route.query.search;
-      return search != null ? search : '';
-    }
   }
 }
 </script>

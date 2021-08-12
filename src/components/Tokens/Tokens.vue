@@ -2,7 +2,7 @@
   <div>
     <div class="mb-lg">
       <b-row>
-        <b-col xxl="3" xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in tokens" :key="index">
+        <b-col xxl="3" xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in visibleTokens" :key="index">
           <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
             <Widget class="mb-0 token-card">
               <b-row class="token-details">
@@ -27,8 +27,8 @@
                   sm="6"
                   md="4"
                   class="token-price pl-0">
-                  <span v-if="token.price">
-                    {{ token.price | price }}
+                  <span v-if="prices[token.symbol]">
+                    {{ prices[token.symbol] | price }}
                   </span>
                   <vue-loaders-ball-beat
                     v-else
@@ -44,19 +44,43 @@
           </div>
         </b-col>
       </b-row>
+      <b-row>
+        <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" class="loading-more-container">
+          <vue-loaders-ball-beat
+            color="var(--redstone-red-color)"
+            scale="0.5"
+          ></vue-loaders-ball-beat>
+        </div>
+      </b-row>
     </div>
   </div>
 </template>
 
 <script>
 import Widget from "@/components/Widget/Widget";
-import _ from 'lodash';
+import _ from "lodash";
+import { mapState } from "vuex";
+
+const VISIBLE_CHUNK_SIZE = 30;
 
 export default {
   name: 'Tokens',
 
   props: {
     tokens: Array,
+  },
+
+  data() {
+    return {
+      visibleTokensSymbols: new Set(),
+      visibleTokens: [],
+      allTokensVisible: false,
+    };
+  },
+
+  created() {
+    this.visibleTokens = [];
+    this.visibleTokensSymbols = new Set();
   },
 
   methods: {
@@ -69,7 +93,37 @@ export default {
     },
     providerLabel(provider) {
       return _.startCase(provider)
-    }
+    },
+
+    loadMoreSectionVisibilityChanged() {
+      this.showMoreTokens();
+    },
+
+    showMoreTokens() {
+      let tokensLeftToShow = VISIBLE_CHUNK_SIZE;
+
+      for (const token of this.tokens) {
+        const symbol = token.symbol;
+
+        if (tokensLeftToShow <= 0) {
+          break;
+        }
+
+        if (!this.visibleTokensSymbols.has(symbol)) {
+          this.visibleTokens.push(token);
+          tokensLeftToShow--;
+          this.visibleTokensSymbols.add(symbol);
+        }
+      }
+      
+      if (tokensLeftToShow > 0) {
+        this.allTokensVisible = true;
+      }
+    },
+  },
+
+  computed: {
+    ...mapState("prices", ["prices"]),
   },
 
   components: {
