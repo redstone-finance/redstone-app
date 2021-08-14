@@ -89,7 +89,7 @@ export default {
 
     scrollToDataFeeds() {
       const table = document.getElementById("token-price-table");
-      table.scrollIntoView();
+      table.scrollIntoView({ behavior: "smooth" });
     }
   },
 
