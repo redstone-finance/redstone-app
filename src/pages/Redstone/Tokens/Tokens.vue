@@ -6,7 +6,7 @@
       <div id="rightArr" class="arrow" @click="scrollRight()" v-if="showArrows">
         <i :class="`fi flaticon-arrow-left${rightScrollActive ? '-active' : ''}`"></i>
       </div>
-      <b-tabs sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
+      <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
         <b-tab v-for="type in tokenTypes" :key="type.label">
           <template #title>
             {{ type.label }}
@@ -90,7 +90,8 @@ export default {
       showArrows: false,
       leftScrollActive: false,
       rightScrollActive: true,
-      tabsLength: 0
+      tabsLength: 0,
+      selectedTabIndex: 0,
     };
   },
 
@@ -114,10 +115,26 @@ export default {
   created() {
     window.addEventListener("resize", this.resize);
     this.resize();
+    this.selectTabFromUrlParam();
   },
 
   destroyed() {
     window.removeEventListener("resize", this.resize);
+  },
+
+  watch: {
+    selectedTabIndex(newValue) {
+      if (this.$route.query["selected-tab"] != newValue) {
+        this.$router.push({ query: {
+          ...this.$route.query,
+          "selected-tab": newValue
+        }});
+      }
+    },
+
+    $route() {
+      this.selectTabFromUrlParam();
+    },
   },
   
   methods: {
@@ -125,6 +142,7 @@ export default {
       setPricesLoadingAsCompleted: 'prices/setPricesLoadingAsCompleted',
       addPrices: 'prices/addPrices',
     }),
+
     async lazyLoadPricesForAllTokens() {
       const providersSorted = getOrderedProviders();
       if (!this.pricesLoadingCompleted) {
@@ -135,9 +153,21 @@ export default {
         this.setPricesLoadingAsCompleted();
       }
     },
+
+    selectTabFromUrlParam() {
+      let selectedTabIndexFromUrl = this.$route.query["selected-tab"];
+      if (selectedTabIndexFromUrl) {
+        selectedTabIndexFromUrl = Number(selectedTabIndexFromUrl);
+        if (selectedTabIndexFromUrl != this.selectedTabIndex) {
+          this.selectedTabIndex = selectedTabIndexFromUrl;
+        }
+      }
+    },
+
     setTabsWidth() {
       this.tabsLength = this.calculateTabsLength();
     },
+
     getFilteredTokensWithPrices(type) {
       const result = [];
 
@@ -178,6 +208,7 @@ export default {
       }
       return result;
     },
+
     calculateTabsLength() {
       const tabElements = this.$refs.tabScroll?.$el.getElementsByTagName("li");
       const tabs = tabElements ? [...tabElements] : [];
