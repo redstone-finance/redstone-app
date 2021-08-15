@@ -101,7 +101,7 @@
           class="tx-link"
           v-else
           target="_blank"
-          :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx">
+          :href="getViewblockTxLink(data.item.permawebTx)">
           {{ data.item.permawebTx }}
         </a>
       </template>
@@ -109,7 +109,7 @@
       <template #cell(dispute)="data">
         <b-btn
           target="_blank"
-          :href="'https://viewblock.io/arweave/tx/' + data.item.permawebTx"
+          :href="getViewblockTxLink(data.item.permawebTx)"
           variant="dispute"
           :disabled="isTxPendingForPrice(data.item)"
         >
@@ -137,6 +137,7 @@
 <script>
 import redstone from 'redstone-api';
 import dateFormat from 'dateformat';
+import utils from '@/utils';
 
 export default {
   name: 'TokenPriceTableContainer',
@@ -179,6 +180,8 @@ export default {
   },
 
   methods: {
+    getViewblockTxLink: utils.getViewblockTxLink,
+
     isTxPendingForPrice(price) {
       return price.timestamp > this.lastConfirmedTxTimestamp;
     },

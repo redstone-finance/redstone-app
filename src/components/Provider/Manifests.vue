@@ -29,7 +29,7 @@
         :fields="fields"
         @row-clicked="rowClicked">
           <template #cell(manifestTxId)="data">
-            <a :href="'https://viewblock.io/arweave/' + data.item.manifestTxId" target="_blank">
+            <a :href="getViewblockTxLink(data.item.manifestTxId)" target="_blank">
               {{ data.item.manifestTxId | tx }}
             </a>
           </template>
@@ -123,7 +123,7 @@ export default {
       manifestsDataForTable: null,
       showManifestForm: false,
       templateManifest: {},
-      isAdmin: false
+      isAdmin: false,
     }; 
   },
 
@@ -144,6 +144,8 @@ export default {
   },
 
   methods: {
+    getViewblockTxLink: utils.getViewblockTxLink,
+
     async checkIfAdmin() {
       if (!window.arweaveWallet) {
         this.isAdmin = false;
