@@ -22,7 +22,9 @@ export default {
       state.providers = { ...providers };
     },
     setArweave(state, arweave) {
-      state.arweave = arweave;
+      if (!state.arweave) {
+        state.arweave = arweave;
+      }
     },
     setContractsRegistryContractId(state, id) {
       state.contractsRegistryContractId = id;
