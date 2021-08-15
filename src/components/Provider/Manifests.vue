@@ -153,7 +153,7 @@ export default {
       }
       const userAddress = await window.arweaveWallet.getActiveAddress();
 
-      this.isAdmin = (window.arweaveWallet) ? (this.provider && this.provider.adminsPool && this.provider.adminsPool.includes(userAddress)  || userAddress == this.providerId) : null;
+      this.isAdmin = (window.arweaveWallet) ? (this.provider?.adminsPool && this.provider?.adminsPool.includes(userAddress)  || userAddress == this.providerId) : null;
     },
     onSubmit(event) {
       event.preventDefault();

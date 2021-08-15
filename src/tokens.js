@@ -19,8 +19,7 @@ export function getOrderedProviders() {
 
 export function getAllSupportedTokens() {
   const allTokens = {};
-  for (const provider of Object.keys(manifests)) {
-    const manifest = manifests[provider];
+  for (const manifest of Object.values(manifests)) {
     for (const symbol of Object.keys(manifest.tokens)) {
       if (!allTokens[symbol]) {
         allTokens[symbol] = getDetailsForSymbol(symbol);

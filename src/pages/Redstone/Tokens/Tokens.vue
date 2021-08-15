@@ -63,11 +63,7 @@ const TOKEN_TYPES = [
   {
     label: "Livestocks",
     tag: "livestocks"
-  },
-  // {
-  //   label: "Softs",
-  //   tag: "softs"
-  // },
+  }
 ];
 
 function simplifyPricesObject(pricesObj) {
@@ -106,10 +102,7 @@ export default {
 
     await this.lazyLoadPricesForAllTokens();
 
-    document.getElementsByClassName("nav-tabs")[0].addEventListener('scroll', (e) =>  {
-      this.leftScrollActive = this.leftScrollAvailable();
-      this.rightScrollActive = this.rightScrollAvailable();
-    });
+    this.setScrollAvailability();
   },
 
   created() {
@@ -142,6 +135,16 @@ export default {
       setPricesLoadingAsCompleted: 'prices/setPricesLoadingAsCompleted',
       addPrices: 'prices/addPrices',
     }),
+
+    setScrollAvailability() {
+      const elements = document.getElementsByClassName("nav-tabs");
+      if (elements && elements.length > 0) {
+        elements[0].addEventListener('scroll', (e) =>  {
+          this.leftScrollActive = this.leftScrollAvailable();
+          this.rightScrollActive = this.rightScrollAvailable();
+        });
+      }
+    },
 
     async lazyLoadPricesForAllTokens() {
       const providersSorted = getOrderedProviders();
@@ -180,7 +183,7 @@ export default {
         }
 
         if (type) {
-          if (!token || !token.tags || !token.tags.includes(type)) {
+          if (!token.tags || !token.tags.includes(type)) {
             shouldBeAdded = false;
           }
         }

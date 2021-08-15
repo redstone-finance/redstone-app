@@ -121,11 +121,9 @@ function formatPrice(value) {
 }
 
 function getSourceColor(source) {
-  if (source === "aggregated") {
-    return "#fd627a";
-  } else {
-    return getSourceDetail(source, "color", "#000");
-  }
+  return source === "aggregated"
+    ? "#fd627a"
+    : getSourceDetail(source, "color", "#000");
 }
 
 function getSourceDetail(source, property, defaultVal) {
@@ -325,11 +323,9 @@ export default {
     },
 
     sourcesCount() {
-      if (this.sources && this.sources.length > 0) {
-        return this.sources.length - 1;
-      } else {
-        return 0;
-      }
+      return (this.sources && this.sources.length > 0)
+        ? this.sources.length - 1
+        : 0;
     },
 
     chartData() {
