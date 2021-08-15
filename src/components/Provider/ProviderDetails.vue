@@ -119,7 +119,7 @@ export default {
           : component.currentManifest.defaultSource;
 
         return {
-          logoURI: tokenInfo ? tokenInfo.logoURI : "https://cdn.redstone.finance/logo-not-found.png",
+          logoURI: tokenInfo ? tokenInfo.logoURI : constants.images["no-logo"],
           symbol,
           name: tokenInfo ? tokenInfo.name : '',
           source: sourceListForToken.map(

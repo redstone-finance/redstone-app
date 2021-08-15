@@ -114,6 +114,7 @@ import StatElem from './StatElem';
 import _ from 'lodash';
 import tokensData from "redstone-node/src/config/tokens.json";
 import sources from "redstone-node/src/config/sources.json";
+import constants from "@/constants";
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
@@ -228,9 +229,9 @@ export default {
 
     getImageForSource(source) {
       if (source == "aggregated") {
-        return "https://cdn.redstone.finance/redstone-logo.svg";
+        return constants.images["redstone-logo"];
       } else {
-        const notFoundImageUrl = "https://cdn.redstone.finance/logo-not-found.png";
+        const notFoundImageUrl = constants.images["no-logo"];
         return getSourceDetail(source, "logoURI", notFoundImageUrl);
       }
     },
