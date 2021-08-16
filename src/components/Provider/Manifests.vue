@@ -29,7 +29,7 @@
         :fields="fields"
         @row-clicked="rowClicked">
           <template #cell(manifestTxId)="data">
-            <a :href="'https://viewblock.io/arweave/tx/' + data.item.manifestTxId" target="_blank">
+            <a :href="getViewblockTxLink(data.item.manifestTxId)" target="_blank">
               {{ data.item.manifestTxId | tx }}
             </a>
           </template>
@@ -123,7 +123,7 @@ export default {
       manifestsDataForTable: null,
       showManifestForm: false,
       templateManifest: {},
-      isAdmin: false
+      isAdmin: false,
     }; 
   },
 
@@ -144,6 +144,8 @@ export default {
   },
 
   methods: {
+    getViewblockTxLink: utils.getViewblockTxLink,
+
     async checkIfAdmin() {
       if (!window.arweaveWallet) {
         this.isAdmin = false;
@@ -151,7 +153,7 @@ export default {
       }
       const userAddress = await window.arweaveWallet.getActiveAddress();
 
-      this.isAdmin = (window.arweaveWallet) ? (this.provider && this.provider.adminsPool && this.provider.adminsPool.includes(userAddress)  || userAddress == this.providerId) : null;
+      this.isAdmin = (window.arweaveWallet) ? (this.provider?.adminsPool && this.provider?.adminsPool.includes(userAddress)  || userAddress == this.providerId) : null;
     },
     onSubmit(event) {
       event.preventDefault();
@@ -233,7 +235,7 @@ export default {
       this.provider.manifests.slice().reverse()
         .forEach(
           (manifest, index) => {
-            axios.get(`https://${constants.arweaveUrl}/tx/${manifest.manifestTxId}/data.json`).then(
+            axios.get(`https://${constants.arweaveUrl}/${manifest.manifestTxId}`).then(
               async fetchedManifest => {
                 const uploadDate = await utils.transactionTime(manifest.manifestTxId);
                 this.manifestsDataForTable.push({

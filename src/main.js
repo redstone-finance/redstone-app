@@ -10,7 +10,9 @@ import VueApexCharts from 'vue-apexcharts';
 import VueLoaders from 'vue-loaders';
 import VueTimers from 'vue-timers'
 import { ObserveVisibility } from 'vue-observe-visibility';
+
 import 'vue-loaders/dist/vue-loaders.css';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import store from './store';
 import router from './Routes';

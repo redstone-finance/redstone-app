@@ -6,12 +6,15 @@
       <div id="rightArr" class="arrow" @click="scrollRight()" v-if="showArrows">
         <i :class="`fi flaticon-arrow-left${rightScrollActive ? '-active' : ''}`"></i>
       </div>
-      <b-tabs sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
+      <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
         <b-tab v-for="type in tokenTypes" :key="type.label">
           <template #title>
-            {{type.label}} <span class="tokens-number">{{ filteredTokenWithPrices(prices, type.tag).length }}</span>
+            {{ type.label }}
+            <span class="tokens-number">
+              {{ getFilteredTokensWithPrices(type.tag).length }}
+            </span>
           </template>
-          <TokenCards :tokens="filteredTokenWithPrices(prices, type.tag)" />
+          <TokenCards :key="searchTerm + type.tag" :tokens="getFilteredTokensWithPrices(type.tag)" />
         </b-tab>
       </b-tabs> 
   </div>
@@ -20,8 +23,9 @@
 <script>
 import redstone from 'redstone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
-import Tokens from "@/components/Tokens/Tokens";
-import tokensData from "@/assets/data/tokens.json";
+import Tokens from '@/components/Tokens/Tokens';
+import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
+import { mapActions, mapState } from 'vuex';
 
 const TOKEN_TYPES = [
   {
@@ -59,43 +63,31 @@ const TOKEN_TYPES = [
   {
     label: "Livestocks",
     tag: "livestocks"
-  },
-  {
-    label: "Softs",
-    tag: "softs"
-  },
-]
+  }
+];
 
-async function getAllAvailableCurrentPrices() {
-  const mainPrices = await redstone.getAllPrices();
-  const rapidPrices = await redstone.getAllPrices({
-    provider: 'redstone-rapid',
-  });
-  const stocksPrices = await redstone.getAllPrices({
-    provider: 'redstone-stocks',
-  });
-
-  return {
-    ...mainPrices,
-    ...rapidPrices,
-    ...stocksPrices,
-  };
+function simplifyPricesObject(pricesObj) {
+  const simplifiedObj = {};
+  for (const symbol in pricesObj) {
+    simplifiedObj[symbol] = pricesObj[symbol].value;
+  }
+  return simplifiedObj;
 }
 
-let currentPrices;
+const tokensData = getAllSupportedTokens();
 
 export default {
   name: "Tokens",
 
   data() {
     return {
-      prices: {},
       tokenTypes: TOKEN_TYPES,
       back: false,
       showArrows: false,
       leftScrollActive: false,
       rightScrollActive: true,
-      tabsLength: 0
+      tabsLength: 0,
+      selectedTabIndex: 0,
     };
   },
 
@@ -108,38 +100,87 @@ export default {
   async mounted() {
     setTimeout(() => this.resize(), 0);
 
-    if (currentPrices) {
-      this.prices = currentPrices;
-    } else {
-      currentPrices = await getAllAvailableCurrentPrices();
-      this.prices = currentPrices;
-    }
+    await this.lazyLoadPricesForAllTokens();
 
-    document.getElementsByClassName("nav-tabs")[0].addEventListener('scroll', (e) =>  {
-      this.leftScrollActive = this.leftScrollAvailable();
-      this.rightScrollActive = this.rightScrollAvailable();
-    });
+    this.setScrollAvailability();
   },
 
   created() {
     window.addEventListener("resize", this.resize);
     this.resize();
+    this.selectTabFromUrlParam();
   },
 
   destroyed() {
     window.removeEventListener("resize", this.resize);
   },
+
+  watch: {
+    selectedTabIndex(newValue) {
+      if (this.$route.query["selected-tab"] != newValue) {
+        this.$router.push({ query: {
+          ...this.$route.query,
+          "selected-tab": newValue
+        }});
+      }
+    },
+
+    $route() {
+      this.selectTabFromUrlParam();
+    },
+  },
   
   methods: {
+    ...mapActions({
+      setPricesLoadingAsCompleted: 'prices/setPricesLoadingAsCompleted',
+      addPrices: 'prices/addPrices',
+    }),
+
+    setScrollAvailability() {
+      const elements = document.getElementsByClassName("nav-tabs");
+      if (elements && elements.length > 0) {
+        elements[0].addEventListener('scroll', (e) =>  {
+          this.leftScrollActive = this.leftScrollAvailable();
+          this.rightScrollActive = this.rightScrollAvailable();
+        });
+      }
+    },
+
+    async lazyLoadPricesForAllTokens() {
+      const providersSorted = getOrderedProviders();
+      if (!this.pricesLoadingCompleted) {
+        for (const provider of providersSorted) {
+          const prices = await redstone.getAllPrices({ provider });
+          this.addPrices(simplifyPricesObject(prices));
+        }
+        this.setPricesLoadingAsCompleted();
+      }
+    },
+
+    selectTabFromUrlParam() {
+      let selectedTabIndexFromUrl = this.$route.query["selected-tab"];
+      if (selectedTabIndexFromUrl) {
+        selectedTabIndexFromUrl = Number(selectedTabIndexFromUrl);
+        if (selectedTabIndexFromUrl != this.selectedTabIndex) {
+          this.selectedTabIndex = selectedTabIndexFromUrl;
+        }
+      }
+    },
+
     setTabsWidth() {
       this.tabsLength = this.calculateTabsLength();
     },
-    filteredTokenWithPrices(fetchedPrices, type) {
+
+    getFilteredTokensWithPrices(type) {
       const result = [];
 
       for (const symbol of Object.keys(tokensData)) {
         const token = tokensData[symbol];
         let shouldBeAdded = true;
+
+        if (!token) {
+          continue;
+        }
 
         if (type) {
           if (!token.tags || !token.tags.includes(type)) {
@@ -147,7 +188,7 @@ export default {
           }
         }
 
-        const searchTerm = this.searchPhrase;
+        const searchTerm = this.searchTerm || "";
         const searchTermLowerCase = searchTerm.toLowerCase();
         if (searchTerm) {
           const nameIncludesSearchTerm =
@@ -159,22 +200,18 @@ export default {
           }
         }
 
-        //TODO: remove when price fetching is corrected
-        if (['BTMX', 'NPXS', 'MDX', 'AMP'].includes(symbol)) {
-          shouldBeAdded = false;
-        }
-
         if (shouldBeAdded) {
           result.push({
               symbol: symbol,
               ...token,
-              price: fetchedPrices[symbol]?.value
+              price: this.prices[symbol]
             }
           );
         }
       }
       return result;
     },
+
     calculateTabsLength() {
       const tabElements = this.$refs.tabScroll?.$el.getElementsByTagName("li");
       const tabs = tabElements ? [...tabElements] : [];
@@ -236,10 +273,11 @@ export default {
   },
 
   computed: {
-    searchPhrase() {
-      let search = this.$route.query.search;
-      return search != null ? search : '';
-    }
+    ...mapState({
+      searchTerm: state => state.layout.searchTerm,
+      prices: state => state.prices.prices,
+      pricesLoadingCompleted: state => state.prices.pricesLoadingCompleted,
+    }),
   }
 }
 </script>

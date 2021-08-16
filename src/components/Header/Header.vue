@@ -19,9 +19,9 @@
             </template>
             <b-form-input v-model="searchTerm" id="search-input" placeholder="Search..." />
           </b-input-group>
-          <router-link :to="routerLink" v-else>            
+          <a href="javascript:window.history.back()" v-else>
             <i class="fa flaticon-chevron-back"/>
-          </router-link>
+          </a>
         </b-form-group>
       </b-form>
     </b-nav>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import { mapState, mapActions } from 'vuex';
 import CodeExample from "@/components/Token/CodeExample";
 
@@ -57,21 +58,15 @@ export default {
         this.updateSearchTerm(value);
 
         if (value) {
-          this.$router.push({query: {search: value}})
+          this.$router.push({query: {
+            ...this.$route.query,
+            search: value,
+          }});
         } else {
-          this.$router.push({query: {}})
+          const queryWithoutSearchInput = _.omit(this.$route.query, ["search"]);
+          this.$router.push({query: queryWithoutSearchInput});
         }
       },
-    },
-
-    routerLink() {
-      let config = { path: this.$route.name == 'TokenPage' ? '/app/tokens' : '/app/providers' }
-      let searchTerm = this.$store.state.layout.searchTerm;
-
-      if (searchTerm) {
-        config.query = { search: searchTerm }
-      }
-      return config;
     },
   },
 

@@ -22,7 +22,9 @@ export default {
       state.providers = { ...providers };
     },
     setArweave(state, arweave) {
-      state.arweave = arweave;
+      if (!state.arweave) {
+        state.arweave = arweave;
+      }
     },
     setContractsRegistryContractId(state, id) {
       state.contractsRegistryContractId = id;
@@ -92,7 +94,7 @@ export default {
           providersData.providers[o].manifests[0].manifestTxId;
 
         let currentManifestPromise = axios.get(
-          `https://${constants.arweaveUrl}/tx/${currentManifestTxId}/data.json`
+          `https://${constants.arweaveUrl}/${currentManifestTxId}`
         )
         .then(
           (resp) => {
@@ -102,7 +104,7 @@ export default {
         );
 
         let firstManifestPromise = axios.get(
-          `https://${constants.arweaveUrl}/tx/${firstManifestTxId}/data.json`
+          `https://${constants.arweaveUrl}/${firstManifestTxId}`
         );
 
         Promise.all([currentManifestPromise, firstManifestPromise]).then(

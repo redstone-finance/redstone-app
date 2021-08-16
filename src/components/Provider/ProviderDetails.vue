@@ -20,7 +20,6 @@
         <LabelValue label="Interval" :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined" :alignRight="true"/>
         <LabelValue label="Data points" :value="(provider && provider.dataPoints) ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/>
         <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/>
-        <LabelValue label="Default source" :value="(provider && provider.currentManifest) ? (provider.currentManifest.defaultSource ? provider.currentManifest.defaultSource[0] : '') : undefined" />
         <LabelValue label="Disputes" :value="provider ? null : undefined" />
       </div>
     </div>  
@@ -48,7 +47,7 @@
 
       <template #cell(sources)="data">
         <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-          <img class="source-logo" :src="source.imgURI" v-b-tooltip.hover :title="source.name" />
+          <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name" />
         </a>
       </template>
     </b-table>
@@ -65,8 +64,8 @@
 
 <script>
 import LabelValue from '@/components/Provider/LabelValue';
-import tokensData from "@/assets/data/tokens.json";
-import sourcesData from "@/assets/data/sources-list.json";
+import tokensData from "redstone-node/src/config/tokens.json";
+import sourcesData from "redstone-node/src/config/sources.json";
 import _ from 'lodash';
 const axios = require('axios');
 import utils from "@/utils";
@@ -101,21 +100,36 @@ export default {
   },
 
   computed: {
+    currentManifest() {
+      if (this.provider) {
+        return this.provider.currentManifest;
+      } else {
+        return {};
+      }
+    },
+
     tokensDataForTable() {
-      let tokens = (this.provider && this.provider.currentManifest && this.provider.currentManifest.tokens) ? Object.entries(this.provider.currentManifest.tokens).map(function (token) {
-        let tokenInfo = tokensData[token[0]]
+      const component = this;
+      let tokens = (this.currentManifest && this.currentManifest.tokens) ? Object.entries(this.currentManifest.tokens).map(function (entry) {
+        const [symbol, detailsInManifest] = entry;
+        let tokenInfo = tokensData[symbol];
+
+        let sourceListForToken = (detailsInManifest && detailsInManifest.source)
+          ? detailsInManifest.source
+          : component.currentManifest.defaultSource;
+
         return {
-          logoURI: tokenInfo ? tokenInfo.logoURI : 'https://static.thenounproject.com/png/3094257-200.png',
-          symbol: token[0],
+          logoURI: tokenInfo ? tokenInfo.logoURI : constants.images["no-logo"],
+          symbol,
           name: tokenInfo ? tokenInfo.name : '',
-          source: token[1].source ? token[1].source.map(
+          source: sourceListForToken.map(
             el => {
               return {
                 name: el,
                 ...sourcesData[el]
               }
             }
-          ) : []
+          ),
         };
       }) : null;
 
@@ -133,7 +147,7 @@ export default {
   watch: {
     firstManifestTxId() {
       if (this.firstManifestTxId) {
-        axios.get(`https://${constants.arweaveUrl}/tx/${this.firstManifestTxId}/data.json`).then(
+        axios.get(`https://${constants.arweaveUrl}/${this.firstManifestTxId}`).then(
           result => this.firstManifest = result
         );
 
@@ -221,6 +235,7 @@ export default {
 
 .source-logo {
   height: 20px;
+  margin: 4px;
 }
 
 .text-preloader {
