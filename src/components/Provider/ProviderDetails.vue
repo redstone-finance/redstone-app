@@ -32,7 +32,7 @@
         id="assets-table"
         stacked="md"
         hover
-        :items="tokensDataForTable"
+        :items="visibleTokens"
         :fields="fields"
         >
 
@@ -46,12 +46,19 @@
       </template>
 
       <template #cell(sources)="data">
-        <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-          <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name" />
-        </a>
+        <div class="d-flex" v-bind:class="symbolWrapperClasses('symbols_' + data.item.symbol)" :ref="'symbols_' + data.item.symbol">
+          <div class="d-flex source-links" >
+            <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
+              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name" />
+            </a>
+          </div>
+          <div class="expand">
+            ...
+          </div>
+        </div>
       </template>
     </b-table>
-    <div v-if="!tokensDataForTable">
+    <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
       <div
         v-for="n in 5"
         :key="n"
@@ -70,6 +77,7 @@ import _ from 'lodash';
 const axios = require('axios');
 import utils from "@/utils";
 import constants from "@/constants";
+import showMoreTokensMixin from '@/mixins/show-more-tokens';
 
 export default {
   name: "Provider",
@@ -78,39 +86,24 @@ export default {
     provider: {}
   },
 
+  mixins: [showMoreTokensMixin],
+
   data() {
     return {
       fields: [{ key: 'name', label: 'Asset'}, 'symbol', 'sources'],
       firstManifest: null,
-      transactionTime: null
+      transactionTime: null,
+      tokens: null
     }
-  },
-
-  created() {
   },
 
   methods: {
     formatSources(source) {
       return source.map(s => _.startCase(s)).join(', ');
     },
-  },
-
-  components: {
-    LabelValue
-  },
-
-  computed: {
-    currentManifest() {
-      if (this.provider) {
-        return this.provider.currentManifest;
-      } else {
-        return {};
-      }
-    },
-
-    tokensDataForTable() {
+    prepareTokensDataForTable() {
       const component = this;
-      let tokens = (this.currentManifest && this.currentManifest.tokens) ? Object.entries(this.currentManifest.tokens).map(function (entry) {
+      this.tokens = (this.currentManifest && this.currentManifest.tokens) ? Object.entries(this.currentManifest.tokens).map(function (entry) {
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = tokensData[symbol];
 
@@ -132,10 +125,37 @@ export default {
           ),
         };
       }) : null;
-
-      return tokens;
+      this.showMoreTokens();
+      this.$forceUpdate();
     },
+    loadMoreSectionVisibilityChanged() {
+      this.showMoreTokens();
+    },
+    symbolWrapperClasses(ref) {
+      let isOverflowing = false;
+      if (this.$refs[ref]) {
+        const element = this.$refs[ref].children[0];
+        isOverflowing = element.scrollWidth > element.clientWidth;
+      }
+      return {
+        'isOverflowing': isOverflowing,
+        'isOpen': true
+      }
+    }
+  },
 
+  components: {
+    LabelValue
+  },
+
+  computed: {
+    currentManifest() {
+      if (this.provider) {
+        return this.provider.currentManifest;
+      } else {
+        return {};
+      }
+    },
     firstManifestTxId() {
       return this.provider ? this.provider.manifests[0].manifestTxId : undefined;
     },
@@ -156,6 +176,11 @@ export default {
         );
       }
     },
+    currentManifest() {
+      if (this.currentManifest) {
+        this.prepareTokensDataForTable();
+      }
+    }
   }
 }
 </script>
@@ -277,11 +302,49 @@ export default {
 }
 
 .provider-details #assets-table {
+    table-layout: fixed;
+
   th {
     text-transform: none;
     color: $navy;
     font-size: 12px;
     font-weight:  $font-weight-soft-bold;
+  }
+
+  th:nth-of-type(1) {
+    width: 250px;
+  }
+
+  th:nth-of-type(2) {
+    width: 100px;
+  }
+
+  th:nth-of-type(2) {
+    overflow: hidden;
+  }
+
+  td .source-links {
+    overflow: hidden;
+  }
+
+  .expand {
+    display: none;
+  }
+  
+  .isOverflowing {
+    .expand {
+      display: block;
+    }
+  }
+  
+  td:hover {
+    .source-links {
+      flex-wrap: wrap;
+    }
+
+    .expand {
+      display: none;
+    }
   }
 }
 </style>

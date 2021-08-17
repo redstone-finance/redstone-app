@@ -60,11 +60,12 @@
 import Widget from "@/components/Widget/Widget";
 import _ from "lodash";
 import { mapState } from "vuex";
-
-const VISIBLE_CHUNK_SIZE = 30;
+import showMoreTokensMixin from '@/mixins/show-more-tokens';
 
 export default {
   name: 'Tokens',
+
+  mixins: [showMoreTokensMixin],
 
   props: {
     tokens: Array,
@@ -72,15 +73,7 @@ export default {
 
   data() {
     return {
-      visibleTokensSymbols: new Set(),
-      visibleTokens: [],
-      allTokensVisible: false,
     };
-  },
-
-  created() {
-    this.visibleTokens = [];
-    this.visibleTokensSymbols = new Set();
   },
 
   methods: {
@@ -97,28 +90,6 @@ export default {
 
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
-    },
-
-    showMoreTokens() {
-      let tokensLeftToShow = VISIBLE_CHUNK_SIZE;
-
-      for (const token of this.tokens) {
-        const symbol = token.symbol;
-
-        if (tokensLeftToShow <= 0) {
-          break;
-        }
-
-        if (!this.visibleTokensSymbols.has(symbol)) {
-          this.visibleTokens.push(token);
-          tokensLeftToShow--;
-          this.visibleTokensSymbols.add(symbol);
-        }
-      }
-      
-      if (tokensLeftToShow > 0) {
-        this.allTokensVisible = true;
-      }
     },
   },
 
