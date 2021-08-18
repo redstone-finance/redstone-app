@@ -46,14 +46,11 @@
       </template>
 
       <template #cell(sources)="data">
-        <div class="d-flex" v-bind:class="symbolWrapperClasses('symbols_' + data.item.symbol)" :ref="'symbols_' + data.item.symbol">
+        <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
           <div class="d-flex source-links" >
             <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name" />
+              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name"/>
             </a>
-          </div>
-          <div class="expand">
-            ...
           </div>
         </div>
       </template>
@@ -126,21 +123,9 @@ export default {
         };
       }) : null;
       this.showMoreTokens();
-      this.$forceUpdate();
     },
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
-    },
-    symbolWrapperClasses(ref) {
-      let isOverflowing = false;
-      if (this.$refs[ref]) {
-        const element = this.$refs[ref].children[0];
-        isOverflowing = element.scrollWidth > element.clientWidth;
-      }
-      return {
-        'isOverflowing': isOverflowing,
-        'isOpen': true
-      }
     }
   },
 
@@ -176,9 +161,12 @@ export default {
         );
       }
     },
-    currentManifest() {
-      if (this.currentManifest) {
-        this.prepareTokensDataForTable();
+    currentManifest: {
+      immediate: true,
+      handler: function() {
+        if (this.currentManifest) {
+          this.prepareTokensDataForTable();
+        }
       }
     }
   }
@@ -327,23 +315,18 @@ export default {
     overflow: hidden;
   }
 
-  .expand {
-    display: none;
-  }
-  
-  .isOverflowing {
-    .expand {
-      display: block;
-    }
-  }
+  td:not(:hover) .source-links-wrapper:after {
+    content: "";
+    box-shadow: inset -19px 0px 12px -10px $gray-100;
+    z-index: 1;
+    transform: translateX(-10px);
+    height: 30px;
+    width: 30px;
+}
   
   td:hover {
     .source-links {
       flex-wrap: wrap;
-    }
-
-    .expand {
-      display: none;
     }
   }
 }
