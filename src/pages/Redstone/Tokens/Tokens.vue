@@ -45,11 +45,11 @@ const TOKEN_TYPES = [
     tag: "currencies"
   },
   {
-    label: "Verto",
-    tag: "verto"
+    label: "PST",
+    tag: "pst"
   },
   {
-    label: "ETFs",
+    label: "ETF",
     tag: "etfs"
   },
   {
