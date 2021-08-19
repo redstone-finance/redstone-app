@@ -4,9 +4,11 @@ import constants from "@/constants";
 import utils from "@/utils";
 import Arweave from 'arweave';
 import {
+  CacheableContractInteractionsLoader,
   CacheableExecutorFactory,
   CacheableStateEvaluator,
   ContractDefinitionLoader,
+  ContractInteractionsLoader,
   HandlerBasedSwcClient,
   HandlerExecutorFactory,
   LexicographicalInteractionsSorter,
@@ -14,7 +16,6 @@ import {
 } from 'smartweave/lib/v2';
 import LocalStorageCache from "@/cache/cache";
 import LocalStorageBlockHeightCache from "@/cache/block-height-cache";
-import LocalStorageContractInteractionsLoaderCache from "@/cache/contract-interactions-loader-cache";
 import Vue from 'vue';
 
 
@@ -71,14 +72,12 @@ export default {
 
       const swcClient = new HandlerBasedSwcClient(
         state.arweave,
-        new ContractDefinitionLoader(state.arweave, new LocalStorageCache()),
-        new LocalStorageContractInteractionsLoaderCache(state.arweave),
+        new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_")),
+        new CacheableContractInteractionsLoader(new ContractInteractionsLoader(state.arweave), new LocalStorageBlockHeightCache("_REDSTONE_APP_INTER_")),
         cacheableExecutorFactory,
-        new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache()),
+        new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_")),
         new LexicographicalInteractionsSorter(state.arweave));
     
-      console.log('swcClient created');
-
       commit("setSwcClient", swcClient);
     },  
     updateProvider({ commit, state }, { id, key, value}) {

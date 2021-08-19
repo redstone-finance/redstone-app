@@ -99,20 +99,17 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
-      const component = this;
-      this.tokens = (this.currentManifest && this.currentManifest.tokens) ? Object.entries(this.currentManifest.tokens).map(function (entry) {
+      this.tokens = Object.entries(this.currentManifest.tokens).map(function (entry) {
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = tokensData[symbol];
 
-        let sourceListForToken = (detailsInManifest && detailsInManifest.source)
-          ? detailsInManifest.source
-          : component.currentManifest.defaultSource;
+        let sourceListForToken = detailsInManifest.source;
 
         return {
-          logoURI: tokenInfo ? tokenInfo.logoURI : constants.images["no-logo"],
+          logoURI: tokenInfo?.logoURI,
           symbol,
-          name: tokenInfo ? tokenInfo.name : '',
-          source: sourceListForToken.map(
+          name: tokenInfo?.name,
+          source: sourceListForToken?.map(
             el => {
               return {
                 name: el,
@@ -121,7 +118,7 @@ export default {
             }
           ),
         };
-      }) : null;
+      });
       this.showMoreTokens();
     },
     loadMoreSectionVisibilityChanged() {
@@ -135,17 +132,13 @@ export default {
 
   computed: {
     currentManifest() {
-      if (this.provider) {
-        return this.provider.currentManifest;
-      } else {
-        return {};
-      }
+      return this.provider?.currentManifest;
     },
     firstManifestTxId() {
-      return this.provider ? this.provider.manifests[0].manifestTxId : undefined;
+      return this.provider?.manifests[0]?.manifestTxId;
     },
     lockedHours() {
-      return (this.firstManifest && this.firstManifest.data.lockedHours) ? this.firstManifest.data.lockedHours : undefined
+      return this.firstManifest?.data?.lockedHours
     }
   },
 

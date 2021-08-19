@@ -9,6 +9,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
     "@kyve/query": "^0.0.0-alpha.22",
     "animate.css": "^4.1.1",
     "apexcharts": "^3.22.2",
@@ -50,6 +51,7 @@
     "vue-multiselect": "^2.1.6",
     "vue-observe-visibility": "^1.0.0",
     "vue-router": "^3.4.9",
+    "vue-template-babel-compiler": "^1.0.2",
     "vue-timers": "^2.0.4",
     "vue-toasted": "^1.1.28",
     "vue-touch": "2.0.0-beta.4",

@@ -1,20 +1,17 @@
+import utils from "@/utils";
+
 export default class LocalStorageCache {
-    constructor() {
-        try {
-            const uid = new Date;
-            (this.storage = window.localStorage).setItem(uid, uid);
-            const fail = this.storage.getItem(uid) != uid;
-            this.storage.removeItem(uid);
-            fail && (this.storage = false);
-        } catch (exception) {
-            console.log('Local storage is not supported by current environment')
-        }
-        this.prefix = "_REDSTONE_APP_"
+    constructor(prefix) {
+        this.storage = utils.initLocalStorage();
+
+        this.prefix = prefix;
     }
     clearAll() {
         Object.keys(this.storage).forEach(
             key => {
-                this.storage.removeItem(this.prefixed(key))
+                if (key.contains(this.prefix)) {
+                    this.storage.removeItem(key)
+                }
             }
         );
     }
