@@ -50,7 +50,7 @@
 import redstone from "redstone-api";
 import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
 import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
-import tokensData from "redstone-node/src/config/tokens.json";
+import tokensData from "redstone-node/dist/src/config/tokens.json";
 import _ from "lodash";
 
 export default {

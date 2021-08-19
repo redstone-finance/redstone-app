@@ -16,7 +16,7 @@
                 sm="4" 
                 md="6"
                 class="h4 token-title pr-0">
-                  {{ token.symbol }}
+                  {{ token.symbol | maxLenght(8) }}
                   <br>
                   <div class="token-name">
                   {{ token.name }}

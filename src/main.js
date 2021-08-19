@@ -78,6 +78,13 @@ function setupFilters() {
     }
     return value.toLocaleDateString("en-GB");
   });
+
+  Vue.filter('maxLenght', function(value, maxLen) {
+    if (!value) return '';
+    return (value.length > maxLen)
+      ? value.substr(0, maxLen - 3) + "..."
+      : value;
+  });
 }
 
 setupFilters();
