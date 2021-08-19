@@ -64,8 +64,8 @@
 
 <script>
 import LabelValue from '@/components/Provider/LabelValue';
-import tokensData from "redstone-node/src/config/tokens.json";
-import sourcesData from "redstone-node/src/config/sources.json";
+import tokensData from "redstone-node/dist/src/config/tokens.json";
+import sourcesData from "redstone-node/dist/src/config/sources.json";
 import _ from 'lodash';
 const axios = require('axios');
 import utils from "@/utils";

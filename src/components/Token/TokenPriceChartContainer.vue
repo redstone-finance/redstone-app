@@ -112,8 +112,8 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
-import tokensData from "redstone-node/src/config/tokens.json";
-import sources from "redstone-node/src/config/sources.json";
+import tokensData from "redstone-node/dist/src/config/tokens.json";
+import sources from "redstone-node/dist/src/config/sources.json";
 import constants from "@/constants";
 
 function formatPrice(value) {

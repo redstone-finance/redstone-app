@@ -294,7 +294,7 @@
 
 <script>
 import JsonViewer from "vue-json-viewer";
-import tokensData from "redstone-node/src/config/tokens.json";
+import tokensData from "redstone-node/dist/src/config/tokens.json";
 import Multiselect from "vue-multiselect";
 import Vue from 'vue';
 
