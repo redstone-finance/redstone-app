@@ -2,7 +2,7 @@ let publicPath = process.env.NODE_ENV === 'production' ? './' : './';
 
 module.exports = {
   publicPath,
-  productionSourceMap: false,
+  productionSourceMap: true,
   chainWebpack: config => {
       config.module
           .rule('vue')
