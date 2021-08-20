@@ -4,7 +4,6 @@ import constants from "@/constants";
 import utils from "@/utils";
 import Arweave from 'arweave';
 import {
-  CacheableContractInteractionsLoader,
   CacheableExecutorFactory,
   CacheableStateEvaluator,
   ContractDefinitionLoader,
@@ -73,7 +72,7 @@ export default {
       const swcClient = new HandlerBasedSwcClient(
         state.arweave,
         new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_")),
-        new CacheableContractInteractionsLoader(new ContractInteractionsLoader(state.arweave), new LocalStorageBlockHeightCache("_REDSTONE_APP_INTER_")),
+        new ContractInteractionsLoader(state.arweave),
         cacheableExecutorFactory,
         new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_")),
         new LexicographicalInteractionsSorter(state.arweave));
