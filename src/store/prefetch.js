@@ -12,7 +12,7 @@ import {
   HandlerExecutorFactory,
   LexicographicalInteractionsSorter,
   MemCache
-} from 'smartweave/lib/v2';
+} from 'redstone-smartweave';
 import LocalStorageCache from "@/cache/cache";
 import LocalStorageBlockHeightCache from "@/cache/block-height-cache";
 import Vue from 'vue';
