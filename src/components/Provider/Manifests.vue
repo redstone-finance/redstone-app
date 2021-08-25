@@ -98,7 +98,7 @@
 import JsonViewer from 'vue-json-viewer'
 const axios = require('axios');
 import ManifestForm from "./ManifestForm.vue";
-import { interactWrite } from 'smartweave';
+import { interactWrite } from 'redstone-smartweave';
 import utils from "@/utils";
 import constants from "@/constants";
 import { mapState } from 'vuex';
