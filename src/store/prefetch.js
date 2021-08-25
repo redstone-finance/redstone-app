@@ -1,15 +1,28 @@
-const {interactRead} = require("smartweave");
 const axios = require("axios");
 import dummyWallet from "@/dummy-wallet.json";
 import constants from "@/constants";
 import utils from "@/utils";
 import Arweave from 'arweave';
+import {
+  CacheableExecutorFactory,
+  CacheableStateEvaluator,
+  ContractDefinitionLoader,
+  ContractInteractionsLoader,
+  HandlerBasedSwcClient,
+  HandlerExecutorFactory,
+  LexicographicalInteractionsSorter,
+  MemCache
+} from 'smartweave/lib/v2';
+import LocalStorageCache from "@/cache/cache";
+import LocalStorageBlockHeightCache from "@/cache/block-height-cache";
 import Vue from 'vue';
+
 
 export default {
   namespaced: true,
   state: {
     arweave: null,
+    swcClient: null,
     contractsRegistryContractId: null,
     providersRegistryContractId: null,
     providers: null
@@ -26,27 +39,19 @@ export default {
         state.arweave = arweave;
       }
     },
+    setSwcClient(state, client) {
+      state.swcClient = client;
+    },
     setContractsRegistryContractId(state, id) {
       state.contractsRegistryContractId = id;
     }
   },
   getters: {
-    getArweave(state){
-      return state.arweave;
-    },
-    getProviders(state){
-      return state.providers;
-    },
-    getProvidersRegistryContractId(state){
-      return state.providersRegistryContractId;
-    },
-    getContractsRegistryContractId(state){
-      return state.contractsRegistryContractId;
-    }
   },
   actions: {
     async prefetchAll({ dispatch }) {
       dispatch('initArweave')
+        .then(() => { return dispatch('swcClient') })
         .then(() => { return dispatch('contractsRegistryContract') })
         .then(() => { return dispatch('providersRegistryContract', {contractName: 'providers-registry', mutation: 'setProvidersRegistryContractId'}) })
         .then(() => { dispatch('fetchProviders');}
@@ -61,24 +66,36 @@ export default {
 
       commit("setArweave", arweaveObject);
     },  
+    swcClient({ commit, state }) {
+      const cacheableExecutorFactory = new CacheableExecutorFactory(state.arweave, new HandlerExecutorFactory(state.arweave), new MemCache());
+
+      const swcClient = new HandlerBasedSwcClient(
+        state.arweave,
+        new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_")),
+        new ContractInteractionsLoader(state.arweave),
+        cacheableExecutorFactory,
+        new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_")),
+        new LexicographicalInteractionsSorter(state.arweave));
+    
+      commit("setSwcClient", swcClient);
+    },  
     updateProvider({ commit, state }, { id, key, value}) {
       let providers = state.providers;
       Vue.set(providers[id], key, value);
       commit('setProviders', providers);
     },
-    async fetchProviders({ commit, getters, dispatch }) {
+    async fetchProviders({ commit, state, dispatch }) {
 
-      let providersData = await interactRead(
-        getters.getArweave,
-        dummyWallet,
-        getters.getProvidersRegistryContractId,
-         {
-            function: "providersData",
-            data: {
-              eagerManifestLoad: true
-            }
+      let providersData = (await state.swcClient.viewState(
+        state.providersRegistryContractId,
+        {
+          function: "providersData",
+          data: {
+            eagerManifestLoad: true
           }
-      );
+        },
+        dummyWallet
+      )).result;
       
       let providers = {};
 
@@ -133,20 +150,19 @@ export default {
       }
 
     },
-    providersRegistryContract({ commit, getters }, {contractName, mutation}) {
-      return interactRead(
-        getters.getArweave,
-        dummyWallet,
-        getters.getContractsRegistryContractId,
-         {
-            function: "contractsCurrentTxId",
-            data: {
-              contractNames: [contractName]
-            }
+    providersRegistryContract({ commit, state }, {contractName, mutation}) {
+      return state.swcClient.viewState(
+        state.contractsRegistryContractId,
+        {
+          function: "contractsCurrentTxId",
+          data: {
+            contractNames: [contractName]
           }
+        },
+        dummyWallet
       ).then(
         result => {
-          commit(mutation, result[contractName]);
+          commit(mutation, result.result[contractName]);
         }
     );
     },
