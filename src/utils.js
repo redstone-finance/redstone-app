@@ -9,8 +9,8 @@ export default {
     activeFrom(transactionTime, lockedHours) {
         return new Date(transactionTime.getTime() + lockedHours * 60 * 60 * 1000);
     },
-    dataPoints(interval, activeFrom) {
-        return interval ? Math.floor((new Date().getTime() - activeFrom.getTime()) / interval): 0;
+    dataPoints(interval, pointsPerInterval, activeFrom) {
+        return interval ? Math.floor(pointsPerInterval * ((new Date().getTime() - activeFrom.getTime()) / interval)): 0;
     },
     getViewblockTxLink(txId) {
         return constants.viewblockTxUrlPrefix + txId;

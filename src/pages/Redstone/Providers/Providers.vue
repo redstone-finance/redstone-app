@@ -57,7 +57,7 @@
                 </div>
                 <div>
                   <span v-if="provider.dataPoints">
-                    {{ provider.dataPoints }}
+                    {{ provider.dataPoints | bigInt }}
                   </span>
                   <vue-loaders-ball-beat
                     v-else

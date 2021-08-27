@@ -10732,10 +10732,10 @@ redstone-smartweave-contracts@redstone-finance/redstone-smartweave-contracts:
     smartweave "0.4.31"
     testweave-sdk "^0.2.2"
 
-redstone-smartweave@0.1.0-alpha.1:
-  version "0.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/redstone-smartweave/-/redstone-smartweave-0.1.0-alpha.1.tgz#9e5769d819b07e16e3656488db717b26da2f7d6b"
-  integrity sha512-1J9UxZLMGK3UMqobUX0GltbOozzjBXRdH2vSlT61GK7DB/2/LK58dq/KjSqsa9uDfz8rEg5ai2k+ZzkxDCIq1g==
+redstone-smartweave@0.2.2-alpha.1:
+  version "0.2.2-alpha.1"
+  resolved "https://registry.yarnpkg.com/redstone-smartweave/-/redstone-smartweave-0.2.2-alpha.1.tgz#f808fc0358bd548fd99058422c3c6862f5319cd6"
+  integrity sha512-6kpSuvxXtPNAEr2yk49vmCTtg9NywD2E3M6X4l7KfvsoHMX1SF0ynldcIV/l2y0oY/TfwgEFAg99AVDby+qcgQ==
   dependencies:
     "@weavery/clarity" "^0.1.5"
     arweave "^1.10.16"

@@ -8,10 +8,10 @@ import {
   CacheableStateEvaluator,
   ContractDefinitionLoader,
   ContractInteractionsLoader,
-  HandlerBasedSwcClient,
   HandlerExecutorFactory,
   LexicographicalInteractionsSorter,
-  MemCache
+  MemCache,
+  SmartWeave
 } from 'redstone-smartweave';
 import LocalStorageCache from "@/cache/cache";
 import LocalStorageBlockHeightCache from "@/cache/block-height-cache";
@@ -22,7 +22,7 @@ export default {
   namespaced: true,
   state: {
     arweave: null,
-    swcClient: null,
+    smartweave: null,
     contractsRegistryContractId: null,
     providersRegistryContractId: null,
     providers: null
@@ -39,8 +39,8 @@ export default {
         state.arweave = arweave;
       }
     },
-    setSwcClient(state, client) {
-      state.swcClient = client;
+    setSmartweave(state, client) {
+      state.smartweave = client;
     },
     setContractsRegistryContractId(state, id) {
       state.contractsRegistryContractId = id;
@@ -51,7 +51,7 @@ export default {
   actions: {
     async prefetchAll({ dispatch }) {
       dispatch('initArweave')
-        .then(() => { return dispatch('swcClient') })
+        .then(() => { return dispatch('smartweave') })
         .then(() => { return dispatch('contractsRegistryContract') })
         .then(() => { return dispatch('providersRegistryContract', {contractName: 'providers-registry', mutation: 'setProvidersRegistryContractId'}) })
         .then(() => { dispatch('fetchProviders');}
@@ -66,18 +66,24 @@ export default {
 
       commit("setArweave", arweaveObject);
     },  
-    swcClient({ commit, state }) {
+    smartweave({ commit, state }) {
+      
+      const arweave = state.arweave;
+      const contractDefinitionLoader = new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_"));
+      const contractInteractionsLoader = new ContractInteractionsLoader(state.arweave);
       const cacheableExecutorFactory = new CacheableExecutorFactory(state.arweave, new HandlerExecutorFactory(state.arweave), new MemCache());
+      const cacheableStateEvaluator = new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_"));
+      const lexicographicalInteractionsSorter = new LexicographicalInteractionsSorter(state.arweave);
 
-      const swcClient = new HandlerBasedSwcClient(
-        state.arweave,
-        new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_")),
-        new ContractInteractionsLoader(state.arweave),
-        cacheableExecutorFactory,
-        new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_")),
-        new LexicographicalInteractionsSorter(state.arweave));
+      const smartweave = SmartWeave.builder(arweave)
+        .setInteractionsLoader(contractInteractionsLoader)
+        .setInteractionsSorter(lexicographicalInteractionsSorter)
+        .setDefinitionLoader(contractDefinitionLoader)
+        .setExecutorFactory(cacheableExecutorFactory)
+        .setStateEvaluator(cacheableStateEvaluator)
+        .build();
     
-      commit("setSwcClient", swcClient);
+      commit("setSmartweave", smartweave);
     },  
     updateProvider({ commit, state }, { id, key, value}) {
       let providers = state.providers;
@@ -86,16 +92,17 @@ export default {
     },
     async fetchProviders({ commit, state, dispatch }) {
 
-      let providersData = (await state.swcClient.viewState(
-        state.providersRegistryContractId,
-        {
-          function: "providersData",
-          data: {
-            eagerManifestLoad: true
-          }
+    const providersRegistryContract = 
+      state.smartweave
+        .contract(state.providersRegistryContractId)
+        .connect(dummyWallet);
+
+      let providersData = (await providersRegistryContract.viewState({
+        function: "providersData",
+        data: {
+          eagerManifestLoad: false,
         },
-        dummyWallet
-      )).result;
+      })).result;  
       
       let providers = {};
 
@@ -133,8 +140,16 @@ export default {
                 : 0;
   
                 let activeFrom = utils.activeFrom(transactionTime, lockedHours);
+
+                let pointsPerInterval = 0;
+                Object.values(currentManifest.data.tokens).forEach(
+                  token => { 
+                      pointsPerInterval += (token.source ? Object.keys(token.source).length : 1 )
+                  });
+
                 let dataPoints = utils.dataPoints(
                   currentManifest.data.interval,
+                  pointsPerInterval,
                   activeFrom
                 );
     
@@ -151,20 +166,24 @@ export default {
 
     },
     providersRegistryContract({ commit, state }, {contractName, mutation}) {
-      return state.swcClient.viewState(
-        state.contractsRegistryContractId,
-        {
-          function: "contractsCurrentTxId",
-          data: {
-            contractNames: [contractName]
-          }
-        },
-        dummyWallet
-      ).then(
-        result => {
-          commit(mutation, result.result[contractName]);
-        }
-    );
+      const contractsRegistryContract = 
+        state.smartweave
+          .contract(state.contractsRegistryContractId)
+          .connect(dummyWallet);
+
+      return contractsRegistryContract
+              .viewState(
+                {
+                  function: "contractsCurrentTxId",
+                  data: {
+                    contractNames: [contractName]
+                  }
+                }
+              ).then(
+                result => {
+                  commit(mutation, result.result[contractName]);
+                }
+            );
     },
     async contractsRegistryContract({ commit }) {
       const contractsRegistryContractId = await (await fetch("https://raw.githubusercontent.com/redstone-finance/redstone-smartweave-contracts/main/contracts-registry.address.txt")).text();

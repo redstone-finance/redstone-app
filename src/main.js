@@ -85,6 +85,11 @@ function setupFilters() {
       ? value.substr(0, maxLen - 3) + "..."
       : value;
   });
+
+  Vue.filter('bigInt', function(value) {
+    if (!value) return '';
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+  });
 }
 
 setupFilters();
