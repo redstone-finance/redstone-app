@@ -40,13 +40,25 @@ Vue.config.productionTip = false;
 Vue.directive('observe-visibility', ObserveVisibility);
 
 function setupFilters() {
-  Vue.filter('price', (value, showPlus) => {
+  Vue.filter('price', (value, opts = {}) => {
+    const showPlus = opts.showPlus;
     if (isNaN(value)) {
       return value;
     } else {
       if (Math.abs(value) < 0.01) {
-        // Small prices
-        return addPlus(value, showPlus) + '$' + Number(value).toFixed(6);
+        if (Math.abs(value) == 0) {
+          return 0;
+        } else if (Math.abs(value) < 0.0000001) {
+          // Very small prices
+          if (opts.useScientificNotationForSmallValue) {
+            return Math.abs(value).toExponential(3);
+          } else {
+            return addPlus(value, showPlus) + '$' + Number(value).toFixed(12);
+          }
+        } else {
+          // Small prices
+          return addPlus(value, showPlus) + '$' + Number(value).toFixed(6);
+        }
       } else {
         return addPlus(value, showPlus) + new Intl.NumberFormat(
           'en-US',
