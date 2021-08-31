@@ -147,10 +147,11 @@ export default {
                       pointsPerInterval += (token.source ? Object.keys(token.source).length : 1 )
                   });
 
+                  console.log(o)
                 let dataPoints = utils.dataPoints(
+                  o,
                   currentManifest.data.interval,
-                  pointsPerInterval,
-                  activeFrom
+                  pointsPerInterval
                 );
     
                 Vue.set(providers[o], 'activeFrom', activeFrom);
