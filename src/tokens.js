@@ -1,7 +1,7 @@
 import tokenDetails from "redstone-node/dist/src/config/tokens.json";
 import rapidManifest from "redstone-node/dist/manifests/rapid.json";
 import stocksManifest from "redstone-node/dist/manifests/stocks.json";
-import mainManifest from "redstone-node/dist/manifests/all-supported-tokens.json";
+import mainManifest from "redstone-node/dist/manifests/main.json";
 
 const manifests = {
   "redstone-rapid": rapidManifest,

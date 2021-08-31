@@ -13,7 +13,7 @@
             </div>
             <div class="percentage ml-3 d-inline-block">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
-                <span>{{ priceChange().toFixed(2) | price(true) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)</div>   
+                <span>{{ priceChange().toFixed(2) | price({ showPlus: true }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)</div>   
             </div>  
           </div>
         </div>
@@ -95,7 +95,7 @@
                   
                 </div>
                 <div class="source-value">
-                  {{ getCurrentPriceForSource(source) | price }}
+                  {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true }) }}
                 </div>
               </div>
             </b-form-checkbox>

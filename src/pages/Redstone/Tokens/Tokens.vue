@@ -49,6 +49,10 @@ const TOKEN_TYPES = [
     tag: "pst"
   },
   {
+    label: "Avalanche",
+    tag: "avax"
+  },
+  {
     label: "ETF",
     tag: "etfs"
   },
