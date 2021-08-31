@@ -209,36 +209,36 @@ export default {
             status: 'mining'
           });
 
-      // const providersRegistryContract = 
-      //   this.smartweave
-      //     .contract(this.providersRegistryContractId)
-      //     .connect(window.arweaveWallet);
+      const providersRegistryContract = 
+        this.smartweave
+          .contract(this.providersRegistryContractId)
+          .connect('use_wallet');
 
-      //   let newManifestTxId = await providersRegistryContract
-      //     .writeInteraction(
-      //       {
-      //         function: "addProviderManifest",
-      //         data: {
-      //           providerId: this.providerId,
-      //           manifestData: uploadedManifestData,
-      //           lockedHours: manifest.lockedHours
-      //         }
-      //       }
-      //     )
-
-      let newManifestTxId = await interactWrite(
-          this.arweave, 
-          'use_wallet', 
-          this.providersRegistryContractId,
-        {
-          function: "addProviderManifest",
-          data: {
-            providerId: this.providerId,
-            manifestData: uploadedManifestData,
-              lockedHours: manifest.lockedHours
+        let newManifestTxId = await providersRegistryContract
+          .writeInteraction(
+            {
+              function: "addProviderManifest",
+              data: {
+                providerId: this.providerId,
+                manifestData: uploadedManifestData,
+                lockedHours: manifest.lockedHours
+              }
             }
-          }
-        )
+          )
+
+      // let newManifestTxId = await interactWrite(
+      //     this.arweave, 
+      //     'use_wallet', 
+      //     this.providersRegistryContractId,
+      //   {
+      //     function: "addProviderManifest",
+      //     data: {
+      //       providerId: this.providerId,
+      //       manifestData: uploadedManifestData,
+      //         lockedHours: manifest.lockedHours
+      //       }
+      //     }
+      //   )
 
         this.waitForConfirmation(newManifestTxId, this.arweave, () => {           
           this.manifestsDataForTable[0].status = 'active';
