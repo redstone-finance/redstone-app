@@ -95,7 +95,7 @@
                   
                 </div>
                 <div class="source-value">
-                  {{ getCurrentPriceForSource(source) | price({ useScientificNotationForSmallValue: true }) }}
+                  {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true }) }}
                 </div>
               </div>
             </b-form-checkbox>

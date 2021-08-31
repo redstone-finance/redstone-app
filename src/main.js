@@ -41,32 +41,29 @@ Vue.directive('observe-visibility', ObserveVisibility);
 
 function setupFilters() {
   Vue.filter('price', (value, opts = {}) => {
-    const showPlus = opts.showPlus;
     if (isNaN(value)) {
       return value;
     } else {
-      if (Math.abs(value) < 0.01) {
-        if (Math.abs(value) == 0) {
-          return 0;
-        } else if (Math.abs(value) < 0.0000001) {
-          // Very small prices
-          if (opts.useScientificNotationForSmallValue) {
-            return Math.abs(value).toExponential(3);
-          } else {
-            return addPlus(value, showPlus) + '$' + Number(value).toFixed(12);
-          }
-        } else {
-          // Small prices
-          return addPlus(value, showPlus) + '$' + Number(value).toFixed(6);
-        }
+      const price = Math.abs(value);
+      const optionalPlus = addPlus(value, opts.showPlus);
+
+      if (price === 0) {
+        return "0.00";
+      } else if (price < 0.0000001) {
+        // For extrmely small values we use E notation
+        // If `eNotationForSmallValues` option is set to true
+        return opts.eNotationForSmallValues
+          ? price.toExponential(3)
+          : optionalPlus + '$' + price.toFixed(12);
+      } else if (price < 0.01) {
+        // For small values we display 6 digits after comma
+        return optionalPlus + '$' + price.toFixed(6);
       } else {
-        return addPlus(value, showPlus) + new Intl.NumberFormat(
-          'en-US',
-          {
+        // For standard values we just format price in a standard way
+        return optionalPlus + new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
-          }
-        ).format(value);
+          }).format(price);
       }
     }
   });

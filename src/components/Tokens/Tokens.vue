@@ -28,7 +28,7 @@
                   md="4"
                   class="token-price pl-0">
                   <span v-if="prices[token.symbol]">
-                    {{ prices[token.symbol] | price({ useScientificNotationForSmallValue: true }) }}
+                    {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
                   </span>
                   <vue-loaders-ball-beat
                     v-else
