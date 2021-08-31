@@ -9,10 +9,32 @@ export default {
     activeFrom(transactionTime, lockedHours) {
         return new Date(transactionTime.getTime() + lockedHours * 60 * 60 * 1000);
     },
-    dataPoints(interval, activeFrom) {
-        return interval ? Math.floor((new Date().getTime() - activeFrom.getTime()) / interval): 0;
+    dataPoints(provider, interval, pointsPerInterval) {
+        const snapshotTimestamp = 1630398567000;
+        const providersSnapshots = {
+            'I-5rWUehEv-MjdK9gFw09RxfSLQX9DIHxG614Wf8qo0': 186202711,
+            'zYqPZuALSPa_f5Agvf8g2JHv94cqMn9aBtnH7GFHbuA': 76653111,
+            'Yba8IVc_01bFxutKNJAZ7CmTD5AVi2GcWXf1NajPAsc': 6544514
+        }
+
+        let providerSnapshot = providersSnapshots[provider];
+        
+        return interval ? (providerSnapshot + Math.floor(pointsPerInterval * ((new Date().getTime() - snapshotTimestamp) / interval))) : 0;
     },
     getViewblockTxLink(txId) {
         return constants.viewblockTxUrlPrefix + txId;
     },
+    initLocalStorage() {
+        try {
+            let storage;
+            const uid = new Date;
+            (storage = window.localStorage).setItem(uid, uid);
+            const fail = storage.getItem(uid) != uid;
+            if (fail) throw new Error();
+            storage.removeItem(uid);
+            return storage;
+        } catch (exception) {
+            throw 'Local storage is not supported by current environment';
+        }
+    }
 }

@@ -1,8 +1,9 @@
 const REDSTONE_CDN = "https://cdn.redstone.finance";
 
 export default {
-  kyvePoolId: "l6S4oMyzw_rggjt4yt4LrnRmggHQ2CdM1hna2MK4o_c",
+  kyvePoolId: "W_njBtwDRyltjVU1RizJtZfF0S_4X3aSrrrA0HUEhUs",
   arweaveUrl: "dh48zl0solow5.cloudfront.net",
+  // arweaveUrl: "arweave.net",
 
   viewblockTxUrlPrefix: "https://viewblock.io/arweave/tx/",
 

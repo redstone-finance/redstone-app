@@ -1,15 +1,28 @@
-const {interactRead} = require("smartweave");
 const axios = require("axios");
 import dummyWallet from "@/dummy-wallet.json";
 import constants from "@/constants";
 import utils from "@/utils";
 import Arweave from 'arweave';
+import {
+  CacheableExecutorFactory,
+  CacheableStateEvaluator,
+  ContractDefinitionLoader,
+  ContractInteractionsLoader,
+  HandlerExecutorFactory,
+  LexicographicalInteractionsSorter,
+  MemCache,
+  SmartWeave
+} from 'redstone-smartweave';
+import LocalStorageCache from "@/cache/cache";
+import LocalStorageBlockHeightCache from "@/cache/block-height-cache";
 import Vue from 'vue';
+
 
 export default {
   namespaced: true,
   state: {
     arweave: null,
+    smartweave: null,
     contractsRegistryContractId: null,
     providersRegistryContractId: null,
     providers: null
@@ -26,27 +39,19 @@ export default {
         state.arweave = arweave;
       }
     },
+    setSmartweave(state, client) {
+      state.smartweave = client;
+    },
     setContractsRegistryContractId(state, id) {
       state.contractsRegistryContractId = id;
     }
   },
   getters: {
-    getArweave(state){
-      return state.arweave;
-    },
-    getProviders(state){
-      return state.providers;
-    },
-    getProvidersRegistryContractId(state){
-      return state.providersRegistryContractId;
-    },
-    getContractsRegistryContractId(state){
-      return state.contractsRegistryContractId;
-    }
   },
   actions: {
     async prefetchAll({ dispatch }) {
       dispatch('initArweave')
+        .then(() => { return dispatch('smartweave') })
         .then(() => { return dispatch('contractsRegistryContract') })
         .then(() => { return dispatch('providersRegistryContract', {contractName: 'providers-registry', mutation: 'setProvidersRegistryContractId'}) })
         .then(() => { dispatch('fetchProviders');}
@@ -61,24 +66,43 @@ export default {
 
       commit("setArweave", arweaveObject);
     },  
+    smartweave({ commit, state }) {
+      
+      const arweave = state.arweave;
+      const contractDefinitionLoader = new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_"));
+      const contractInteractionsLoader = new ContractInteractionsLoader(state.arweave);
+      const cacheableExecutorFactory = new CacheableExecutorFactory(state.arweave, new HandlerExecutorFactory(state.arweave), new MemCache());
+      const cacheableStateEvaluator = new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_"));
+      const lexicographicalInteractionsSorter = new LexicographicalInteractionsSorter(state.arweave);
+
+      const smartweave = SmartWeave.builder(arweave)
+        .setInteractionsLoader(contractInteractionsLoader)
+        .setInteractionsSorter(lexicographicalInteractionsSorter)
+        .setDefinitionLoader(contractDefinitionLoader)
+        .setExecutorFactory(cacheableExecutorFactory)
+        .setStateEvaluator(cacheableStateEvaluator)
+        .build();
+    
+      commit("setSmartweave", smartweave);
+    },  
     updateProvider({ commit, state }, { id, key, value}) {
       let providers = state.providers;
       Vue.set(providers[id], key, value);
       commit('setProviders', providers);
     },
-    async fetchProviders({ commit, getters, dispatch }) {
+    async fetchProviders({ commit, state, dispatch }) {
 
-      let providersData = await interactRead(
-        getters.getArweave,
-        dummyWallet,
-        getters.getProvidersRegistryContractId,
-         {
-            function: "providersData",
-            data: {
-              eagerManifestLoad: true
-            }
-          }
-      );
+    const providersRegistryContract = 
+      state.smartweave
+        .contract(state.providersRegistryContractId)
+        .connect(dummyWallet);
+
+      let providersData = (await providersRegistryContract.viewState({
+        function: "providersData",
+        data: {
+          eagerManifestLoad: false,
+        },
+      })).result;  
       
       let providers = {};
 
@@ -116,9 +140,18 @@ export default {
                 : 0;
   
                 let activeFrom = utils.activeFrom(transactionTime, lockedHours);
+
+                let pointsPerInterval = 0;
+                Object.values(currentManifest.data.tokens).forEach(
+                  token => { 
+                      pointsPerInterval += (token.source ? Object.keys(token.source).length : 1 )
+                  });
+
+                  console.log(o)
                 let dataPoints = utils.dataPoints(
+                  o,
                   currentManifest.data.interval,
-                  activeFrom
+                  pointsPerInterval
                 );
     
                 Vue.set(providers[o], 'activeFrom', activeFrom);
@@ -133,22 +166,25 @@ export default {
       }
 
     },
-    providersRegistryContract({ commit, getters }, {contractName, mutation}) {
-      return interactRead(
-        getters.getArweave,
-        dummyWallet,
-        getters.getContractsRegistryContractId,
-         {
-            function: "contractsCurrentTxId",
-            data: {
-              contractNames: [contractName]
-            }
-          }
-      ).then(
-        result => {
-          commit(mutation, result[contractName]);
-        }
-    );
+    providersRegistryContract({ commit, state }, {contractName, mutation}) {
+      const contractsRegistryContract = 
+        state.smartweave
+          .contract(state.contractsRegistryContractId)
+          .connect(dummyWallet);
+
+      return contractsRegistryContract
+              .viewState(
+                {
+                  function: "contractsCurrentTxId",
+                  data: {
+                    contractNames: [contractName]
+                  }
+                }
+              ).then(
+                result => {
+                  commit(mutation, result.result[contractName]);
+                }
+            );
     },
     async contractsRegistryContract({ commit }) {
       const contractsRegistryContractId = await (await fetch("https://raw.githubusercontent.com/redstone-finance/redstone-smartweave-contracts/main/contracts-registry.address.txt")).text();
