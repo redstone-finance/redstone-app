@@ -10732,10 +10732,10 @@ redstone-smartweave-contracts@redstone-finance/redstone-smartweave-contracts:
     smartweave "0.4.31"
     testweave-sdk "^0.2.2"
 
-redstone-smartweave@0.2.2-alpha.1:
-  version "0.2.2-alpha.1"
-  resolved "https://registry.yarnpkg.com/redstone-smartweave/-/redstone-smartweave-0.2.2-alpha.1.tgz#f808fc0358bd548fd99058422c3c6862f5319cd6"
-  integrity sha512-6kpSuvxXtPNAEr2yk49vmCTtg9NywD2E3M6X4l7KfvsoHMX1SF0ynldcIV/l2y0oY/TfwgEFAg99AVDby+qcgQ==
+redstone-smartweave@0.3.1-alpha.1:
+  version "0.3.1-alpha.1"
+  resolved "https://registry.yarnpkg.com/redstone-smartweave/-/redstone-smartweave-0.3.1-alpha.1.tgz#67cb5aedbd1bec9a50cefba99338f433b9cd90e2"
+  integrity sha512-iUAGTpKhEJ3dfajiytWEz+01VV5XVtSYItUX2XhnndBtJcVnHbl00GASZpN25JrL0+M5KEeMOrQTJN4Kt+6v9A==
   dependencies:
     "@weavery/clarity" "^0.1.5"
     arweave "^1.10.16"
@@ -11539,6 +11539,26 @@ smartweave@^0.4.27, smartweave@^0.4.34, smartweave@^0.4.41:
   version "0.4.42"
   resolved "https://registry.yarnpkg.com/smartweave/-/smartweave-0.4.42.tgz#8d508e80ffb93a5f88fe7e280032232f8ceb62a3"
   integrity sha512-y8sEeXq5YEH12cg6iIEkx1H/lQ6Jq59N+B9UVj3UxvBax7n1AYdzbGoOK0LL9MRaY33QUuhbZ+jcSnfOW/sNiA==
+  dependencies:
+    "@types/clui" "^0.3.0"
+    "@types/inquirer" "^7.3.1"
+    "@weavery/clarity" "^0.1.5"
+    arlocal "^1.0.29"
+    arweave "^1.10.16"
+    bignumber.js "^9.0.1"
+    chalk "^4.1.2"
+    clui "^0.3.6"
+    figlet "^1.5.2"
+    inquirer "^8.1.2"
+    json-beautify "^1.1.1"
+    loglevel "^1.7.0"
+    sentencer "^0.2.1"
+    yargs "^17.1.1"
+
+smartweave@^0.4.43:
+  version "0.4.43"
+  resolved "https://registry.yarnpkg.com/smartweave/-/smartweave-0.4.43.tgz#0a52dc7dd743dc8300d93e802115b1218f3f9bf6"
+  integrity sha512-jvWwkA3qpdrXngVAE9CeJRxNR0MbsNwvWq+m5U9GrtPY6IFOf9VUIC0mnWJ6SM+rcmXCDBCVFguNqWYfbL9DnA==
   dependencies:
     "@types/clui" "^0.3.0"
     "@types/inquirer" "^7.3.1"

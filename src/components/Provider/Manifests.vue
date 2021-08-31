@@ -98,10 +98,11 @@
 import JsonViewer from 'vue-json-viewer'
 const axios = require('axios');
 import ManifestForm from "./ManifestForm.vue";
-import { interactWrite } from 'redstone-smartweave';
 import utils from "@/utils";
 import constants from "@/constants";
 import { mapState } from 'vuex';
+import { interactWrite } from 'smartweave';
+import Arweave from 'arweave';
 
 export default {
   name: "Manifests",
@@ -124,6 +125,12 @@ export default {
       showManifestForm: false,
       templateManifest: {},
       isAdmin: false,
+      //different than global arweave object (host address)
+      arweave: Arweave.init({
+        host: 'arweave.net',
+        protocol: "https",
+        port: 443,
+      })
     }; 
   },
 
@@ -185,47 +192,77 @@ export default {
 
         console.log('jsonUploadTxId: ', jsonUploadTxId);
 
-        this.waitForConfirmation(jsonUploadTxId, this.arweave).then(() => {});
+        this.waitForConfirmation(jsonUploadTxId, this.arweave);
 
         const uploadedManifestData = 
         {
-          changeMessage: this.manifestChangeMessage,
+          changeMessage: manifest.changeMessage,
           manifestTxId: jsonUploadTxId
         };
 
         sessionStorage.setItem('minedManifest', JSON.stringify({ ...uploadedManifestData, ...manifest, uploadDate: new Date(), providerId: this.providerId}));
-        this.getManifestsData();
 
-        let newManifestTxId = await interactWrite(
-            this.arweave, 
-            'use_wallet', 
-            this.providersRegistryContractId,
+        this.manifestsDataForTable.unshift(
           {
-            function: "addProviderManifest",
-            data: {
-              providerId: this.providerId,
-              manifestData: uploadedManifestData,
-              lockedHours: this.manifestLockedHours
+            ...uploadedManifestData, 
+            ...manifest,
+            status: 'mining'
+          });
+
+      // const providersRegistryContract = 
+      //   this.smartweave
+      //     .contract(this.providersRegistryContractId)
+      //     .connect(window.arweaveWallet);
+
+      //   let newManifestTxId = await providersRegistryContract
+      //     .writeInteraction(
+      //       {
+      //         function: "addProviderManifest",
+      //         data: {
+      //           providerId: this.providerId,
+      //           manifestData: uploadedManifestData,
+      //           lockedHours: manifest.lockedHours
+      //         }
+      //       }
+      //     )
+
+      let newManifestTxId = await interactWrite(
+          this.arweave, 
+          'use_wallet', 
+          this.providersRegistryContractId,
+        {
+          function: "addProviderManifest",
+          data: {
+            providerId: this.providerId,
+            manifestData: uploadedManifestData,
+              lockedHours: manifest.lockedHours
             }
           }
-        );
+        )
 
-        this.waitForConfirmation(newManifestTxId, this.arweave).then(() => {});
+        this.waitForConfirmation(newManifestTxId, this.arweave, () => {           
+          this.manifestsDataForTable[0].status = 'active';
+          this.manifestsDataForTable[1].status = '';
+          this.manifestsDataForTable = this.manifestsDataForTable.slice();
+        });
 
         console.log('newManifestTxId: ', newManifestTxId);
       }
     },
 
-    async waitForConfirmation(transactionId, arweave) {
+    async waitForConfirmation(transactionId, arweave, onConfirm) {
       const statusAfterMine = await arweave.transactions.getStatus(transactionId);
 
       if (statusAfterMine.confirmed === null) {
         console.log(`Transaction ${transactionId} not yet confirmed. Waiting another 30 seconds before next check.`);
         setTimeout(() => {
-          this.waitForConfirmation(transactionId, arweave);
+          this.waitForConfirmation(transactionId, arweave, onConfirm);
         }, 30000);
       } else {
         console.log(`Transaction ${transactionId} confirmed`, statusAfterMine);
+        if (onConfirm && (typeof onConfirm == 'function')) {
+          onConfirm();
+        }
         return statusAfterMine;
       }
     },
@@ -320,8 +357,11 @@ export default {
 
   computed: {
     ...mapState("prefetch", {
-      arweave: (state) => { 
-        return state.arweave; 
+      // arweave: (state) => { 
+      //   return state.arweave; 
+      // },
+      smartweave: (state) => { 
+        return state.smartweave; 
       },
       providersRegistryContractId: (state) => { 
         return state.providersRegistryContractId; 

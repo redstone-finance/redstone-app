@@ -125,7 +125,7 @@
                             <multiselect
                               v-model="token.source"
                               @input="onSourceChange($event, token)"
-                              :options="token.availableSources"
+                              :options="availableDefaultSources"
                               :selectLabel="''"
                               :deselectLabel="''"
                               :multiple="true"
@@ -349,7 +349,7 @@ export default {
         logoURI: element[1].logoURI,
         name: element[1].name,
         source: [],
-        availableSources: element[1].source
+        availableSources: element[1].source ? element[1].source :  []
       };
     });
     this.initManifest();
@@ -373,7 +373,18 @@ export default {
             this.initialManifest.manifestData.priceAggregator;
           this.manifest.manifestData.sourceTimeout =
             this.initialManifest.manifestData.sourceTimeout;
+
+          this.manifest.manifestData.tokens = {};
+          Object.entries(this.initialManifest.manifestData.tokens).forEach(
+            ([key, token]) => {
+              this.manifest.manifestData.tokens[key] = token;
+              if (!this.manifest.manifestData.tokens[key].source) [
+                this.manifest.manifestData.tokens[key].source = []
+              ]
+            }
+          )  
           this.manifest.manifestData.tokens = JSON.parse(JSON.stringify(this.initialManifest.manifestData.tokens));
+
           if (this.initialManifest.manifestData.defaultSource) this.manifest.manifestData.defaultSource = this.initialManifest.manifestData.defaultSource;
 
           this.addedTokens = this.availableTokens
@@ -438,11 +449,16 @@ export default {
       this.$root.$emit("manifestFormClosed");
     },
     addToken(token) {
+      console.log(this.addedTokens)
+      console.log(token)
+      console.log(this.availableTokens)
       this.addedTokens.unshift(token);
       this.clickedTokenIndex = 0;
       this.availableTokens = this.availableTokens.filter((availableToken) => {
         return availableToken.id !== token.id;
       });
+            console.log('here')
+
       Vue.set(this.manifest.manifestData.tokens, token.symbol, { source: token.source });
     },
     removeToken(token) {
@@ -493,13 +509,15 @@ export default {
             }
           )
         }.bind(this)
-      );
+      )
+      .slice(0, 20);
     },
     visibleAddedTokens() {
       return this.filterBySearch(
         this.addedTokens,
         this.searchAddedTokens
-      );
+      )
+      .slice(0, 20);
     }
   },
 };
