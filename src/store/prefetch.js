@@ -4,14 +4,9 @@ import constants from "@/constants";
 import utils from "@/utils";
 import Arweave from 'arweave';
 import {
-  CacheableExecutorFactory,
   CacheableStateEvaluator,
   ContractDefinitionLoader,
-  ContractInteractionsLoader,
-  HandlerExecutorFactory,
-  LexicographicalInteractionsSorter,
-  MemCache,
-  SmartWeave
+  SmartWeaveWebFactory
 } from 'redstone-smartweave';
 import LocalStorageCache from "@/cache/cache";
 import LocalStorageBlockHeightCache from "@/cache/block-height-cache";
@@ -70,16 +65,11 @@ export default {
       
       const arweave = state.arweave;
       const contractDefinitionLoader = new ContractDefinitionLoader(state.arweave, new LocalStorageCache("_REDSTONE_APP_"));
-      const contractInteractionsLoader = new ContractInteractionsLoader(state.arweave);
-      const cacheableExecutorFactory = new CacheableExecutorFactory(state.arweave, new HandlerExecutorFactory(state.arweave), new MemCache());
       const cacheableStateEvaluator = new CacheableStateEvaluator(state.arweave, new LocalStorageBlockHeightCache("_REDSTONE_APP_STATE_"));
-      const lexicographicalInteractionsSorter = new LexicographicalInteractionsSorter(state.arweave);
 
-      const smartweave = SmartWeave.builder(arweave)
-        .setInteractionsLoader(contractInteractionsLoader)
-        .setInteractionsSorter(lexicographicalInteractionsSorter)
+      const smartweave = SmartWeaveWebFactory
+        .memCachedBased(arweave)
         .setDefinitionLoader(contractDefinitionLoader)
-        .setExecutorFactory(cacheableExecutorFactory)
         .setStateEvaluator(cacheableStateEvaluator)
         .build();
     
