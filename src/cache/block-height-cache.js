@@ -13,7 +13,7 @@ export default class LocalStorageBlockHeightCache {
         const cached = this.getItem(key);
         // sort keys (ie. block heights) in asc order, then reverse and get
         // the first element (ie. highest cached block height).
-        const highestBlockHeight = Object.keys(cached).sort().reverse().pop();
+        const highestBlockHeight = Object.keys(cached).sort().pop();
         return {
             cachedHeight: highestBlockHeight,
             cachedValue: cached[highestBlockHeight]
