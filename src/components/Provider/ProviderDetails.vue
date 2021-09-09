@@ -90,7 +90,8 @@ export default {
       fields: [{ key: 'name', label: 'Asset'}, 'symbol', 'sources'],
       firstManifest: null,
       transactionTime: null,
-      tokens: null
+      tokens: null,
+      VISIBLE_CHUNK_SIZE: 3
     }
   },
 
