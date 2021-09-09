@@ -99,17 +99,17 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
-      this.tokens = Object.entries(this.currentManifest.tokens).map(function (entry) {
+      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = tokensData[symbol];
 
-        let sourceListForToken = detailsInManifest.source;
+        let sourceList = detailsInManifest.source || this.currentManifest.defaultSource;
 
         return {
           logoURI: tokenInfo?.logoURI,
           symbol,
           name: tokenInfo?.name,
-          source: sourceListForToken?.map(
+          source: sourceList.map(
             el => {
               return {
                 name: el,
@@ -119,7 +119,7 @@ export default {
           ),
         };
       });
-      this.showMoreTokens();
+      setTimeout(this.showMoreTokens, 0);
     },
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
