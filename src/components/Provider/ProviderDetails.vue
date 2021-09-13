@@ -91,7 +91,7 @@ export default {
       firstManifest: null,
       transactionTime: null,
       tokens: null,
-      VISIBLE_CHUNK_SIZE: 3
+      VISIBLE_CHUNK_SIZE: 10
     }
   },
 
@@ -124,6 +124,14 @@ export default {
     },
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
+    },
+    scrollFunction() {
+      alert('jo')
+   console.log('scroll')
+        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+          console.log('hit')
+            this.showMoreTokens();
+        }
     }
   },
 
@@ -141,6 +149,10 @@ export default {
     lockedHours() {
       return this.firstManifest?.data?.lockedHours
     }
+  },
+
+  created() {
+            document.addEventListener('scroll', this.scrollFunction);
   },
 
   watch: {
