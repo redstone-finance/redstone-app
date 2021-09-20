@@ -1,0 +1,16 @@
+@import '~@/styles/app';
+
+
+.source-details {
+  h1 {
+    img {
+      display: inline;
+      width: 55px;
+      margin-right: 10px;
+    }
+    font-size: 34px;
+    color: $navy;
+    text-transform: capitalize;
+    margin-bottom: 30px;
+  }
+}

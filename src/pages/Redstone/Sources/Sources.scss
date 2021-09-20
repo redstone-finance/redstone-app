@@ -1,0 +1,52 @@
+@import '~@/styles/app';
+
+.sources-wrapper {
+  background-color: $gray-100;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: var(--content-shadow);
+}
+
+
+.source-card {
+  transition: all 0.5s ease;
+  padding: 12px 20px 12px 20px;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  .source-details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 20px;
+    
+    .source-logo {
+      img {
+        width: 30px;
+        max-height: 30px;
+      }
+      height: 30px;
+    }
+  
+    .source-name {
+      text-transform: capitalize;
+    }
+
+    .see-more {
+      display: none;
+      position: absolute;
+      right: 10px;
+      color: var(--redstone-red-color);
+      font-size: $font-size-mini;
+    }
+  }
+
+  &:hover {
+    .source-details .see-more {
+      display: block;
+    }
+  }  
+}

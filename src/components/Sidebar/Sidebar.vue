@@ -26,6 +26,15 @@
 
         <NavLink
             :activeItem="activeItem"
+            header="Sources"
+            link="/app/sources"
+            iconName="flaticon-sources"
+            index="sources"
+            isHeader
+        />
+
+        <NavLink
+            :activeItem="activeItem"
             header="Providers"
             link="/app/providers"
             iconName="flaticon-providers"
