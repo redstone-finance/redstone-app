@@ -5,48 +5,80 @@
   border-radius: 10px;
   padding: 2rem;
   box-shadow: var(--content-shadow);
-}
 
-
-.source-card {
-  transition: all 0.5s ease;
-  padding: 12px 20px 12px 20px;
-  cursor: pointer;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  .source-details {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    column-gap: 20px;
-    
-    .source-logo {
-      img {
-        width: 30px;
-        max-height: 30px;
-      }
-      height: 30px;
+  #sources-table {
+    th {
+      text-transform: none;
+      color: $navy;
+      font-size: 12px;
+      font-weight:  $font-weight-soft-bold;
     }
-  
-    .source-name {
+
+    th:nth-of-type(1) {
+      width: 200px;
+    }
+
+    th:nth-of-type(2) {
+      width: 100px;
+    }
+
+    .source-logo {
+      max-height: 30px;
+      width: 30px;
+    }
+
+    .source-name  {
       text-transform: capitalize;
     }
-
-    .see-more {
-      display: none;
-      position: absolute;
-      right: 10px;
-      color: var(--redstone-red-color);
-      font-size: $font-size-mini;
-    }
   }
 
-  &:hover {
-    .source-details .see-more {
-      display: block;
-    }
-  }  
+  .report-source-link {
+    font-size: 12px;
+    margin-top: 30px;
+  }
 }
+
+// TODO: remove code below
+
+// .source-card {
+//   transition: all 0.5s ease;
+//   padding: 12px 20px 12px 20px;
+//   cursor: pointer;
+
+//   &:hover {
+//     transform: scale(1.1);
+//   }
+
+//   .source-details {
+//     display: flex;
+//     flex-direction: row;
+//     align-items: center;
+//     column-gap: 20px;
+    
+//     .source-logo {
+//       img {
+//         width: 30px;
+//         max-height: 30px;
+//       }
+//       height: 30px;
+//     }
+  
+//     .source-name {
+//       text-transform: capitalize;
+//     }
+
+//     .see-more {
+//       display: none;
+//       position: absolute;
+//       right: 10px;
+//       color: var(--redstone-red-color);
+//       font-size: $font-size-mini;
+//     }
+//   }
+
+//   &:hover {
+//     .source-details .see-more {
+//       display: block;
+//     }
+//   }  
+// }
