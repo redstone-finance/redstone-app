@@ -62,7 +62,7 @@
                 type: 'time',
                 time: {
                   unit: chartData.timeUnit || 'day',
-                  unitStepSize: 5
+                  unitStepSize: chartData.timeUnit == 'minute' ? 5 : 1
                 },
                 ticks: {
                   // forces step size to be 5 units

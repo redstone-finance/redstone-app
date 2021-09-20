@@ -35,7 +35,7 @@
     "npm": "^7.17.0",
     "redstone-api": "^0.4.1",
     "redstone-node": "^0.4.19",
-    "redstone-smartweave": "^0.3.4-alpha.1",
+    "redstone-smartweave": "0.3.8-alpha.1",
     "redstone-smartweave-contracts": "redstone-finance/redstone-smartweave-contracts",
     "rickshaw": "1.7.1",
     "sass-loader": "^7.3.1",

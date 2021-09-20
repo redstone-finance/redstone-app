@@ -90,7 +90,8 @@ export default {
       fields: [{ key: 'name', label: 'Asset'}, 'symbol', 'sources'],
       firstManifest: null,
       transactionTime: null,
-      tokens: null
+      tokens: null,
+      VISIBLE_CHUNK_SIZE: 10
     }
   },
 
@@ -99,17 +100,17 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
-      this.tokens = Object.entries(this.currentManifest.tokens).map(function (entry) {
+      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = tokensData[symbol];
 
-        let sourceListForToken = detailsInManifest.source;
+        let sourceList = detailsInManifest.source || this.currentManifest.defaultSource;
 
         return {
           logoURI: tokenInfo?.logoURI,
           symbol,
           name: tokenInfo?.name,
-          source: sourceListForToken?.map(
+          source: sourceList.map(
             el => {
               return {
                 name: el,
@@ -119,10 +120,18 @@ export default {
           ),
         };
       });
-      this.showMoreTokens();
+      setTimeout(this.showMoreTokens, 0);
     },
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
+    },
+    scrollFunction() {
+      alert('jo')
+   console.log('scroll')
+        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+          console.log('hit')
+            this.showMoreTokens();
+        }
     }
   },
 
@@ -140,6 +149,10 @@ export default {
     lockedHours() {
       return this.firstManifest?.data?.lockedHours
     }
+  },
+
+  created() {
+            document.addEventListener('scroll', this.scrollFunction);
   },
 
   watch: {
