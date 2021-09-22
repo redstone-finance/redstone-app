@@ -8,12 +8,6 @@
     <div class="chart-container">
       <SourceChartsContainer :stats="sourceStats" />
     </div>
-
-    <ul>
-      <li>
-        Table with failed symbols
-      </li>
-    </ul>
   </div>
 </template>
 

@@ -1,6 +1,11 @@
 <template>
   <div class="charts-container">
-    <div class="source-chart-wrapper">
+
+    <div v-if="sourceHasNoErrors" class="report-ok-notification">
+      This source had no errors during last 5 days
+    </div>
+
+    <div v-show="hasSomeStats('fetching-failed')" class="source-chart-wrapper">
       <div class="chart-title">
         Fetching failed
       </div>
@@ -10,7 +15,7 @@
         title="Fetching failed count"
       />
     </div>
-    <div class="source-chart-wrapper">
+    <div v-show="hasSomeStats('incorrect-price-value')" class="source-chart-wrapper">
       <div class="chart-title">
         Incorrect price value
       </div>
@@ -31,7 +36,19 @@ export default {
   props: ["stats"],
   components: {
     SourceChart,
-  }
+  },
+
+  methods: {
+    hasSomeStats(statKey) {
+      return this.stats[statKey] && Object.keys(this.stats[statKey]).length > 0;
+    }
+  },
+
+  computed: {
+    sourceHasNoErrors() {
+      return !this.hasSomeStats('fetching-failed') && !this.hasSomeStats('incorrect-price-value')
+    },
+  },
 }
 </script>
 

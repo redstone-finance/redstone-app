@@ -6,13 +6,13 @@
     extends: Bar,
     props: ['stats', 'color', 'title'],
     watch: {
-      "stats": function(stats) {
+      "stats": function() {
         const chartData = {
-          labels: Object.keys(this.stats),
+          labels: Object.keys(this.stats).reverse(),
           datasets: [
             {
               label: this.title,
-              data: Object.values(this.stats),
+              data: Object.values(this.stats).reverse(),
               backgroundColor: this.color,
             },
             // {
