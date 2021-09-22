@@ -64,11 +64,11 @@ export default {
   display: flex;
   flex-direction: row;
   column-gap: 70px;
-  /* justify-content: space-around; */
 }
 
 .source-chart-wrapper {
   width: 40%;
+  min-width: 300px;
 }
 
 </style>

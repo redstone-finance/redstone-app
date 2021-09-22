@@ -86,7 +86,6 @@ export default {
   },
 
   methods: {
-    // TODO: add errors handling and notifications
     async loadSourcesReport() {
       try {
         this.loading = true
@@ -148,7 +147,6 @@ export default {
           id,
           ...sourceReport,
           'fetching-success-percentage': successPercentage,
-          stability: 'OK',
         });
       }
       return result;
