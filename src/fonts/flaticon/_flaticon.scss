@@ -734,6 +734,15 @@ i.fi {
 
 .flaticon-smartphone-9::before { content: '\f22d'; }
 
+.flaticon-sources {
+  background-image: url('../../src/assets/icons/sources.svg');
+
+  &.fi {
+    width: 27px;
+    height: 27px;
+  }
+}
+
 .flaticon-speaker::before { content: '\f22e'; }
 
 .flaticon-speaker-1::before { content: '\f22f'; }
