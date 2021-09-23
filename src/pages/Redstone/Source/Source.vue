@@ -28,11 +28,11 @@ export default {
   },
 
   async mounted() {
-    await this.loadDataForSoruce();
+    await this.loadDataForSource();
   },
 
   methods: {
-    async loadDataForSoruce() {
+    async loadDataForSource() {
       const response = await axios.get(SOURCE_REPORT_URL);
       this.report = response.data;
     },

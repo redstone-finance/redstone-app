@@ -5,7 +5,7 @@
       This source had no errors during last 5 days
     </div>
 
-    <div v-show="hasSomeStats('fetching-failed')" class="source-chart-wrapper">
+    <div v-show="hasAnyStats('fetching-failed')" class="source-chart-wrapper">
       <div class="chart-title">
         Fetching failed
       </div>
@@ -15,7 +15,7 @@
         title="Fetching failed count"
       />
     </div>
-    <div v-show="hasSomeStats('incorrect-price-value')" class="source-chart-wrapper">
+    <div v-show="hasAnyStats('incorrect-price-value')" class="source-chart-wrapper">
       <div class="chart-title">
         Incorrect price value
       </div>
@@ -39,14 +39,14 @@ export default {
   },
 
   methods: {
-    hasSomeStats(statKey) {
+    hasAnyStats(statKey) {
       return this.stats[statKey] && Object.keys(this.stats[statKey]).length > 0;
     }
   },
 
   computed: {
     sourceHasNoErrors() {
-      return !this.hasSomeStats('fetching-failed') && !this.hasSomeStats('incorrect-price-value')
+      return !this.hasAnyStats('fetching-failed') && !this.hasAnyStats('incorrect-price-value')
     },
   },
 }
