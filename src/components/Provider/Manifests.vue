@@ -101,8 +101,9 @@ import ManifestForm from "./ManifestForm.vue";
 import utils from "@/utils";
 import constants from "@/constants";
 import { mapState } from 'vuex';
-import { interactWrite } from 'smartweave';
 import Arweave from 'arweave';
+import { SmartWeaveNodeFactory } from "redstone-smartweave";
+
 
 export default {
   name: "Manifests",
@@ -209,10 +210,16 @@ export default {
             status: 'mining'
           });
 
+      //initialize default smartweave with arweave object not using Cloudfront. For writing interactions
+      const memSmartweave = SmartWeaveNodeFactory.memCached(this.arweave);
+
       const providersRegistryContract = 
-        this.smartweave
+        memSmartweave
           .contract(this.providersRegistryContractId)
-          .connect('use_wallet');
+          .connect('use_wallet')
+          .setEvaluationOptions({
+            waitForConfirmation: true,
+          });
 
         let newManifestTxId = await providersRegistryContract
           .writeInteraction(
@@ -225,20 +232,6 @@ export default {
               }
             }
           )
-
-      // let newManifestTxId = await interactWrite(
-      //     this.arweave, 
-      //     'use_wallet', 
-      //     this.providersRegistryContractId,
-      //   {
-      //     function: "addProviderManifest",
-      //     data: {
-      //       providerId: this.providerId,
-      //       manifestData: uploadedManifestData,
-      //         lockedHours: manifest.lockedHours
-      //       }
-      //     }
-      //   )
 
         this.waitForConfirmation(newManifestTxId, this.arweave, () => {           
           this.manifestsDataForTable[0].status = 'active';
@@ -357,9 +350,6 @@ export default {
 
   computed: {
     ...mapState("prefetch", {
-      // arweave: (state) => { 
-      //   return state.arweave; 
-      // },
       smartweave: (state) => { 
         return state.smartweave; 
       },
