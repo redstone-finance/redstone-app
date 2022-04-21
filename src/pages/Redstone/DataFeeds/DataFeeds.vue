@@ -2,26 +2,26 @@
   <div class="providers-wrapper">
     <b-row class="justify-content-center">
       <b-col cols="12" class="widget-col" v-for="(provider, index) in filteredProviders" :key="index">
-        <div class="widget-wrapper" @click="$router.push('/app/provider/' + index)">
+        <div class="widget-wrapper" @click="$router.push('/app/data-feeds/' + index)">
           <Widget class="mb-0 provider-card">
             <div class="provider-details">
               <div class="provider-logo">
                 <img
-                  v-if="provider.profile.imgUrl"
-                  :src="provider.profile.imgUrl"
+                  v-if="provider.logo"
+                  :src="provider.logo"
                 />
               </div>
               <h6 class="provider-name">
-                {{ provider.profile.name }}
+                {{ provider.name }}
               </h6>
               <!-- <Rating :value="provider.rating" :disabled="true"></Rating> -->
               <div class="provider-description">
-                {{ provider.profile.description }}
+                {{ provider.description }}
               </div>
               <!-- <div class="provider-categories">
               <span v-for="(category, index) in provider.categories" :key="category">{{ styleCategory(category, provider.categories.length, index) }}</span>
             </div> -->
-              <div class="provider-active-date">
+              <!-- <div class="provider-active-date">
                 <div>
                   <label> Active from </label>
                 </div>
@@ -35,23 +35,35 @@
                     scale="0.5"
                     ></vue-loaders-ball-beat>
                 </div>
+              </div> -->
+              <div class="provider-nodes">
+                <div>
+                  <label> Nodes </label>
+                </div>
+                <div>
+                  {{ provider?.nodes?.length ?? 0 }}
+                </div>
+              </div>
+              <div class="provider-assets">
+                <div>
+                  <label> Assets </label>
+                </div>
+                <div>
+                  {{ provider?.assetsCount ?? 0 }}
+                </div>
               </div>
               <div class="provider-interval">
                 <div>
                   <label> Interval </label>
                 </div>
                 <div>
-                  <span v-if="provider.currentManifest && provider.currentManifest.interval">
-                    {{ formatInterval(provider.currentManifest.interval)}}
-                  </span>
-                  <vue-loaders-ball-beat
-                    v-else
-                    color="var(--redstone-red-color)"
-                    scale="0.5"
-                  ></vue-loaders-ball-beat>
+                  {{ provider?.currentManifest?.interval 
+                    ? formatInterval(provider.currentManifest.interval) 
+                    : '-'
+                  }}
                 </div>
               </div>
-              <div class="provider-points">
+              <!-- <div class="provider-points">
                 <div>
                   <label> Data points </label>
                 </div>
@@ -65,8 +77,8 @@
                     scale="0.5"
                   ></vue-loaders-ball-beat>  
                 </div>
-              </div>
-              <div class="provider-stake">
+              </div> -->
+              <!-- <div class="provider-stake">
                 <div>
                   <label> Stake </label>
                 </div>
@@ -80,16 +92,7 @@
                     scale="0.5"
                   ></vue-loaders-ball-beat>  
                 </div>
-              </div>
-              <div class="provider-www">
-                <a
-                  :href="provider.profile.url"
-                  target="_blank"
-                  @click.stop="() => {}"
-                >
-                <i class="fa fa-external-link" />
-                </a>
-              </div>
+              </div> -->
             </div>
           </Widget>
         </div>
@@ -116,7 +119,7 @@ import _ from "lodash";
 import { mapState } from 'vuex';
 
 export default {
-  name: "Providers",
+  name: "DataFeeds",
 
   data() {
     return {
@@ -128,7 +131,7 @@ export default {
 
   computed: {
     ...mapState("prefetch", {
-      providers: (state) => { 
+      providers: (state) => {
         return state.providers; 
       }
     }),
@@ -144,7 +147,7 @@ export default {
 
         Object.entries(this.providers).forEach(
           ([key, value]) => {
-            if (value.profile.name.toLowerCase().includes(this.searchPhrase.toLowerCase())) {
+            if (value.name.toLowerCase().includes(this.searchPhrase.toLowerCase())) {
               filterProviders[key] = value;
             }
           }
@@ -167,4 +170,4 @@ export default {
 };
 </script>
 
-<style src="./Providers.scss" lang="scss" scoped />
+<style src="./DataFeeds.scss" lang="scss" scoped />
