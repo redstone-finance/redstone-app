@@ -1,15 +1,8 @@
-  name: string;
-  logo: string;
-  description: string;
-  dataFeedId: string;
-  evmAddress: string;
-  ipAddress: string;
-
 <template>
   <div>
     <b-row class="justify-content-center">
       <b-col cols="12" class="widget-col" v-for="(node, index) in nodes" :key="index">
-        <a class="widget-wrapper" :href="node.url" target="_blank">
+        <a class="widget-wrapper node-wrapper" :href="node.url" target="_blank">
           <Widget class="node-card">
             <div class="node-details">
               <div class="node-logo">
@@ -28,7 +21,10 @@
                 <div>
                   <label>EVM address</label>
                 </div>
-                {{ shortenEvmAddress(node.evmAddress) }}
+                <div @click="(event) => copyToClipboard(event, node.evmAddress)">
+                  {{ shortenEvmAddress(node.evmAddress) }}
+                  <i class="fa fa-copy copy-icon" v-b-tooltip.hover title="Copy to clipboard" />
+                </div>
               </div>
               <div class="node-column">
                 <div>
@@ -68,6 +64,10 @@ export default {
   methods: {
     shortenEvmAddress(evmAddress) {
       return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`
+    },
+    async copyToClipboard(event, evmAddress) {
+      event.preventDefault();
+      await navigator.clipboard.writeText(evmAddress);
     }
   },
 };
@@ -75,6 +75,10 @@ export default {
 
 <style lang="scss" scoped>
   @import '~@/styles/app';
+  .node-wrapper {
+    text-decoration: none;
+  }
+
   .node-card {
       cursor: pointer;
       transition: all 0.5s ease;
@@ -84,12 +88,6 @@ export default {
       }
   }
 
-  .label {
-      font-size: 12px;
-      border-bottom: none;
-      color: var(--sidebar-item-active);
-  }
-
   .node-details {
     display: flex;
     justify-content: space-between;
@@ -97,11 +95,7 @@ export default {
     color: $gray-750;
 
     .node-name {
-        margin-left: 10px;
         margin-bottom: 0;
-    }
-
-    .node-name {
         font-weight: $font-weight-semi-bold;
         font-size: $font-size-larger;
         flex: 0 0 20%;
@@ -121,7 +115,22 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-    }  
+    }
+
+    .label {
+        font-size: 12px;
+        border-bottom: none;
+        color: var(--sidebar-item-active);
+    }
+
+    .copy-icon {
+        margin-left: 8px;
+        color: var(--redstone-red-color);
+
+        &:hover {
+            color: $gray-750;
+        }
+    }
 
     .node-logo {
         flex: 0 0 5%;

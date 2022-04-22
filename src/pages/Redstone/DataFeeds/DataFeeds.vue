@@ -93,6 +93,15 @@
                   ></vue-loaders-ball-beat>  
                 </div>
               </div> -->
+              <!-- <div class="provider-www">
+                <a
+                  :href="provider.profile.url"
+                  target="_blank"
+                  @click.stop="() => {}"
+                >
+                <i class="fa fa-external-link" />
+                </a>
+              </div> -->
             </div>
           </Widget>
         </div>

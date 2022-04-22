@@ -5,7 +5,6 @@ import Arweave from 'arweave';
 import { SmartWeaveNodeFactory } from 'redstone-smartweave';
 import Vue from 'vue';
 
-
 export default {
     namespaced: true,
     state: {
