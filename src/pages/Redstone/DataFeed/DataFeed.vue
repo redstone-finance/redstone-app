@@ -1,8 +1,8 @@
 <template>
   <div class="provider d-flex flex-column">
-    <div class="d-flex align-items-center mb-3" v-if="provider && provider.profile">
-      <img class="provider-logo" :src="provider.profile.imgUrl" />
-      <div class="provider-name ml-3">{{ provider.profile.name }}</div>
+    <div class="d-flex align-items-center mb-3" v-if="provider && provider">
+      <img class="provider-logo" :src="provider.logo" />
+      <div class="provider-name ml-3">{{ provider.name }}</div>
     </div>
     <div v-else class="preloaders">
       <div class="preloader logo-preloader"></div>
@@ -11,23 +11,26 @@
     <div class="provider-tabs">
       <b-tabs>
         <b-tab title="Details">
-          <ProviderDetails :provider="provider"/>
+          <DataFeedDetails :provider="provider"/>
         </b-tab>
-        <b-tab title="Manifests">
+        <b-tab title="Nodes">
+          <Nodes :nodes="provider?.nodes ?? []"/>
+        </b-tab>
+        <!-- <b-tab title="Manifests">
           <Manifests :provider="provider" :providerId="providerId" />
-        </b-tab>
+        </b-tab> -->
       </b-tabs>
     </div>
   </div>
 </template>
 
 <script>
-import ProviderDetails from '@/components/Provider/ProviderDetails';
-import Manifests from '@/components/Provider/Manifests';
+import DataFeedDetails from '@/components/DataFeed/DataFeedDetails';
+import Nodes from '@/components/DataFeed/Nodes';
 import { mapState } from 'vuex';
 
 export default {
-  name: "Provider",
+  name: "DataFeed",
 
   data() {
     return {
@@ -44,8 +47,9 @@ export default {
   },
 
   components: {
-    ProviderDetails,
-    Manifests  
+    DataFeedDetails,
+    Nodes
+    // Manifests  
   },
 
   computed: {
@@ -62,7 +66,7 @@ export default {
 }
 </script>
 
-<style src="./Provider.scss" lang="scss" scoped />
+<style src="./DataFeed.scss" lang="scss" scoped />
 <style lang="scss"  >
 .provider-tabs > .tabs > div:first-of-type {
    height: 44px; 

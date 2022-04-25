@@ -213,15 +213,15 @@ export default {
       //initialize default smartweave with arweave object not using Cloudfront. For writing interactions
       const memSmartweave = SmartWeaveNodeFactory.memCached(this.arweave);
 
-      const providersRegistryContract = 
+      const oracleRegistryContract = 
         memSmartweave
-          .contract(this.providersRegistryContractId)
+          .contract(this.oracleRegistryContractId)
           .connect('use_wallet')
           .setEvaluationOptions({
             waitForConfirmation: true,
           });
 
-        let newManifestTxId = await providersRegistryContract
+        let newManifestTxId = await oracleRegistryContract
           .writeInteraction(
             {
               function: "addProviderManifest",
@@ -353,8 +353,8 @@ export default {
       smartweave: (state) => { 
         return state.smartweave; 
       },
-      providersRegistryContractId: (state) => { 
-        return state.providersRegistryContractId; 
+      oracleRegistryContractId: (state) => { 
+        return state.oracleRegistryContractId; 
       }
     }),
     

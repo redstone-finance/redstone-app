@@ -2,25 +2,27 @@
   <div class="provider-details">
     <div class="provider-info mt-2">
       <div class="mb-3 provider-description">
-        <div v-if="provider">{{ provider.profile.description }}</div>
+        <div v-if="provider">{{ provider.description }}</div>
         <div
         v-else
         class="preloader text-preloader"
       ></div>
       </div> 
-      <div class="provider-www">
-        <a v-if="provider" :href="provider.profile.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
+      <!-- <div class="provider-www">
+        <a v-if="provider" :href="provider.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
         <div
         v-else
         class="preloader text-preloader"
       ></div>
-      </div>   
+      </div>    -->
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
-        <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" />
+        <!-- <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" /> -->
+        <LabelValue label="Nodes" :value="(provider && provider?.nodes?.length) ? provider.nodes.length : '0'" :alignRight="true"/>
+        <LabelValue label="Assets" :value="(provider && provider?.assetsCount) ? provider.assetsCount : '0'" :alignRight="true"/>
         <LabelValue label="Interval" :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined" :alignRight="true"/>
-        <LabelValue label="Data points" :value="(provider && provider.dataPoints) ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/>
-        <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/>
-        <LabelValue label="Disputes" :value="provider ? null : undefined" />
+        <!-- <LabelValue label="Data points" :value="(provider && provider.dataPoints) ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/> -->
+        <!-- <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/> -->
+        <!-- <LabelValue label="Disputes" :value="provider ? null : undefined" /> -->
       </div>
     </div>  
     <hr />
@@ -67,17 +69,14 @@
 </template>
 
 <script>
-import LabelValue from '@/components/Provider/LabelValue';
+import LabelValue from '@/components/DataFeed/LabelValue';
 import tokensData from "redstone-node/dist/src/config/tokens.json";
 import sourcesData from "redstone-node/dist/src/config/sources.json";
 import _ from 'lodash';
-const axios = require('axios');
-import utils from "@/utils";
-import constants from "@/constants";
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
 
 export default {
-  name: "Provider",
+  name: "DataFeed",
 
   props: {
     provider: {}
@@ -127,9 +126,7 @@ export default {
     },
     scrollFunction() {
       alert('jo')
-   console.log('scroll')
         if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-          console.log('hit')
             this.showMoreTokens();
         }
     }
@@ -143,9 +140,9 @@ export default {
     currentManifest() {
       return this.provider?.currentManifest;
     },
-    firstManifestTxId() {
-      return this.provider?.manifests[0]?.manifestTxId;
-    },
+    // firstManifestTxId() {
+    //   return this.provider?.manifests[0]?.manifestTxId;
+    // },
     lockedHours() {
       return this.firstManifest?.data?.lockedHours
     }
@@ -156,17 +153,17 @@ export default {
   },
 
   watch: {
-    firstManifestTxId() {
-      if (this.firstManifestTxId) {
-        axios.get(`https://${constants.arweaveUrl}/${this.firstManifestTxId}`).then(
-          result => this.firstManifest = result
-        );
+    // firstManifestTxId() {
+    //   if (this.firstManifestTxId) {
+    //     axios.get(`https://${constants.arweaveUrl}/${this.firstManifestTxId}`).then(
+    //       result => this.firstManifest = result
+    //     );
 
-        utils.transactionTime(this.firstManifestTxId).then(
-          result => this.transactionTime = result
-        );
-      }
-    },
+    //     utils.transactionTime(this.firstManifestTxId).then(
+    //       result => this.transactionTime = result
+    //     );
+    //   }
+    // },
     currentManifest: {
       immediate: true,
       handler: function() {

@@ -36,7 +36,7 @@
     .provider-name {
         font-weight: $font-weight-semi-bold;
         font-size: $font-size-larger;
-        flex: 0 0 12%;
+        flex: 0 0 25%;
         color: var(--redstone-dark-blue-color);
     }
 
@@ -46,7 +46,7 @@
         align-items: flex-start;
     }
     
-    .provider-interval, .provider-points, .provider-stake {
+    .provider-interval, .provider-points, .provider-stake, .provider-nodes, .provider-assets {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
@@ -69,7 +69,7 @@
 
     .provider-description {
         margin-bottom: 0;
-        flex: 0 0 32%;
+        flex: 0 0 30%;
         font-family: Poppins;
         font-size: $font-size-mini;
         font-weight: $font-weight-thin;
