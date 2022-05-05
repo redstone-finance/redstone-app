@@ -1,22 +1,27 @@
 <template>
-  <div class="token-tabs" ref="tabWrapper">
-      <div id="leftArr" class="arrow" @click="scrollLeft()" v-if="showArrows">
-        <i :class="`fi flaticon-arrow-left${leftScrollActive ? '-active' : ''}`"></i>
+  <div>
+    <Loader v-if="loading" :class="'widget-loader'" :size="40"></Loader>
+    <div v-else>
+      <div class="token-tabs" ref="tabWrapper">
+        <div id="leftArr" class="arrow" @click="scrollLeft()" v-if="showArrows">
+          <i :class="`fi flaticon-arrow-left${leftScrollActive ? '-active' : ''}`"></i>
+        </div>
+        <div id="rightArr" class="arrow" @click="scrollRight()" v-if="showArrows">
+          <i :class="`fi flaticon-arrow-left${rightScrollActive ? '-active' : ''}`"></i>
+        </div>
+        <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
+          <b-tab v-for="type in tokenTypes" :key="type.label">
+            <template #title>
+              {{ type.label }}
+              <span class="tokens-number">
+                {{ getFilteredTokensWithPrices(type.tag).length }}
+              </span>
+            </template>
+            <TokenCards :key="searchTerm + type.tag" :tokens="getFilteredTokensWithPrices(type.tag)" />
+          </b-tab>
+        </b-tabs>
       </div>
-      <div id="rightArr" class="arrow" @click="scrollRight()" v-if="showArrows">
-        <i :class="`fi flaticon-arrow-left${rightScrollActive ? '-active' : ''}`"></i>
-      </div>
-      <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
-        <b-tab v-for="type in tokenTypes" :key="type.label">
-          <template #title>
-            {{ type.label }}
-            <span class="tokens-number">
-              {{ getFilteredTokensWithPrices(type.tag).length }}
-            </span>
-          </template>
-          <TokenCards :key="searchTerm + type.tag" :tokens="getFilteredTokensWithPrices(type.tag)" />
-        </b-tab>
-      </b-tabs> 
+    </div>
   </div>
 </template>
 
@@ -24,6 +29,7 @@
 import redstone from 'redstone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from '@/components/Tokens/Tokens';
+import Loader from '@/components/Loader/Loader';
 import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
 import { mapActions, mapState } from 'vuex';
 
@@ -71,6 +77,10 @@ const TOKEN_TYPES = [
   {
     label: "Livestocks",
     tag: "livestocks"
+  },
+  {
+    label: "Custom",
+    tag: "custom-urls"
   }
 ];
 
@@ -81,8 +91,6 @@ function simplifyPricesObject(pricesObj) {
   }
   return simplifiedObj;
 }
-
-const tokensData = getAllSupportedTokens();
 
 export default {
   name: "Tokens",
@@ -96,6 +104,8 @@ export default {
       rightScrollActive: true,
       tabsLength: 0,
       selectedTabIndex: 0,
+      tokensData: {},
+      loading: true
     };
   },
 
@@ -103,6 +113,12 @@ export default {
     TokenCards: Tokens,
     BTabs,
     BTab,
+    Loader: Loader
+  },
+
+  async beforeCreate() {
+    this.tokensData = await getAllSupportedTokens();
+    this.loading = false;
   },
 
   async mounted() {
@@ -135,7 +151,7 @@ export default {
 
     $route() {
       this.selectTabFromUrlParam();
-    },
+    }
   },
   
   methods: {
@@ -181,9 +197,8 @@ export default {
 
     getFilteredTokensWithPrices(type) {
       const result = [];
-
-      for (const symbol of Object.keys(tokensData)) {
-        const token = tokensData[symbol];
+      for (const symbol of Object.keys(this.tokensData)) {
+        const token = this.tokensData[symbol];
         let shouldBeAdded = true;
 
         if (!token) {

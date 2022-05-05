@@ -5,9 +5,10 @@
         <div class="token-price-wrapper d-flex flex-column flex-md-row">
           <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
             <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            <div class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
+            <div v-if="!tokenDetails.tags.includes('custom-urls')" class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
+            <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}})</div>
           </div>
-          <div class="mb-2 mb-md-0">
+          <div class="mb-2 mb-md-0" v-if="!tokenDetails.tags.includes('custom-urls')">
             <div class="current-price">
               {{ currentPriceValue | price }}
             </div>
@@ -54,15 +55,23 @@
     <hr />
 
     <b-row>
-      <b-col xs="12" lg="9">
+      <b-col xs="12" lg="9" v-if="!tokenDetails.tags.includes('custom-urls')">
         <div class="price-chart-container">
           <div v-show="loading">
             <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
           </div>
-          <TokenPriceChart v-show="!loading" :data="chartData" />
+          <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-5 mt-md-0">
+      <b-col xs="12" lg="12" v-else>
+        <div class="price-chart-container">
+          <div v-show="loading">
+            <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
+          </div>
+          <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
+        </div>
+      </b-col>
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="!tokenDetails.tags.includes('custom-urls')">
         <div class="data-sources">
           Data sources
           ({{ sourcesCount }})
@@ -112,9 +121,10 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
-import tokensData from "redstone-node/dist/src/config/tokens.json";
 import sources from "redstone-node/dist/src/config/sources.json";
 import constants from "@/constants";
+import { getDetailsForSymbol } from "@/tokens";
+
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
@@ -370,12 +380,15 @@ export default {
     },
 
     currentPriceValue() {
+      if (getDetailsForSymbol(this.symbol).tags.includes('custom-urls')) {
+        return null
+      }
       return this.currentPrice?.value || "Loading..."
     },
 
     tokenDetails() {
       return {
-        ...tokensData[this.symbol],
+        ...getDetailsForSymbol(this.symbol),
         symbol: this.symbol
       };
     },

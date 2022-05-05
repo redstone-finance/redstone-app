@@ -27,14 +27,16 @@
                   sm="6"
                   md="4"
                   class="token-price pl-0">
-                  <span v-if="prices[token.symbol]">
-                    {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
+                  <span v-if="!token.tags.includes('custom-urls')">
+                    <span v-if="prices[token.symbol]">
+                      {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
+                    </span>
+                    <vue-loaders-ball-beat
+                      v-else
+                      color="var(--redstone-red-color)"
+                      scale="0.5"
+                    ></vue-loaders-ball-beat>
                   </span>
-                  <vue-loaders-ball-beat
-                    v-else
-                    color="var(--redstone-red-color)"
-                    scale="0.5"
-                  ></vue-loaders-ball-beat>
                 </b-col>
               </b-row>
               <b-row class="d-flex justify-content-end see-more-wrapper">

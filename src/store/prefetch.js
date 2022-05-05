@@ -104,8 +104,12 @@ export default {
                 if (currentManifestTxId) {
                     const currentManifest = await axios.get(`https://${constants.arweaveUrl}/${currentManifestTxId}`);
                     dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: currentManifest.data });
-                    const assetsCount = Object.keys(currentManifest.data.tokens).length;
-                    dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
+                    if (currentManifest.data.tokens) {
+                      const assetsCount = Object.keys(currentManifest.data.tokens).length;
+                      dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
+                    } else {
+                      dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
+                    }
                 }
                 
                 const filteredNodes = nodes.filter(node => node.dataFeedId === providerId);

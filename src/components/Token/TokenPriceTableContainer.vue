@@ -1,5 +1,5 @@
 <template>
-  <div class="price-table">
+  <div class="price-table" v-if="!tokenDetails.tags.includes('custom-urls')">
     <div class="table-title">
       Data feeds
     </div>
@@ -138,6 +138,8 @@
 import redstone from 'redstone-api';
 import dateFormat from 'dateformat';
 import utils from '@/utils';
+import { getDetailsForSymbol } from "@/tokens";
+
 
 export default {
   name: 'TokenPriceTableContainer',
@@ -284,9 +286,14 @@ export default {
     endDate() {
       const [hours, minutes, seconds] = this.toTime.split(':');
       return new Date(this.toDate.setHours(hours, minutes, seconds));
-    }
+    },
+    tokenDetails() {
+      return {
+        ...getDetailsForSymbol(this.symbol),
+        symbol: this.symbol
+      };
+    },
   },
-
 }
 </script>
 

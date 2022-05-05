@@ -294,9 +294,9 @@
 
 <script>
 import JsonViewer from "vue-json-viewer";
-import tokensData from "redstone-node/dist/src/config/tokens.json";
 import Multiselect from "vue-multiselect";
 import Vue from 'vue';
+import tokenDetails from "redstone-node/dist/src/config/tokens.json";
 
 export default {
   name: "ManifestForm",
@@ -342,7 +342,7 @@ export default {
 
   mounted() {
     this.$bvModal.show("manifest-form-modal");
-    this.availableTokens = Object.entries(tokensData).map((element, index) => {
+    this.availableTokens = Object.entries(tokenDetails).map((element, index) => {
       return {
         id: index,
         symbol: element[0],
@@ -449,16 +449,11 @@ export default {
       this.$root.$emit("manifestFormClosed");
     },
     addToken(token) {
-      console.log(this.addedTokens)
-      console.log(token)
-      console.log(this.availableTokens)
       this.addedTokens.unshift(token);
       this.clickedTokenIndex = 0;
       this.availableTokens = this.availableTokens.filter((availableToken) => {
         return availableToken.id !== token.id;
       });
-            console.log('here')
-
       Vue.set(this.manifest.manifestData.tokens, token.symbol, { source: token.source });
     },
     removeToken(token) {

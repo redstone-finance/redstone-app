@@ -70,10 +70,11 @@
 
 <script>
 import LabelValue from '@/components/DataFeed/LabelValue';
-import tokensData from "redstone-node/dist/src/config/tokens.json";
 import sourcesData from "redstone-node/dist/src/config/sources.json";
 import _ from 'lodash';
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
+import { getDetailsForSymbol } from "@/tokens";
+
 
 export default {
   name: "DataFeed",
@@ -101,7 +102,7 @@ export default {
     prepareTokensDataForTable() {
       this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
         const [symbol, detailsInManifest] = entry;
-        let tokenInfo = tokensData[symbol];
+        let tokenInfo = getDetailsForSymbol(symbol);
 
         let sourceList = detailsInManifest.source || this.currentManifest.defaultSource;
 
