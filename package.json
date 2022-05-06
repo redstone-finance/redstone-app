@@ -110,6 +110,8 @@
     "**/browserslist": "^4.16.5",
     "**/minimist": "^1.2.3",
     "**/dns-packet": "^5.2.2",
-    "**/websocket-extensions": "^0.1.4"
+    "**/websocket-extensions": "^0.1.4",
+    "redstone-node/redstone-smartweave": "0.4.80",
+    "renderkid/css-select": "4.1.3"
   }
 }
