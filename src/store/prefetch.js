@@ -112,8 +112,9 @@ export default {
                 dispatch('updateProvider', { id: providerId, key: 'nodes', value: filteredNodes });
             }
         },
-        oracleRegistryContract({ commit }) {
-            const oracleRegistryContractId = 'vxbU6-4nPorRN9lL3ccL4S-Z7Z_0jU7JVDtzURFQpzk';
+        async oracleRegistryContract({ commit }) {
+            const response = await axios.get(constants.smartweaveContractAddressesUrl);
+            const oracleRegistryContractId = response.data['oracle-registry'];
             commit('setOracleRegistryContractId', oracleRegistryContractId);
         }
     }

@@ -7,6 +7,8 @@ export default {
 
   viewblockTxUrlPrefix: "https://viewblock.io/arweave/tx/",
 
+  smartweaveContractAddressesUrl: "https://raw.githubusercontent.com/redstone-finance/redstone-node/main/src/config/contracts.json",
+
   images: {
     "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,
     "no-logo": `${REDSTONE_CDN}/logo-not-found.png`,
