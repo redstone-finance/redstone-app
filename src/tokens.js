@@ -1,6 +1,6 @@
 import Arweave from 'arweave';
 import { SmartWeaveNodeFactory } from 'redstone-smartweave';
-import dummyWallet from "@/dummy-wallet.json";
+import axios from 'axios';
 import constants from "@/constants";
 import tokenDetails from "redstone-node/dist/src/config/tokens.json";
 import rapidManifest from "redstone-node/dist/manifests/rapid.json";
@@ -17,15 +17,16 @@ export function getDetailsForSymbol(symbol) {
   const details = tokenDetails[symbol];
   if (details) {
     return details;
-  }
-  return {
-    logoURI: "https://redstone.finance/assets/img/redstone-logo-full.svg",
-    name: `custom-url-${symbol}`,
-    url: "https://redstone.finance/",
-    tags: [
-      "custom-urls"
-    ],
-    providers: []
+  } else if (symbol.startsWith("0x")) {
+    return {
+      logoURI: "https://redstone.finance/assets/img/redstone-logo-full.svg",
+      name: `custom-url-${symbol}`,
+      url: "https://redstone.finance/",
+      tags: [
+        "custom-urls"
+      ],
+      providers: []
+    }
   }
 }
 
@@ -43,10 +44,11 @@ const fetchCustomUrlManifest = async () => {
   const smartweave = SmartWeaveNodeFactory
     .memCachedBased(arweave)
     .build();
+
+  const response = await axios.get(constants.smartweaveContractAddressesUrl);
+  const oracleRegistryContractId = response.data['oracle-registry'];
   
-  const oracleRegistryContract = smartweave
-    .contract('qg5BIOUraunoi6XJzbCC-TgIAypcXyXlVprgg0zRRDE')
-    .connect(dummyWallet);
+  const oracleRegistryContract = smartweave.contract(oracleRegistryContractId);
   
   const provider = (await oracleRegistryContract.viewState({
       function: "getDataFeedDetailsById",
