@@ -36,7 +36,8 @@
         hover
         :items="visibleTokens"
         :fields="fieldsFiltered"
-        >
+        v-if="providerId !== 'redstone-custom-urls-demo'"
+      >
 
       <template #cell(name)="data">
         <img class="token-logo" :src="data.item.logoURI" />
@@ -47,7 +48,7 @@
         {{ data.item.symbol }}
       </template>
 
-      <template #cell(sources)="data" v-if="providerId !== 'redstone-custom-urls-demo'">
+      <template #cell(sources)="data">
         <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
           <div class="d-flex source-links" >
             <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
@@ -55,6 +56,26 @@
             </a>
           </div>
         </div>
+      </template>
+    </b-table>
+    <b-table
+      id="custom-urls-table"
+      stacked="md"
+      hover
+      :items="visibleTokens"
+      :fields="fieldsFiltered"
+      v-else
+    >
+      <template #cell(comment)="data">
+        {{ currentManifest.tokens[data.item.symbol].comment }}
+      </template>
+
+      <template #cell(url)="data">
+        {{ currentManifest.tokens[data.item.symbol].customUrlDetails.url }}
+      </template>
+
+      <template #cell(JSONPath)="data">
+        {{ currentManifest.tokens[data.item.symbol].customUrlDetails.jsonpath }}
       </template>
     </b-table>
     <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
@@ -100,6 +121,7 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
+      console.log(this.currentManifest)
       this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = getDetailsForSymbol(symbol);
@@ -154,7 +176,7 @@ export default {
       if (this.$route.params.id !== 'redstone-custom-urls-demo') {
         return this.fields;
       }
-      return this.fields.filter(field => field !== 'sources');
+      return [{ key: 'name', label: 'Asset'}, 'comment', 'url', 'JSONPath'];
     }
   },
 
@@ -320,6 +342,14 @@ export default {
     width: 100px;
   }
 
+  th:nth-of-type(3) {
+    width: fit-content;
+  }
+
+  th:nth-of-type(4) {
+    width: 250px;
+  }
+
   th:nth-of-type(2) {
     overflow: hidden;
   }
@@ -341,6 +371,15 @@ export default {
     .source-links {
       flex-wrap: wrap;
     }
+  }
+}
+
+.provider-details #custom-urls-table {
+  th {
+    text-transform: none;
+    color: $navy;
+    font-size: 12px;
+    font-weight:  $font-weight-soft-bold;
   }
 }
 </style>

@@ -24,7 +24,7 @@
             <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
           </div>
           <div class="mb-2">
-            <span>JSON path: </span>
+            <span>JSONPath: </span>
             <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
           </div>
           <div class="mb-2">
