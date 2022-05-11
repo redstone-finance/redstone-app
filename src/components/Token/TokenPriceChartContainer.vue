@@ -5,17 +5,17 @@
         <div class="token-price-wrapper d-flex flex-column flex-md-row">
           <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
             <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            <div v-if="!tokenDetails.tags.includes('custom-urls')" class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
-            <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}})</div>
+            <div v-if="tokenDetails.tags.includes('custom-urls')" class="d-inline-block token-name">{{ tokenDetails.name }}: </div>
+            <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
-          <div class="mb-2 mb-md-0" v-if="!tokenDetails.tags.includes('custom-urls')">
+          <div class="mb-2 mb-md-0">
             <div class="current-price">
               {{ currentPriceValue | price }}
             </div>
             <div class="percentage ml-3 d-inline-block">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
                 <span>{{ priceChange().toFixed(2) | price({ showPlus: true }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)</div>   
-            </div>  
+            </div> 
           </div>
         </div>
       </b-col>
@@ -380,9 +380,6 @@ export default {
     },
 
     currentPriceValue() {
-      if (getDetailsForSymbol(this.symbol).tags.includes('custom-urls')) {
-        return null
-      }
       return this.currentPrice?.value || "Loading..."
     },
 

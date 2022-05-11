@@ -9,6 +9,8 @@ export default {
 
   smartweaveContractAddressesUrl: "https://raw.githubusercontent.com/redstone-finance/redstone-node/main/src/config/contracts.json",
 
+  customUrlDataFeedId: "redstone-custom-urls-demo",
+
   images: {
     "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,
     "no-logo": `${REDSTONE_CDN}/logo-not-found.png`,

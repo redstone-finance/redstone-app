@@ -1,5 +1,5 @@
-const axios = require("axios");
-import dummyWallet from "@/dummy-wallet.json";
+import axios from "axios";
+import ArweaveService from "redstone-node/dist/src/arweave/ArweaveService";
 import constants from "@/constants";
 import Arweave from 'arweave';
 import { SmartWeaveNodeFactory } from 'redstone-smartweave';
@@ -66,37 +66,14 @@ export default {
             Vue.set(providers[id], key, value);
             commit("setProviders", providers);
         },
-        async fetchProviders({ commit, state, dispatch }) {
-            const oracleRegistryContract = state.smartweave
-                .contract(state.oracleRegistryContractId)
-                .connect(dummyWallet);
-
-            const providersList = (await oracleRegistryContract.viewState({
-                function: "listDataFeeds",
-            })).result;
-
-            const nodesList = (await oracleRegistryContract.viewState({
-                function: "listNodes",
-            })).result;
-
-            const nodes = []
-            for (const nodeAddress of nodesList) {
-                const node = (await oracleRegistryContract.viewState({
-                    function: "getNodeDetails",
-                    data: {
-                        address: nodeAddress
-                    }
-                })).result;
-                nodes.push(node)
-            }
-            let providers = {};
-            for (const providerId of providersList) {
-                const provider = (await oracleRegistryContract.viewState({
-                    function: "getDataFeedDetailsById",
-                    data: {
-                        id: providerId
-                    }
-                })).result;
+        async fetchProviders({ commit, _state, dispatch }) {
+            const arweaveService = new ArweaveService();
+            const contractState = await arweaveService.getOracleRegistryContractState();
+            const providers = contractState.dataFeeds;
+            commit('setProviders', providers);
+            const nodes = contractState.nodes;
+          
+            for (const [providerId, provider] of Object.entries(providers)) {
                 Vue.set(providers, providerId, provider);
                 commit('setProviders', providers);
         
@@ -112,7 +89,7 @@ export default {
                     }
                 }
                 
-                const filteredNodes = nodes.filter(node => node.dataFeedId === providerId);
+                const filteredNodes = Object.values(nodes).filter(node => node.dataFeedId === providerId);
                 dispatch('updateProvider', { id: providerId, key: 'nodes', value: filteredNodes });
             }
         },

@@ -35,7 +35,7 @@
         stacked="md"
         hover
         :items="visibleTokens"
-        :fields="fields"
+        :fields="fieldsFiltered"
         >
 
       <template #cell(name)="data">
@@ -47,7 +47,7 @@
         {{ data.item.symbol }}
       </template>
 
-      <template #cell(sources)="data">
+      <template #cell(sources)="data" v-if="providerId !== 'redstone-custom-urls-demo'">
         <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
           <div class="d-flex source-links" >
             <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
@@ -146,6 +146,15 @@ export default {
     // },
     lockedHours() {
       return this.firstManifest?.data?.lockedHours
+    },
+    providerId() {
+      return this.$route.params.id;
+    },
+    fieldsFiltered() {
+      if (this.$route.params.id !== 'redstone-custom-urls-demo') {
+        return this.fields;
+      }
+      return this.fields.filter(field => field !== 'sources');
     }
   },
 

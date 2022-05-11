@@ -171,7 +171,7 @@ export default {
     },
 
     async lazyLoadPricesForAllTokens() {
-      const providersSorted = getOrderedProviders();
+      const providersSorted = await getOrderedProviders();
       if (!this.pricesLoadingCompleted) {
         for (const provider of providersSorted) {
           const prices = await redstone.getAllPrices({ provider });
