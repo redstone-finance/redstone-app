@@ -1,6 +1,6 @@
 <template>
   <li v-if="!childrenLinks && isHeader" :class="{headerLink: true, className}">
-    <router-link :to="link" class="sidebar-link">
+    <router-link v-if="!link.includes('http')" :to="link" class="sidebar-link">
       <span class="icon">
         <i v-if="iconName" :class="fullIconName"></i>
         <img v-if="imgUrl" :src="imgUrl" />
@@ -9,6 +9,15 @@
       <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{label}}</sup>
       <b-badge v-if="badge" variant="primary" pill>{{badge}}</b-badge>
     </router-link>
+    <a v-if="link.includes('http')" :href="link" class="sidebar-link">
+      <span class="icon">
+        <i v-if="iconName" :class="fullIconName"></i>
+        <img v-if="imgUrl" :src="imgUrl" />
+      </span>
+      <span v-if="showHeader">{{header}}</span>
+      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{label}}</sup>
+      <b-badge v-if="badge" variant="primary" pill>{{badge}}</b-badge>
+    </a>
   </li>
   <li v-else-if="childrenLinks" :class="{headerLink: true, className}">
     <div @click="() => togglePanelCollapse(link)">
