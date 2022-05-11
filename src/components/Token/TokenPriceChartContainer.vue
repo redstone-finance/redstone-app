@@ -5,7 +5,8 @@
         <div class="token-price-wrapper d-flex flex-column flex-md-row">
           <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
             <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            <div class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
+            <div v-if="tokenDetails.tags.includes('custom-urls')" class="d-inline-block token-name">{{ tokenDetails.name }}: </div>
+            <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
           <div class="mb-2 mb-md-0">
             <div class="current-price">
@@ -14,7 +15,21 @@
             <div class="percentage ml-3 d-inline-block">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
                 <span>{{ priceChange().toFixed(2) | price({ showPlus: true }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)</div>   
-            </div>  
+            </div> 
+          </div>
+        </div>
+        <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
+          <div class="mb-2">
+            <span>URL: </span>
+            <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
+          </div>
+          <div class="mb-2">
+            <span>JSONPath: </span>
+            <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
+          </div>
+          <div class="mb-2">
+            <span>Comment: </span>
+            <span class="data-feed-details-text">{{ customUrlDetails.comment }}</span>
           </div>
         </div>
       </b-col>
@@ -54,15 +69,23 @@
     <hr />
 
     <b-row>
-      <b-col xs="12" lg="9">
+      <b-col xs="12" lg="9" v-if="!tokenDetails.tags.includes('custom-urls')">
         <div class="price-chart-container">
           <div v-show="loading">
             <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
           </div>
-          <TokenPriceChart v-show="!loading" :data="chartData" />
+          <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-5 mt-md-0">
+      <b-col xs="12" lg="12" v-else>
+        <div class="price-chart-container">
+          <div v-show="loading">
+            <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
+          </div>
+          <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
+        </div>
+      </b-col>
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="!tokenDetails.tags.includes('custom-urls')">
         <div class="data-sources">
           Data sources
           ({{ sourcesCount }})
@@ -112,9 +135,10 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
-import tokensData from "redstone-node/dist/src/config/tokens.json";
 import sources from "redstone-node/dist/src/config/sources.json";
 import constants from "@/constants";
+import { getDetailsForSymbol } from "@/tokens";
+import { mapState } from 'vuex';
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
@@ -375,10 +399,19 @@ export default {
 
     tokenDetails() {
       return {
-        ...tokensData[this.symbol],
+        ...getDetailsForSymbol(this.symbol),
         symbol: this.symbol
       };
     },
+    ...mapState("prefetch", {
+      dataFeeds: (state) => state.providers
+    }),
+    customUrlDetails() {
+      if (getDetailsForSymbol(this.symbol).tags.includes("custom-urls")) {
+        const dataFeed = this.dataFeeds["redstone-custom-urls-demo"];
+        return dataFeed.currentManifest.tokens[this.symbol];
+      }
+    }
   },
 
   components: {
@@ -559,6 +592,13 @@ export default {
   .token-price-wrapper {
     max-width: calc(100% - 160px);
   }
+}
+
+.data-feed-details-text {
+    font-weight: $font-weight-semi-bold;
+    font-size: $font-size-larger;
+    flex: 0 0 25%;
+    color: var(--redstone-dark-blue-color);
 }
 </style>
 <style lang="scss">

@@ -57,7 +57,7 @@ export default {
       return this.$route.params.id;
     },
     ...mapState("prefetch", {
-      providers: (state) => state.providers,
+      providers: (state) => state.providers
     }),
     provider() {
       return this.providers ? this.providers[this.providerId] : null;

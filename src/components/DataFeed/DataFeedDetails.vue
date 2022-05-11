@@ -35,8 +35,9 @@
         stacked="md"
         hover
         :items="visibleTokens"
-        :fields="fields"
-        >
+        :fields="fieldsFiltered"
+        v-if="providerId !== 'redstone-custom-urls-demo'"
+      >
 
       <template #cell(name)="data">
         <img class="token-logo" :src="data.item.logoURI" />
@@ -57,6 +58,26 @@
         </div>
       </template>
     </b-table>
+    <b-table
+      id="custom-urls-table"
+      stacked="md"
+      hover
+      :items="visibleTokens"
+      :fields="fieldsFiltered"
+      v-else
+    >
+      <template #cell(comment)="data">
+        {{ currentManifest.tokens[data.item.symbol].comment }}
+      </template>
+
+      <template #cell(url)="data">
+        {{ currentManifest.tokens[data.item.symbol].customUrlDetails.url }}
+      </template>
+
+      <template #cell(JSONPath)="data">
+        {{ currentManifest.tokens[data.item.symbol].customUrlDetails.jsonpath }}
+      </template>
+    </b-table>
     <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
       <div
         v-for="n in 5"
@@ -70,10 +91,11 @@
 
 <script>
 import LabelValue from '@/components/DataFeed/LabelValue';
-import tokensData from "redstone-node/dist/src/config/tokens.json";
 import sourcesData from "redstone-node/dist/src/config/sources.json";
 import _ from 'lodash';
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
+import { getDetailsForSymbol } from "@/tokens";
+
 
 export default {
   name: "DataFeed",
@@ -99,9 +121,10 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
+      console.log(this.currentManifest)
       this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
         const [symbol, detailsInManifest] = entry;
-        let tokenInfo = tokensData[symbol];
+        let tokenInfo = getDetailsForSymbol(symbol);
 
         let sourceList = detailsInManifest.source || this.currentManifest.defaultSource;
 
@@ -145,6 +168,15 @@ export default {
     // },
     lockedHours() {
       return this.firstManifest?.data?.lockedHours
+    },
+    providerId() {
+      return this.$route.params.id;
+    },
+    fieldsFiltered() {
+      if (this.$route.params.id !== 'redstone-custom-urls-demo') {
+        return this.fields;
+      }
+      return [{ key: 'name', label: 'Asset'}, 'comment', 'url', 'JSONPath'];
     }
   },
 
@@ -310,6 +342,14 @@ export default {
     width: 100px;
   }
 
+  th:nth-of-type(3) {
+    width: fit-content;
+  }
+
+  th:nth-of-type(4) {
+    width: 250px;
+  }
+
   th:nth-of-type(2) {
     overflow: hidden;
   }
@@ -331,6 +371,15 @@ export default {
     .source-links {
       flex-wrap: wrap;
     }
+  }
+}
+
+.provider-details #custom-urls-table {
+  th {
+    text-transform: none;
+    color: $navy;
+    font-size: 12px;
+    font-weight:  $font-weight-soft-bold;
   }
 }
 </style>

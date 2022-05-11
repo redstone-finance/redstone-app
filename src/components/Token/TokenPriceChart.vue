@@ -1,6 +1,8 @@
 <script>
   import Chart from 'chart.js'
   import { generateChart } from 'vue-chartjs'
+  import { getDetailsForSymbol } from "@/tokens";
+
 
   Chart.defaults.LineWithLine = Chart.defaults.line;
   Chart.controllers.LineWithLine = Chart.controllers.line.extend({
@@ -43,9 +45,13 @@
 
   export default {
     extends: CustomLine,
-    props: ['data'],
+    props: {
+      symbol: String,
+      data: Object,
+    },
     watch: {
       data: function(chartData) { // watch it
+        const symbol = this.symbol
         this.renderChart(
           {
             labels: chartData.labels,
@@ -73,7 +79,8 @@
                 {
                     ticks: {
                         userCallback: function(value, index, values) {
-                            return '$' + value.toLocaleString('en-US', {minimumFractionDigits: 2});   // this is all we need
+                          const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: 2});
+                          return getDetailsForSymbol(symbol).tags.includes('custom-urls') ? valueCalculated : `$ ${valueCalculated}`;   // this is all we need
                         }
                     }
                 }
@@ -98,14 +105,12 @@
                     label += ': ';
                   }
                   label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
-                  return '$' + label;
+                  return getDetailsForSymbol(symbol).tags.includes('custom-urls') ? label : `$ ${label}` ;
                 }
               }
             }
           }
         );
-
-
       }
     }
   };
