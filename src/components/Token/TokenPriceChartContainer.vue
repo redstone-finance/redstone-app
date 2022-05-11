@@ -20,15 +20,15 @@
         </div>
         <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
           <div class="mb-2">
-            <span>URL: </span>
+            <span class="data-feed-details-label">Custom URL: </span>
             <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
           </div>
           <div class="mb-2">
-            <span>JSONPath: </span>
+            <span class="data-feed-details-label">JSON Path: </span>
             <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
           </div>
           <div class="mb-2">
-            <span>Comment: </span>
+            <span class="data-feed-details-label">Comment: </span>
             <span class="data-feed-details-text">{{ customUrlDetails.comment }}</span>
           </div>
         </div>
@@ -595,11 +595,16 @@ export default {
 }
 
 .data-feed-details-text {
-    font-weight: $font-weight-semi-bold;
+    // font-weight: $font-weight-semi-bold;
     font-size: $font-size-larger;
     flex: 0 0 25%;
     color: var(--redstone-dark-blue-color);
 }
+
+.data-feed-details-label {
+  font-weight: $font-weight-semi-bold;
+}
+
 </style>
 <style lang="scss">
 .custom-control-input:checked ~ .custom-control-label {
