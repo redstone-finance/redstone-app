@@ -18,6 +18,20 @@
             </div> 
           </div>
         </div>
+        <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
+          <div class="mb-2">
+            <span>URL: </span>
+            <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
+          </div>
+          <div class="mb-2">
+            <span>JSON path: </span>
+            <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
+          </div>
+          <div class="mb-2">
+            <span>Comment: </span>
+            <span class="data-feed-details-text">{{ customUrlDetails.comment }}</span>
+          </div>
+        </div>
       </b-col>
     </b-row>
 
@@ -124,7 +138,7 @@ import _ from 'lodash';
 import sources from "redstone-node/dist/src/config/sources.json";
 import constants from "@/constants";
 import { getDetailsForSymbol } from "@/tokens";
-
+import { mapState } from 'vuex';
 
 function formatPrice(value) {
   return (value || 0).toFixed(2);
@@ -389,6 +403,15 @@ export default {
         symbol: this.symbol
       };
     },
+    ...mapState("prefetch", {
+      dataFeeds: (state) => state.providers
+    }),
+    customUrlDetails() {
+      if (getDetailsForSymbol(this.symbol).tags.includes("custom-urls")) {
+        const dataFeed = this.dataFeeds["redstone-custom-urls-demo"];
+        return dataFeed.currentManifest.tokens[this.symbol];
+      }
+    }
   },
 
   components: {
@@ -569,6 +592,13 @@ export default {
   .token-price-wrapper {
     max-width: calc(100% - 160px);
   }
+}
+
+.data-feed-details-text {
+    font-weight: $font-weight-semi-bold;
+    font-size: $font-size-larger;
+    flex: 0 0 25%;
+    color: var(--redstone-dark-blue-color);
 }
 </style>
 <style lang="scss">
