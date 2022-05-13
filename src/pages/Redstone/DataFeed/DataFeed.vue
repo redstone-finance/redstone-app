@@ -1,8 +1,11 @@
 <template>
   <div class="provider d-flex flex-column">
-    <div class="d-flex align-items-center mb-3" v-if="provider && provider">
-      <img class="provider-logo" :src="provider.logo" />
-      <div class="provider-name ml-3">{{ provider.name }}</div>
+    <div v-if="provider">
+      <div class="d-flex align-items-center">
+        <img class="provider-logo" :src="provider.logo" />
+        <div class="provider-name ml-3">{{ provider.name }}</div>
+      </div>
+      <div class="provider-id mb-3">id: {{ providerId }}</div>
     </div>
     <div v-else class="preloaders">
       <div class="preloader logo-preloader"></div>

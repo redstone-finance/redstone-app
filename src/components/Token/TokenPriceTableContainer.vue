@@ -1,5 +1,5 @@
 <template>
-  <div class="price-table" v-if="!tokenDetails.tags.includes('custom-urls')">
+  <div class="price-table">
     <div class="table-title">
       Data feeds
     </div>
@@ -59,8 +59,11 @@
       </template>
 
       <template #cell(value)="data">
-        <div class="price">
-          {{ data.item.value | price }} 
+        <div class="price" v-if="tokenDetails.tags.includes('custom-urls')">
+          {{ data.item.value }} 
+        </div>
+        <div class="price" v-else>
+          {{ data.item.value |  price }} 
         </div>
       </template>
 
@@ -70,7 +73,7 @@
         </div>
       </template>
 
-      <template #cell(status)="data">
+      <!-- <template #cell(status)="data">
         <div v-if="isTxPendingForPrice(data.item)"
             class="badge mining align-self-start">
           <div class="badge-text">
@@ -87,7 +90,7 @@
           </div>
           <i class="fa fa-check"/>
         </div>
-      </template>
+      </template> -->
 
       <template #cell(permawebTx)="data">
         <div
@@ -164,7 +167,7 @@ export default {
       toDate: new Date(),
       lastConfirmedTxTimestamp: 0,
 
-      fields: ['value', 'time', 'status', 'permawebTx', 'dispute'],
+      fields: ['value', 'time', 'permawebTx', 'dispute'],
     };
   },
 

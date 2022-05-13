@@ -1,8 +1,8 @@
 <template>
   <div class="providers-wrapper">
     <b-row class="justify-content-center">
-      <b-col cols="12" class="widget-col" v-for="(provider, index) in filteredProviders" :key="index">
-        <div class="widget-wrapper" @click="$router.push('/app/data-feeds/' + index)">
+      <b-col cols="12" class="widget-col" v-for="(provider, id) in filteredProviders" :key="id">
+        <div class="widget-wrapper" @click="$router.push('/app/data-feeds/' + id)">
           <Widget class="mb-0 provider-card">
             <div class="provider-details">
               <div class="provider-logo">
@@ -11,9 +11,12 @@
                   :src="provider.logo"
                 />
               </div>
-              <h6 class="provider-name">
-                {{ provider.name }}
-              </h6>
+              <div>
+                <h6 class="provider-name">
+                  {{ provider.name }}
+                </h6>
+                <span class="provider-id">id: {{ id }}</span>
+              </div>
               <!-- <Rating :value="provider.rating" :disabled="true"></Rating> -->
               <div class="provider-description">
                 {{ provider.description }}

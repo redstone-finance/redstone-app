@@ -9,27 +9,43 @@
             <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
           <div class="mb-2 mb-md-0">
-            <div class="current-price">
+            <div class="current-price" v-if="tokenDetails.tags.includes('custom-urls')">
+              {{ currentPriceValue }}
+            </div>
+            <div class="current-price" v-else>
               {{ currentPriceValue | price }}
             </div>
-            <div class="percentage ml-3 d-inline-block">
+            <div class="percentage ml-3 d-inline-block" v-if="tokenDetails.tags.includes('custom-urls')">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
-                <span>{{ priceChange().toFixed(2) | price({ showPlus: true }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)</div>   
-            </div> 
+                <span>{{ priceChange().toFixed(2) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
+              </div>
+            </div>
+            <div class="percentage ml-3 d-inline-block" v-else>
+              <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
+                <span>{{ priceChange().toFixed(2) | price({ showPlus: true }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
+              </div>
+            </div>
           </div>
         </div>
         <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
-          <div class="mb-2">
-            <span class="data-feed-details-label">Custom URL: </span>
-            <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
+          <div v-if="customUrlDetails">
+            <div class="mb-2">
+              <span class="data-feed-details-label">Custom URL: </span>
+              <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
+            </div>
+            <div class="mb-2">
+              <span class="data-feed-details-label">JSON Path: </span>
+              <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
+            </div>
+            <div class="mb-2">
+              <span class="data-feed-details-label">Comment: </span>
+              <span class="data-feed-details-text">{{ customUrlDetails.comment }}</span>
+            </div>
           </div>
-          <div class="mb-2">
-            <span class="data-feed-details-label">JSON Path: </span>
-            <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
-          </div>
-          <div class="mb-2">
-            <span class="data-feed-details-label">Comment: </span>
-            <span class="data-feed-details-text">{{ customUrlDetails.comment }}</span>
+          <div v-else class="preloaders">
+            <div class="preloader text-preloader"></div>
+            <div class="preloader text-preloader"></div>
+            <div class="preloader text-preloader"></div>
           </div>
         </div>
       </b-col>
@@ -54,6 +70,7 @@
             :key="title"
             :value="value"
             :title="title"
+            :isCustomUrl="tokenDetails.tags.includes('custom-urls')"
             class="mr-2 mr-md-4"
           />
         </div>
@@ -407,9 +424,14 @@ export default {
       dataFeeds: (state) => state.providers
     }),
     customUrlDetails() {
-      if (getDetailsForSymbol(this.symbol).tags.includes("custom-urls")) {
+      if (
+        this.dataFeeds &&
+        getDetailsForSymbol(this.symbol).tags.includes("custom-urls")
+      ) {
         const dataFeed = this.dataFeeds["redstone-custom-urls-demo"];
-        return dataFeed.currentManifest.tokens[this.symbol];
+        if (dataFeed?.currentManifest) {
+          return dataFeed.currentManifest.tokens[this.symbol];
+        }
       }
     }
   },
@@ -604,6 +626,21 @@ export default {
 .data-feed-details-label {
   font-weight: $font-weight-semi-bold;
 }
+
+.preloaders {
+    margin-bottom: 10px;
+    
+    .preloader {
+      @include preload-animation(2.5s, 350px);
+    }
+
+    .text-preloader {
+        height: 20px;
+        width: 250px;
+        margin-bottom: 10px;
+    }
+}
+
 
 </style>
 <style lang="scss">

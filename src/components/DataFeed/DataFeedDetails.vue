@@ -2,11 +2,13 @@
   <div class="provider-details">
     <div class="provider-info mt-2">
       <div class="mb-3 provider-description">
-        <div v-if="provider">{{ provider.description }}</div>
+        <div v-if="provider">
+          {{ provider.description }}
+        </div>
         <div
-        v-else
-        class="preloader text-preloader"
-      ></div>
+          v-else
+          class="preloader text-preloader"
+        ></div>
       </div> 
       <!-- <div class="provider-www">
         <a v-if="provider" :href="provider.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
@@ -121,7 +123,6 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
-      console.log(this.currentManifest)
       this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = getDetailsForSymbol(symbol);
