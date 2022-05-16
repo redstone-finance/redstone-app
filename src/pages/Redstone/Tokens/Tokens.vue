@@ -59,6 +59,10 @@ const TOKEN_TYPES = [
     tag: "avax"
   },
   {
+    label: "Custom",
+    tag: "custom-urls"
+  },
+  {
     label: "ETF",
     tag: "etfs"
   },
@@ -77,10 +81,6 @@ const TOKEN_TYPES = [
   {
     label: "Livestocks",
     tag: "livestocks"
-  },
-  {
-    label: "Custom",
-    tag: "custom-urls"
   }
 ];
 
@@ -122,10 +122,8 @@ export default {
   },
 
   async mounted() {
-    setTimeout(() => this.resize(), 0);
-
+    this.showArrows = this.isOverflowing();
     await this.lazyLoadPricesForAllTokens();
-
     this.setScrollAvailability();
   },
 
@@ -193,6 +191,7 @@ export default {
 
     setTabsWidth() {
       this.tabsLength = this.calculateTabsLength();
+      this.showArrows = this.isOverflowing();
     },
 
     getFilteredTokensWithPrices(type) {
@@ -218,7 +217,9 @@ export default {
             (token.name || '').toLowerCase().includes(searchTermLowerCase);
           const symbolIncludesSearchTerm =
             (symbol || '').toLowerCase().includes(searchTermLowerCase);
-          if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm) {
+          const customCommentIncludesSearchTerm =
+            (token?.comment && token.comment.toLowerCase().includes(searchTermLowerCase));
+          if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm && !customCommentIncludesSearchTerm) {
             shouldBeAdded = false;
           }
         }

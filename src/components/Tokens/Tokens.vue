@@ -18,10 +18,10 @@
                   v-if="token.tags.includes('custom-urls')"
                 >
                 
-                  {{ token.symbol | maxLenght(15) }}
+                  {{ token.symbol | maxLength(15) }}
                   <br>
                   <div class="token-name">
-                  {{ dataFeeds["redstone-custom-urls-demo"].currentManifest.tokens[token.symbol].comment }}
+                    {{ token?.comment }}
                   </div>
                 </b-col>               
                 <b-col 
@@ -31,7 +31,7 @@
                   class="h4 token-title pr-0"
                   v-else
                 >
-                  {{ token.symbol | maxLenght(8) }}
+                  {{ token.symbol | maxLength(8) }}
                   <br>
                   <div class="token-name">
                   {{ token.name }}
@@ -88,16 +88,7 @@ export default {
     tokens: Array,
   },
 
-  data() {
-    return {
-    };
-  },
-
   methods: {
-    providerLabel(provider) {
-      return _.startCase(provider)
-    },
-
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
     },
@@ -105,9 +96,6 @@ export default {
 
   computed: {
     ...mapState("prices", ["prices"]),
-    ...mapState("prefetch", {
-      dataFeeds: (state) => state.providers
-    })
   },
 
   components: {

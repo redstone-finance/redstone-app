@@ -9,7 +9,7 @@
       <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{label}}</sup>
       <b-badge v-if="badge" variant="primary" pill>{{badge}}</b-badge>
     </router-link>
-    <a v-if="link.includes('http')" :href="link" class="sidebar-link">
+    <a v-if="link.includes('http')" :href="link" class="sidebar-link" target="_blank">
       <span class="icon">
         <i v-if="iconName" :class="fullIconName"></i>
         <img v-if="imgUrl" :src="imgUrl" />
