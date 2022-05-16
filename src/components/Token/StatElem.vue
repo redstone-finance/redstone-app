@@ -3,7 +3,10 @@
     <div class="stat-title">
       {{ title }}:&nbsp;
     </div>
-    <div class="stat-value">
+    <div class="stat-value" v-if="isCustomUrl">
+      {{ value }}
+    </div>
+    <div class="stat-value" v-else>
       {{ value | price }}
     </div>
   </div>
@@ -15,6 +18,7 @@ export default {
   props: {
     value: String,
     title: String,
+    isCustomUrl: Boolean,
   },
 
 }

@@ -10,12 +10,27 @@
                   <img v-if="token.logoURI" :src="token.logoURI" loading="lazy">
                   <span class="no-token-emoji" v-else>🤔</span>
                 </b-col>
+                 <b-col 
+                  cols="5" 
+                  sm="4" 
+                  md="6"
+                  class="h4 token-title pr-0"
+                  v-if="token.tags.includes('custom-urls')"
+                >
                 
+                  {{ token.symbol | maxLenght(15) }}
+                  <br>
+                  <div class="token-name">
+                  {{ dataFeeds["redstone-custom-urls-demo"].currentManifest.tokens[token.symbol].comment }}
+                  </div>
+                </b-col>               
                 <b-col 
-                cols="5" 
-                sm="4" 
-                md="6"
-                class="h4 token-title pr-0">
+                  cols="5" 
+                  sm="4" 
+                  md="6"
+                  class="h4 token-title pr-0"
+                  v-else
+                >
                   {{ token.symbol | maxLenght(8) }}
                   <br>
                   <div class="token-name">
@@ -79,13 +94,6 @@ export default {
   },
 
   methods: {
-    getTokenName(token) {
-      if (token.name.length > 10) {
-        return token.symbol;
-      } else {
-        return token.name;
-      }
-    },
     providerLabel(provider) {
       return _.startCase(provider)
     },
@@ -97,6 +105,9 @@ export default {
 
   computed: {
     ...mapState("prices", ["prices"]),
+    ...mapState("prefetch", {
+      dataFeeds: (state) => state.providers
+    })
   },
 
   components: {

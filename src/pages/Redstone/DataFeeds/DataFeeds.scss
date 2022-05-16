@@ -28,7 +28,7 @@
         color: var(--sidebar-item-active);
     }
 
-    .provider-name, .provider-www {
+    .provider-name, .provider-www, .provider-id {
         margin-left: 10px;
         margin-bottom: 0;
     }
@@ -38,6 +38,13 @@
         font-size: $font-size-larger;
         flex: 0 0 25%;
         color: var(--redstone-dark-blue-color);
+    }
+
+    .provider-id {
+      font-weight: $font-weight-semi-bold;
+      font-size: $font-size-mini;
+      flex: 0 0 25%;
+      color: var(--redstone-dark-blue-color);
     }
 
     .provider-active-date {
@@ -98,7 +105,7 @@
             flex: 0 0 20%;
         }
 
-        .provider-name {
+        .provider-name, .provider-id {
             flex: 0 0 76%;
         }
 

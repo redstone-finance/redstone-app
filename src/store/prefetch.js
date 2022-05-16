@@ -11,15 +11,11 @@ export default {
         arweave: null,
         smartweave: null,
         oracleRegistryContractId: null,
-        contractsRegistryContractId: null,
         providers: null
     },
     mutations: {
         setOracleRegistryContractId(state, oracleRegistryContractId) {
             state.oracleRegistryContractId = oracleRegistryContractId;
-        },
-        setContractsRegistryContractId(state, contractsRegistryContractId) {
-            state.contractsRegistryContractId = contractsRegistryContractId;
         },
         setProviders(state, providers) {
             state.providers = {...providers };
@@ -39,7 +35,6 @@ export default {
             dispatch('initArweave')
                 .then(() => { return dispatch('smartweave') })
                 .then(() => { return dispatch('oracleRegistryContract') })
-                .then(() => { return dispatch('contractsRegistryContract') })
                 .then(() => { dispatch('fetchProviders'); });
         },
         initArweave({ commit }) {

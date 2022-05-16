@@ -2,7 +2,7 @@
 
 .provider{
     .provider-logo {
-        width: 35px;
+        width: 4rem;
     }
 
     .provider-name {
@@ -19,6 +19,14 @@
     h1 {
         margin-bottom: 0;
     }
+
+    .provider-id {
+        margin-left: 5rem;
+        font-weight: $font-weight-semi-bold;
+        font-size: $font-size-mini;
+        flex: 0 0 25%;
+        color: var(--redstone-dark-blue-color);
+    }
 }
 
 .loader {
@@ -26,8 +34,8 @@
 }
 
 .logo-preloader {
-    width: 35px;
-    height: 35px;
+    width: 4rem;
+    height: 4rem;
 }
 
 .preloaders {
