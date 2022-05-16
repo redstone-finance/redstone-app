@@ -73,25 +73,6 @@
         </div>
       </template>
 
-      <!-- <template #cell(status)="data">
-        <div v-if="isTxPendingForPrice(data.item)"
-            class="badge mining align-self-start">
-          <div class="badge-text">
-            Mining
-          </div>
-          <div class="pending-tx-loader-container">
-            <img src="/white-loader.svg" alt="animated white loader" />
-          </div>
-        </div>
-        <div v-else
-            class="badge mined align-self-start">
-          <div class="badge-text">
-            Mined
-          </div>
-          <i class="fa fa-check"/>
-        </div>
-      </template> -->
-
       <template #cell(permawebTx)="data">
         <div
           v-if="isTxPendingForPrice(data.item)"
