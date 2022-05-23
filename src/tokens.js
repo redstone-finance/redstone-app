@@ -54,6 +54,9 @@ export async function getAllSupportedTokens() {
     for (const symbol of Object.keys(manifest.tokens)) {
       if (!allTokens[symbol]) {
         allTokens[symbol] = getDetailsForSymbol(symbol);
+        if (symbol.startsWith("0x")) {
+          allTokens[symbol].comment = manifest.tokens[symbol].comment;
+        }
       }
     }
   }
