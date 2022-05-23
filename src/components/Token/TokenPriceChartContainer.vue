@@ -364,9 +364,9 @@ export default {
     },
 
     sourcesCount() {
-      return (this.sources && this.sources.length > 0)
+      return (this.sources && this.sources.length > 1)
         ? this.sources.length - 1
-        : 0;
+        : this.sources.length;
     },
 
     chartData() {
