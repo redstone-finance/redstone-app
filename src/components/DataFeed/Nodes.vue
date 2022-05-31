@@ -26,12 +26,14 @@
                   <i class="fa fa-copy copy-icon" v-b-tooltip.hover title="Copy to clipboard" />
                 </div>
               </div>
-              <div class="node-column">
+
+              <!-- Hidden ip addresses temporarily -->
+              <!-- <div class="node-column">
                 <div>
                   <label>IP address</label>
                 </div>
                 {{ node.ipAddress }}
-              </div>
+              </div> -->
             </div>
           </Widget>
         </a>
