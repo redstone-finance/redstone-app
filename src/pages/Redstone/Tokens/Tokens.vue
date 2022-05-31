@@ -271,9 +271,12 @@ export default {
       });
     },
     isOverflowing() {
-      let tabWrapper =  this.$refs.tabWrapper;
+      // TOOD: find another way, because this one kills the app on bigger screens
+      // let tabWrapper =  this.$refs.tabWrapper;
+      // return tabWrapper?.offsetWidth < this.tabsLength;
 
-      return tabWrapper?.offsetWidth < this.tabsLength;
+      // This is a quick fix, but we should solve it better
+      return true;
     },
     resize() {
       this.showArrows = this.isOverflowing();
