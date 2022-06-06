@@ -3,13 +3,13 @@
     <Loader v-if="loading" :class="'widget-loader'" :size="40"></Loader>
     <div v-else>
       <div class="token-tabs" ref="tabWrapper">
-        <div id="leftArr" class="arrow" @click="scrollLeft()" v-if="showArrows">
-          <i :class="`fi flaticon-arrow-left${leftScrollActive ? '-active' : ''}`"></i>
+        <div id="leftArr" class="arrow" @click="scrollLeft()">
+          <i :class="'fi flaticon-arrow-left-active'"></i>
         </div>
-        <div id="rightArr" class="arrow" @click="scrollRight()" v-if="showArrows">
-          <i :class="`fi flaticon-arrow-left${rightScrollActive ? '-active' : ''}`"></i>
+        <div id="rightArr" class="arrow" @click="scrollRight()">
+          <i :class="'fi flaticon-arrow-left-active'"></i>
         </div>
-        <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" :class="[{showArrows}]" @scroll="alert('jo')">                
+        <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" class="showArrows" @scroll="alert('jo')">                
           <b-tab v-for="type in tokenTypes" :key="type.label">
             <template #title>
               {{ type.label }}
@@ -99,10 +99,6 @@ export default {
     return {
       tokenTypes: TOKEN_TYPES,
       back: false,
-      showArrows: false,
-      leftScrollActive: false,
-      rightScrollActive: true,
-      tabsLength: 0,
       selectedTabIndex: 0,
       tokensData: {},
       loading: true
@@ -122,9 +118,7 @@ export default {
   },
 
   async mounted() {
-    this.showArrows = this.isOverflowing();
     await this.lazyLoadPricesForAllTokens();
-    this.setScrollAvailability();
   },
 
   created() {
@@ -158,16 +152,6 @@ export default {
       addPrices: 'prices/addPrices',
     }),
 
-    setScrollAvailability() {
-      const elements = document.getElementsByClassName("nav-tabs");
-      if (elements && elements.length > 0) {
-        elements[0].addEventListener('scroll', (e) =>  {
-          this.leftScrollActive = this.leftScrollAvailable();
-          this.rightScrollActive = this.rightScrollAvailable();
-        });
-      }
-    },
-
     async lazyLoadPricesForAllTokens() {
       const providersSorted = await getOrderedProviders();
       if (!this.pricesLoadingCompleted) {
@@ -187,11 +171,6 @@ export default {
           this.selectedTabIndex = selectedTabIndexFromUrl;
         }
       }
-    },
-
-    setTabsWidth() {
-      this.tabsLength = this.calculateTabsLength();
-      this.showArrows = this.isOverflowing();
     },
 
     getFilteredTokensWithPrices(type) {
@@ -236,26 +215,6 @@ export default {
       return result;
     },
 
-    calculateTabsLength() {
-      const tabElements = this.$refs.tabScroll?.$el.getElementsByTagName("li");
-      const tabs = tabElements ? [...tabElements] : [];
-
-      let tabsWidth = 0;
-
-      if (tabs) {
-        tabs.forEach(
-          tab => {
-            tabsWidth += tab.offsetWidth
-          }
-        )
-
-        tabs.reduce( (a, b) => {
-          return a + b.offsetWidth;
-        }, 0)
-      }
-
-      return tabsWidth;
-    },
     scrollLeft() {
       let content = document.querySelector(".nav-tabs");
       content.scrollBy({ 
@@ -270,33 +229,6 @@ export default {
         behavior: 'smooth' 
       });
     },
-    isOverflowing() {
-      // TOOD: find another way, because this one kills the app on bigger screens
-      // let tabWrapper =  this.$refs.tabWrapper;
-      // return tabWrapper?.offsetWidth < this.tabsLength;
-
-      // This is a quick fix, but we should solve it better
-      return true;
-    },
-    resize() {
-      this.showArrows = this.isOverflowing();
-    },
-    leftScrollAvailable() {
-      const tabs = document.getElementsByClassName("nav-tabs")[0];
-      if (tabs) {
-        return tabs.scrollLeft != 0;
-      } else {
-        return true;
-      }
-    },
-    rightScrollAvailable() {
-      const tabs = document.getElementsByClassName("nav-tabs")[0];
-      if (tabs) {
-        return tabs.scrollLeft + document.getElementsByClassName("nav-tabs")[0].offsetWidth < this.tabsLength;
-      } else {
-        return false;
-      }
-    }
   },
 
   computed: {
