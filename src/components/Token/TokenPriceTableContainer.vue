@@ -59,11 +59,11 @@
       </template>
 
       <template #cell(value)="data">
-        <div class="price" v-if="tokenDetails.tags.includes('custom-urls')">
+        <div class="price" v-if="tokenDetails.tags.includes('custom-urls') || tokenDetails.tags.includes('nft')">
           {{ data.item.value }} 
         </div>
         <div class="price" v-else>
-          {{ data.item.value |  price }} 
+          {{ data.item.value | price }}
         </div>
       </template>
 

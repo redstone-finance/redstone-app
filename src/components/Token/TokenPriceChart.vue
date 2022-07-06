@@ -80,7 +80,9 @@
                     ticks: {
                         userCallback: function(value, index, values) {
                           const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: 2});
-                          return getDetailsForSymbol(symbol).tags.includes('custom-urls') ? valueCalculated : `$ ${valueCalculated}`;   // this is all we need
+                          const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
+                          const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
+                          return nftTag || customUrlTag ? valueCalculated : `$ ${valueCalculated}`; // this is all we need
                         }
                     }
                 }
@@ -105,7 +107,9 @@
                     label += ': ';
                   }
                   label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
-                  return getDetailsForSymbol(symbol).tags.includes('custom-urls') ? label : `$ ${label}` ;
+                  const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
+                  const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
+                  return nftTag || customUrlTag ? label : `$ ${label}` ;
                 }
               }
             }

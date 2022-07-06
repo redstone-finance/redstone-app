@@ -23,8 +23,20 @@
                   <div class="token-name">
                     {{ token?.comment }}
                   </div>
-                </b-col>               
-                <b-col 
+                </b-col>
+                <b-col
+                    cols="5"
+                    sm="4"
+                    md="6"
+                    class="h4 token-title pr-0"
+                    v-else-if="token.tags.includes('nft')"
+                >
+                  {{ token.name | maxLength(15) }}
+                  <div class="token-name">
+                    {{ token?.comment }}
+                  </div>
+                </b-col>
+                <b-col
                   cols="5" 
                   sm="4" 
                   md="6"
@@ -43,8 +55,11 @@
                   md="4"
                   class="token-price pl-0">
                   <span v-if="!token.tags.includes('custom-urls')">
-                    <span v-if="prices[token.symbol]">
+                    <span v-if="prices[token.symbol] && !token.tags.includes('nft')">
                       {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
+                    </span>
+                    <span v-else-if="token.tags.includes('nft')">
+                      {{ prices[token.symbol] }}
                     </span>
                     <vue-loaders-ball-beat
                       v-else

@@ -3,7 +3,7 @@
     <div class="stat-title">
       {{ title }}:&nbsp;
     </div>
-    <div class="stat-value" v-if="isCustomUrl">
+    <div class="stat-value" v-if="isCustomUrl || isNft">
       {{ value }}
     </div>
     <div class="stat-value" v-else>
@@ -19,6 +19,7 @@ export default {
     value: String,
     title: String,
     isCustomUrl: Boolean,
+    isNft: Boolean,
   },
 
 }

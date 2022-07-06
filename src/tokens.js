@@ -12,7 +12,7 @@ const manifests = {
   "redstone": mainManifest,
 };
 
-const CUSTOM_URLS_NODE_1_ID = "5ktkAKcy_tou22r4eijcn_Xue3j6Rn9e8JckXRtHe8o";
+export const CUSTOM_URLS_NODE_1_ID = "redstone-custom-urls-1";
 
 export function getDetailsForSymbol(symbol) {
   const details = tokenDetails[symbol];
@@ -35,6 +35,7 @@ export async function getOrderedProviders() {
   const manifestsWithCustom = { ...manifests };
   const customManifest = await fetchCustomUrlManifest();
   Object.assign(manifestsWithCustom, { 'redstone-custom-urls': customManifest });
+  Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': {} })
   return Object.keys(manifestsWithCustom);
 }
 
@@ -49,6 +50,7 @@ export async function getAllSupportedTokens() {
   const manifestsWithCustom = { ...manifests };
   const customManifest = await fetchCustomUrlManifest();
   Object.assign(manifestsWithCustom, { 'redstone-custom-urls': customManifest });
+  Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': customManifest });
   const allTokens = {};
   for (const manifest of Object.values(manifestsWithCustom)) {
     for (const symbol of Object.keys(manifest.tokens)) {

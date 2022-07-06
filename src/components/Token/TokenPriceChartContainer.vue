@@ -5,17 +5,17 @@
         <div class="token-price-wrapper d-flex flex-column flex-md-row">
           <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
             <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            <div v-if="tokenDetails.tags.includes('custom-urls')" class="d-inline-block token-name">{{ tokenDetails.name }}: </div>
+            <div v-if="tokenDetails.tags.includes('custom-urls') || tokenDetails.tags.includes('nft')" class="d-inline-block token-name">{{ tokenDetails.name }}: </div>
             <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
           <div class="mb-2 mb-md-0">
-            <div class="current-price" v-if="tokenDetails.tags.includes('custom-urls')">
+            <div class="current-price" v-if="tokenDetails.tags.includes('custom-urls') || tokenDetails.tags.includes('nft') ">
               {{ currentPriceValue }}
             </div>
             <div class="current-price" v-else>
               {{ currentPriceValue | price }}
             </div>
-            <div class="percentage ml-3 d-inline-block" v-if="tokenDetails.tags.includes('custom-urls')">
+            <div class="percentage ml-3 d-inline-block" v-if="tokenDetails.tags.includes('custom-urls') || tokenDetails.tags.includes('nft') ">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
                 <span>{{ priceChange().toFixed(2) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
               </div>
@@ -71,6 +71,7 @@
             :value="value"
             :title="title"
             :isCustomUrl="tokenDetails.tags.includes('custom-urls')"
+            :isNft="tokenDetails.tags.includes('nft')"
             class="mr-2 mr-md-4"
           />
         </div>
@@ -86,7 +87,7 @@
     <hr />
 
     <b-row>
-      <b-col xs="12" lg="9" v-if="!tokenDetails.tags.includes('custom-urls')">
+      <b-col xs="12" lg="9" v-if="!tokenDetails.tags.includes('custom-urls') && !tokenDetails.tags.includes('nft')">
         <div class="price-chart-container">
           <div v-show="loading">
             <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
@@ -102,7 +103,7 @@
           <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="!tokenDetails.tags.includes('custom-urls')">
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="!tokenDetails.tags.includes('custom-urls') && !tokenDetails.tags.includes('nft')">
         <div class="data-sources">
           Data sources
           ({{ sourcesCount }})
