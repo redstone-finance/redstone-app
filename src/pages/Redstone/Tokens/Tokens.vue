@@ -43,6 +43,10 @@ const TOKEN_TYPES = [
     tag: "crypto"
   },
   {
+    label: "NFTs",
+    tag: "nft"
+  },
+  {
     label: "Stocks",
     tag: "stocks"
   },
