@@ -771,9 +771,9 @@
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.15.4":
-  version "7.18.3"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.18.3.tgz#c7b654b57f6f63cf7f8b418ac9ca04408c4579f4"
-  integrity sha512-38Y8f7YUhce/K7RMwTp7m0uCumpv9hZkitCbBClqQIow1qSbCvGkcegKOXpEWCQLfWmevgRiWokZ1GkpfhbZug==
+  version "7.18.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.18.6.tgz#6a1ef59f838debd670421f8c7f2cbb8da9751580"
+  integrity sha512-t9wi7/AW6XtKahAe20Yw0/mMljKq0B1r2fPdvaAdV/KPDZewFXdaaa6K7lxmZBZ8FBNpCiAT6iHPmd6QO9bKfQ==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -4256,10 +4256,10 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
-ccxt@^1.84.60:
-  version "1.84.60"
-  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-1.84.60.tgz#b07428b22f935494942a1e4bd451ff6752b8744d"
-  integrity sha512-cHwBHoB5EYHahgXJNiDKBLV4ajV8nzgFE73Lsj9173/en0kUzJCGTsZw+klRk4b2g4CJ/w60cobQitlrhrmgiQ==
+ccxt@^1.84.60, ccxt@^1.85.3:
+  version "1.90.88"
+  resolved "https://registry.yarnpkg.com/ccxt/-/ccxt-1.90.88.tgz#d7a1d2d69cab0a0aac3161d01481873cce5299ad"
+  integrity sha512-SUFBnlnHpuC8369e16Q2zcr7GEMseO86y+1IJhZctpdBYq3AAYxx8A8t6NdrZ9qRK6mYMxuBcUStdbJjYCr9BQ==
 
 chalk@^1.1.3:
   version "1.1.3"
@@ -5664,6 +5664,11 @@ dotenv-expand@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
+
+dotenv@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.1.tgz#8f8f9d94876c35dac989876a5d3a82a267fdce1d"
+  integrity sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==
 
 dotenv@^8.2.0:
   version "8.6.0"
@@ -11648,7 +11653,41 @@ redstone-isomorphic@1.1.6, redstone-isomorphic@^1.1.0:
     safe-buffer "^5.1.2"
     undici "^4.16.0"
 
-redstone-node@^0.4.37:
+redstone-node-github@redstone-finance/redstone-node:
+  version "0.4.38"
+  resolved "https://codeload.github.com/redstone-finance/redstone-node/tar.gz/64d08a57693f6ad95bb4e611d5299253e31e82c7"
+  dependencies:
+    "@bundlr-network/client" "^0.7.4"
+    "@metamask/eth-sig-util" "^4.0.1"
+    "@types/express" "^4.17.13"
+    arlocal "^1.1.30"
+    arql-ops "^1.0.0"
+    arweave "^1.10.23"
+    arweave-multihost "^0.1.0"
+    axios "^0.21.1"
+    ccxt "^1.85.3"
+    coingecko-api "^1.0.10"
+    consola "^2.15.3"
+    deep-sort-object "^1.0.2"
+    dotenv "^16.0.1"
+    ecb-euro-exchange-rates "^2.0.0"
+    ethereumjs-util "^7.0.10"
+    ethers "^5.3.0"
+    express "^4.17.1"
+    git-last-commit "^1.0.1"
+    isomorphic-fetch "^3.0.0"
+    jsonpath "^1.1.1"
+    lodash "^4.17.21"
+    moment "^2.29.2"
+    prompts "^2.4.2"
+    redstone-api "^0.4.6"
+    redstone-smartweave "^0.4.40"
+    sort-deep-object-arrays "^1.1.2"
+    streamr-client "^5.5.0"
+    uuid "^8.3.2"
+    yahoo-finance "^0.3.7"
+
+redstone-node@0.4.37:
   version "0.4.37"
   resolved "https://registry.yarnpkg.com/redstone-node/-/redstone-node-0.4.37.tgz#17a706dea5a3c582675d47db1adbc6b5e1a44caf"
   integrity sha512-Ox/3H0aI69l2j7gSEpoZQF5o2P9YOBQcfMpf01ExfHT755vtRlXDgwHqEeQyfznrjuHB3mDoRK28gO/Ekzffnw==

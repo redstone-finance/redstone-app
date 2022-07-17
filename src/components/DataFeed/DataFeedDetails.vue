@@ -93,7 +93,7 @@
 
 <script>
 import LabelValue from '@/components/DataFeed/LabelValue';
-import sourcesData from "redstone-node/dist/src/config/sources.json";
+import sourcesData from "redstone-node-github/src/config/sources.json";
 import _ from 'lodash';
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
 import { getDetailsForSymbol } from "@/tokens";
