@@ -9,7 +9,7 @@
         <div id="rightArr" class="arrow" @click="scrollRight()">
           <i :class="'fi flaticon-arrow-left-active'"></i>
         </div>
-        <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" @hook:updated="setTabsWidth" class="showArrows" @scroll="alert('jo')">                
+        <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" class="showArrows" @scroll="alert('jo')">                
           <b-tab v-for="type in tokenTypes" :key="type.label">
             <template #title>
               {{ type.label }}
@@ -126,13 +126,7 @@ export default {
   },
 
   created() {
-    window.addEventListener("resize", this.resize);
-    this.resize();
     this.selectTabFromUrlParam();
-  },
-
-  destroyed() {
-    window.removeEventListener("resize", this.resize);
   },
 
   watch: {
