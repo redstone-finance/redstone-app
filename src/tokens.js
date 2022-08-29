@@ -1,10 +1,10 @@
 import axios from "axios";
 import ArweaveService from "redstone-node/dist/src/arweave/ArweaveService";
 import constants from "@/constants";
-import tokenDetails from "redstone-node-github/src/config/tokens.json";
-import rapidManifest from "redstone-node-github/manifests/rapid.json";
-import stocksManifest from "redstone-node-github/manifests/stocks.json";
-import mainManifest from "redstone-node-github/manifests/main.json";
+import tokenDetails from "redstone-monorepo-github/packages/oracle-node/src/config/tokens.json";
+import rapidManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/rapid.json";
+import stocksManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/stocks.json";
+import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
 
 const manifests = {
   "redstone-rapid": rapidManifest,

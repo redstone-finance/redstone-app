@@ -153,7 +153,7 @@ import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
 import _ from 'lodash';
-import sources from "redstone-node-github/src/config/sources.json";
+import sources from "redstone-monorepo-github/packages/oracle-node/src/config/sources.json";
 import constants from "@/constants";
 import { getDetailsForSymbol } from "@/tokens";
 import { mapState } from 'vuex';

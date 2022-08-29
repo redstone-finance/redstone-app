@@ -148,13 +148,13 @@ export default {
     await this.updateLastConfirmedTxTimestamp();
   },
 
-  timers: {
-    updateLastConfirmedTxTimestamp: {
-      autostart: true,
-      time: 10000,
-      repeat: true,
-    },
-  },
+  // timers: {
+  //   updateLastConfirmedTxTimestamp: {
+  //     autostart: true,
+  //     time: 10000,
+  //     repeat: true,
+  //   },
+  // },
 
   methods: {
     getViewblockTxLink: utils.getViewblockTxLink,

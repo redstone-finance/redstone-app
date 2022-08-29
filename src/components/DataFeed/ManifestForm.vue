@@ -296,7 +296,7 @@
 import JsonViewer from "vue-json-viewer";
 import Multiselect from "vue-multiselect";
 import Vue from 'vue';
-import tokenDetails from "redstone-node-github/src/config/tokens.json";
+import tokenDetails from "redstone-monorepo-github/packages/oracle-node/src/config/tokens.json";
 
 export default {
   name: "ManifestForm",
