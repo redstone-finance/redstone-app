@@ -24,6 +24,9 @@ export default {
     getViewblockTxLink(txId) {
         return constants.viewblockTxUrlPrefix + txId;
     },
+    getViewblockAddressLink(address) {
+        return constants.viewblockAddressUrlPrefix + address;
+    },
     initLocalStorage() {
         try {
             let storage;

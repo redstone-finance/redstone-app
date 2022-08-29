@@ -73,29 +73,21 @@
         </div>
       </template>
 
-      <template #cell(permawebTx)="data">
+      <template #cell(providerId)="data">
         <div
-          v-if="isTxPendingForPrice(data.item)"
           class="tx-link d-flex flex-column flex-md-row align-items-md-center">
           <div class="link align-center mt-2 mt-md-0">
-            {{ data.item.permawebTx }}
+            {{ data.item.providerId }}
           </div>
         </div>
-        <a
-          class="tx-link"
-          v-else
-          target="_blank"
-          :href="getViewblockTxLink(data.item.permawebTx)">
-          {{ data.item.permawebTx }}
-        </a>
       </template>
 
       <template #cell(dispute)="data">
         <b-btn
           target="_blank"
-          :href="getViewblockTxLink(data.item.permawebTx)"
+          href="https://youtu.be/dQw4w9WgXcQ"
           variant="dispute"
-          :disabled="isTxPendingForPrice(data.item)"
+          :disabled="false"
         >
           Raise dispute
         </b-btn>
@@ -124,7 +116,6 @@ import dateFormat from 'dateformat';
 import utils from '@/utils';
 import { getDetailsForSymbol } from "@/tokens";
 
-
 export default {
   name: 'TokenPriceTableContainer',
 
@@ -148,7 +139,7 @@ export default {
       toDate: new Date(),
       lastConfirmedTxTimestamp: 0,
 
-      fields: ['value', 'time', 'permawebTx', 'dispute'],
+      fields: ['value', 'time', 'providerId', 'dispute'],
     };
   },
 
@@ -167,6 +158,7 @@ export default {
 
   methods: {
     getViewblockTxLink: utils.getViewblockTxLink,
+    getViewblockAddressLink: utils.getViewblockAddressLink,
 
     isTxPendingForPrice(price) {
       return price.timestamp > this.lastConfirmedTxTimestamp;
@@ -260,6 +252,7 @@ export default {
           time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
+          providerId: p.provider,
         };
       });
     },
