@@ -2,6 +2,14 @@
 <div :class="[{root: true, showSidebar}, 'sing-dashboard']">
   <Sidebar />
   <div class="wrap">
+    <div class="banner">
+      If you like RedStone, join our
+      <a href="https://discord.com/invite/PVxBZKFr46" target="_blank" referrerpolicy="no-referrer">
+        Discord</a> and follow us on 
+      <a href="https://twitter.com/redstone_defi" target="_blank" referrerpolicy="no-referrer">
+        Twitter
+      </a>
+    </div>
     <Header />
     <v-touch class="content" @swipe="handleSwipe" :swipe-options="{direction: 'horizontal'}">
       <transition name="router-animation">
