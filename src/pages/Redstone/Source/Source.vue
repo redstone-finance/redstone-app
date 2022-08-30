@@ -14,7 +14,7 @@
 <script>
 import axios from "axios";
 import SourceChartsContainer from "@/components/Source/SourceChartsContainer";
-import sources from "redstone-node-github/src/config/sources.json";
+import sources from "redstone-oracles-monorepo/packages/oracle-node/src/config/sources.json";
 
 const SOURCE_REPORT_URL = "https://raw.githubusercontent.com/redstone-finance/redstone-reports/main/last/sources-report.json";
 
