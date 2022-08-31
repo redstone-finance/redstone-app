@@ -84,8 +84,8 @@
 
       <template #cell(dispute)="data">
         <b-btn
+          @click="showNotification('The disputing feature is still under development')"
           target="_blank"
-          href="https://youtu.be/dQw4w9WgXcQ"
           variant="dispute"
           :disabled="false"
         >
@@ -145,7 +145,7 @@ export default {
 
   async created() {
     await this.loadPrices();
-    await this.updateLastConfirmedTxTimestamp();
+    // await this.updateLastConfirmedTxTimestamp();
   },
 
   // timers: {
@@ -157,6 +157,10 @@ export default {
   // },
 
   methods: {
+    showNotification(msg) {
+      this.$toasted.show(msg, {type: 'info'});
+    },
+
     getViewblockTxLink: utils.getViewblockTxLink,
     getViewblockAddressLink: utils.getViewblockAddressLink,
 
