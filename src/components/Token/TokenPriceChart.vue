@@ -82,7 +82,9 @@
                           const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: 2});
                           const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
                           const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
-                          return nftTag || customUrlTag ? valueCalculated : `$ ${valueCalculated}`; // this is all we need
+                          const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
+                          const isCurrencyToken = !(nftTag || customUrlTag || lensTag);
+                          return isCurrencyToken ? `$ ${valueCalculated}` : valueCalculated;
                         }
                     }
                 }
@@ -109,7 +111,9 @@
                   label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
                   const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
                   const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
-                  return nftTag || customUrlTag ? label : `$ ${label}` ;
+                  const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
+                  const isCurrencyToken = !(nftTag || customUrlTag || lensTag);
+                  return isCurrencyToken ? `$ ${label}` : label;
                 }
               }
             }

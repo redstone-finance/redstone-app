@@ -59,7 +59,7 @@
       </template>
 
       <template #cell(value)="data">
-        <div class="price" v-if="tokenDetails.tags.includes('custom-urls') || tokenDetails.tags.includes('nft')">
+        <div class="price" v-if="!isCurrencyToken(tokenDetails.tags)">
           {{ data.item.value }} 
         </div>
         <div class="price" v-else>
@@ -230,6 +230,12 @@ export default {
         index++;
       }
       this.lastConfirmedTxTimestamp = lastTimestamp;
+    },
+
+    isCurrencyToken(tags) {
+      return !(tags.includes('custom-urls') ||
+        tags.includes('nft') ||
+        tags.includes('lens'))
     }
   },
 

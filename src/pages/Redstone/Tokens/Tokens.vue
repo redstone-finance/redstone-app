@@ -85,6 +85,10 @@ const TOKEN_TYPES = [
   {
     label: "Livestocks",
     tag: "livestocks"
+  },
+    {
+    label: "Lens",
+    tag: "lens"
   }
 ];
 

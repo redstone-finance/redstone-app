@@ -3,7 +3,7 @@
     <div class="stat-title">
       {{ title }}:&nbsp;
     </div>
-    <div class="stat-value" v-if="isCustomUrl || isNft">
+    <div class="stat-value" v-if="!isCurrencyToken">
       {{ value }}
     </div>
     <div class="stat-value" v-else>
@@ -18,8 +18,7 @@ export default {
   props: {
     value: String,
     title: String,
-    isCustomUrl: Boolean,
-    isNft: Boolean,
+    isCurrencyToken: Boolean,
   },
 
 }
