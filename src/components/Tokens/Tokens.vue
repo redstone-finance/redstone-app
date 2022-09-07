@@ -10,30 +10,30 @@
                   <img v-if="token.logoURI" :src="token.logoURI" loading="lazy">
                   <span class="no-token-emoji" v-else>🤔</span>
                 </b-col>
-                 <b-col 
+                <b-col 
                   cols="5" 
                   sm="4" 
                   md="6"
                   class="h4 token-title pr-0"
-                  v-if="token.tags.includes('custom-urls')"
+                  v-if="token.tags.includes('custom-urls') || token.tags.includes('nft')"
                 >
-                
                   {{ token.symbol | maxLength(15) }}
                   <br>
                   <div class="token-name">
                     {{ token?.comment }}
                   </div>
                 </b-col>
-                <b-col
-                    cols="5"
-                    sm="4"
-                    md="6"
-                    class="h4 token-title pr-0"
-                    v-else-if="token.tags.includes('nft')"
+                <b-col 
+                  cols="5" 
+                  sm="4" 
+                  md="6"
+                  class="h4 token-title pr-0"
+                  v-else-if="token.tags.includes('lens')"
                 >
-                  {{ token.name | maxLength(15) }}
+                  {{ token.symbol | maxLength(15) }}
+                  <br>
                   <div class="token-name">
-                    {{ token?.comment }}
+                    {{ token.name }}
                   </div>
                 </b-col>
                 <b-col
@@ -55,12 +55,13 @@
                   md="4"
                   class="token-price pl-0">
                   <span v-if="!token.tags.includes('custom-urls')">
-                    <span v-if="prices[token.symbol] && !token.tags.includes('nft')">
-                      {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
-                    </span>
-                    <span v-else-if="token.tags.includes('nft')">
+                    <span v-if="prices[token.symbol] && (token.tags.includes('nft') || token.tags.includes('lens'))">
                       {{ prices[token.symbol] }}
                     </span>
+                    <span v-else-if="prices[token.symbol]">
+                      {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
+                    </span>
+       
                     <vue-loaders-ball-beat
                       v-else
                       color="var(--redstone-red-color)"
@@ -107,6 +108,12 @@ export default {
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
     },
+        
+    isCurrencyToken(tags) {
+      return !(tags.includes('custom-urls') ||
+        tags.includes('nft') ||
+        tags.includes('lens'))
+    }
   },
 
   computed: {
