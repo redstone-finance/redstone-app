@@ -214,8 +214,7 @@ export default {
           );
         }
       }
-      console.log(result)
-      return type !== "lens" ? result : result.sort((tokenLeft, tokenRight) => tokenRight.price - tokenLeft.price);
+      return result;
     },
 
     scrollLeft() {
