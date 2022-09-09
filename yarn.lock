@@ -11648,9 +11648,9 @@ redstone-isomorphic@1.1.6, redstone-isomorphic@^1.1.0:
     safe-buffer "^5.1.2"
     undici "^4.16.0"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#93fd89a5008c66b9f58ed8404afe3adfd9a96270:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#99c8fea07fbdd6e469f2ea0638e74b616dd8dddc:
   version "0.0.1"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/93fd89a5008c66b9f58ed8404afe3adfd9a96270"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/99c8fea07fbdd6e469f2ea0638e74b616dd8dddc"
 
 redstone-node@0.4.37:
   version "0.4.37"

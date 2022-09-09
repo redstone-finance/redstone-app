@@ -59,6 +59,10 @@ export async function getAllSupportedTokens() {
         if (symbol.startsWith("0x")) {
           allTokens[symbol].comment = manifest.tokens[symbol].comment;
         }
+      } else {
+        if (symbol.startsWith("0x") && !allTokens[symbol].tags.includes("custom-urls")) {
+          allTokens[symbol].tags.push("custom-urls");
+        }
       }
     }
   }

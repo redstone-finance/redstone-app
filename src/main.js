@@ -67,6 +67,28 @@ function setupFilters() {
       }
     }
   });
+
+  Vue.filter('value', (value, opts = {}) => {
+    if (isNaN(value)) {
+      return value;
+    } else {
+      const optionalPlus = addPlus(value, opts.showPlus);
+      if (value === 0) {
+        return "0.00";
+      } else if (value < 0.0000001) {
+        // For extrmely small values we use E notation
+        // If `eNotationForSmallValues` option is set to true
+        return opts.eNotationForSmallValues
+          ? value.toExponential(3)
+          : optionalPlus + value.toFixed(12);
+      } else if (value < 0.01) {
+        // For small values we display 6 digits after comma
+        return optionalPlus + value.toFixed(6);
+      } else {
+        return value
+      }
+    }
+  });
   
   Vue.filter('tx', function (value) {
     if (!value) return '';
@@ -90,9 +112,10 @@ function setupFilters() {
 
   Vue.filter('maxLength', function(value, maxLen) {
     if (!value) return '';
-    return (value.length > maxLen)
-      ? value.substr(0, maxLen - 3) + "..."
-      : value;
+    const valueAsString = value.toString()
+    return (valueAsString.length > maxLen)
+      ? valueAsString.substr(0, maxLen - 3) + "..."
+      : valueAsString;
   });
 
   Vue.filter('bigInt', function(value) {

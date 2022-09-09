@@ -83,7 +83,8 @@
                           const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
                           const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
                           const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
-                          const isCurrencyToken = !(nftTag || customUrlTag || lensTag);
+                          const ukraineTag =  getDetailsForSymbol(symbol).tags.includes('ukraine')
+                          const isCurrencyToken = !(nftTag || customUrlTag || lensTag || ukraineTag);
                           return isCurrencyToken ? `$ ${valueCalculated}` : valueCalculated;
                         }
                     }
@@ -112,7 +113,8 @@
                   const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
                   const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
                   const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
-                  const isCurrencyToken = !(nftTag || customUrlTag || lensTag);
+                  const ukraineTag =  getDetailsForSymbol(symbol).tags.includes('ukraine')
+                  const isCurrencyToken = !(nftTag || customUrlTag || lensTag || ukraineTag);
                   return isCurrencyToken ? `$ ${label}` : label;
                 }
               }

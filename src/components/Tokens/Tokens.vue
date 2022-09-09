@@ -15,7 +15,7 @@
                   sm="4" 
                   md="6"
                   class="h4 token-title pr-0"
-                  v-if="token.tags.includes('custom-urls') || token.tags.includes('nft')"
+                  v-if="isCustom(token.tags)"
                 >
                   {{ token.symbol | maxLength(15) }}
                   <br>
@@ -54,9 +54,9 @@
                   sm="6"
                   md="4"
                   class="token-price pl-0">
-                  <span v-if="!token.tags.includes('custom-urls')">
-                    <span v-if="prices[token.symbol] && (token.tags.includes('nft') || token.tags.includes('lens'))">
-                      {{ prices[token.symbol] }}
+                  <!-- <span v-if="!(token.tags.length === 1 && token.tags.includes('custom-urls'))"> -->
+                    <span v-if="prices[token.symbol] && isCustom(token.tags)">
+                      {{ prices[token.symbol] | value({ eNotationForSmallValues: true }) | maxLength(8) }}
                     </span>
                     <span v-else-if="prices[token.symbol]">
                       {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
@@ -67,7 +67,7 @@
                       color="var(--redstone-red-color)"
                       scale="0.5"
                     ></vue-loaders-ball-beat>
-                  </span>
+                  <!-- </span> -->
                 </b-col>
               </b-row>
               <b-row class="d-flex justify-content-end see-more-wrapper">
@@ -112,7 +112,14 @@ export default {
     isCurrencyToken(tags) {
       return !(tags.includes('custom-urls') ||
         tags.includes('nft') ||
-        tags.includes('lens'))
+        tags.includes('lens') ||
+        tags.includes('ukraine'))
+    },
+
+    isCustom(tags) {
+      return tags.includes('custom-urls') ||
+        tags.includes('nft') ||
+        tags.includes('ukraine')
     }
   },
 
