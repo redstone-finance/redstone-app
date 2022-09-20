@@ -54,13 +54,9 @@
                   sm="6"
                   md="4"
                   class="token-price pl-0">
-                  <!-- <span v-if="!(token.tags.length === 1 && token.tags.includes('custom-urls'))"> -->
                     <span v-if="prices[token.symbol] && isNotCurrencyToken(token.tags)">
                       {{ prices[token.symbol] | value({ eNotationForSmallValues: true }) | maxLength(8) }}
                     </span>
-                    <!-- <span v-else-if="prices[token.symbol] && isCurrencyToken(token.tags)">
-                      {{ prices[token.symbol] | value({ eNotationForSmallValues: true }) }}
-                    </span> -->
                     <span v-else-if="prices[token.symbol]">
                       {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
                     </span>
@@ -113,10 +109,10 @@ export default {
     },
         
     isNotCurrencyToken(tags) {
-      return tags.includes('custom-urls') ||
-        tags.includes('nft') ||
+      return (tags.includes('custom-urls') ||
         tags.includes('lens') ||
-        tags.includes('ukraine')
+        tags.includes('ukraine')) &&
+        !tags.includes('nft')
     },
 
     isCustom(tags) {
