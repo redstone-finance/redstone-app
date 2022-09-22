@@ -29,7 +29,7 @@
         </div>
         <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
           <div v-if="customUrlDetails">
-            <div class="mb-2">
+            <div class="mb-2 data-feed-details">
               <span class="data-feed-details-label">Custom URL: </span>
               <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
             </div>
@@ -621,6 +621,11 @@ export default {
   .token-price-wrapper {
     max-width: calc(100% - 160px);
   }
+}
+
+.data-feed-details {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .data-feed-details-text {
