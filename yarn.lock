@@ -11648,9 +11648,9 @@ redstone-isomorphic@1.1.6, redstone-isomorphic@^1.1.0:
     safe-buffer "^5.1.2"
     undici "^4.16.0"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#99c8fea07fbdd6e469f2ea0638e74b616dd8dddc:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#73fa1080b89d510c87f9a000a186e49802faeb5d:
   version "0.0.1"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/99c8fea07fbdd6e469f2ea0638e74b616dd8dddc"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/73fa1080b89d510c87f9a000a186e49802faeb5d"
 
 redstone-node@0.4.37:
   version "0.4.37"
@@ -11695,7 +11695,6 @@ redstone-smartweave-contracts@redstone-finance/redstone-smartweave-contracts:
   dependencies:
     arweave "^1.10.14"
     make-runnable "^1.3.9"
-    prompts "^2.4.2"
     smartweave "0.4.31"
     testweave-sdk "^0.2.2"
 
