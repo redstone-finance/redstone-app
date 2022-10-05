@@ -32,7 +32,7 @@
     "mini-css-extract-plugin": "^1.6.0",
     "npm": "^7.17.0",
     "redstone-api": "^0.4.11",
-    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#73fa1080b89d510c87f9a000a186e49802faeb5d",
+    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#a0dd1c5420431b9a2605e1d8d02c71251d162d32",
     "redstone-node": "0.4.37",
     "redstone-smartweave": "0.4.80",
     "redstone-smartweave-contracts": "redstone-finance/redstone-smartweave-contracts",
