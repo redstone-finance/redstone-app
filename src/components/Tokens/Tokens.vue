@@ -109,10 +109,10 @@ export default {
     },
         
     isNotCurrencyToken(tags) {
-      return (tags.includes('custom-urls') ||
+      return tags.includes('custom-urls') ||
         tags.includes('lens') ||
-        tags.includes('ukraine')) &&
-        !tags.includes('nft')
+        tags.includes('ukraine') ||
+        tags.includes('nft')
     },
 
     isCustom(tags) {
