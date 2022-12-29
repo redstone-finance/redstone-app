@@ -435,7 +435,7 @@ export default {
         this.dataFeeds &&
         getDetailsForSymbol(this.symbol).tags.includes("custom-urls")
       ) {
-        const dataFeed = this.dataFeeds["redstone-custom-urls-demo"];
+        const dataFeed = this.dataFeeds[constants.customUrlDataFeedId];
         if (dataFeed?.currentManifest) {
           return dataFeed.currentManifest.tokens[this.symbol];
         }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import ArweaveService from "redstone-node/dist/src/arweave/ArweaveService";
+import { getOracleRegistryState } from "redstone-sdk";
 import constants from "@/constants";
 import tokenDetails from "redstone-monorepo-github/packages/oracle-node/src/config/tokens.json";
 import rapidManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/rapid.json";
@@ -40,9 +40,8 @@ export async function getOrderedProviders() {
 }
 
 const fetchCustomUrlManifest = async () => {
-  const arweaveService = new ArweaveService();
-  const contractState = await arweaveService.getOracleRegistryContractState();
-  const manifestTxId = contractState.dataFeeds[constants.customUrlDataFeedId].manifestTxId;
+  const contractState = await getOracleRegistryState();
+  const manifestTxId = contractState.dataServices[constants.customUrlDataFeedId].manifestTxId;
   return (await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`)).data;
 }
 

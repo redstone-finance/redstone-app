@@ -33,7 +33,7 @@
     "npm": "^7.17.0",
     "redstone-api": "^0.4.11",
     "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#678727e322ff86d1783a1517c95241d653e69c12",
-    "redstone-node": "0.4.37",
+    "redstone-sdk": "^1.0.5-alpha",
     "redstone-smartweave": "0.4.80",
     "redstone-smartweave-contracts": "redstone-finance/redstone-smartweave-contracts",
     "rickshaw": "1.7.1",
@@ -111,7 +111,6 @@
     "**/minimist": "^1.2.3",
     "**/dns-packet": "^5.2.2",
     "**/websocket-extensions": "^0.1.4",
-    "redstone-node/redstone-smartweave": "0.4.80",
     "**/css-select": "4.1.3"
   }
 }

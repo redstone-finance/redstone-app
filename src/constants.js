@@ -9,8 +9,6 @@ export default {
 
   viewblockAddressUrlPrefix: "https://viewblock.io/arweave/address/",
 
-  smartweaveContractAddressesUrl: "https://raw.githubusercontent.com/redstone-finance/redstone-node/main/src/config/contracts.json",
-
   customUrlDataFeedId: "redstone-custom-urls-demo",
 
   images: {

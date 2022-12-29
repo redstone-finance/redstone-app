@@ -1,5 +1,5 @@
 import axios from "axios";
-import ArweaveService from "redstone-node/dist/src/arweave/ArweaveService";
+import { getOracleRegistryState } from "redstone-sdk";
 import constants from "@/constants";
 import Arweave from 'arweave';
 import { SmartWeaveNodeFactory } from 'redstone-smartweave';
@@ -10,13 +10,9 @@ export default {
     state: {
         arweave: null,
         smartweave: null,
-        oracleRegistryContractId: null,
         providers: null
     },
     mutations: {
-        setOracleRegistryContractId(state, oracleRegistryContractId) {
-            state.oracleRegistryContractId = oracleRegistryContractId;
-        },
         setProviders(state, providers) {
             state.providers = {...providers };
         },
@@ -62,9 +58,8 @@ export default {
             commit("setProviders", providers);
         },
         async fetchProviders({ commit, _state, dispatch }) {
-            const arweaveService = new ArweaveService();
-            const contractState = await arweaveService.getOracleRegistryContractState();
-            const providers = contractState.dataFeeds;
+            const contractState = await getOracleRegistryState();
+            const providers = contractState.dataServices;
             commit('setProviders', providers);
             const nodes = contractState.nodes;
           
@@ -88,10 +83,5 @@ export default {
                 dispatch('updateProvider', { id: providerId, key: 'nodes', value: filteredNodes });
             }
         },
-        async oracleRegistryContract({ commit }) {
-            const response = await axios.get(constants.smartweaveContractAddressesUrl);
-            const oracleRegistryContractId = response.data['oracle-registry'];
-            commit('setOracleRegistryContractId', oracleRegistryContractId);
-        }
     }
 };
