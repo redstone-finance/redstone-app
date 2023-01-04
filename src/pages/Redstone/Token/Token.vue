@@ -18,8 +18,8 @@
             </b-form-group>
           </b-form>
         </div>
-        <div class="data-feeds-wrapper">
-          <a class="data-feeds" @click="scrollToDataFeeds">View data feeds</a>
+        <div class="data-services-wrapper">
+          <a class="data-services" @click="scrollToDataServices">View data services</a>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export default {
       return getDetailsForSymbol(this.$route.params.symbol).providers;
     },
 
-    scrollToDataFeeds() {
+    scrollToDataServices() {
       const table = document.getElementById("token-price-table");
       table.scrollIntoView({ behavior: "smooth" });
     }
@@ -163,11 +163,11 @@ export default {
   }
 }
 
-.data-feeds-wrapper {
+.data-services-wrapper {
   line-height: 32px;
 }
 
-.data-feeds {
+.data-services {
   font-size: $font-size-sm;
   margin-right: 18px;
 }

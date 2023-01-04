@@ -101,9 +101,6 @@ import ManifestForm from "./ManifestForm.vue";
 import utils from "@/utils";
 import constants from "@/constants";
 import { mapState } from 'vuex';
-import Arweave from 'arweave';
-import { SmartWeaveNodeFactory } from "redstone-smartweave";
-
 
 export default {
   name: "Manifests",
@@ -127,11 +124,11 @@ export default {
       templateManifest: {},
       isAdmin: false,
       //different than global arweave object (host address)
-      arweave: Arweave.init({
-        host: 'arweave.net',
-        protocol: "https",
-        port: 443,
-      })
+      // arweave: Arweave.init({
+      //   host: 'arweave.net',
+      //   protocol: "https",
+      //   port: 443,
+      // })
     }; 
   },
 
@@ -211,35 +208,35 @@ export default {
           });
 
       //initialize default smartweave with arweave object not using Cloudfront. For writing interactions
-      const memSmartweave = SmartWeaveNodeFactory.memCached(this.arweave);
+      // const memSmartweave = SmartWeaveNodeFactory.memCached(this.arweave);
 
-      const oracleRegistryContract = 
-        memSmartweave
-          .contract(this.oracleRegistryContractId)
-          .connect('use_wallet')
-          .setEvaluationOptions({
-            waitForConfirmation: true,
-          });
+      // const oracleRegistryContract = 
+      //   memSmartweave
+      //     .contract(this.oracleRegistryContractId)
+      //     .connect('use_wallet')
+      //     .setEvaluationOptions({
+      //       waitForConfirmation: true,
+      //     });
 
-        let newManifestTxId = await oracleRegistryContract
-          .writeInteraction(
-            {
-              function: "addProviderManifest",
-              data: {
-                providerId: this.providerId,
-                manifestData: uploadedManifestData,
-                lockedHours: manifest.lockedHours
-              }
-            }
-          )
+      //   let newManifestTxId = await oracleRegistryContract
+      //     .writeInteraction(
+      //       {
+      //         function: "addProviderManifest",
+      //         data: {
+      //           providerId: this.providerId,
+      //           manifestData: uploadedManifestData,
+      //           lockedHours: manifest.lockedHours
+      //         }
+      //       }
+      //     )
 
-        this.waitForConfirmation(newManifestTxId, this.arweave, () => {           
-          this.manifestsDataForTable[0].status = 'active';
-          this.manifestsDataForTable[1].status = '';
-          this.manifestsDataForTable = this.manifestsDataForTable.slice();
-        });
+        // this.waitForConfirmation(newManifestTxId, this.arweave, () => {           
+        //   this.manifestsDataForTable[0].status = 'active';
+        //   this.manifestsDataForTable[1].status = '';
+        //   this.manifestsDataForTable = this.manifestsDataForTable.slice();
+        // });
 
-        console.log('newManifestTxId: ', newManifestTxId);
+        // console.log('newManifestTxId: ', newManifestTxId);
       }
     },
 
@@ -350,9 +347,9 @@ export default {
 
   computed: {
     ...mapState("prefetch", {
-      smartweave: (state) => { 
-        return state.smartweave; 
-      },
+      // smartweave: (state) => { 
+      //   return state.smartweave; 
+      // },
       oracleRegistryContractId: (state) => { 
         return state.oracleRegistryContractId; 
       }

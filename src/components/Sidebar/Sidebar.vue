@@ -35,8 +35,8 @@
 
         <NavLink
             :activeItem="activeItem"
-            header="Data feeds"
-            link="/app/data-feeds"
+            header="Data services"
+            link="/app/data-services"
             iconName="flaticon-providers"
             index="providers"
             isHeader

@@ -41,7 +41,7 @@ export async function getOrderedProviders() {
 
 const fetchCustomUrlManifest = async () => {
   const contractState = await getOracleRegistryState();
-  const manifestTxId = contractState.dataServices[constants.customUrlDataFeedId].manifestTxId;
+  const manifestTxId = contractState.dataServices[constants.customUrlDataServiceId].manifestTxId;
   return (await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`)).data;
 }
 

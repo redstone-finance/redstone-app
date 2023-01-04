@@ -29,17 +29,17 @@
         </div>
         <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
           <div v-if="customUrlDetails">
-            <div class="mb-2 data-feed-details">
-              <span class="data-feed-details-label">Custom URL: </span>
-              <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
+            <div class="mb-2 data-service-details">
+              <span class="data-service-details-label">Custom URL: </span>
+              <span class="data-service-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
             </div>
             <div class="mb-2">
-              <span class="data-feed-details-label">JSON Path: </span>
-              <span class="data-feed-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
+              <span class="data-service-details-label">JSON Path: </span>
+              <span class="data-service-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
             </div>
             <div class="mb-2">
-              <span class="data-feed-details-label">Comment: </span>
-              <span class="data-feed-details-text">{{ customUrlDetails.comment }}</span>
+              <span class="data-service-details-label">Comment: </span>
+              <span class="data-service-details-text">{{ customUrlDetails.comment }}</span>
             </div>
           </div>
           <div v-else class="preloaders">
@@ -428,16 +428,16 @@ export default {
       };
     },
     ...mapState("prefetch", {
-      dataFeeds: (state) => state.providers
+      dataServices: (state) => state.providers
     }),
     customUrlDetails() {
       if (
-        this.dataFeeds &&
+        this.dataServices &&
         getDetailsForSymbol(this.symbol).tags.includes("custom-urls")
       ) {
-        const dataFeed = this.dataFeeds[constants.customUrlDataFeedId];
-        if (dataFeed?.currentManifest) {
-          return dataFeed.currentManifest.tokens[this.symbol];
+        const dataService = this.dataServices[constants.customUrlDataServiceId];
+        if (dataService?.currentManifest) {
+          return dataService.currentManifest.tokens[this.symbol];
         }
       }
     }
@@ -623,19 +623,19 @@ export default {
   }
 }
 
-.data-feed-details {
+.data-service-details {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.data-feed-details-text {
+.data-service-details-text {
     // font-weight: $font-weight-semi-bold;
     font-size: $font-size-larger;
     flex: 0 0 25%;
     color: var(--redstone-dark-blue-color);
 }
 
-.data-feed-details-label {
+.data-service-details-label {
   font-weight: $font-weight-semi-bold;
 }
 

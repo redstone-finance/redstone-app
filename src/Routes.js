@@ -9,8 +9,8 @@ import Tokens from "@/pages/Redstone/Tokens/Tokens";
 import Token from "@/pages/Redstone/Token/Token";
 import Sources from "@/pages/Redstone/Sources/Sources";
 import Source from "@/pages/Redstone/Source/Source";
-import DataFeeds from "@/pages/Redstone/DataFeeds/DataFeeds";
-import DataFeed from "@/pages/Redstone/DataFeed/DataFeed";
+import DataServices from "@/pages/Redstone/DataServices/DataServices";
+import DataService from "@/pages/Redstone/DataService/DataService";
 
 // Store
 import store from "./store";
@@ -55,17 +55,17 @@ const router = new Router({
           component: Source,
         },
         {
-          path: 'data-feeds',
-          name: 'DataFeedsPage',
-          component: DataFeeds,
+          path: 'data-services',
+          name: 'DataServicesPage',
+          component: DataServices,
           meta: {
             showSearchInputInNavbar: true,
           },
         },
         {
-          path: 'data-feeds/:id',
-          name: 'DataFeedPage',
-          component: DataFeed,
+          path: 'data-services/:id',
+          name: 'DataServicePage',
+          component: DataService,
         },
       ],
     },

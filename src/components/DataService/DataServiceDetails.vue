@@ -38,7 +38,7 @@
         hover
         :items="visibleTokens"
         :fields="fieldsFiltered"
-        v-if="providerId !== 'redstone-custom-urls-demo'"
+        v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
 
       <template #cell(name)="data">
@@ -92,15 +92,14 @@
 </template>
 
 <script>
-import LabelValue from '@/components/DataFeed/LabelValue';
+import LabelValue from '@/components/DataService/LabelValue';
 import sourcesData from "redstone-monorepo-github/packages/oracle-node/src/config/sources.json";
 import _ from 'lodash';
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
 import { getDetailsForSymbol } from "@/tokens";
 
-
 export default {
-  name: "DataFeed",
+  name: "DataService",
 
   props: {
     provider: {}
@@ -123,7 +122,7 @@ export default {
       return source.map(s => _.startCase(s)).join(', ');
     },
     prepareTokensDataForTable() {
-      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) =>{
+      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) => {
         const [symbol, detailsInManifest] = entry;
         let tokenInfo = getDetailsForSymbol(symbol);
 
@@ -143,15 +142,15 @@ export default {
           ),
         };
       });
+
       setTimeout(this.showMoreTokens, 0);
     },
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
     },
     scrollFunction() {
-      alert('jo')
         if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-            this.showMoreTokens();
+          this.showMoreTokens();
         }
     }
   },
@@ -164,13 +163,7 @@ export default {
     currentManifest() {
       return this.provider?.currentManifest;
     },
-    // firstManifestTxId() {
-    //   return this.provider?.manifests[0]?.manifestTxId;
-    // },
-    lockedHours() {
-      return this.firstManifest?.data?.lockedHours
-    },
-    providerId() {
+    dataServiceId() {
       return this.$route.params.id;
     },
     fieldsFiltered() {
@@ -182,21 +175,10 @@ export default {
   },
 
   created() {
-            document.addEventListener('scroll', this.scrollFunction);
+    document.addEventListener('scroll', this.scrollFunction);
   },
 
   watch: {
-    // firstManifestTxId() {
-    //   if (this.firstManifestTxId) {
-    //     axios.get(`https://${constants.arweaveUrl}/${this.firstManifestTxId}`).then(
-    //       result => this.firstManifest = result
-    //     );
-
-    //     utils.transactionTime(this.firstManifestTxId).then(
-    //       result => this.transactionTime = result
-    //     );
-    //   }
-    // },
     currentManifest: {
       immediate: true,
       handler: function() {
