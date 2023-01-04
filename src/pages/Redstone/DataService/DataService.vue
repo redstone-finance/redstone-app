@@ -14,7 +14,7 @@
     <div class="provider-tabs">
       <b-tabs>
         <b-tab title="Details">
-          <DataFeedDetails :provider="provider"/>
+          <DataServiceDetails :provider="provider"/>
         </b-tab>
         <b-tab title="Nodes">
           <Nodes :nodes="provider?.nodes ?? []"/>
@@ -28,16 +28,15 @@
 </template>
 
 <script>
-import DataFeedDetails from '@/components/DataFeed/DataFeedDetails';
-import Nodes from '@/components/DataFeed/Nodes';
+import DataServiceDetails from '@/components/DataService/DataServiceDetails';
+import Nodes from '@/components/DataService/Nodes';
 import { mapState } from 'vuex';
 
 export default {
-  name: "DataFeed",
+  name: "DataService",
 
   data() {
     return {
-      selectedManifest: {},
       fetching: true
     }; 
   },
@@ -50,7 +49,7 @@ export default {
   },
 
   components: {
-    DataFeedDetails,
+    DataServiceDetails,
     Nodes
     // Manifests  
   },
@@ -69,7 +68,7 @@ export default {
 }
 </script>
 
-<style src="./DataFeed.scss" lang="scss" scoped />
+<style src="./DataService.scss" lang="scss" scoped />
 <style lang="scss"  >
 .provider-tabs > .tabs > div:first-of-type {
    height: 44px; 

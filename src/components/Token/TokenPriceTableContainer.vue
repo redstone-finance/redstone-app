@@ -1,14 +1,14 @@
 <template>
   <div class="price-table">
     <div class="table-title">
-      Data feeds
+      Data services
     </div>
     <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
         <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label class="mt-2 mt-md-0" for="from-datepicker">Show feeds from: </label>
+              <label class="mt-2 mt-md-0" for="from-datepicker">Show services from: </label>
               <b-datepicker 
                 id="from-datepicker" 
                 v-model="fromDate"
@@ -208,29 +208,29 @@ export default {
       return nextPrices;
     },
 
-    async isTxConfirmed(txId) {
-      const arweave = this.$store.state.prefetch.arweave;
-      if (arweave) {
-        const response = await arweave.transactions.getStatus(txId);
-        const result = response && response.confirmed;
-        return result;
-      } else {
-        return false;
-      }
-    },
+    // async isTxConfirmed(txId) {
+    //   const arweave = this.$store.state.prefetch.arweave;
+    //   if (arweave) {
+    //     const response = await arweave.transactions.getStatus(txId);
+    //     const result = response && response.confirmed;
+    //     return result;
+    //   } else {
+    //     return false;
+    //   }
+    // },
 
-    async updateLastConfirmedTxTimestamp() {
-      let lastTimestamp = 0, index = 0;
-      while (lastTimestamp === 0 && index < this.prices.length) {
-        const price = this.prices[index];
-        const isConfirmed = await this.isTxConfirmed(price.permawebTx);
-        if (isConfirmed) {
-          lastTimestamp = price.timestamp;
-        }
-        index++;
-      }
-      this.lastConfirmedTxTimestamp = lastTimestamp;
-    },
+    // async updateLastConfirmedTxTimestamp() {
+    //   let lastTimestamp = 0, index = 0;
+    //   while (lastTimestamp === 0 && index < this.prices.length) {
+    //     const price = this.prices[index];
+    //     const isConfirmed = await this.isTxConfirmed(price.permawebTx);
+    //     if (isConfirmed) {
+    //       lastTimestamp = price.timestamp;
+    //     }
+    //     index++;
+    //   }
+    //   this.lastConfirmedTxTimestamp = lastTimestamp;
+    // },
 
     isCurrencyToken(tags) {
       return !(tags.includes('custom-urls') ||

@@ -9,7 +9,7 @@ export default {
 
   viewblockAddressUrlPrefix: "https://viewblock.io/arweave/address/",
 
-  customUrlDataFeedId: "redstone-custom-urls-demo",
+  customUrlDataServiceId: "redstone-custom-urls-demo",
 
   images: {
     "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,

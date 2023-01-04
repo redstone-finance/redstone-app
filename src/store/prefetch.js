@@ -1,57 +1,51 @@
 import axios from "axios";
 import { getOracleRegistryState } from "redstone-sdk";
 import constants from "@/constants";
-import Arweave from 'arweave';
-import { SmartWeaveNodeFactory } from 'redstone-smartweave';
 import Vue from 'vue';
 
 export default {
     namespaced: true,
     state: {
-        arweave: null,
-        smartweave: null,
         providers: null
     },
     mutations: {
         setProviders(state, providers) {
             state.providers = {...providers };
         },
-        setArweave(state, arweave) {
-            if (!state.arweave) {
-                state.arweave = arweave;
-            }
-        },
-        setSmartweave(state, client) {
-            state.smartweave = client;
-        },
+        // setArweave(state, arweave) {
+        //     if (!state.arweave) {
+        //         state.arweave = arweave;
+        //     }
+        // },
+        // setSmartweave(state, client) {
+        //     state.smartweave = client;
+        // },
     },
     getters: {},
     actions: {
         async prefetchAll({ dispatch }) {
-            dispatch('initArweave')
-                .then(() => { return dispatch('smartweave') })
-                .then(() => { return dispatch('oracleRegistryContract') })
-                .then(() => { dispatch('fetchProviders'); });
+            dispatch('fetchProviders');
+            // dispatch('initArweave').then(() => { return dispatch('smartweave') })
         },
-        initArweave({ commit }) {
-            const arweaveObject = Arweave.init({
-                host: constants.arweaveUrl,
-                protocol: "https",
-                port: 443,
-            });
+        // initArweave({ commit }) {
+        //     const arweaveObject = Arweave.init({
+        //         host: constants.arweaveUrl,
+        //         protocol: "https",
+        //         port: 443,
+        //     });
 
-            commit("setArweave", arweaveObject);
-        },
-        smartweave({ commit, state }) {
+        //     commit("setArweave", arweaveObject);
+        // },
+        // smartweave({ commit, state }) {
 
-            const arweave = state.arweave;
+        //     const arweave = state.arweave;
 
-            const smartweave = SmartWeaveNodeFactory
-                .memCachedBased(arweave)
-                .build();
+        //     const smartweave = SmartWeaveNodeFactory
+        //         .memCachedBased(arweave)
+        //         .build();
 
-            commit("setSmartweave", smartweave);
-        },
+        //     commit("setSmartweave", smartweave);
+        // },
         updateProvider({ commit, state }, { id, key, value }) {
             let providers = state.providers;
             Vue.set(providers[id], key, value);
@@ -61,25 +55,34 @@ export default {
             const contractState = await getOracleRegistryState();
             const providers = contractState.dataServices;
             commit('setProviders', providers);
-            const nodes = contractState.nodes;
-          
             for (const [providerId, provider] of Object.entries(providers)) {
                 Vue.set(providers, providerId, provider);
                 commit('setProviders', providers);
-        
-                const currentManifestTxId = provider.manifestTxId;
-                if (currentManifestTxId) {
-                    const currentManifest = await axios.get(`https://${constants.arweaveUrl}/${currentManifestTxId}`);
-                    dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: currentManifest.data });
-                    if (currentManifest.data.tokens) {
-                      const assetsCount = Object.keys(currentManifest.data.tokens).length;
-                      dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
+                if (providerId === "redstone-custom-urls-demo") {
+                    const currentManifestTxId = provider.manifestTxId;
+                    if (currentManifestTxId) {
+                        const currentManifest = await axios.get(`https://${constants.arweaveUrl}/${currentManifestTxId}`);
+                        dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: currentManifest.data });
+                        if (currentManifest.data.tokens) {
+                            const assetsCount = Object.keys(currentManifest.data.tokens).length;
+                            dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
+                        } else {
+                            dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
+                        }
+                    }
+                } else {
+                    const manifestName = providerId.split("-")[1];
+                    const manifest = require(`redstone-monorepo-github/packages/oracle-node/manifests/data-services/${manifestName}.json`);
+                    dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: manifest });
+                    if (manifest.tokens) {
+                        const assetsCount = Object.keys(manifest.tokens).length;
+                        dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
                     } else {
-                      dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
+                        dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
                     }
                 }
-                
-                const filteredNodes = Object.values(nodes).filter(node => node.dataFeedId === providerId);
+                const nodes = contractState.nodes;
+                const filteredNodes = Object.values(nodes).filter(node => node.dataServiceId === providerId);
                 dispatch('updateProvider', { id: providerId, key: 'nodes', value: filteredNodes });
             }
         },

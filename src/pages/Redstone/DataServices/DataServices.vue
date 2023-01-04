@@ -2,7 +2,7 @@
   <div class="providers-wrapper">
     <b-row class="justify-content-center">
       <b-col cols="12" class="widget-col" v-for="(provider, id) in filteredProviders" :key="id">
-        <div class="widget-wrapper" @click="$router.push('/app/data-feeds/' + id)">
+        <div class="widget-wrapper" @click="$router.push('/app/data-services/' + id)">
           <Widget class="mb-0 provider-card">
             <div class="provider-details">
               <div class="provider-logo">
@@ -131,7 +131,7 @@ import _ from "lodash";
 import { mapState } from 'vuex';
 
 export default {
-  name: "DataFeeds",
+  name: "DataServices",
 
   data() {
     return {
@@ -182,4 +182,4 @@ export default {
 };
 </script>
 
-<style src="./DataFeeds.scss" lang="scss" scoped />
+<style src="./DataServices.scss" lang="scss" scoped />

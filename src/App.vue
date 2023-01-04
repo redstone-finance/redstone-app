@@ -10,7 +10,7 @@ export default {
   name: "App",
 
   beforeMount() {
-    this.initArweave();
+    // this.initArweave();
     this.prefetchAll();
     const currentPath = this.$router.history.current.path;
 
@@ -19,7 +19,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("prefetch", ["prefetchAll", "initArweave"]),
+    ...mapActions("prefetch", ["prefetchAll"]),
   }
 };
 </script>
