@@ -9554,14 +9554,14 @@ redstone-api@^0.4.11:
     lodash "^4.17.21"
     pako "^2.0.3"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#690ab11da7ee91d16ea68ecfad5c93053eb4cd55:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#a849505e9efe4b0a0f6428974b50a92021e4cc01:
   version "0.0.2"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/690ab11da7ee91d16ea68ecfad5c93053eb4cd55"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/a849505e9efe4b0a0f6428974b50a92021e4cc01"
 
 redstone-oracles-smartweave-contracts@*:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/redstone-oracles-smartweave-contracts/-/redstone-oracles-smartweave-contracts-1.0.1.tgz#51c802139edf2f46b5f50b9e04995ebbf0e8b3b7"
-  integrity sha512-W+h3KB2gdxmK+WnfDT+iZHVQ25LkdTuV5a4cem5pgzgjo6vf2nqFPlkXcWpYI791mdeobwC4yoSybrTrIXSKfQ==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/redstone-oracles-smartweave-contracts/-/redstone-oracles-smartweave-contracts-1.0.2.tgz#f64d6a6b74e0967b51edb270c69aa29a35017966"
+  integrity sha512-fRnIPPtf4a2sT3dGUeiaGJiE7G/xZA8BddqdyOd6+VcZFduFlSTi2lHof8ZKaNde8HFhBkiNfrDp7lspAG5m3A==
 
 redstone-protocol@*:
   version "1.0.5"
@@ -9570,10 +9570,10 @@ redstone-protocol@*:
   dependencies:
     ethers "^5.6.8"
 
-redstone-sdk@^1.0.5-alpha:
-  version "1.0.5-alpha"
-  resolved "https://registry.yarnpkg.com/redstone-sdk/-/redstone-sdk-1.0.5-alpha.tgz#ececdfa9b0e909372a3ec17c9a544a31b9176dcc"
-  integrity sha512-+hXx3/2y+47nicfs69UqVdedChnXpxMkN1HqrFoJUh4OnQXb+HqZdcLaOJGvDElbkG+dOBE/g+oFg9nAH6ElTg==
+redstone-sdk@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/redstone-sdk/-/redstone-sdk-1.0.6.tgz#59bde316172b0a407e8bdc5c30c31bdfa8742a5d"
+  integrity sha512-OuNObR4HjL6DUvM3/xeqIJzAnIv9u8Rho4TvkasEe0nDY09k8Ur3ymIc1FTJ4+JL0IvYqZ9BbMxiH2tZlTHbvQ==
   dependencies:
     axios "^0.27.2"
     redstone-oracles-smartweave-contracts "*"
