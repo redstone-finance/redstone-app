@@ -1,18 +1,14 @@
 import axios from "axios";
-import { getOracleRegistryState } from "redstone-sdk";
 import constants from "@/constants";
 import tokenDetails from "redstone-monorepo-github/packages/oracle-node/src/config/tokens.json";
-import rapidManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/rapid.json";
-import stocksManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/stocks.json";
 import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
 
 const manifests = {
-  "redstone-rapid": rapidManifest,
-  "redstone-stocks": stocksManifest,
   "redstone": mainManifest,
 };
 
 export const CUSTOM_URLS_NODE_1_ID = "redstone-custom-urls-1";
+export const CUSTOM_URLS_NODE_2_ID = "redstone-custom-urls-2";
 
 export function getDetailsForSymbol(symbol) {
   const details = tokenDetails[symbol];
@@ -26,7 +22,7 @@ export function getDetailsForSymbol(symbol) {
       tags: [
         "custom-urls"
       ],
-      providers: [ CUSTOM_URLS_NODE_1_ID ]
+      providers: [ CUSTOM_URLS_NODE_1_ID, CUSTOM_URLS_NODE_2_ID ]
     }
   }
 }
@@ -34,21 +30,23 @@ export function getDetailsForSymbol(symbol) {
 export async function getOrderedProviders() {
   const manifestsWithCustom = { ...manifests };
   const customManifest = await fetchCustomUrlManifest();
-  Object.assign(manifestsWithCustom, { 'redstone-custom-urls': customManifest });
   Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': {} })
   return Object.keys(manifestsWithCustom);
 }
 
 const fetchCustomUrlManifest = async () => {
-  const contractState = await getOracleRegistryState();
-  const manifestTxId = contractState.dataServices[constants.customUrlDataServiceId].manifestTxId;
+  const params = new URLSearchParams([["id", constants.oracleRegistryAddress]]);
+  const response = await axios.get(constants.smartweaveDreNodeUlr, {
+    params,
+  });
+  const contractState = response.data.state;
+  const manifestTxId = contractState.dataFeeds[constants.customUrlDataServiceId].manifestTxId;
   return (await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`)).data;
 }
 
 export async function getAllSupportedTokens() {
   const manifestsWithCustom = { ...manifests };
   const customManifest = await fetchCustomUrlManifest();
-  Object.assign(manifestsWithCustom, { 'redstone-custom-urls': customManifest });
   Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': customManifest });
   const allTokens = {};
   for (const manifest of Object.values(manifestsWithCustom)) {

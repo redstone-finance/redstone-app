@@ -59,12 +59,17 @@ export default {
                 Vue.set(providers, providerId, provider);
                 commit('setProviders', providers);
                 if (providerId === "redstone-custom-urls-demo") {
-                    const currentManifestTxId = provider.manifestTxId;
-                    if (currentManifestTxId) {
-                        const currentManifest = await axios.get(`https://${constants.arweaveUrl}/${currentManifestTxId}`);
-                        dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: currentManifest.data });
-                        if (currentManifest.data.tokens) {
-                            const assetsCount = Object.keys(currentManifest.data.tokens).length;
+                    const params = new URLSearchParams([["id", constants.oracleRegistryAddress]]);
+                    const response = await axios.get(constants.smartweaveDreNodeUlr, {
+                      params,
+                    });
+                    const manifestTxId = response.data.state.dataFeeds[constants.customUrlDataServiceId].manifestTxId;
+                    if (manifestTxId) {
+                        const currentManifestResponse = await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`);
+                        const currentManifest = currentManifestResponse.data;
+                        dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: currentManifest });
+                        if (currentManifest.tokens) {
+                            const assetsCount = Object.keys(currentManifest.tokens).length;
                             dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
                         } else {
                             dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
