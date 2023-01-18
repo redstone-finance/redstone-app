@@ -54,10 +54,10 @@
                   sm="6"
                   md="4"
                   class="token-price pl-0">
-                    <span v-if="prices[token.symbol] && isNotCurrencyToken(token.tags)">
+                    <span v-if="(prices[token.symbol] || prices[token.symbol] === 0) && isNotCurrencyToken(token.tags)">
                       {{ prices[token.symbol] | value({ eNotationForSmallValues: true }) | maxLength(8) }}
                     </span>
-                    <span v-else-if="prices[token.symbol]">
+                    <span v-else-if="(prices[token.symbol] || prices[token.symbol] === 0)">
                       {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
                     </span>
        

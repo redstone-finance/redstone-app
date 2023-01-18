@@ -418,7 +418,10 @@ export default {
     },
 
     currentPriceValue() {
-      return this.currentPrice?.value || "Loading..."
+      if (this.currentPrice?.value || this.currentPrice?.value === 0) {
+        return this.currentPrice?.value;
+      }
+      return "Loading...";
     },
 
     tokenDetails() {
