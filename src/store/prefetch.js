@@ -63,7 +63,7 @@ export default {
                     const response = await axios.get(constants.smartweaveDreNodeUlr, {
                       params,
                     });
-                    const manifestTxId = response.data.state.dataFeeds[constants.customUrlDataServiceId].manifestTxId;
+                    const manifestTxId = response.data.state.dataServices[constants.customUrlDataServiceId].manifestTxId;
                     if (manifestTxId) {
                         const currentManifestResponse = await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`);
                         const currentManifest = currentManifestResponse.data;

@@ -40,7 +40,7 @@ const fetchCustomUrlManifest = async () => {
     params,
   });
   const contractState = response.data.state;
-  const manifestTxId = contractState.dataFeeds[constants.customUrlDataServiceId].manifestTxId;
+  const manifestTxId = contractState.dataServices[constants.customUrlDataServiceId].manifestTxId;
   return (await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`)).data;
 }
 

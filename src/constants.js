@@ -13,7 +13,7 @@ export default {
 
   smartweaveDreNodeUlr: "https://dre-1.warp.cc/contract",
 
-  oracleRegistryAddress: "qg5BIOUraunoi6XJzbCC-TgIAypcXyXlVprgg0zRRDE",
+  oracleRegistryAddress: "Ebh7jYjVxzoZpVR4HSjHddZs1t6k2JLskBRbjEfutgM",
 
   images: {
     "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,
