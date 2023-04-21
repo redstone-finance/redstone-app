@@ -85,12 +85,21 @@ export default {
     },
 
     getProviders() {
-      return getDetailsForSymbol(this.$route.params.symbol).providers;
+      const symbol = this.parseSymbol()
+      return getDetailsForSymbol(symbol).providers;
     },
 
     scrollToDataServices() {
       const table = document.getElementById("token-price-table");
       table.scrollIntoView({ behavior: "smooth" });
+    },
+
+    parseSymbol() {
+    let symbol = this.$route.params.symbol;
+      if (symbol.includes("\\")) {
+        symbol = symbol.replace("\\", "/");
+      }
+      return symbol;
     }
   },
 
@@ -101,7 +110,7 @@ export default {
 
   computed: {
     symbol() {
-      return this.$route.params.symbol;
+      return this.parseSymbol();
     },
 
     providers() {

@@ -3,7 +3,7 @@
     <div class="mb-lg">
       <b-row>
         <b-col xxl="3" xl="4" lg="6" md="12" sm="12" xs="12" class="py-1 py-md-2" v-for="(token, index) in visibleTokens" :key="index">
-          <div class="pb-xlg" @click="$router.push('/app/token/' + token.symbol)">
+          <div class="pb-xlg" @click="$router.push(`/app/token/${token.symbol.includes('/') ? token.symbol.replace('/', '\\') : token.symbol}`)">
             <Widget class="mb-0 token-card">
               <b-row class="token-details">
                 <b-col cols="2" class="token-logo">
