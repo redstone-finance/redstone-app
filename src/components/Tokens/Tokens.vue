@@ -28,7 +28,7 @@
                   sm="4" 
                   md="6"
                   class="h4 token-title pr-0"
-                  v-else-if="token.tags.includes('lens')"
+                  v-else-if="token.tags?.includes('lens')"
                 >
                   {{ token.symbol | maxLength(15) }}
                   <br>
@@ -109,16 +109,16 @@ export default {
     },
         
     isNotCurrencyToken(tags) {
-      return tags.includes('custom-urls') ||
-        tags.includes('lens') ||
-        tags.includes('ukraine') ||
-        tags.includes('nft')
+      return tags?.includes('custom-urls') ||
+        tags?.includes('lens') ||
+        tags?.includes('ukraine') ||
+        tags?.includes('nft')
     },
 
     isCustom(tags) {
-      return tags.includes('custom-urls') ||
-        tags.includes('nft') ||
-        tags.includes('ukraine')
+      return tags?.includes('custom-urls') ||
+        tags?.includes('nft') ||
+        tags?.includes('ukraine')
     }
   },
 
