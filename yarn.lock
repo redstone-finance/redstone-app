@@ -957,7 +957,7 @@
   dependencies:
     "@ethersproject/logger" "^5.7.0"
 
-"@ethersproject/providers@5.7.2":
+"@ethersproject/providers@5.7.2", "@ethersproject/providers@^5.0.10":
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.7.2.tgz#f8b1a4f275d7ce58cf0a2eec222269a08beb18cb"
   integrity sha512-g34EWZ1WWAVgr4aptGlVBF8mhl3VWjv+8hoAnzStu8Ah22VHBsuGzP17eb6xDVRzw895G4W7vvx60lFFur/1Rg==
@@ -4175,6 +4175,11 @@ decamelize@^1.1.0, decamelize@^1.2.0:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
+decimal.js@^10.4.3:
+  version "10.4.3"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.4.3.tgz#1044092884d245d1b7f65725fa4ad4c6f781cc23"
+  integrity sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==
+
 decode-uri-component@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
@@ -4851,7 +4856,15 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-ethers@^5.6.8:
+ethereum-multicall@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/ethereum-multicall/-/ethereum-multicall-2.19.0.tgz#28462bf48792bf7bb0b2db1ca546f439b2adab96"
+  integrity sha512-ECMxdf1ffxBWTCLeAzEGGWUYNdlNq4zXPj/ZPXdaixbx/qZ/gw4ongwpuR5UGy6D5epWDftvFvIAEzmkwGZ1lQ==
+  dependencies:
+    "@ethersproject/providers" "^5.0.10"
+    ethers "^5.0.15"
+
+ethers@^5.0.15, ethers@^5.6.8, ethers@^5.6.9, ethers@^5.7.2:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -9554,14 +9567,14 @@ redstone-api@^0.4.11:
     lodash "^4.17.21"
     pako "^2.0.3"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#ccfa4555ac01fdc08059f602c34d720c1898c534:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#a6b5adf0544725d63a2e0c5a238c505092b2bbf7:
   version "0.0.2"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/ccfa4555ac01fdc08059f602c34d720c1898c534"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/a6b5adf0544725d63a2e0c5a238c505092b2bbf7"
 
 redstone-oracles-smartweave-contracts@*:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/redstone-oracles-smartweave-contracts/-/redstone-oracles-smartweave-contracts-1.0.2.tgz#f64d6a6b74e0967b51edb270c69aa29a35017966"
-  integrity sha512-fRnIPPtf4a2sT3dGUeiaGJiE7G/xZA8BddqdyOd6+VcZFduFlSTi2lHof8ZKaNde8HFhBkiNfrDp7lspAG5m3A==
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/redstone-oracles-smartweave-contracts/-/redstone-oracles-smartweave-contracts-1.0.6.tgz#aa7b6ec453133be240df6cb4fe52a11582cb65b7"
+  integrity sha512-QTGDhkSJyVxggFVaET9EiuwTjdiyNjqWmVNE/jyd8OAESvVtrclLuhQL9bIVlJhVXq6IroyWf0rs8eh/OEG/4Q==
 
 redstone-protocol@*:
   version "1.0.5"
@@ -9570,14 +9583,25 @@ redstone-protocol@*:
   dependencies:
     ethers "^5.6.8"
 
-redstone-sdk@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/redstone-sdk/-/redstone-sdk-1.0.7.tgz#ca03b81db77d60a4d75b7bf4c90ed7fb7bac00cd"
-  integrity sha512-pjSNWLoWvaol73kJO58YHqy3VUfDN2hMTeQW4wccQAPWY2OhnM7Ody9TL8l2DxXgXMAUscuqVRHBmUNjT3Q2rw==
+redstone-sdk@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/redstone-sdk/-/redstone-sdk-1.6.1.tgz#421f163f75ac539b663eb3c70c86986437789396"
+  integrity sha512-SgeRKXdVsN6dpPH3M7CeebVvfX/ClzVKTelrVViBCHCpFqwYNDaSWhBh08DdGteo4ab/7EIRETvkoqfAUsDTnw==
   dependencies:
     axios "^0.27.2"
+    ethers "^5.7.2"
     redstone-oracles-smartweave-contracts "*"
     redstone-protocol "*"
+    redstone-utils "*"
+
+redstone-utils@*:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/redstone-utils/-/redstone-utils-0.0.1.tgz#d012f3a3db0c243e596a52874a3196088a88be23"
+  integrity sha512-tIDWU8mKdDUqOKpup+5U1FjNRp6EigyCHzBtaVB59CHS1D8uUe9j+H6tm4RtnuL6YQojOY57ZV2R4L1jdAwrRA==
+  dependencies:
+    decimal.js "^10.4.3"
+    ethereum-multicall "^2.19.0"
+    ethers "^5.6.9"
 
 regenerate-unicode-properties@^10.0.1:
   version "10.0.1"
