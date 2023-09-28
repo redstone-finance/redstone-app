@@ -62,10 +62,11 @@ const TOKEN_TYPES = [
     label: "Avalanche",
     tag: "avax"
   },
-  {
-    label: "Custom",
-    tag: "custom-urls"
-  },
+  // TODO: uncomment after fixing custom URLs oracles
+  // {
+  //   label: "Custom",
+  //   tag: "custom-urls"
+  // },
   {
     label: "ETF",
     tag: "etfs"

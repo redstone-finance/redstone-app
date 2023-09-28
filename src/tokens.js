@@ -29,8 +29,9 @@ export function getDetailsForSymbol(symbol) {
 
 export async function getOrderedProviders() {
   const manifestsWithCustom = { ...manifests };
-  const customManifest = await fetchCustomUrlManifest();
-  Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': customManifest })
+  // TODO: uncomment after fixing custom URLs oracles
+  // const customManifest = await fetchCustomUrlManifest();
+  // Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': customManifest })
   return Object.keys(manifestsWithCustom);
 }
 
@@ -46,9 +47,10 @@ const fetchCustomUrlManifest = async () => {
 
 export async function getAllSupportedTokens() {
   const manifestsWithCustom = { ...manifests };
-  const customManifest = await fetchCustomUrlManifest();
-  Object.assign(manifestsWithCustom, { 'redstone-custom-urls': customManifest });
-  Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': customManifest });
+  // TODO: uncomment after fixing custom URLs oracles
+  // const customManifest = await fetchCustomUrlManifest();
+  // Object.assign(manifestsWithCustom, { 'redstone-custom-urls': customManifest });
+  // Object.assign(manifestsWithCustom, { 'redstone-custom-urls-1': customManifest });
   const allTokens = {};
   for (const manifest of Object.values(manifestsWithCustom)) {
     for (const symbol of Object.keys(manifest.tokens)) {
