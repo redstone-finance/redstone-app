@@ -31,7 +31,7 @@
     "mini-css-extract-plugin": "^1.6.0",
     "npm": "^7.17.0",
     "redstone-api": "^0.4.11",
-    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#f4c53f5e2558b33f261a2292a36b26d85115beec",
+    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#8f8216323efe7dde711767402fdb88aa1f20028e",
     "redstone-sdk": "^1.6.1",
     "rickshaw": "1.7.1",
     "sass-loader": "^7.3.1",
