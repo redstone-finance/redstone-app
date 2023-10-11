@@ -15,6 +15,8 @@ export default {
 
   oracleRegistryAddress: "Ebh7jYjVxzoZpVR4HSjHddZs1t6k2JLskBRbjEfutgM",
 
+  redstoneApiUrl: "https://mpp524b2oi.execute-api.eu-north-1.amazonaws.com/prices?symbol=AR&provider=redstone&limit=1",
+
   images: {
     "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,
     "no-logo": `${REDSTONE_CDN}/logo-not-found.png`,

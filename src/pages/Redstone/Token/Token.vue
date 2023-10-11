@@ -52,6 +52,7 @@ import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContaine
 import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
 import _ from "lodash";
 import { getDetailsForSymbol } from "@/tokens";
+import constants from "@/constants";
 
 
 export default {
@@ -75,6 +76,7 @@ export default {
 
   methods: {
     async loadPrices() {
+      redstone.setCacheApiUrl(constants.redstoneApiUrl);
       this.currentPrice = await redstone.getPrice(this.symbol, {
         provider: this.selectedProvider,
       });

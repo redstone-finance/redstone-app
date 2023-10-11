@@ -32,6 +32,7 @@ import Tokens from '@/components/Tokens/Tokens';
 import Loader from '@/components/Loader/Loader';
 import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
 import { mapActions, mapState } from 'vuex';
+import constants from "@/constants";
 
 const TOKEN_TYPES = [
   {
@@ -160,6 +161,7 @@ export default {
     }),
 
     async lazyLoadPricesForAllTokens() {
+      redstone.setCacheApiUrl(constants.redstoneApiUrl);
       const providersSorted = await getOrderedProviders();
       if (!this.pricesLoadingCompleted) {
         for (const provider of providersSorted) {

@@ -115,6 +115,7 @@ import redstone from 'redstone-api';
 import dateFormat from 'dateformat';
 import utils from '@/utils';
 import { getDetailsForSymbol } from "@/tokens";
+import constants from "@/constants";
 
 export default {
   name: 'TokenPriceTableContainer',
@@ -198,6 +199,7 @@ export default {
     },
 
     async getPrices() {
+      redstone.setCacheApiUrl(constants.redstoneApiUrl);
       const nextPrices = await redstone.getHistoricalPrice(this.symbol, {
         provider: this.provider,
         limit: this.limit,
