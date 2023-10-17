@@ -1,6 +1,6 @@
 import axios from "axios";
 import constants from "@/constants";
-import tokenDetails from "redstone-monorepo-github/packages/oracle-node/src/config/tokens.json";
+import tokenDetails from "./config/tokens.json";
 import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
 
 const manifests = {

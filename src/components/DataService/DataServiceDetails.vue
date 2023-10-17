@@ -93,7 +93,7 @@
 
 <script>
 import LabelValue from '@/components/DataService/LabelValue';
-import sourcesData from "redstone-monorepo-github/packages/oracle-node/src/config/sources.json";
+import sourcesData from "../../config/sources.json";
 import _ from 'lodash';
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
 import { getDetailsForSymbol } from "@/tokens";

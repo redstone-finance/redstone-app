@@ -55,7 +55,7 @@
 <script>
 import axios from "axios";
 import _ from "lodash";
-import sources from "redstone-monorepo-github/packages/oracle-node/src/config/sources.json";
+import sources from "../../../config/sources.json";
 
 const SOURCE_REPORT_URL = "https://raw.githubusercontent.com/redstone-finance/redstone-reports/main/last/sources-report.json";
 const MAX_FETCHING_SUCCESS = 60 * 24 * 5; // 5 days of the main redstone-node work
