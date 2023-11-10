@@ -76,7 +76,6 @@ export default {
 
   methods: {
     async loadPrices() {
-      redstone.setCacheApiUrl(constants.redstoneApiUrl);
       this.currentPrice = await redstone.getPrice(this.symbol, {
         provider: this.selectedProvider,
       });

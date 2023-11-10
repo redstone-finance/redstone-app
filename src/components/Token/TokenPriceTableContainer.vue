@@ -199,7 +199,6 @@ export default {
     },
 
     async getPrices() {
-      redstone.setCacheApiUrl(constants.redstoneApiUrl);
       const nextPrices = await redstone.getHistoricalPrice(this.symbol, {
         provider: this.provider,
         limit: this.limit,

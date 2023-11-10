@@ -229,7 +229,6 @@ export default {
     async loadPrices() {
       try {
         this.loading = true;
-        redstone.setCacheApiUrl(constants.redstoneApiUrl);
         let query = redstone.query().symbol(this.symbol);
         // TODO: fix redstone-api fluent interface for hours and refactor this place
         if (this.selectedTimeRange.days === 0) {

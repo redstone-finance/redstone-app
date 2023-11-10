@@ -15,8 +15,6 @@ export default {
 
   oracleRegistryAddress: "Ebh7jYjVxzoZpVR4HSjHddZs1t6k2JLskBRbjEfutgM",
 
-  redstoneApiUrl: "https://api.b.redstone.finance/prices",
-
   images: {
     "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,
     "no-logo": `${REDSTONE_CDN}/logo-not-found.png`,
