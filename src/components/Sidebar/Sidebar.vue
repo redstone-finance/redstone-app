@@ -51,6 +51,15 @@
             isHeader
         />
 
+        <NavLink
+            :activeItem="activeItem"
+            header="On-chain feeds"
+            link="/app/on-chain-feeds"
+            iconName="flaticon-external-link"
+            index="custom-urls"
+            isHeader
+        />
+
       </ul>
 
       <footer class="contentFooter">

@@ -11,6 +11,7 @@ import Sources from "@/pages/Redstone/Sources/Sources";
 import Source from "@/pages/Redstone/Source/Source";
 import DataServices from "@/pages/Redstone/DataServices/DataServices";
 import DataService from "@/pages/Redstone/DataService/DataService";
+import ClassicModel from "@/pages/Redstone/ClassicModel/ClassicModel";
 
 // Store
 import store from "./store";
@@ -67,6 +68,11 @@ const router = new Router({
           name: 'DataServicePage',
           component: DataService,
         },
+        {
+          path: 'on-chain-feeds',
+          name: 'OnChainFeedsPage',
+          component: ClassicModel,
+        }
       ],
     },
   ],
