@@ -22,6 +22,7 @@
             <template #title>
               {{ uniqueName }}
             </template>
+            <ClassicModelCard :tokens="specificFileData" :tokenNames="tokenNames"></ClassicModelCard>
           </b-tab>
         </b-tabs>
       </div>
@@ -34,6 +35,7 @@ import redstone from 'redstone-api';
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from '@/components/Tokens/Tokens';
 import Loader from '@/components/Loader/Loader';
+import ClassicModelCard from '../../../components/ClassicModelCard/ClassicModelCard.vue';
 import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
 import { mapActions, mapState } from 'vuex';
 import constants from '@/constants';
@@ -58,6 +60,7 @@ export default {
       loading: true,
       specificFileLinks: [],
       specificFileData: [],
+      tokenNames: [],
     };
   },
 
@@ -66,6 +69,7 @@ export default {
     BTabs,
     BTab,
     Loader: Loader,
+    ClassicModelCard,
   },
 
   async beforeCreate() {
@@ -117,6 +121,7 @@ export default {
           if (Array.isArray(data)) {
             const jsonFiles = data.filter((file) => file.name.endsWith('.json'));
             jsonFiles.forEach((file) => {
+              this.tokenNames.push(file.name.replace(/\.json$/, ''));
               this.specificFileLinks.push(file.download_url);
             });
           } else {
