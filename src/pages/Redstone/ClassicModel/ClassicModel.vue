@@ -18,14 +18,12 @@
           class="showArrows"
           @scroll="alert('jo')"
         >
-          <b-tab v-for="type in tokenTypes" :key="type.label">
+          <b-tab v-for="(uniqueName, index) in uniqueNames" :key="index">
             <template #title>
-              {{ type.label }}
-              // <span class="tokens-number"> // {{ getFilteredTokensWithPrices(type.tag).length }} // </span>
+              {{ uniqueName }}
             </template>
-            <TokenCards :key="searchTerm + type.tag" :tokens="getFilteredTokensWithPrices(type.tag)" />
           </b-tab>
-          </b-tabs>
+        </b-tabs>
       </div>
     </div>
   </div>
@@ -135,7 +133,6 @@ export default {
         });
     },
     async getSpecificFileData(link) {
-      //console.log(this.specificFileLinks);
       fetch(link)
         .then((response) => response.json())
         .then((data) => {
@@ -223,6 +220,11 @@ export default {
       searchTerm: (state) => state.layout.searchTerm,
       prices: (state) => state.prices.prices,
       pricesLoadingCompleted: (state) => state.prices.pricesLoadingCompleted,
+
+      uniqueNames() {
+        const uniqueSet = new Set(this.specificFileData.map((item) => item.chain.name));
+        return Array.from(uniqueSet);
+      },
     }),
   },
 };
