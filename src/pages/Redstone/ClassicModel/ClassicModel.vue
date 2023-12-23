@@ -16,13 +16,16 @@
           nav-class="bg-transparent"
           ref="tabScroll"
           class="showArrows"
-          @scroll="alert('jo')"
         >
-          <b-tab v-for="(uniqueName, index) in uniqueNames" :key="index">
+          <b-tab v-for="(uniqueName, index) in uniqueNames" :key="index" @click="updateSelectedTab(index)" lazy>
             <template #title>
               {{ uniqueName }}
             </template>
-            <ClassicModelCard :tokens="specificFileData" :tokenNames="tokenNames"></ClassicModelCard>
+            <ClassicModelCard
+              :tokens="specificFileData"
+              :tokenNames="tokenNames"
+              :activeTabName="uniqueName"
+            ></ClassicModelCard>
           </b-tab>
         </b-tabs>
       </div>
@@ -56,11 +59,12 @@ export default {
     return {
       back: false,
       selectedTabIndex: 0,
-      tokensData: {},
+      tokensData: [],
       loading: true,
       specificFileLinks: [],
       specificFileData: [],
       tokenNames: [],
+      selectedTab: 0,
     };
   },
 
@@ -80,25 +84,24 @@ export default {
   async mounted() {
     await this.lazyLoadPricesForAllTokens();
     await this.getDataUrls();
-    await this.getSpecificFileData();
-    console.log(this.specificFileData);
+    //this.selectTabFromUrlParam();
   },
 
-  created() {
-    this.selectTabFromUrlParam();
-  },
+  // created() {
+  //   this.selectTabFromUrlParam();
+  // },
 
   watch: {
-    selectedTabIndex(newValue) {
-      if (this.$route.query['selected-tab'] != newValue) {
-        this.$router.push({
-          query: {
-            ...this.$route.query,
-            'selected-tab': newValue,
-          },
-        });
-      }
-    },
+    // selectedTabIndex(newValue) {
+    //   if (this.$route.query['selected-tab'] != newValue) {
+    //     this.$router.push({
+    //       query: {
+    //         ...this.$route.query,
+    //         'selected-tab': newValue,
+    //       },
+    //     });
+    //   }
+    // },
 
     $route() {
       this.selectTabFromUrlParam();
@@ -110,8 +113,18 @@ export default {
       setPricesLoadingAsCompleted: 'prices/setPricesLoadingAsCompleted',
       addPrices: 'prices/addPrices',
     }),
-
+    updateSelectedTab(tabIndex) {
+      //console.log(this.selectedTabIndex);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          'selected-tab': tabIndex,
+        },
+      });
+      //console.log(tabName);
+    },
     async getDataUrls() {
+      this.loading = true;
       const apiUrl =
         'https://api.github.com/repos/redstone-finance/redstone-oracles-monorepo/contents/packages/on-chain-relayer/relayer-manifests';
 
@@ -128,20 +141,31 @@ export default {
             console.error('Failed to load GitHub API data');
           }
         })
-        .then(() => {
+        .then(async () => {
+          let iteration = 0;
           for (const link of this.specificFileLinks) {
-            this.getSpecificFileData(link);
+            await this.getSpecificFileData(link, iteration);
+            iteration++;
           }
+          // const promises = this.specificFileLinks.map((link) => this.getSpecificFileData(link));
+
+          // Promise.all(promises);
+          // const uniqueSet = new Set(this.specificFileData.map((item) => item.chain.name));
+          // this.uniqueNames = Array.from(uniqueSet);
+          console.log(this.specificFileData);
         })
         .catch((error) => {
           console.error('Failed to load GitHub API data:', error);
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
-    async getSpecificFileData(link) {
+    async getSpecificFileData(link, iterationNumber) {
       fetch(link)
         .then((response) => response.json())
         .then((data) => {
-          this.specificFileData.push(data);
+          this.specificFileData.push({ ...data, tokenName: this.tokenNames[iterationNumber] });
         });
     },
     async lazyLoadPricesForAllTokens() {

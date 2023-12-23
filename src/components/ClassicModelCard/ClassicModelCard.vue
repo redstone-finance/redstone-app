@@ -10,7 +10,7 @@
           sm="12"
           xs="12"
           class="py-1 py-md-2"
-          v-for="(token, index) in tokens"
+          v-for="(token, index) in filteredTokens"
           :key="index"
         >
           <div
@@ -39,10 +39,8 @@
                     {{ token.name }}
                   </div>
                 </b-col> -->
-                <b-col cols="5" sm="4" md="6" class="h4 token-title pr-0" >
-                  <div class="token-name">
-                    {{ token.chain.name }}
-                  </div>
+                <b-col cols="5" sm="4" md="6" class="h4 token-title pr-0">
+                  <div class="token-name">{{ token.tokenName }} on {{ token.chain.name }}</div>
                 </b-col>
                 <!-- <b-col cols="5" sm="6" md="4" class="token-price pl-0">
                   <span v-if="(prices[token.symbol] || prices[token.symbol] === 0) && isNotCurrencyToken(token.tags)">
@@ -90,11 +88,63 @@ export default {
   props: {
     tokens: Array,
     tokenNames: Array,
+    activeTabName: String,
   },
 
   components: {
     Widget,
   },
+  data() {
+    return {
+      preparedTokens: [],
+    };
+  },
+  async created() {
+    //await this.$nextTick();
+    // console.log(this.tokens);
+    // console.log(this.tokenNames)
+    //await this.prepareTokens();
+    // console.log(this.filteredTokens);
+  },
+  computed: {
+    filteredTokens() {
+      const filteredArray = this.tokens.filter((obj) => obj.chain.name === this.activeTabName);
+      return filteredArray;
+    },
+  },
+  methods: {
+    // async filterTokens() {
+    //   this.filteredTokens = this.tokens.filter((obj) => obj.chain.name === this.activeTabName);
+    // },
+    // async prepareTokens() {
+    //   const newArray = this.tokens.map((obj, index) => ({
+    //     ...obj,
+    //     tokenName: this.tokenNames[index],
+    //   }));
+    //   this.preparedTokens = newArray;
+    //   console.log(newArray);
+    // },
+    // async prepareTokens() {
+    //   await this.$nextTick();
+    //   const newArray = [];
+
+    //   for (const [index, obj] of this.tokens.entries()) {
+    //     const tokenName = this.tokenNames[index];
+    //     newArray.push({ ...obj, tokenName });
+    //   }
+
+    //   this.preparedTokens = newArray;
+    //   //console.log(newArray);
+    // },
+  },
+  // this.specificFileData.forEach((obj, index) => {
+  //   console.log('hello2');
+  //   const key = this.tokenNames[index];
+  //   const resultObject = {};
+  //   resultObject[key] = obj;
+  //   resultArray.push(resultObject);
+  //   console.log(resultObject);
+  // });
 };
 </script>
 
