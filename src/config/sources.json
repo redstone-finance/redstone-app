@@ -449,6 +449,11 @@
     "url": "https://uniswap.org/",
     "color": "#e23275"
   },
+  "uniswap-v3-ethereum-on-chain-weth-500-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/uniswap.svg",
+    "url": "https://uniswap.org/",
+    "color": "#e23275"
+  },
   "verto": {
     "logoURI": "https://cdn.redstone.finance/sources/verto.png",
     "url": "https://verto.exchange/",
@@ -494,6 +499,26 @@
     "url": "https://curve.fi/",
     "color": "#78151d"
   },
+  "curve-usdc-frax-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
+    "url": "https://curve.fi/",
+    "color": "#78151d"
+  },
+  "curve-frax-vst-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
+    "url": "https://curve.fi/",
+    "color": "#78151d"
+  },
+  "curve-weth-ethx-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
+    "url": "https://curve.fi/",
+    "color": "#78151d"
+  },
+  "curve-weth-weeth-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
+    "url": "https://curve.fi/",
+    "color": "#78151d"
+  },
   "curve-usdc": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
     "url": "https://curve.fi/",
@@ -530,6 +555,11 @@
     "color": "#78151d"
   },
   "curve-crvfrax": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
+    "url": "https://curve.fi/",
+    "color": "#78151d"
+  },
+  "curve-reth": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
     "url": "https://curve.fi/",
     "color": "#78151d"
@@ -604,6 +634,16 @@
     "url": "https://balancer.fi",
     "color": "#232326"
   },
+  "balancer-ethereum-weth-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/balancer.png",
+    "url": "https://balancer.fi",
+    "color": "#232326"
+  },
+  "balancer-ethereum-reth-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/balancer.png",
+    "url": "https://balancer.fi",
+    "color": "#232326"
+  },
   "chainlink": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/chainlink.svg",
     "url": "https://chain.link",
@@ -615,6 +655,11 @@
     "color": "#516AFF"
   },
   "maverick": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/maverick.png",
+    "url": "https://www.mav.xyz/",
+    "color": "#5b0ef5"
+  },
+  "maverick-multi-block": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/maverick.png",
     "url": "https://www.mav.xyz/",
     "color": "#5b0ef5"
@@ -693,5 +738,35 @@
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
     "url": "https://velodrome.finance/",
     "color": "#0f172a"
+  },
+  "bingx": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/bingx.png",
+    "url": "https://bingx.com/",
+    "color": "#0047FF"
+  },
+  "bitstamp": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/bitstamp.png",
+    "url": "https://www.bitstamp.net/",
+    "color": "#003b2f"
+  },
+  "dia": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/bitstamp.png",
+    "url": "https://www.diadata.org/",
+    "color": "#000D30"
+  },
+  "pancake-swap-on-chain-weth-500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
+  "wombat": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/wombat.png",
+    "url": "https://www.wombat.exchange/",
+    "color": "#e5bb25"
+  },
+  "wombat-multi-block": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/wombat.png",
+    "url": "https://www.wombat.exchange/",
+    "color": "#e5bb25"
   }
 }
