@@ -80,12 +80,8 @@
                     ticks: {
                         userCallback: function(value, index, values) {
                           const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: 2});
-                          const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
-                          const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
                           const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
-                          const ukraineTag =  getDetailsForSymbol(symbol).tags.includes('ukraine')
-                          const isCurrencyToken = !(customUrlTag || lensTag || ukraineTag || nftTag);
-                          return isCurrencyToken ? `$ ${valueCalculated}` : valueCalculated;
+                          return lensTag ? valueCalculated : `$ ${valueCalculated}`;
                         }
                     }
                 }
@@ -110,12 +106,8 @@
                     label += ': ';
                   }
                   label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
-                  const customUrlTag = getDetailsForSymbol(symbol).tags.includes('custom-urls')
-                  const nftTag =  getDetailsForSymbol(symbol).tags.includes('nft')
                   const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
-                  const ukraineTag =  getDetailsForSymbol(symbol).tags.includes('ukraine')
-                  const isCurrencyToken = !(nftTag || customUrlTag || lensTag || ukraineTag || nftTag);
-                  return isCurrencyToken ? `$ ${label}` : label;
+                  return lensTag ? label : `$ ${label}`;
                 }
               }
             }

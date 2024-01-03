@@ -32,7 +32,6 @@ import Tokens from '@/components/Tokens/Tokens';
 import Loader from '@/components/Loader/Loader';
 import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
 import { mapActions, mapState } from 'vuex';
-import constants from "@/constants";
 
 const TOKEN_TYPES = [
   {
@@ -42,10 +41,6 @@ const TOKEN_TYPES = [
   {
     label: "Cryptos",
     tag: "crypto"
-  },
-  {
-    label: "NFTs",
-    tag: "nft"
   },
   {
     label: "Stocks",
@@ -63,11 +58,6 @@ const TOKEN_TYPES = [
     label: "Avalanche",
     tag: "avax"
   },
-  // TODO: uncomment after fixing custom URLs oracles
-  // {
-  //   label: "Custom",
-  //   tag: "custom-urls"
-  // },
   {
     label: "ETF",
     tag: "etfs"
@@ -92,10 +82,6 @@ const TOKEN_TYPES = [
     label: "Lens",
     tag: "lens"
   },
-  {
-    label: "🇺🇦",
-    tag: "ukraine"
-  }
 ];
 
 function simplifyPricesObject(pricesObj) {

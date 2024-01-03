@@ -27,27 +27,6 @@
             </div>
           </div>
         </div>
-        <div v-if="tokenDetails.tags.includes('custom-urls')" class="mb-3 mt-3">
-          <div v-if="customUrlDetails">
-            <div class="mb-2 data-service-details">
-              <span class="data-service-details-label">Custom URL: </span>
-              <span class="data-service-details-text">{{ customUrlDetails.customUrlDetails.url }}</span>
-            </div>
-            <div class="mb-2">
-              <span class="data-service-details-label">JSON Path: </span>
-              <span class="data-service-details-text">{{ customUrlDetails.customUrlDetails.jsonpath }}</span>
-            </div>
-            <div class="mb-2">
-              <span class="data-service-details-label">Comment: </span>
-              <span class="data-service-details-text">{{ customUrlDetails.comment }}</span>
-            </div>
-          </div>
-          <div v-else class="preloaders">
-            <div class="preloader text-preloader"></div>
-            <div class="preloader text-preloader"></div>
-            <div class="preloader text-preloader"></div>
-          </div>
-        </div>
       </b-col>
     </b-row>
 
@@ -319,10 +298,7 @@ export default {
     },
     
     isCurrencyToken(tags) {
-      return !(tags.includes('custom-urls') ||
-        tags.includes('lens') ||
-        tags.includes('ukraine') ||
-        tags.includes('nft'))
+      return !tags.includes('lens')
     }
   },
 
@@ -433,17 +409,6 @@ export default {
     ...mapState("prefetch", {
       dataServices: (state) => state.providers
     }),
-    customUrlDetails() {
-      if (
-        this.dataServices &&
-        getDetailsForSymbol(this.symbol).tags.includes("custom-urls")
-      ) {
-        const dataService = this.dataServices[constants.customUrlDataServiceId];
-        if (dataService?.currentManifest) {
-          return dataService.currentManifest.tokens[this.symbol];
-        }
-      }
-    }
   },
 
   components: {

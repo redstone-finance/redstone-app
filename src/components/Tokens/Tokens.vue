@@ -15,20 +15,7 @@
                   sm="4" 
                   md="6"
                   class="h4 token-title pr-0"
-                  v-if="isCustom(token.tags)"
-                >
-                  {{ token.symbol | maxLength(15) }}
-                  <br>
-                  <div class="token-name">
-                    {{ token?.comment }}
-                  </div>
-                </b-col>
-                <b-col 
-                  cols="5" 
-                  sm="4" 
-                  md="6"
-                  class="h4 token-title pr-0"
-                  v-else-if="token.tags?.includes('lens')"
+                  v-if="token.tags?.includes('lens')"
                 >
                   {{ token.symbol | maxLength(15) }}
                   <br>
@@ -109,17 +96,9 @@ export default {
     },
         
     isNotCurrencyToken(tags) {
-      return tags?.includes('custom-urls') ||
-        tags?.includes('lens') ||
-        tags?.includes('ukraine') ||
-        tags?.includes('nft')
+      return tags?.includes('lens')
     },
 
-    isCustom(tags) {
-      return tags?.includes('custom-urls') ||
-        tags?.includes('nft') ||
-        tags?.includes('ukraine')
-    }
   },
 
   computed: {

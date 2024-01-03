@@ -1,7 +1,7 @@
 <template>
   <div class="token-wrapper">
     <div class="token">
-      <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0" v-if="!tokenDetails.tags.includes('custom-urls')">
+      <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0">
         <div class="select-provider">
           <b-form>
             <b-form-group

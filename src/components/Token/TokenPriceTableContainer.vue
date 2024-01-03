@@ -234,10 +234,7 @@ export default {
     // },
 
     isCurrencyToken(tags) {
-      return !(tags.includes('custom-urls') ||
-        tags.includes('lens') ||
-        tags.includes('ukraine') ||
-        tags.includes('nft'))
+      return !tags.includes('lens')
 
     }
   },

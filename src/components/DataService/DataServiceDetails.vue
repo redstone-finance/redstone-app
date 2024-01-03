@@ -32,54 +32,6 @@
       <div class="table-title mt-4 mb-2">
         Provided data:
       </div>
-      <b-table
-        id="assets-table"
-        stacked="md"
-        hover
-        :items="visibleTokens"
-        :fields="fieldsFiltered"
-        v-if="dataServiceId !== 'redstone-custom-urls-demo'"
-      >
-
-      <template #cell(name)="data">
-        <img class="token-logo" :src="data.item.logoURI" />
-        <span class="token-name ml-3">{{ data.item.name }}</span> 
-      </template>
-
-      <template #cell(symbol)="data">
-        {{ data.item.symbol }}
-      </template>
-
-      <template #cell(sources)="data">
-        <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
-          <div class="d-flex source-links" >
-            <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name"/>
-            </a>
-          </div>
-        </div>
-      </template>
-    </b-table>
-    <b-table
-      id="custom-urls-table"
-      stacked="md"
-      hover
-      :items="visibleTokens"
-      :fields="fieldsFiltered"
-      v-else
-    >
-      <template #cell(comment)="data">
-        {{ currentManifest.tokens[data.item.symbol].comment }}
-      </template>
-
-      <template #cell(url)="data">
-        {{ currentManifest.tokens[data.item.symbol].customUrlDetails.url }}
-      </template>
-
-      <template #cell(JSONPath)="data">
-        {{ currentManifest.tokens[data.item.symbol].customUrlDetails.jsonpath }}
-      </template>
-    </b-table>
     <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
       <div
         v-for="n in 5"
@@ -167,10 +119,7 @@ export default {
       return this.$route.params.id;
     },
     fieldsFiltered() {
-      if (this.$route.params.id !== 'redstone-custom-urls-demo') {
-        return this.fields;
-      }
-      return [{ key: 'name', label: 'Asset'}, 'comment', 'url', 'JSONPath'];
+      return this.fields;
     }
   },
 
@@ -357,12 +306,4 @@ export default {
   }
 }
 
-.provider-details #custom-urls-table {
-  th {
-    text-transform: none;
-    color: $navy;
-    font-size: 12px;
-    font-weight:  $font-weight-soft-bold;
-  }
-}
 </style>

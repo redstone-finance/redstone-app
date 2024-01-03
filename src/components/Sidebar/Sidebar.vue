@@ -42,15 +42,6 @@
             isHeader
         />
 
-        <NavLink
-            :activeItem="activeItem"
-            header="Custom URLs"
-            link="https://custom.redstone.finance/"
-            iconName="flaticon-external-link"
-            index="custom-urls"
-            isHeader
-        />
-
       </ul>
 
       <footer class="contentFooter">

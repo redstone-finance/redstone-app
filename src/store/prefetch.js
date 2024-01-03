@@ -58,33 +58,14 @@ export default {
             for (const [providerId, provider] of Object.entries(providers)) {
                 Vue.set(providers, providerId, provider);
                 commit('setProviders', providers);
-                if (providerId === "redstone-custom-urls-demo") {
-                    const params = new URLSearchParams([["id", constants.oracleRegistryAddress]]);
-                    const response = await axios.get(constants.smartweaveDreNodeUlr, {
-                      params,
-                    });
-                    const manifestTxId = response.data.state.dataServices[constants.customUrlDataServiceId].manifestTxId;
-                    if (manifestTxId) {
-                        const currentManifestResponse = await axios.get(`https://${constants.arweaveUrl}/${manifestTxId}`);
-                        const currentManifest = currentManifestResponse.data;
-                        dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: currentManifest });
-                        if (currentManifest.tokens) {
-                            const assetsCount = Object.keys(currentManifest.tokens).length;
-                            dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
-                        } else {
-                            dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
-                        }
-                    }
+                const manifestName = providerId.split("-")[1];
+                const manifest = require(`redstone-monorepo-github/packages/oracle-node/manifests/data-services/${manifestName}.json`);
+                dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: manifest });
+                if (manifest.tokens) {
+                    const assetsCount = Object.keys(manifest.tokens).length;
+                    dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
                 } else {
-                    const manifestName = providerId.split("-")[1];
-                    const manifest = require(`redstone-monorepo-github/packages/oracle-node/manifests/data-services/${manifestName}.json`);
-                    dispatch('updateProvider', { id: providerId, key: 'currentManifest', value: manifest });
-                    if (manifest.tokens) {
-                        const assetsCount = Object.keys(manifest.tokens).length;
-                        dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: assetsCount });
-                    } else {
-                        dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
-                    }
+                    dispatch('updateProvider', { id: providerId, key: 'assetsCount', value: 0 });
                 }
                 const nodes = contractState.nodes;
                 const filteredNodes = Object.values(nodes).filter(node => node.dataServiceId === providerId);

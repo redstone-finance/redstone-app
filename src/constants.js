@@ -9,10 +9,6 @@ export default {
 
   viewblockAddressUrlPrefix: "https://viewblock.io/arweave/address/",
 
-  customUrlDataServiceId: "redstone-custom-urls-demo",
-
-  smartweaveDreNodeUlr: "https://dre-1.warp.cc/contract",
-
   oracleRegistryAddress: "Ebh7jYjVxzoZpVR4HSjHddZs1t6k2JLskBRbjEfutgM",
 
   images: {
