@@ -114,14 +114,12 @@ export default {
       addPrices: 'prices/addPrices',
     }),
     updateSelectedTab(tabIndex) {
-      //console.log(this.selectedTabIndex);
       this.$router.push({
         query: {
           ...this.$route.query,
           'selected-tab': tabIndex,
         },
       });
-      //console.log(tabName);
     },
     async getDataUrls() {
       this.loading = true;
@@ -147,12 +145,6 @@ export default {
             await this.getSpecificFileData(link, iteration);
             iteration++;
           }
-          // const promises = this.specificFileLinks.map((link) => this.getSpecificFileData(link));
-
-          // Promise.all(promises);
-          // const uniqueSet = new Set(this.specificFileData.map((item) => item.chain.name));
-          // this.uniqueNames = Array.from(uniqueSet);
-          console.log(this.specificFileData);
         })
         .catch((error) => {
           console.error('Failed to load GitHub API data:', error);
