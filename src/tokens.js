@@ -10,15 +10,13 @@ export function getDetailsForSymbol(symbol) {
 }
 
 export async function getOrderedProviders() {
-  const manifestsWithCustom = { ...manifests };
-  return Object.keys(manifestsWithCustom);
+  return Object.keys(manifests);
 }
 
 
 export async function getAllSupportedTokens() {
-  const manifestsWithCustom = { ...manifests };
   const allTokens = {};
-  for (const manifest of Object.values(manifestsWithCustom)) {
+  for (const manifest of Object.values(manifests)) {
     for (const symbol of Object.keys(manifest.tokens)) {
       if (!allTokens[symbol]) {
         allTokens[symbol] = getDetailsForSymbol(symbol);

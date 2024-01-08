@@ -32,6 +32,31 @@
       <div class="table-title mt-4 mb-2">
         Provided data:
       </div>
+           <b-table
+        id="assets-table"
+        stacked="md"
+        hover
+        :items="visibleTokens"
+        :fields="fieldsFiltered"
+        v-if="dataServiceId !== 'redstone-custom-urls-demo'"
+      >
+      <template #cell(name)="data">
+        <img class="token-logo" :src="data.item.logoURI" />
+        <span class="token-name ml-3">{{ data.item.name }}</span> 
+      </template>
+      <template #cell(symbol)="data">
+        {{ data.item.symbol }}
+      </template>
+      <template #cell(sources)="data">
+        <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
+          <div class="d-flex source-links" >
+            <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
+              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name"/>
+            </a>
+          </div>
+        </div>
+      </template>
+    </b-table>
     <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
       <div
         v-for="n in 5"

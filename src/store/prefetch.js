@@ -1,6 +1,4 @@
-import axios from "axios";
 import { getOracleRegistryState } from "redstone-sdk";
-import constants from "@/constants";
 import Vue from 'vue';
 
 export default {
@@ -54,6 +52,7 @@ export default {
         async fetchProviders({ commit, _state, dispatch }) {
             const contractState = await getOracleRegistryState();
             const providers = contractState.dataServices;
+            delete providers['redstone-custom-urls-demo'];
             commit('setProviders', providers);
             for (const [providerId, provider] of Object.entries(providers)) {
                 Vue.set(providers, providerId, provider);
