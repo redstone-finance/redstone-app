@@ -9567,9 +9567,9 @@ redstone-api@^0.4.11:
     lodash "^4.17.21"
     pako "^2.0.3"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#33837ba3cad171c277d9c945c43d1b2f896cb5be:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#b0665071b23296e940403bef70c5c03b706fdc06:
   version "0.0.2"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/33837ba3cad171c277d9c945c43d1b2f896cb5be"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/b0665071b23296e940403bef70c5c03b706fdc06"
 
 redstone-oracles-smartweave-contracts@*:
   version "1.0.6"
