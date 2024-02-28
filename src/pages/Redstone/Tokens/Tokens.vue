@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import redstone from 'redstone-api';
+import redstoneAdapter from "@/redstone-api-adapter";
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from '@/components/Tokens/Tokens';
 import Loader from '@/components/Loader/Loader';
@@ -154,7 +154,7 @@ export default {
       const providersSorted = await getOrderedProviders();
       if (!this.pricesLoadingCompleted) {
         for (const provider of providersSorted) {
-          const prices = await redstone.getAllPrices({ provider });
+          const prices = await redstoneAdapter.getAllPrices({ provider });
           this.addPrices(simplifyPricesObject(prices));
         }
         this.setPricesLoadingAsCompleted();
