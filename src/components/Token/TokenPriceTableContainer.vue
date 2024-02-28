@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import redstone from 'redstone-api';
+import redstoneAdapter from "@/redstone-api-adapter";
 import dateFormat from 'dateformat';
 import utils from '@/utils';
 import { getDetailsForSymbol } from "@/tokens";
@@ -199,7 +199,7 @@ export default {
     },
 
     async getPrices() {
-      const nextPrices = await redstone.getHistoricalPrice(this.symbol, {
+      const nextPrices = await redstoneAdapter.getHistoricalPrice(this.symbol, {
         provider: this.provider,
         limit: this.limit,
         startDate: this.startDate,

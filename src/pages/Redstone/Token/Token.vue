@@ -2,7 +2,7 @@
   <div class="token-wrapper">
     <div class="token">
       <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0">
-        <div class="select-provider">
+        <div v-if="providers.length > 1" class="select-provider">
           <b-form>
             <b-form-group
               label="Data provider:"
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import redstone from "redstone-api";
+import redstoneAdapter from "@/redstone-api-adapter";
 import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
 import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
 import _ from "lodash";
@@ -75,7 +75,7 @@ export default {
 
   methods: {
     async loadPrices() {
-      this.currentPrice = await redstone.getPrice(this.symbol, {
+      this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
         provider: this.selectedProvider,
       });
     },
