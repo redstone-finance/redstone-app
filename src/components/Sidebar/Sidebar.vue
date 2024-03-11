@@ -47,10 +47,7 @@
       <footer class="contentFooter">
         <div class="mb-2">
           Learn more at <a target="_blank" href="https://redstone.finance">our website</a>
-        </div>  
-        <div class="mb-2">
-          Check out our <a target="_blank" href="https://api.docs.redstone.finance" >API documentation</a>
-        </div>  
+        </div>
         <div class="links mt-3 mb-3">
           <a href="mailto:hello@redstone.finance">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1000 1000">
@@ -73,7 +70,7 @@
             </svg>
           </a>
         </div>
-          © RedStone 2021
+          © RedStone 2024
       </footer>
     </nav>
   </div>

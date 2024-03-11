@@ -26,11 +26,16 @@
       </b-form>
     </b-nav>
     <b-nav class="align-items-center flex-grow-1 justify-content-end">
-        <b-button class="btn btn-danger btn-modal rounded-pill" v-b-modal.modal-1 variant="primary">Use our data</b-button>
-        <b-modal id="modal-1" title="Code snippet" size="xl" >
-          <CodeExample />
-          <template #modal-footer ><div></div></template>
-        </b-modal>
+        <a target="_blank" style="margin-right: 4px" href="https://docs.redstone.finance/docs/smart-contract-devs/get-started/redstone-core">
+          <b-button class="btn btn-inverted rounded-pill" variant="primary">
+            Use Push Model
+          </b-button>
+        </a>
+        <a target="_blank" href="https://docs.redstone.finance/docs/smart-contract-devs/price-feeds">
+          <b-button class="btn btn-danger rounded-pill" variant="primary">
+            Use Pull Model
+          </b-button>
+        </a>    
     </b-nav>
   </b-navbar>
 </template>

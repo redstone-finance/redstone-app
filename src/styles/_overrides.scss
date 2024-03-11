@@ -271,6 +271,24 @@ small {
   }
 }
 
+.btn-inverted {
+  color: #E9586F;
+  background: none;
+  border-color: #E9586F;
+  
+  &:hover {
+    color: #FF788A;
+    background: none;
+    border-color: #FF788A;
+  }
+
+  &:not(:disabled):not(:disabled):active, &:focus, &.focus {
+    color: #E9586F;
+    background: none;
+    border-color: #E9586F;
+  }
+}
+
 .btn {
   padding: 0.6rem 1.8rem;
   font-size: $font-size-base;
