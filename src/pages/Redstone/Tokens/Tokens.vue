@@ -47,16 +47,8 @@ const TOKEN_TYPES = [
     tag: "lst/lrt"
   },
   {
-    label: "Stocks",
-    tag: "stocks"
-  },
-  {
     label: "Currencies",
     tag: "currencies"
-  },
-  {
-    label: "PST",
-    tag: "pst"
   },
   {
     label: "Avalanche",
@@ -65,27 +57,7 @@ const TOKEN_TYPES = [
   {
     label: "ETF",
     tag: "etfs"
-  },
-  {
-    label: "Grains",
-    tag: "grains"
-  },
-  {
-    label: "Energies",
-    tag: "energies"
-  },
-  {
-    label: "Metals",
-    tag: "metals"
-  },
-  {
-    label: "Livestocks",
-    tag: "livestocks"
-  },
-  {
-    label: "Lens",
-    tag: "lens"
-  },
+  }
 ];
 
 function simplifyPricesObject(pricesObj) {
