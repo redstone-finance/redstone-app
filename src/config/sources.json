@@ -890,8 +890,23 @@
     "color": "#0052FF"
   },
   "aperture-swap-weth-500": {
-    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/canto.png",
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aperture.png",
     "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "ambient-eth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/ambient.png",
+    "url": "https://ambient.finance/",
+    "color": "#7371fc"
+  },
+  "ring-swap-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/ring-swap.png",
+    "url": "https://ring.exchange/",
+    "color": "#BDB8FA"
+  },
+  "thruster-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/thruster.png",
+    "url": "https://www.thruster.finance/",
     "color": "#0052FF"
   }
 }
