@@ -629,15 +629,20 @@
     "url": "https://curve.fi/",
     "color": "#78151d"
   },
-  "camelot-weth": {
-    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/camelot.png",
-    "url": "https://excalibur.exchange/",
-    "color": "#f3b245"
+  "curve-weeth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
+    "url": "https://curve.fi/",
+    "color": "#78151d"
   },
   "curve-steth-pxeth-multi-block": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/curve.png",
     "url": "https://curve.fi/",
     "color": "#78151d"
+  },
+  "camelot-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/camelot.png",
+    "url": "https://excalibur.exchange/",
+    "color": "#f3b245"
   },
   "camelot-usdc": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/camelot.png",
@@ -730,6 +735,11 @@
     "color": "#232326"
   },
   "balancer-ethereum-frxeth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/balancer.png",
+    "url": "https://balancer.fi",
+    "color": "#232326"
+  },
+  "balancer-ethereum-ezeth": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/balancer.png",
     "url": "https://balancer.fi",
     "color": "#232326"
