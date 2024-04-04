@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import redstone from 'redstone-api';
+import redstoneAdapter from "@/redstone-api-adapter";
 import { BTabs, BTab } from 'bootstrap-vue';
 import Tokens from '@/components/Tokens/Tokens';
 import Loader from '@/components/Loader/Loader';
@@ -47,16 +47,8 @@ const TOKEN_TYPES = [
     tag: "lst/lrt"
   },
   {
-    label: "Stocks",
-    tag: "stocks"
-  },
-  {
     label: "Currencies",
     tag: "currencies"
-  },
-  {
-    label: "PST",
-    tag: "pst"
   },
   {
     label: "Avalanche",
@@ -65,27 +57,7 @@ const TOKEN_TYPES = [
   {
     label: "ETF",
     tag: "etfs"
-  },
-  {
-    label: "Grains",
-    tag: "grains"
-  },
-  {
-    label: "Energies",
-    tag: "energies"
-  },
-  {
-    label: "Metals",
-    tag: "metals"
-  },
-  {
-    label: "Livestocks",
-    tag: "livestocks"
-  },
-  {
-    label: "Lens",
-    tag: "lens"
-  },
+  }
 ];
 
 function simplifyPricesObject(pricesObj) {
@@ -154,7 +126,7 @@ export default {
       const providersSorted = await getOrderedProviders();
       if (!this.pricesLoadingCompleted) {
         for (const provider of providersSorted) {
-          const prices = await redstone.getAllPrices({ provider });
+          const prices = await redstoneAdapter.getAllPrices({ provider });
           this.addPrices(simplifyPricesObject(prices));
         }
         this.setPricesLoadingAsCompleted();

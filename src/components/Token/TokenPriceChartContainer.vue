@@ -81,7 +81,17 @@
           <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="isCurrencyToken(tokenDetails.tags)">
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="isCurrencyAndNotRedstoneProvider(tokenDetails.tags)">
+        <div class="data-sources">
+          Caution
+        </div>
+        <div>
+          We do not keep data for this token.
+          If you would like us to start collecting it please contact us at
+          <a href="mailto:hello@redstone.finance">hello@redstone.finance</a>
+        </div>
+      </b-col>
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-else-if="isCurrencyToken(tokenDetails.tags)">
         <div class="data-sources">
           Data sources
           ({{ sourcesCount }})
@@ -110,8 +120,8 @@
 
                   <span v-if="source == 'aggregated'">Median</span>
                   <span v-else>{{ source }}</span>
-                  
-                  
+
+
                 </div>
                 <div class="source-value">
                   {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true }) }}
@@ -126,7 +136,7 @@
 </template>
 
 <script>
-import redstone from 'redstone-api';
+import redstoneAdapter from "@/redstone-api-adapter";
 import { BCard, BFormInput, BForm } from 'bootstrap-vue';
 import TokenPriceChart from './TokenPriceChart';
 import StatElem from './StatElem';
@@ -208,18 +218,16 @@ export default {
     async loadPrices() {
       try {
         this.loading = true;
-        let query = redstone.query().symbol(this.symbol);
         // TODO: fix redstone-api fluent interface for hours and refactor this place
         if (this.selectedTimeRange.days === 0) {
-          this.prices = await redstone.getHistoricalPrice(this.symbol, {
+          this.prices = await redstoneAdapter.getHistoricalPrice(this.symbol, {
             startDate: Date.now() - 3600 * 1000 * this.selectedTimeRange.hours,
             interval: 1,
             endDate: Date.now(),
             provider: this.provider,
           });
         } else {
-          query = query.forLastDays(this.selectedTimeRange.days);
-          this.prices = await query.exec({ provider: this.provider });
+          this.prices = await redstoneAdapter.query(this.provider, this.symbol, this.selectedTimeRange.days);
         }
       } finally {
         if (!this.sources || this.sources.length == 0) {
@@ -246,7 +254,7 @@ export default {
     },
 
     getImageForSource(source) {
-      if (source == "aggregated") {
+      if (source === "aggregated") {
         return constants.images["redstone-logo"];
       } else {
         const notFoundImageUrl = constants.images["no-logo"];
@@ -279,6 +287,10 @@ export default {
     priceRelativeChange() {
       let oldPrice = this.prices[0]?.value;
       return this.priceChange() / oldPrice;
+    },
+
+    isCurrencyAndNotRedstoneProvider(tags) {
+      return !this.provider.toLocaleLowerCase().includes('redstone') && this.isCurrencyToken(tags);
     },
 
     updatedSources() {
