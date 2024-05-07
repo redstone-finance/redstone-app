@@ -54,4 +54,3 @@ export default {
         return await redstone.getAllPrices(opts);
     }
 }
-
