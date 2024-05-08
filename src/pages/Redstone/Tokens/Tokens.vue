@@ -127,9 +127,9 @@ export default {
       if (!this.pricesLoadingCompleted) {
         for (const provider of providersSorted) {
           const prices = await redstoneAdapter.getAllPrices({ provider });
-          this.addPrices(simplifyPricesObject(prices));
+          await this.addPrices(simplifyPricesObject(prices));
         }
-        this.setPricesLoadingAsCompleted();
+        await this.setPricesLoadingAsCompleted();
       }
     },
 

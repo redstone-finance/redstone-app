@@ -3,8 +3,8 @@
   "version": "2.1.7",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --port 3000",
-    "build": "vue-cli-service build",
+    "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -30,8 +30,8 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^1.6.0",
     "npm": "^7.17.0",
-    "redstone-api": "^0.4.12-pre",
-    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#0c3111f9f6dd5ef74f2b4eaec8fb5d3aa7b0405f",
+    "redstone-api": "^0.4.12-pre2",
+    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#main",
     "redstone-sdk": "^1.6.1",
     "rickshaw": "1.7.1",
     "sass-loader": "^7.3.1",
