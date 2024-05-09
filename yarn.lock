@@ -9573,10 +9573,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redstone-api@^0.4.12:
-  version "0.4.12-pre"
-  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.12-pre.tgz#f7529e5be5918b55e97aef8afc16759fd20a50cc"
-  integrity sha512-zojTvDbwBJ4velKGrVOVX3zkM0ORHesWE2ukFn8J8ff0t3riJ3R45hDG90RlBy6fl/QdWGIur5ikK6wGd+jWBQ==
+redstone-api@^0.4.12-pre2:
+  version "0.4.12-pre2"
+  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.12-pre2.tgz#2d3eb25e924c7b953d1f1ba58135041bc9ee960c"
+  integrity sha512-Me6Tml8GyIQAqdbOfl0wXyfx1q4XqtoiYntSMGTYZMS6olBFGlsTpNjLF+kEEAG5wzvJu/CnHMn3GQxCF09o8g==
   dependencies:
     ar-gql "^0.0.6"
     arweave "^1.10.16"
@@ -9586,9 +9586,9 @@ redstone-api@^0.4.12:
     lodash "^4.17.21"
     pako "^2.0.3"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#0c3111f9f6dd5ef74f2b4eaec8fb5d3aa7b0405f:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#main:
   version "0.0.2"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/0c3111f9f6dd5ef74f2b4eaec8fb5d3aa7b0405f"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/f6aab95604ad2af177c5e4b496de190f8cf898e0"
 
 redstone-oracles-smartweave-contracts@*:
   version "1.0.6"

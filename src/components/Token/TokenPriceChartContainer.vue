@@ -306,6 +306,7 @@ export default {
 
         sources.push(...sortedSources);
       }
+
       return sources;
     },
     
