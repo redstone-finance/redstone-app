@@ -3,26 +3,19 @@ import primaryManifest from "redstone-monorepo-github/packages/oracle-node/manif
 import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
 
 const manifests = {
-  "redstone": primaryManifest,
   "coingecko": mainManifest,
-  // "redstone": mainManifest,
+  "redstone": primaryManifest
 };
 
-let allTokenProviders = undefined;
+let symbolDetails = undefined;
 
 export function getDetailsForSymbol(symbol) {
-  let detail = tokenDetails[symbol];
-  if (detail) {
-    detail.providers = [getAllTokenProviders()[symbol]];
-  }
-
-  return detail;
+  return getAllSymbolDetails()[symbol];
 }
 
 export async function getOrderedProviders() {
   return Object.keys(manifests);
 }
-
 
 export async function getAllSupportedTokens() {
   const allTokens = {};
@@ -37,21 +30,22 @@ export async function getAllSupportedTokens() {
   return allTokens;
 }
 
-function getAllTokenProviders() {
-  if (allTokenProviders) {
-    return allTokenProviders;
+function getAllSymbolDetails() {
+  if (symbolDetails) {
+    return symbolDetails;
   }
 
   const tokenProviders = {};
   for (const [provider, manifest] of Object.entries(manifests)) {
     for (const symbol of Object.keys(manifest.tokens)) {
-      if (!tokenProviders[symbol]) {
-        tokenProviders[symbol] = provider;
+      if (tokenDetails[symbol]) {
+        tokenProviders[symbol] = tokenDetails[symbol];
+        tokenProviders[symbol].providers = [provider];
       }
     }
   }
 
-  allTokenProviders = tokenProviders;
+  symbolDetails = tokenProviders;
 
   return tokenProviders;
 }
