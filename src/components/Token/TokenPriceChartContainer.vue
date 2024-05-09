@@ -166,6 +166,10 @@ function getSourceDetail(source, property, defaultVal) {
   return details[property];
 }
 
+function getAgoString(minutesAfterLastUpdate, denom) {
+  return `${minutesAfterLastUpdate} ${denom}${(minutesAfterLastUpdate > 1) ? 's' : ''} ago`;
+}
+
 export default {
   name: "TokenPriceChartContainer",
   props: {
@@ -229,6 +233,7 @@ export default {
         } else {
           this.prices = await redstoneAdapter.query(this.provider, this.symbol, this.selectedTimeRange.days);
         }
+        this.prices.sort((a, b) => a.timestamp > b.timestamp);
       } finally {
         if (!this.sources || this.sources.length == 0) {
           this.sources = this.updatedSources();
@@ -267,14 +272,14 @@ export default {
         (Date.now() - this.currentPrice.timestamp) / 1000);
 
       if (secondsAfterLastUpdate < 60) {
-        this.lastUpdatedTime = secondsAfterLastUpdate + ' seconds ago';
+        this.lastUpdatedTime = getAgoString(secondsAfterLastUpdate, 'second');
       } else {
         const minutesAfterLastUpdate = Math.round(secondsAfterLastUpdate / 60);
+
         if (minutesAfterLastUpdate && minutesAfterLastUpdate > 0) {
-          this.lastUpdatedTime = minutesAfterLastUpdate +
-           (minutesAfterLastUpdate > 1) ? ' minutes ago' : ' minute ago';
+          this.lastUpdatedTime = getAgoString(minutesAfterLastUpdate, 'minute')
         } else {
-          ''
+          this.lastUpdatedTime = '';
         }
       }
     },

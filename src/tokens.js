@@ -1,10 +1,16 @@
-import tokenDetails from "./config/tokens.json";
-import primaryManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/primary.json";
+import tokenConfig from "./config/tokens.json";
 import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
+import arbitrumManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/arbitrum.json";
+import avalancheManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/avalanche.json";
+import primaryManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/primary.json";
+
+export const DEFAULT_PROVIDER = "coingecko";
 
 const manifests = {
   "coingecko": mainManifest,
-  "redstone": primaryManifest
+  "redstone-primary-prod": primaryManifest,
+  "redstone-avalanche-prod": avalancheManifest,
+  "redstone-arbitrum-prod": arbitrumManifest
 };
 
 let symbolDetails = undefined;
@@ -35,17 +41,25 @@ function getAllSymbolDetails() {
     return symbolDetails;
   }
 
-  const tokenProviders = {};
+  const tokenDetails = {};
+
+  Object.entries(tokenConfig).forEach(([symbol, config]) => {
+    tokenDetails[symbol] = { ...config, providers: [DEFAULT_PROVIDER] };
+  });
+
   for (const [provider, manifest] of Object.entries(manifests)) {
-    for (const symbol of Object.keys(manifest.tokens)) {
-      if (tokenDetails[symbol]) {
-        tokenProviders[symbol] = tokenDetails[symbol];
-        tokenProviders[symbol].providers = [provider];
-      }
+    for (const [symbol, config] of Object.entries(manifest.tokens)) {
+        if (tokenDetails[symbol]
+          && tokenDetails[symbol].providers
+          && tokenDetails[symbol].providers[0] === DEFAULT_PROVIDER
+          && config.source
+          && config.source.length) {
+          tokenDetails[symbol].providers = [provider];
+        }
     }
   }
 
-  symbolDetails = tokenProviders;
+  symbolDetails = tokenDetails;
 
-  return tokenProviders;
+  return tokenDetails;
 }

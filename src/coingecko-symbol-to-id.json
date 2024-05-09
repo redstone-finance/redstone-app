@@ -942,5 +942,6 @@
   "GRAIL": "camelot-token",
   "rETH": "rocket-pool-eth",
   "MANTA": "manta-network",
-  "frxETH": "frax-ether"
+  "frxETH": "frax-ether",
+  "USDe": "ethena-usde"
 }
