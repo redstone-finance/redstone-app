@@ -1,8 +1,10 @@
 import tokenDetails from "./config/tokens.json";
+import primaryManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
 import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/main.json";
 
 const manifests = {
-  "redstone": mainManifest,
+  "redstone-primary-prod": primaryManifest,
+  "coingecko": mainManifest,
 };
 
 export function getDetailsForSymbol(symbol) {
