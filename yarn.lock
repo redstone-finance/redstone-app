@@ -9573,10 +9573,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redstone-api@^0.4.12-pre2:
-  version "0.4.12-pre2"
-  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.12-pre2.tgz#2d3eb25e924c7b953d1f1ba58135041bc9ee960c"
-  integrity sha512-Me6Tml8GyIQAqdbOfl0wXyfx1q4XqtoiYntSMGTYZMS6olBFGlsTpNjLF+kEEAG5wzvJu/CnHMn3GQxCF09o8g==
+redstone-api@^0.4.12:
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/redstone-api/-/redstone-api-0.4.12.tgz#b634f710e13e95ba64d9cc8b3be7f004707a3e96"
+  integrity sha512-AR1zb7Pv4uXdfmJXj8rMl96x09krXUFgYDQaBXo5tn34e/VrE1VMja3DLR0W81izEjr8KcG9b9SHjIy5a1peWw==
   dependencies:
     ar-gql "^0.0.6"
     arweave "^1.10.16"

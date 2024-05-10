@@ -30,7 +30,7 @@
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^1.6.0",
     "npm": "^7.17.0",
-    "redstone-api": "^0.4.12-pre2",
+    "redstone-api": "^0.4.12",
     "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#main",
     "redstone-sdk": "^1.6.1",
     "rickshaw": "1.7.1",
