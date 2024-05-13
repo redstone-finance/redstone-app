@@ -9588,7 +9588,7 @@ redstone-api@^0.4.12:
 
 redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#main:
   version "0.0.2"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/2dbc52005c33dbfcc1d91d33fca0ab91f1c2e351"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/feaef69cff529cf7706676351fe88f85822bc624"
 
 redstone-oracles-smartweave-contracts@*:
   version "1.0.6"
