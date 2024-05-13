@@ -24,16 +24,7 @@ export async function getOrderedProviders() {
 }
 
 export async function getAllSupportedTokens() {
-  const allTokens = {};
-  for (const manifest of Object.values(manifests)) {
-    for (const symbol of Object.keys(manifest.tokens)) {
-      if (!allTokens[symbol]) {
-        allTokens[symbol] = getDetailsForSymbol(symbol);
-      }
-    }
-  }
-
-  return allTokens;
+ return getAllSymbolDetails();
 }
 
 function getAllSymbolDetails() {
@@ -59,7 +50,14 @@ function getAllSymbolDetails() {
     }
   }
 
-  symbolDetails = tokenDetails;
+  symbolDetails = {};
+  for (const [symbol, config] of Object.entries(tokenDetails).filter(([symbol, config]) => config.providers[0] !== DEFAULT_PROVIDER)) {
+    symbolDetails[symbol] = config;
+  }
 
-  return tokenDetails;
+  for (const [symbol, config] of Object.entries(tokenDetails).filter(([symbol, config]) => config.providers[0] === DEFAULT_PROVIDER)) {
+    symbolDetails[symbol] = config;
+  }
+
+  return symbolDetails;
 }
