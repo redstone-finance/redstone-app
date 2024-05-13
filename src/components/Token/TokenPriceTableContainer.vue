@@ -95,7 +95,7 @@
     </b-table>
 
     <div
-      v-if="prices.length > 0"
+      v-if="prices.length > 0 && prices[0].provider != DEFAULT_PROVIDER()"
       class="load-more-link-container"
       v-observe-visibility="loadMoreButtonVisibilityChanged"
     >
@@ -114,7 +114,7 @@
 import redstoneAdapter from "@/redstone-api-adapter";
 import dateFormat from 'dateformat';
 import utils from '@/utils';
-import { getDetailsForSymbol } from "@/tokens";
+import {DEFAULT_PROVIDER, getDetailsForSymbol} from "@/tokens";
 import constants from "@/constants";
 
 export default {
@@ -158,6 +158,9 @@ export default {
   // },
 
   methods: {
+    DEFAULT_PROVIDER() {
+      return DEFAULT_PROVIDER
+    },
     showNotification(msg) {
       this.$toasted.show(msg, {type: 'info'});
     },
