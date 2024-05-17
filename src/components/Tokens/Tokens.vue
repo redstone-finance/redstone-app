@@ -15,7 +15,7 @@
                   sm="4" 
                   md="6"
                   class="h4 token-title pr-0"
-                  v-if="token.tags?.includes('lens')"
+                  v-if="isNotCurrencyToken(token)"
                 >
                   {{ token.symbol | maxLength(15) }}
                   <br>
@@ -41,11 +41,11 @@
                   sm="6"
                   md="4"
                   class="token-price pl-0">
-                    <span v-if="(prices[token.symbol] || prices[token.symbol] === 0) && isNotCurrencyToken(token.tags)">
+                    <span v-if="(prices[token.symbol] || prices[token.symbol] === 0) && isNotCurrencyToken(token)">
                       {{ prices[token.symbol] | value({ eNotationForSmallValues: true }) | maxLength(8) }}
                     </span>
                     <span v-else-if="(prices[token.symbol] || prices[token.symbol] === 0)">
-                      {{ prices[token.symbol] | price({ eNotationForSmallValues: true }) }}
+                      {{ prices[token.symbol] | price({ eNotationForSmallValues: true, currency: getCurrency(token) }) }}
                     </span>
        
                     <vue-loaders-ball-beat
@@ -80,6 +80,7 @@ import Widget from "@/components/Widget/Widget";
 import _ from "lodash";
 import { mapState } from "vuex";
 import showMoreTokensMixin from '@/mixins/show-more-tokens';
+import {getCurrency, isCurrencyToken} from "@/tokens";
 
 export default {
   name: 'Tokens',
@@ -91,12 +92,13 @@ export default {
   },
 
   methods: {
+    getCurrency,
     loadMoreSectionVisibilityChanged() {
       this.showMoreTokens();
     },
         
-    isNotCurrencyToken(tags) {
-      return tags?.includes('lens')
+    isNotCurrencyToken(details) {
+      return !isCurrencyToken(details)
     },
 
   },

@@ -80,8 +80,8 @@
                     ticks: {
                         userCallback: function(value, index, values) {
                           const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: 2});
-                          const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
-                          return lensTag ? valueCalculated : `$ ${valueCalculated}`;
+                          const isUsdBased =  getCurrency(getDetailsForSymbol(symbol)) == "USD";
+                          return isUsdBased ? `$ ${valueCalculated}` : valueCalculated;
                         }
                     }
                 }
@@ -106,8 +106,8 @@
                     label += ': ';
                   }
                   label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
-                  const lensTag =  getDetailsForSymbol(symbol).tags.includes('lens')
-                  return lensTag ? label : `$ ${label}`;
+                  const isUsdBased =  getCurrency(getDetailsForSymbol(symbol)) == "USD";
+                  return isUsdBased ? `$ ${label}` : label;
                 }
               }
             }
