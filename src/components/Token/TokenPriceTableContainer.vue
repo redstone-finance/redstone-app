@@ -63,7 +63,7 @@
           {{ data.item.value }} 
         </div>
         <div class="price" v-else>
-          {{ data.item.value | price({currency: getCurrency(tokenDetails)}) }}
+          {{ data.item.value | price({currency: getCurrency(tokenDetails), decimals: priceDecimals()}) }}
         </div>
       </template>
 
@@ -116,13 +116,14 @@ import dateFormat from 'dateformat';
 import utils from '@/utils';
 import {DEFAULT_PROVIDER, getCurrency, getDetailsForSymbol, isCurrencyToken} from "@/tokens";
 import constants from "@/constants";
+import _ from "lodash";
 
 export default {
   name: 'TokenPriceTableContainer',
 
   props: {
     symbol: String,
-    provider: String,
+    provider: String
   },
 
   data() {
@@ -211,6 +212,16 @@ export default {
         endDate: this.endDate,
       });
       return nextPrices;
+    },
+
+    priceDecimals() {
+      const min = _.min(this.prices.map(p=>p.value));
+      const max = _.max(this.prices.map(p=>p.value));
+      if(min == max) {
+        return 2;
+      }
+
+      return Math.max(-Math.floor(Math.log10(Math.abs(max - min))), 2);
     },
 
     // async isTxConfirmed(txId) {

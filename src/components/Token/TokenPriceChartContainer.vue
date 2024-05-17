@@ -13,7 +13,7 @@
               {{ currentPriceValue }}
             </div>
             <div class="current-price" v-else>
-              {{ currentPriceValue | price({currency: getCurrency(tokenDetails)}) }}
+              {{ currentPriceValue | price({currency: getCurrency(tokenDetails), decimals: priceDecimals()}) }}
             </div>
             <div class="percentage ml-3 d-inline-block" v-if="!isCurrencyToken(tokenDetails)">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
@@ -22,7 +22,7 @@
             </div>
             <div class="percentage ml-3 d-inline-block" v-else>
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
-                <span>{{ priceChange().toFixed(2) | price({ showPlus: true, currency: getCurrency(tokenDetails) }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
+                <span>{{ priceChange().toFixed(priceDecimals()) | price({ showPlus: true, currency: getCurrency(tokenDetails), decimals: priceDecimals() }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
               </div>
             </div>
           </div>
@@ -51,6 +51,7 @@
             :title="title"
             :isCurrencyToken="isCurrencyToken(tokenDetails)"
             :currency="getCurrency(tokenDetails)"
+            :decimals="priceDecimals()"
             class="mr-2 mr-md-4"
           />
         </div>
@@ -125,7 +126,7 @@
 
                 </div>
                 <div class="source-value">
-                  {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true, currency: getCurrency(tokenDetails) }) }}
+                  {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true, currency: getCurrency(tokenDetails), decimals: priceDecimals() }) }}
                 </div>
               </div>
             </b-form-checkbox>
@@ -296,6 +297,19 @@ export default {
       return this.priceChange() / oldPrice;
     },
 
+    priceDecimals() {
+      const min = _.min(this.priceValues);
+      const max = _.max(this.priceValues);
+      if(min == max) {
+        return 2;
+      }
+
+      console.log(max);
+      console.log(min);
+
+      return Math.max(-Math.floor(Math.log10(Math.abs(max - min))), 2);
+    },
+
     isCurrencyAndNotRedstoneProvider(details) {
       return !this.provider.toLocaleLowerCase().includes('redstone') && this.isCurrencyToken(details);
     },
@@ -347,9 +361,9 @@ export default {
     stats() {
       if (this.priceValues.length > 0) {
         return {
-          Min: formatPrice(_.min(this.priceValues)),
-          Max: formatPrice(_.max(this.priceValues)),
-          Average: formatPrice(_.mean(this.priceValues)),
+          Min: `${_.min(this.priceValues)}`,
+          Max: `${_.max(this.priceValues)}`,
+          Average: `${_.mean(this.priceValues)}`,
         };
       } else {
         return {};
@@ -408,6 +422,7 @@ export default {
         labels,
         datasets: Object.values(datasets),
         timeUnit,
+        decimals: this.priceDecimals()
       };
     },
 

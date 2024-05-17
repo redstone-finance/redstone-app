@@ -70,8 +70,17 @@ export function isCurrencyToken(details) {
 }
 
 export function getCurrency(details) {
-  const [x, nameCurrency] = details.name?.split("/");
-  const [y, symbolCurrency] = details.symbol?.split("/");
+  if(details.name?.includes("/")) {
+    const [x, currency] = details.name?.split("/");
 
-  return nameCurrency ? nameCurrency : (symbolCurrency ? symbolCurrency : "USD")
+    return currency;
+  }
+
+  if(details.symbol?.includes("/")) {
+    const [x, currency] = details.symbol?.split("/");
+
+    return currency;
+  }
+
+  return "USD";
 }

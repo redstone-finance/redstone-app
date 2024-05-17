@@ -1,7 +1,7 @@
 <script>
   import Chart from 'chart.js'
   import { generateChart } from 'vue-chartjs'
-  import { getDetailsForSymbol } from "@/tokens";
+  import { getDetailsForSymbol, getCurrency } from "@/tokens";
 
 
   Chart.defaults.LineWithLine = Chart.defaults.line;
@@ -48,6 +48,7 @@
     props: {
       symbol: String,
       data: Object,
+      decimals: Number
     },
     watch: {
       data: function(chartData) { // watch it
@@ -79,7 +80,7 @@
                 {
                     ticks: {
                         userCallback: function(value, index, values) {
-                          const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: 2});
+                          const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: chartData.decimals});
                           const isUsdBased =  getCurrency(getDetailsForSymbol(symbol)) == "USD";
                           return isUsdBased ? `$ ${valueCalculated}` : valueCalculated;
                         }
@@ -105,7 +106,8 @@
                   if (label) {
                     label += ': ';
                   }
-                  label += (Math.round(tooltipItem.yLabel * 100) / 100).toLocaleString('en-US');
+                  const valueCalculated = tooltipItem.yLabel.toLocaleString('en-US', {minimumFractionDigits: chartData.decimals});
+                  label += (valueCalculated);
                   const isUsdBased =  getCurrency(getDetailsForSymbol(symbol)) == "USD";
                   return isUsdBased ? `$ ${label}` : label;
                 }
