@@ -304,9 +304,6 @@ export default {
         return 2;
       }
 
-      console.log(max);
-      console.log(min);
-
       return Math.max(-Math.floor(Math.log10(Math.abs(max - min))), 2);
     },
 
