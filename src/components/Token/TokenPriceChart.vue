@@ -48,7 +48,8 @@
     props: {
       symbol: String,
       data: Object,
-      decimals: Number
+      decimals: Number,
+      isUsdBased: Boolean,
     },
     watch: {
       data: function(chartData) { // watch it
@@ -80,9 +81,8 @@
                 {
                     ticks: {
                         userCallback: function(value, index, values) {
-                          const valueCalculated = value.toLocaleString('en-US', {minimumFractionDigits: chartData.decimals});
-                          const isUsdBased =  getCurrency(getDetailsForSymbol(symbol)) == "USD";
-                          return isUsdBased ? `$ ${valueCalculated}` : valueCalculated;
+                          const valueCalculated = value.toFixed(chartData.decimals);
+                          return this.isUsdBased ? `$${valueCalculated}` : valueCalculated;
                         }
                     }
                 }
@@ -106,10 +106,9 @@
                   if (label) {
                     label += ': ';
                   }
-                  const valueCalculated = tooltipItem.yLabel.toLocaleString('en-US', {minimumFractionDigits: chartData.decimals});
+                  const valueCalculated = tooltipItem.yLabel.toFixed(chartData.decimals);
                   label += (valueCalculated);
-                  const isUsdBased =  getCurrency(getDetailsForSymbol(symbol)) == "USD";
-                  return isUsdBased ? `$ ${label}` : label;
+                  return this.isUsdBased ? `$${label}` : label;
                 }
               }
             }

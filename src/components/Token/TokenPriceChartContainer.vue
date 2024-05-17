@@ -419,7 +419,8 @@ export default {
         labels,
         datasets: Object.values(datasets),
         timeUnit,
-        decimals: this.priceDecimals()
+        decimals: this.priceDecimals(),
+        isUsdBased: this.getCurrency(this.tokenDetails) == "USD"
       };
     },
 
