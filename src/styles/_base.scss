@@ -295,3 +295,26 @@ table > thead > tr > th {
   color: #5CB0FF;
   font-size: 20px;
 }
+
+#use-push-button {
+  @media (min-width: 640px) {
+    margin-right: 4px
+  };
+  @media (max-width: 640px) {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 4px;
+    background-color: white;
+  }
+}
+
+#use-pull-button {
+  @media (max-width: 640px) {
+    margin-bottom: 2px;
+    margin-right: 4px;
+  }
+}
+
+#use-buttons {
+    z-index: 100;
+}
