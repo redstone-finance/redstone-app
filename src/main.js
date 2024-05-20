@@ -48,7 +48,7 @@ function setupFilters() {
       const optionalPlus = addPlus(value, opts.showPlus);
 
       const currency = opts.currency ? opts.currency : "USD";
-      const currencySymbol = opts.currency == "USD" ? "$" : `${currency} `
+      const currencySymbol = opts.currency == "USD" ? "$" : `${currency}\xa0`
 
       if (price === 0) {
         return "0.00";
