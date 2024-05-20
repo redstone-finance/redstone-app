@@ -47,23 +47,32 @@ function setupFilters() {
       const price = Math.abs(value);
       const optionalPlus = addPlus(value, opts.showPlus);
 
+      const currency = opts.currency ? opts.currency : "USD";
+      const currencySymbol = opts.currency == "USD" ? "$" : `${currency} `
+
       if (price === 0) {
         return "0.00";
       } else if (price < 0.0000001) {
-        // For extrmely small values we use E notation
+        // For extremely small values we use E notation
         // If `eNotationForSmallValues` option is set to true
         return opts.eNotationForSmallValues
           ? price.toExponential(3)
-          : optionalPlus + '$' + price.toFixed(12);
+          : optionalPlus + currencySymbol + price.toFixed(12);
       } else if (price < 0.01) {
         // For small values we display 6 digits after comma
-        return optionalPlus + '$' + price.toFixed(6);
+        return optionalPlus + currencySymbol + price.toFixed(6);
+      } else if (opts.decimals && opts.decimals > 2) {
+        return optionalPlus + currencySymbol + price.toFixed(opts.decimals);
       } else {
         // For standard values we just format price in a standard way
-        return optionalPlus + new Intl.NumberFormat('en-US', {
+        try {
+          return optionalPlus + new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: currency,
           }).format(price);
+        } catch(e) {
+          return optionalPlus + currencySymbol + price.toFixed(2);
+        }
       }
     }
   });

@@ -7,7 +7,7 @@
       {{ value }}
     </div>
     <div class="stat-value" v-else>
-      {{ value | price }}
+      {{ value | price({currency: this.currency, decimals: this.decimals}) }}
     </div>
   </div>
 </template>
@@ -19,6 +19,8 @@ export default {
     value: String,
     title: String,
     isCurrencyToken: Boolean,
+    currency: String,
+    decimals: Number
   },
 
 }

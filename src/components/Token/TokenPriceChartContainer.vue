@@ -5,24 +5,24 @@
         <div class="token-price-wrapper d-flex flex-column flex-md-row">
           <div class="mb-2 mb-md-0 mr-2 d-flex align-items-center">
             <img class="token-logo mr-3" v-if="tokenDetails.logoURI" :src="tokenDetails.logoURI">
-            <div v-if="!isCurrencyToken(tokenDetails.tags)" class="d-inline-block token-name">{{ tokenDetails.name }}: </div>
+            <div v-if="!isCurrencyToken(tokenDetails)" class="d-inline-block token-name">{{ tokenDetails.name }}: </div>
             <div v-else class="d-inline-block token-name">{{ tokenDetails.name }}&nbsp;({{tokenDetails.symbol}}): </div>
           </div>
           <div class="mb-2 mb-md-0">
-            <div class="current-price" v-if="!isCurrencyToken(tokenDetails.tags)">
+            <div class="current-price" v-if="!isCurrencyToken(tokenDetails)">
               {{ currentPriceValue }}
             </div>
             <div class="current-price" v-else>
-              {{ currentPriceValue | price }}
+              {{ currentPriceValue | price({currency: getCurrency(tokenDetails), decimals: priceDecimals()}) }}
             </div>
-            <div class="percentage ml-3 d-inline-block" v-if="!isCurrencyToken(tokenDetails.tags)">
+            <div class="percentage ml-3 d-inline-block" v-if="!isCurrencyToken(tokenDetails)">
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
                 <span>{{ priceChange().toFixed(2) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
               </div>
             </div>
             <div class="percentage ml-3 d-inline-block" v-else>
               <div v-if="priceChange() && priceRelativeChange()" :class="[priceChange() >= 0 ? 'positive' : 'negative']">
-                <span>{{ priceChange().toFixed(2) | price({ showPlus: true }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
+                <span>{{ priceChange().toFixed(priceDecimals()) | price({ showPlus: true, currency: getCurrency(tokenDetails), decimals: priceDecimals() }) }} </span>(<span>{{ priceRelativeChange() | percentage(true) }}</span>)
               </div>
             </div>
           </div>
@@ -49,7 +49,9 @@
             :key="title"
             :value="value"
             :title="title"
-            :isCurrencyToken="isCurrencyToken(tokenDetails.tags)"
+            :isCurrencyToken="isCurrencyToken(tokenDetails)"
+            :currency="getCurrency(tokenDetails)"
+            :decimals="priceDecimals()"
             class="mr-2 mr-md-4"
           />
         </div>
@@ -65,7 +67,7 @@
     <hr />
 
     <b-row>
-      <b-col xs="12" lg="9" v-if="isCurrencyToken(tokenDetails.tags)">
+      <b-col xs="12" lg="9" v-if="isCurrencyToken(tokenDetails)">
         <div class="price-chart-container">
           <div v-show="loading">
             <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
@@ -81,7 +83,7 @@
           <TokenPriceChart v-show="!loading" :data="chartData" :symbol="tokenDetails.symbol" />
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="isCurrencyAndNotRedstoneProvider(tokenDetails.tags)">
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-if="isCurrencyAndNotRedstoneProvider(tokenDetails)">
         <div class="data-sources">
           Caution
         </div>
@@ -91,7 +93,7 @@
           <a href="mailto:hello@redstone.finance">hello@redstone.finance</a>
         </div>
       </b-col>
-      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-else-if="isCurrencyToken(tokenDetails.tags)">
+      <b-col xs="12" lg="3" class="mt-5 mt-md-0" v-else-if="isCurrencyToken(tokenDetails)">
         <div class="data-sources">
           Data sources
           ({{ sourcesCount }})
@@ -124,7 +126,7 @@
 
                 </div>
                 <div class="source-value">
-                  {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true }) }}
+                  {{ getCurrentPriceForSource(source) | price({ eNotationForSmallValues: true, currency: getCurrency(tokenDetails), decimals: priceDecimals() }) }}
                 </div>
               </div>
             </b-form-checkbox>
@@ -143,7 +145,7 @@ import StatElem from './StatElem';
 import _ from 'lodash';
 import sources from "../../config/sources.json";
 import constants from "@/constants";
-import { getDetailsForSymbol } from "@/tokens";
+import { getCurrency, getDetailsForSymbol, isCurrencyToken } from "@/tokens";
 import { mapState } from 'vuex';
 
 function formatPrice(value) {
@@ -219,6 +221,7 @@ export default {
   },
 
   methods: {
+    getCurrency,
     async loadPrices() {
       try {
         this.loading = true;
@@ -294,8 +297,18 @@ export default {
       return this.priceChange() / oldPrice;
     },
 
-    isCurrencyAndNotRedstoneProvider(tags) {
-      return !this.provider.toLocaleLowerCase().includes('redstone') && this.isCurrencyToken(tags);
+    priceDecimals() {
+      const min = _.min(this.priceValues);
+      const max = _.max(this.priceValues);
+      if(min == max) {
+        return 2;
+      }
+
+      return Math.max(-Math.floor(Math.log10(Math.abs(max - min))), 2);
+    },
+
+    isCurrencyAndNotRedstoneProvider(details) {
+      return !this.provider.toLocaleLowerCase().includes('redstone') && this.isCurrencyToken(details);
     },
 
     updatedSources() {
@@ -315,9 +328,7 @@ export default {
       return sources;
     },
     
-    isCurrencyToken(tags) {
-      return !tags.includes('lens')
-    }
+    isCurrencyToken
   },
 
   watch: {
@@ -347,9 +358,9 @@ export default {
     stats() {
       if (this.priceValues.length > 0) {
         return {
-          Min: formatPrice(_.min(this.priceValues)),
-          Max: formatPrice(_.max(this.priceValues)),
-          Average: formatPrice(_.mean(this.priceValues)),
+          Min: `${_.min(this.priceValues)}`,
+          Max: `${_.max(this.priceValues)}`,
+          Average: `${_.mean(this.priceValues)}`,
         };
       } else {
         return {};
@@ -408,6 +419,8 @@ export default {
         labels,
         datasets: Object.values(datasets),
         timeUnit,
+        decimals: this.priceDecimals(),
+        isUsdBased: this.getCurrency(this.tokenDetails) == "USD"
       };
     },
 

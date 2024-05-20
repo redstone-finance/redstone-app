@@ -59,11 +59,11 @@
       </template>
 
       <template #cell(value)="data">
-        <div class="price" v-if="!isCurrencyToken(tokenDetails.tags)">
+        <div class="price" v-if="!isCurrencyToken(tokenDetails)">
           {{ data.item.value }} 
         </div>
         <div class="price" v-else>
-          {{ data.item.value | price }}
+          {{ data.item.value | price({currency: getCurrency(tokenDetails), decimals: priceDecimals()}) }}
         </div>
       </template>
 
@@ -114,15 +114,16 @@
 import redstoneAdapter from "@/redstone-api-adapter";
 import dateFormat from 'dateformat';
 import utils from '@/utils';
-import {DEFAULT_PROVIDER, getDetailsForSymbol} from "@/tokens";
+import {DEFAULT_PROVIDER, getCurrency, getDetailsForSymbol, isCurrencyToken} from "@/tokens";
 import constants from "@/constants";
+import _ from "lodash";
 
 export default {
   name: 'TokenPriceTableContainer',
 
   props: {
     symbol: String,
-    provider: String,
+    provider: String
   },
 
   data() {
@@ -158,6 +159,7 @@ export default {
   // },
 
   methods: {
+    getCurrency,
     DEFAULT_PROVIDER() {
       return DEFAULT_PROVIDER
     },
@@ -212,6 +214,16 @@ export default {
       return nextPrices;
     },
 
+    priceDecimals() {
+      const min = _.min(this.prices.map(p=>p.value));
+      const max = _.max(this.prices.map(p=>p.value));
+      if(min == max) {
+        return 2;
+      }
+
+      return Math.max(-Math.floor(Math.log10(Math.abs(max - min))), 2);
+    },
+
     // async isTxConfirmed(txId) {
     //   const arweave = this.$store.state.prefetch.arweave;
     //   if (arweave) {
@@ -236,10 +248,7 @@ export default {
     //   this.lastConfirmedTxTimestamp = lastTimestamp;
     // },
 
-    isCurrencyToken(tags) {
-      return !tags.includes('lens')
-
-    }
+    isCurrencyToken
   },
 
   watch: {

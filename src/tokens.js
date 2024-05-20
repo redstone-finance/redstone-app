@@ -46,6 +46,9 @@ function getAllSymbolDetails() {
           && config.source
           && config.source.length) {
           tokenDetails[symbol].providers = [provider];
+          if(!mainManifest.tokens[symbol]) {
+            console.warn(`Missing ${symbol} in main manifest!`);
+          }
         }
     }
   }
@@ -60,4 +63,24 @@ function getAllSymbolDetails() {
   }
 
   return symbolDetails;
+}
+
+export function isCurrencyToken(details) {
+  return !details.tags?.includes("lens");
+}
+
+export function getCurrency(details) {
+  if(details.name?.includes("/")) {
+    const [x, currency] = details.name?.split("/");
+
+    return currency;
+  }
+
+  if(details.symbol?.includes("/")) {
+    const [x, currency] = details.symbol?.split("/");
+
+    return currency;
+  }
+
+  return "USD";
 }
