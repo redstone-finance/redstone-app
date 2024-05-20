@@ -25,13 +25,13 @@
         </b-form-group>
       </b-form>
     </b-nav>
-    <b-nav class="align-items-center flex-grow-1 justify-content-end">
-        <a target="_blank" style="margin-right: 4px" href="https://docs.redstone.finance/docs/smart-contract-devs/price-feeds">
+    <b-nav id="use-buttons" class="align-items-center flex-grow-1 justify-content-end">
+        <a id="use-push-button" target="_blank" href="https://docs.redstone.finance/docs/smart-contract-devs/price-feeds">
           <b-button class="btn btn-inverted rounded-pill" variant="primary">
             Use Push Model
           </b-button>
         </a>
-        <a target="_blank" href="https://docs.redstone.finance/docs/smart-contract-devs/get-started/redstone-core">
+        <a  id="use-pull-button" target="_blank" href="https://docs.redstone.finance/docs/smart-contract-devs/get-started/redstone-core">
           <b-button class="btn btn-danger rounded-pill" variant="primary">
             Use Pull Model
           </b-button>

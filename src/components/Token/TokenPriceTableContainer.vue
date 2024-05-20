@@ -217,11 +217,15 @@ export default {
     priceDecimals() {
       const min = _.min(this.prices.map(p=>p.value));
       const max = _.max(this.prices.map(p=>p.value));
-      if(min == max) {
+      let delta = Math.abs(max - min);
+      if(delta == 0) {
+        delta = max;
+      }
+      if(delta == 0) {
         return 2;
       }
 
-      return Math.max(-Math.floor(Math.log10(Math.abs(max - min))), 2);
+      return Math.max(-Math.floor(Math.log10(Math.abs(delta))), 2);
     },
 
     // async isTxConfirmed(txId) {

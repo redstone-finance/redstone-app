@@ -30,7 +30,7 @@
                   class="h4 token-title pr-0"
                   v-else
                 >
-                  {{ token.symbol | maxLength(8) }}
+                  {{ token.symbol }}
                   <br>
                   <div class="token-name">
                   {{ token.name }}
