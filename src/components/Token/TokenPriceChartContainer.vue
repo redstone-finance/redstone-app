@@ -159,7 +159,10 @@ function getSourceColor(source) {
 }
 
 function getSourceDetail(source, property, defaultVal) {
-  const details = sources[source];
+  let details = sources[source];
+  if(!details && source.includes("-")) {
+    details = sources[source.split('-')[0]];
+  }
   if (!details || !details[property]) {
     console.warn(`${property} not found for source: ${source}`);
     return defaultVal;
