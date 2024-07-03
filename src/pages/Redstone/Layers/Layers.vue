@@ -47,10 +47,8 @@
 import axios from "axios";
 import _ from "lodash";
 import { ethers } from 'ethers'
-import { WrapperBuilder } from 'redstone-monorepo-github/packages/evm-connector/src/WrapperBuilder.ts'
-// const WrapperBuilder = require('redstone-monorepo-github/packages/evm-connector/src/index')
 
-
+const apiKey = "F13KVG286SK73T1WYNP1WWJW3C3JQFPEUI"
 const SOURCE_REPORT_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 const MAX_FETCHING_SUCCESS = 60 * 24 * 5; // 5 days of the main redstone-node work
 
@@ -76,47 +74,64 @@ export default {
     },
 
     async mounted() {
+        const data = await this.getEvents()
+        console.log({ data })
         await this.loadSourcesReport();
-        await this.getContract(await this.connecToContract());
+        Object.values(this.sources).forEach(contract => {
+            console.log(contract.adapterContract);
+            this.connecToContract(contract.adapterContract)
+        })
     },
     methods: {
-        async connecToContract() {
+        async getEvents() {
+            const params = {
+                "module": "proxy",
+                "action": "eth_getStorageAt",
+                "address": "0xdDb6F90fFb4d3257dd666b69178e5B3c5Bf41136",
+                // "page": 1,
+                // "offset": 1000,
+                "apikey": apiKey,
+                // "sort": "asc"
+            }
+            return axios.get('https://api.etherscan.io/api', { params })
+
+        },
+        async connecToContract(address) {
             const abi = [
-                // Read-Only Functions
-                "function balanceOf(address owner) view returns (uint256)",
-                "function decimals() view returns (uint8)",
-                "function symbol() view returns (string)",
-
-                // Authenticated Functions
-                "function transfer(address to, uint amount) returns (bool)",
-
-                // Events
-                "event Transfer(address indexed from, address indexed to, uint amount)"
+                "function getBlockTimestampFromLatestUpdate() public view returns (uint256 blockTimestamp)",
+                "function getValueForDataFeed(bytes32 dataFeedId) external view returns (uint256)",
+                "function getDataFeedId() external view returns (bytes32)",
+                "function getDataFeedIds() external view returns (bytes32[] memory)",
+                "function getValuesForDataFeeds(bytes32[] memory requestedDataFeedIds) external view returns (uint256[] memory)"
             ];
 
-            // This can be an address or an ENS name
-            const address = "0xEcf0d5EEa51658997D7E750d0a449485D8a4079E";
-
-            // Read-Only; By connecting to a Provider, allows:
-            // - Any constant function
-            // - Querying Filters
-            // - Populating Unsigned Transactions for non-constant methods
-            // - Estimating Gas for non-constant (as an anonymous sender)
-            // - Static Calling non-constant methods (as anonymous sender)
-            const contract = new ethers.Contract(address, abi, ethers.getDefaultProvider());
+            const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), apiKey)
+            const contract = new ethers.Contract(address, abi, provider);
             console.log({ contract })
-            console.log({ block: await contract.provider.getBlock() })
+            contract.getBlockTimestampFromLatestUpdate().then(data => {
+                console.log('SUCCESS', data)
+            }).catch((error) => {})
+            contract.getDataFeedIds().then(data => {
+                console.log('DATAFEEDID', data)
+                contract.functions.getValuesForDataFeeds(data).then((feedData) => {
+                    console.log({ feedData })
+                }).catch((error) => {
+                })
+
+            }).catch((error) => {
+            })
+
             return contract
         },
 
         async getContract(contract) {
-            const wrap = WrapperBuilder.wrap(contract).usingDataService(
-                {
-                    dataFeeds: ["ETH", "BTC"],
-                },
-            );
-            console.log({ wrap })
-            return wrap
+            // const wrap = WrapperBuilder.wrap(contract).usingDataService(
+            //     {
+            //         dataFeeds: ["ETH", "BTC"],
+            //     },
+            // );
+            // console.log({wrap})
+            // return wrap
         },
         async loadSourcesReport() {
             try {
