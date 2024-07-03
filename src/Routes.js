@@ -57,8 +57,12 @@ const router = new Router({
         },
         {
           path: 'layers',
+          
           name: 'LayersPage',
           component: Layers,
+          meta: {
+            showSearchInputInNavbar: true,
+          },
         },
         {
           path: 'layers/:layerId',

@@ -1,6 +1,6 @@
 <template>
     <div class="sources-wrapper">
-        <b-table id="sources-table" stacked="md" style="font-size:12x;" sort-icon-left hover :items="sources"
+        <b-table id="sources-table" stacked="md" style="font-size:12x;" :filter="searchTerm" sort-icon-left hover :items="sources"
             :fields="fields">
             <template #cell(layer)="{ item }">
                 <div class="layer">
@@ -61,7 +61,8 @@
                     @click="copyToClipboard($event, item.address)" v-b-tooltip.hover title="Click to copy"
                     variant="primary" style="font-size: 9px;padding: 7px 10px;" />
                 <input v-if="item.dataFeedId" class="form-control" readonly style="font-size: 9px;padding: 7px 10px;"
-                    @click="copyToClipboard($event, item.dataFeedId)" :value="item.dataFeedId" v-b-tooltip.hover title="Click to copy" variant="primary">
+                    @click="copyToClipboard($event, item.dataFeedId)" :value="item.dataFeedId" v-b-tooltip.hover
+                    title="Click to copy" variant="primary">
             </template>
         </b-table>
     </div>
@@ -69,7 +70,7 @@
 
 <script>
 import _ from "lodash";
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState} from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 export default {
     components: {
@@ -108,6 +109,9 @@ export default {
     },
 
     computed: {
+        ...mapState({
+            searchTerm: state => state.layout.searchTerm,
+        }),
         ...mapGetters('layers', [
             'combinedLayersWithDetailsArray'
         ]),
