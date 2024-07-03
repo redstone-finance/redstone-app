@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { axios } from 'axios';
+import axios from 'axios';
 
 const ETHER_SCAN_API_KEY = "F13KVG286SK73T1WYNP1WWJW3C3JQFPEUI"
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
@@ -60,10 +60,10 @@ export default {
         // Init fetchning of all details required for the UI
         async fetchLayersSchema({ commit }) {
             const { data } = await axios.get(LAYERS_SCHEMA_URL)
-            commit(assignLayerSchema, data)
+            commit('assignLayerSchema', data)
         },
         async fetchContractDetails() {
-            await this.fetchDataFeedIds()
+            // await this.fetchDataFeedIds()
         }
     }
 }
