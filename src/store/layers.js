@@ -1,7 +1,8 @@
 import { ethers } from 'ethers'
 import axios from 'axios';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce} from 'lodash';
 import Vue from 'vue';
+// To whoever will be checking this out, I know this should .env 
 const ETHER_SCAN_API_KEY = "F13KVG286SK73T1WYNP1WWJW3C3JQFPEUI"
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 
@@ -86,7 +87,7 @@ export default {
                 commit('assignLayerDetails', { key: 'feedId', layerId, data: feedId })
             }).catch(() => {
                 // since data feed id is required for fetching feed value we disable the feed value loader as well
-                this.dispatch('layers/disableLoader', { layerId, loaderId: 'value' })
+                this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
                 console.log(`No FeedId found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
             }).finally(() => {
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedId' })
@@ -98,7 +99,7 @@ export default {
             }).catch(() => {
                 console.log(`No blockTimestamp found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
             }).finally(() => {
-                this.dispatch('layers/disableLoader', { layerId, loaderId: 'timestamp' })
+                this.dispatch('layers/disableLoader', { layerId, loaderId: 'blockTimestamp' })
             })
         },
         async fetchValueForDataFeed({ commit, state }, { layerId, feedId }) {
@@ -111,7 +112,7 @@ export default {
             }).catch(() => {
                 console.log(`No dataFeed found for ${layerId}, validate it here: https://etherscan.io/address/${state.layersSchema[layerId].adapterContract}`)
             }).finally(() => {
-                this.dispatch('layers/disableLoader', { layerId, loaderId: 'value' })
+                this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
             })
         },
         // This one should be used to obtain feed value thus it requires feedId query to be chained
@@ -137,8 +138,8 @@ export default {
                     // additional loader object for each property we fetch so we can reflect it in the ui
                     loaders: {
                         feedId: true,
-                        value: true,
-                        timestamp: true,
+                        feedDataValue: true,
+                        blockTimestamp: true,
                     }
                 });
             })
@@ -163,7 +164,6 @@ export default {
                 await this.dispatch('layers/fetchBlockTimeStamp', key)
                 await this.dispatch('layers/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
             })
-            console.log(this.layersDetails)
         }
     }
 }
