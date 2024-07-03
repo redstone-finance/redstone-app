@@ -46,7 +46,7 @@
 
 <script>
 import _ from "lodash";
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 const MAX_FETCHING_SUCCESS = 60 * 24 * 5; // 5 days of the main redstone-node work
 
@@ -72,23 +72,10 @@ export default {
     },
 
     async mounted() {
-        await this.fetchLayersSchema()
-        await this.createEtherScanProvider()
-        Object.keys(this.layersSchema).forEach(async key => {
-            await this.createSmartContract({ layerId: key, contractAddress: this.layersSchema[key].adapterContract })
-            await this.fetchBlockTimeStamp(key)
-            await this.fetchFeedIdAndValue({ layerId: key, feedId: this.layersDetails[key]?.feedId })
-        })
-        console.log(this.layersDetails)
+        await this.init()
     },
     methods: {
-        ...mapActions('layers', [
-            'fetchLayersSchema',
-            'createEtherScanProvider',
-            'createSmartContract',
-            'fetchBlockTimeStamp',
-            'fetchFeedIdAndValue'
-        ]),
+        ...mapActions('layers', ['init']),
         getColorForPercentage(value) {
             if (value == 100) {
                 return '#0F9D58'; // green
@@ -101,10 +88,6 @@ export default {
     },
 
     computed: {
-        ...mapState('layers', [
-            'layersDetails',
-            'layersSchema'
-        ]),
         ...mapGetters('layers', [
             'combinedLayersWithDetailsArray'
         ]),

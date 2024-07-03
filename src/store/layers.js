@@ -36,7 +36,6 @@ export default {
         },
         assignLayerDetails(state, { key, layerId, data }) {
             state.layersDetails[layerId][key] = data
-            console.log(state.layersDetails)
         },
         disableLoaderMutation(state, { loaderId, layerId }) {
             state.layersDetails[layerId].loaders[loaderId] = false
@@ -148,14 +147,23 @@ export default {
         // Init fetchning of all details required for the UI
         // 
         async fetchLayersSchema({ commit, state }) {
+            if (!isEmpty(state.layersSchema)) return
             const { data } = await axios.get(LAYERS_SCHEMA_URL)
             commit('assignLayerSchema', data)
             if (isEmpty(state.layersDetails)) {
                 this.dispatch('layers/initializeLayerDetails')
             }
         },
-        async initLayersContracts() {
-            // await this.fetchDataFeedIds()
+
+        async init({ state }) {
+            await this.dispatch('layers/fetchLayersSchema')
+            await this.dispatch('layers/createEtherScanProvider')
+            Object.keys(state.layersSchema).forEach(async key => {
+                await this.dispatch('layers/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract })
+                await this.dispatch('layers/fetchBlockTimeStamp', key)
+                await this.dispatch('layers/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
+            })
+            console.log(this.layersDetails)
         }
     }
 }
