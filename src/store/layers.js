@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import axios from 'axios';
-import { stat } from 'fs';
-
+import { isEmpty } from 'lodash';
+import Vue from 'vue';
 const ETHER_SCAN_API_KEY = "F13KVG286SK73T1WYNP1WWJW3C3JQFPEUI"
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 
@@ -37,7 +37,10 @@ export default {
         assignLayerDetails(state, { key, layerId, data }) {
             state.layersDetails[layerId][key] = data
             console.log(state.layersDetails)
-        }
+        },
+        disableLoaderMutation(state, { loaderId, layerId }) {
+            state.layersDetails[layerId].loaders[loaderId] = false
+        },
     },
     getters: {
         getSmartContractByLayerId: (state) => (layerId) => {
@@ -47,6 +50,17 @@ export default {
         },
         hasMultipleFeeds: (state) => (layerId) => {
             return state.layersSchema[layerId].priceFeeds.length > 1
+        },
+        // combined data which will be displayed as a UI - mapping fetched data with initial schema layers
+        combinedLayersWithDetailsArray(state) {
+            return Object.keys(state.layersSchema)
+                .map((key) => ({
+                    key,
+                    values: {
+                        ...state.layersSchema[key],
+                        details: { ...state.layersDetails[key] }
+                    }
+                }))
         }
     },
     actions: {
@@ -68,15 +82,18 @@ export default {
         // But only when we are sure the business logic + it will be much easier to provide unit tests
         // 
         async fetchDataFeedId({ commit, state }, layerId) {
-            return this.getters['layers/getSmartContractByLayerId'](layerId).getDataFeedId().then(feedId => {
+            const method = this.getters['layers/hasMultipleFeeds'](layerId) ? 'getDataFeedIds' : 'getDataFeedId'
+            return this.getters['layers/getSmartContractByLayerId'](layerId)[method]().then(feedId => {
                 commit('assignLayerDetails', { key: 'feedId', layerId, data: feedId })
             }).catch(() => {
+                // since data feed id is required for fetching feed value we disable the feed value loader as well
+                this.dispatch('layers/disableLoader', { layerId, loaderId: 'value' })
                 console.log(`No FeedId found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
             }).finally(() => {
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedId' })
             })
         },
-        async fetchBlockTimeStamp({ commit, state}, layerId) {
+        async fetchBlockTimeStamp({ commit, state }, layerId) {
             this.getters['layers/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
                 commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp })
             }).catch(() => {
@@ -93,16 +110,14 @@ export default {
             this.getters['layers/getSmartContractByLayerId'](layerId)[method](feedId).then(dataFeed => {
                 commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed })
             }).catch(() => {
-                // since data feed id is required for fetching feed value we disable the feed value loader as well
-                this.dispatch('layers/fetchValueForDataFeed', { layerId, feedId })
                 console.log(`No dataFeed found for ${layerId}, validate it here: https://etherscan.io/address/${state.layersSchema[layerId].adapterContract}`)
             }).finally(() => {
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'value' })
             })
         },
+        // This one should be used to obtain feed value thus it requires feedId query to be chained
         async fetchFeedIdAndValue({ state }, { layerId }) {
-            const method = this.getters['layers/hasMultipleFeeds'](layerId) ? 'layers/fetchDataFeedIds' : 'layers/fetchDataFeedId'
-            this.dispatch(method, layerId).then(() => {
+            this.dispatch('layers/fetchDataFeedId', layerId).then(() => {
                 const feedId = state.layersDetails[layerId]?.feedId
                 this.dispatch('layers/fetchValueForDataFeed', { layerId, feedId })
             })
@@ -110,24 +125,24 @@ export default {
         // 
         // Helpers
         // 
-        disableLoader({ state }, { layerId, loaderId }) {
-            state.layersDetails[layerId].loaders[loaderId] = false
+        disableLoader({ commit }, { layerId, loaderId }) {
+            commit('disableLoaderMutation', { layerId, loaderId })
         },
         initializeLayerDetails({ state }) {
             Object.keys(state.layersSchema).forEach(layerId => {
-                if (state.layersDetails[layerId] == null) {
-                    // Create empty object only on init of store
-                    state.layersDetails[layerId] = {
-                        // additional loader object for each property we fetch so we can reflect it in the ui
-                        // mutation is not really need
-                        loaders: {
-                            feedId: true,
-                            value: true,
-                            timestamp: true,
-                        }
+                // Using Vue.set to make values reactive
+                Vue.set(state.layersDetails, layerId, {
+                    feedId: null,
+                    blockTimestamp: null,
+                    dataFeed: null,
+                    // additional loader object for each property we fetch so we can reflect it in the ui
+                    loaders: {
+                        feedId: true,
+                        value: true,
+                        timestamp: true,
                     }
-                }
-            });
+                });
+            })
         },
         // 
         // Init fetchning of all details required for the UI
@@ -135,7 +150,9 @@ export default {
         async fetchLayersSchema({ commit, state }) {
             const { data } = await axios.get(LAYERS_SCHEMA_URL)
             commit('assignLayerSchema', data)
-            this.dispatch('layers/initializeLayerDetails')
+            if (isEmpty(state.layersDetails)) {
+                this.dispatch('layers/initializeLayerDetails')
+            }
         },
         async initLayersContracts() {
             // await this.fetchDataFeedIds()

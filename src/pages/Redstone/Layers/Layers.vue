@@ -1,6 +1,6 @@
 <template>
     <div class="sources-wrapper">
-        {{ layersDetails }}
+        {{ combinedLayersWithDetailsArray }}
         <b-table id="sources-table" stacked="md" sort-icon-left :busy="loading" hover :items="sources" :fields="fields">
 
             <template #cell(name)="source">
@@ -104,6 +104,9 @@ export default {
         ...mapState('layers', [
             'layersDetails',
             'layersSchema'
+        ]),
+        ...mapGetters('layers', [
+            'combinedLayersWithDetailsArray'
         ]),
         sources() {
             return []
