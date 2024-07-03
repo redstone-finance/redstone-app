@@ -1,5 +1,6 @@
 <template>
     <div class="sources-wrapper">
+        {{ layersDetails }}
         <b-table id="sources-table" stacked="md" sort-icon-left :busy="loading" hover :items="sources" :fields="fields">
 
             <template #cell(name)="source">
@@ -72,17 +73,21 @@ export default {
 
     async mounted() {
         await this.fetchLayersSchema()
-
-        // Object.keys(this.layersSchema).forEach(async key => {
-        //     await createSmartContract(key, this.layersSchema[key].adapterContract)
-        //     await this.fetchDataFeedIds(key)
-        // })
+        await this.createEtherScanProvider()
+        Object.keys(this.layersSchema).forEach(async key => {
+            await this.createSmartContract({ layerId: key, contractAddress: this.layersSchema[key].adapterContract })
+            await this.fetchBlockTimeStamp(key)
+            await this.fetchFeedIdAndValue({ layerId: key, feedId: this.layersDetails[key]?.feedId })
+        })
+        console.log(this.layersDetails)
     },
     methods: {
         ...mapActions('layers', [
             'fetchLayersSchema',
-            'fetchDataFeedIds',
-            'createSmartContract'
+            'createEtherScanProvider',
+            'createSmartContract',
+            'fetchBlockTimeStamp',
+            'fetchFeedIdAndValue'
         ]),
         getColorForPercentage(value) {
             if (value == 100) {
