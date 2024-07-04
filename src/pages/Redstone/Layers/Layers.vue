@@ -94,14 +94,14 @@
 <script>
 import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
-import Loader from '../../../components/Loader/Loader.vue'
+import Loader from '../../../components/Loader/Loader'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
 import { parseUnixTime } from '../../../core/timeHelpers'
-import BulkActions from './components/BulkActions.vue'
-import LayerName from './components/LayerName.vue'
-import LayerChain from './components/LayerChain.vue'
-import LayerPriceFeeds from './components/LayerPriceFeeds.vue'
-import LayerTriggers from './components/LayerTriggers.vue'
+import BulkActions from './components/BulkActions'
+import LayerName from './components/LayerName'
+import LayerChain from './components/LayerChain'
+import LayerPriceFeeds from './components/LayerPriceFeeds'
+import LayerTriggers from './components/LayerTriggers'
 export default {
     components: {
         Loader,
