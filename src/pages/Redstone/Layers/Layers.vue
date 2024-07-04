@@ -4,7 +4,7 @@
             <BulkActions :selectedItemsCount="selectedItems.length" />
             <div class="layers__bulk-actions-item">
                 <div class="layers__bulk-actions-label">Filter by chain:</div>
-                <b-form-select v-model="selectedChain" size="sm" @change="handleFilter('chain', $event)"
+                <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
                     :options="chainOptions" class="layers__chain-select"></b-form-select>
             </div>
             <div class="layers__bulk-actions-item" v-if="currentFilter && filters">
@@ -21,8 +21,8 @@
         </div>
         <template>
             <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="sources"
-                 @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
+                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="sources" @row-clicked="onRowClick"
+                :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
                 <template #head(selected)>
                     <b-form-checkbox class="layers__toggle-all" size="lg" :checked="allSelected"
                         @change="toggleSelectAll" />
@@ -49,7 +49,7 @@
                         <div class="layers__details-title layers__details-title--triggers">
                             <label class="layers__label">Update triggers</label>
                             <pre class="layers__triggers" v-b-tooltip.hover title="Click to copy"
-                                @click="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
+                                @click.stop="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
                         </div>
                     </div>
                 </template>
@@ -107,7 +107,7 @@ export default {
             selectAll: false,
             displayedTableItems: [],
             selectedItems: [],
-            filters: '',
+            filters: null,
             currentFilter: null,
             selectedChain: null,
             fields: [
@@ -124,23 +124,23 @@ export default {
     },
     methods: {
         onRowClick(item) {
-            console.log('ROW CLICK')
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
         },
-        handleFilter(filterType, value) {
-            this.resetFilters(filterType)
+        async handleFilter(filterType, value) {
+            if (filterType != 'Search query') {
+                this.updateSearchTerm('')
+            }
             this.filters = value,
-                this.currentFilter = filterType
+            this.currentFilter = filterType
         },
         onFiltered() {
             this.clearSelected()
         },
-        resetFilters(filterType) {
-            if (filterType != 'Search query') {
-                this.updateSearchTerm('')
-            }
-            this.filters = null,
-                this.currentFilter = null
+        async resetFilters() {
+            this.updateSearchTerm('')
+            this.selectedChain = null
+            this.filters = null
+            this.currentFilter = null
         },
         copyToClipboard: copyToClipboardHelper,
         ...mapActions('layers', ['init']),
