@@ -12,3 +12,8 @@ While investigating blockchains, data sources for layers, and the ethers.js libr
 * I created some helper files located in the `src/core` directory for tasks we don't necessarily want to handle within the components.
 * The styling is mostly done with the BEM approach. However, I would consider refactoring the whole thing due to the development process. I've tinkered with the UI a lot, so there are many opportunities for improvement.
 * I created multiple subcomponents for parts that were either too big to keep within the view file or that I wanted to reuse in other views. In the future, I would seriously consider extracting the table into a separate component because it is the biggest and most code-consuming element. The view should just be responsible for implementing components, not for containing much business logic - that's something for the future, I hope!
+
+
+#### Research
+
+Regarding the last point about fetching logos and other UI elements for specific chains and providers I did some digging and I would say that the best way would be to keep and maintain own list of resources. There is no one solution which provides all logos etc, so most likely we would like to have some small app/ backend service which either accumulates and maps assets. 
