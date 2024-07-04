@@ -1,19 +1,13 @@
 @import '~@/styles/app';
 
-
-.layers-wrapper {
+.layers {
     font-size: 14px;
     background-color: $gray-100;
     border-radius: 10px;
     padding: 2rem;
     box-shadow: var(--content-shadow);
 
-    .toggle-all-checkbox input:checked+label::before {
-        background: var(--redstone-red-color) !important;
-        border-color: var(--redstone-red-color) !important;
-    }
-
-    .bulk-actions-wrapper {
+    &__bulk-actions {
         position: sticky;
         top: 70px;
         z-index: 2;
@@ -22,53 +16,54 @@
         border-radius: 15px;
         margin-bottom: 20px;
         box-shadow: var(--tabs-shadow);
+        display: flex;
+        align-items: center;
     }
 
-    .custom-checkbox {
-        transform: scale(1.2);
-        position: relative;
-        padding: 0 !important;
-        left: 10px;
+    &__bulk-actions-item {
+        margin-right: 1rem;
 
-        label {
-            height: 50px !important;
-            width: 60px !important;
-            cursor: pointer;
-        }
-
-        label::before,
-        label::after {
-            left: 50% !important;
-            top: 50% !important;
-            transform: translate(-50%, -50%);
+        &--right {
+            margin-left: auto;
         }
     }
 
-    .badge {
+    &__bulk-actions-label {
+        font-size: 10px;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    &__chain-select {
+        border: 1px solid var(--redstone-red-color);
+        color: var(--redstone-red-color);
+    }
+
+    &__filter-badge {
         width: 100%;
         cursor: pointer;
 
         &:hover {
             opacity: 0.9;
         }
-
-        span {
-            background-color: #fff;
-            color: var(--redstone-red-color);
-            width: 10px;
-            height: 10px;
-            display: inline-block;
-            border-radius: 50%;
-            line-height: 11px;
-        }
     }
 
-    .custom-select {
-        border: 1px solid var(--redstone-red-color);
+    &__filter-badge-close {
+        background-color: #fff;
         color: var(--redstone-red-color);
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 11px;
     }
 
-    .bulk-actions-button {
+    &__status-text {
+        font-size: 12px;
+        display: block;
+    }
+
+    &__bulk-actions-dropdown {
         >button {
             padding: 5px 10px;
         }
@@ -93,98 +88,122 @@
         }
     }
 
-    .table-active {
-        box-shadow: -2px 0px 0px 0px var(--redstone-red-color);
-        background: #fff !important;
+    &__table {
+        font-size: 12px;
 
-        td {
-            background: inherit !important;
+        .toggle-all-checkbox input:checked+label::before {
+            background: var(--redstone-red-color) !important;
+            border-color: var(--redstone-red-color) !important;
         }
 
         .custom-checkbox {
-            label::before {
-                background: var(--redstone-red-color) !important;
-                border-color: var(--redstone-red-color) !important;
+            transform: scale(1.2);
+            position: relative;
+            padding: 0 !important;
+            left: 10px;
+
+            label {
+                height: 50px !important;
+                width: 60px !important;
+                cursor: pointer;
+            }
+
+            label::before,
+            label::after {
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%);
             }
         }
-    }
 
-    thead tr {
-        font-size: 12px;
-        font-weight: 400;
-        background: $gray-200;
+        .table-active {
+            box-shadow: -2px 0px 0px 0px var(--redstone-red-color);
+            background: #fff !important;
 
-        th {
-            vertical-align: middle;
-            padding: 20px 10px;
+            td {
+                background: inherit !important;
+            }
+
+            .custom-checkbox {
+                label::before {
+                    background: var(--redstone-red-color) !important;
+                    border-color: var(--redstone-red-color) !important;
+                }
+            }
         }
 
-        th:first-child {
-            border-top-left-radius: 10px;
+        thead tr {
+            font-size: 12px;
+            font-weight: 400;
+            background: $gray-200;
 
+            th {
+                vertical-align: middle;
+                padding: 20px 10px;
+            }
+
+            th:first-child {
+                border-top-left-radius: 10px;
+            }
+
+            th:last-child {
+                border-top-right-radius: 10px;
+            }
         }
 
-        th:last-child {
-            border-top-right-radius: 10px;
-        }
-        
-    }
-
-    tbody{
-        tr:hover{
+        tbody tr:hover {
             background-color: #fff !important;
         }
     }
+}
 
-    .layer-details {
-        padding: 20px 0;
+.layer-details {
+    padding: 20px 0;
 
-        &__title {
-            padding: 5px 10px;
+    &__title {
+        padding: 5px 10px;
 
-            &.featured {
-                font-size: 14px;
-                background: $gray-200;
-                border-radius: 10px;
-
-
-                strong {
-                    font-size: 14px;
-                    color: var(--redstone-red-color);
-                }
-            }
-
-            &.triggers {
-                width: 100%;
-            }
-
-            label {
-                font-size: 10px;
-                margin-bottom: 0;
-                display: block;
-            }
+        &--featured {
+            font-size: 14px;
+            background: $gray-200;
+            border-radius: 10px;
 
             strong {
-                font-size: 12px;
+                font-size: 14px;
+                color: var(--redstone-red-color);
             }
+        }
 
-            span {
-                font-size: 8px;
-                margin-left: 10px;
-            }
+        &--triggers {
+            width: 100%;
+        }
 
-            pre {
-                cursor: copy;
-                border-color: $gray-300;
-                padding: 10px;
-                font-size: 10px;
-                display: block;
-                max-width: 100%;
-                width: auto;
+        label {
+            font-size: 10px;
+            margin-bottom: 0;
+            display: block;
+        }
 
-                &:active {
-                    background-color: #fff;
-                }
+        strong {
+            font-size: 12px;
+        }
+
+        span {
+            font-size: 8px;
+            margin-left: 10px;
+        }
+
+        pre {
+            cursor: copy;
+            border-color: $gray-300;
+            padding: 10px;
+            font-size: 10px;
+            display: block;
+            max-width: 100%;
+            width: auto;
+
+            &:active {
+                background-color: #fff;
             }
         }
     }

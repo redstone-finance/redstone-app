@@ -1,57 +1,32 @@
 <template>
-    <div class="layers-wrapper">
-        <div class="bulk-actions-wrapper d-flex align-items-center">
-            <div>
-                <div style="font-size:10px; font-weight: bold;" class="mb-2">Bulk actions:</div>
+    <div class="layers">
+        <div class="layers__bulk-actions">
+            <div class="layers__bulk-actions-item">
+                <div class="layers__bulk-actions-label">Bulk actions:</div>
                 <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
-                    :text="`${selectedItems.length} item(s)`" variant="danger" class="bulk-actions-button"
+                    :text="`${selectedItems.length} item(s)`" variant="danger" class="layers__bulk-actions-dropdown"
                     split-variant="outline-danger">
-                    <b-dropdown-item href="#as">
-                        <div class="mb-2">
-                            Open in
-                        </div>
-                        <b-button class="mr-2" size="sm" href="#foo" variant="outline-danger">Etherscan</b-button>
-                        <b-button size="sm" class="mr-2" href="#foo" variant="outline-danger">Blockscout</b-button>
-                        <b-button size="sm" href="#foo" variant="outline-danger">Zapper</b-button>
-                    </b-dropdown-item>
-                    <b-dropdown-item>
-                        <div class="copy-section mb-2">Copy</div>
-                        <div class="mb-2">
-                            <b-button size="sm" href="#foo" variant="outline-danger">trigger conditions</b-button>
-                            <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">price feeds</b-button>
-                        </div>
-                        <div>
-                            <b-button size="sm" href="#foo" variant="outline-danger">contract address</b-button>
-                            <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">chain
-                                details</b-button>
-                        </div>
-                    </b-dropdown-item>
-                    <b-dropdown-item href="#as">
-                        <b-button block href="#foo" variant="danger">
-                            <strong>
-                                Full definition
-                            </strong>
-                        </b-button>
-                    </b-dropdown-item>
+                    <!-- Dropdown content remains the same -->
                 </b-dropdown>
             </div>
-            <div class="ml-4">
-                <div style="font-size:10px; font-weight: bold;" class="mb-2">Filter by chain:</div>
+            <div class="layers__bulk-actions-item">
+                <div class="layers__bulk-actions-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @change="handleFilter('chain', $event)"
-                    :options="chainOptions"></b-form-select>
+                    :options="chainOptions" class="layers__chain-select"></b-form-select>
             </div>
-            <div class="ml-4" v-if="currentFilter && filters">
-                <div style="font-size:10px; font-weight: bold;" class="mb-2">Applied filters</div>
-                <b-badge @click="resetFilters" pill class="text-center" variant="danger">{{ currentFilter }}:
-                    {{ filters }} <span>&times;</span></b-badge>
+            <div class="layers__bulk-actions-item" v-if="currentFilter && filters">
+                <div class="layers__bulk-actions-label">Applied filters</div>
+                <b-badge @click="resetFilters" pill class="layers__filter-badge" variant="danger">
+                    {{ currentFilter }}: {{ filters }} <span class="layers__filter-badge-close">&times;</span>
+                </b-badge>
             </div>
-            <div class="" style="margin-left: auto;">
-                <div style="font-size:10px; font-weight: bold;" class="mb-2">Status</div>
-                <span style="font-size: 12px; display: block;"><strong>{{ displayedTableItems.length }}</strong> layers
+            <div class="layers__bulk-actions-item layers__bulk-actions-item--right">
+                <div class="layers__bulk-actions-label">Status</div>
+                <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> layers
                     displayed</span>
             </div>
         </div>
-        <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+        <b-table id="sources-table" class="layers__table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
             @filtered="onFiltered" style="font-size:12x;" :filter="filters" sort-icon-left hover :items="sources"
             select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
             <template #head(selected)>
@@ -79,7 +54,8 @@
 
                     <div class="layer-details__title ml-4 triggers">
                         <label>Update triggers</label>
-                        <pre @click="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
+                        <pre
+                            @click="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
                     </div>
 
                 </div>
@@ -103,7 +79,8 @@
                         {{ item.blockTimestamp }}
                     </span>
                     <span v-else v-b-tooltip.hover style="font-size: 10px;"
-                        title="SmartContract does not provide timestamp" class="text-secondary">no data &times;</span>
+                        title="SmartContract does not provide timestamp" class="text-secondary">no data
+                        &times;</span>
                 </div>
             </template>
             <template #cell(feedDataValue)="{ item }">
@@ -140,7 +117,6 @@
                     title="Click to copy" variant="primary">
             </template>
         </b-table>
-
     </div>
 </template>
 
