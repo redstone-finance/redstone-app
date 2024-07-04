@@ -69,7 +69,6 @@ export default {
         createEtherScanProvider({ commit, state }) {
             if (!isEmpty(state.provider)) return
             const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), process.env.VUE_APP_ETHER_SCAN_API_KEY)
-            // const provider = new ethers.providers.getDefaultProvider()
             commit('assignEtherScanProvider', provider);
         },
         createSmartContract({ commit, state }, { layerId, contractAddress }) {
@@ -109,7 +108,7 @@ export default {
             // I'm not sure if this is a general rule for every contract, would be nice to have consistensy across contracts.
             const method = this.getters['layers/hasMultipleFeeds'](layerId) ? 'getValuesForDataFeeds' : 'getValueForDataFeed'
             this.getters['layers/getSmartContractByLayerId'](layerId)[method](feedId).then(dataFeed => {
-                commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed })
+                commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed._hex })
             }).catch(() => {
                 console.log(`No dataFeed found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
             }).finally(() => {
