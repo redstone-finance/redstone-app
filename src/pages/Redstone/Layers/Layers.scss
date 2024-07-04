@@ -1,39 +1,88 @@
 @import '~@/styles/app';
 
-.sources-wrapper {
-  background-color: $gray-100;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: var(--content-shadow);
 
-  #sources-table {
-    th {
-      text-transform: none;
-      color: $navy;
-      font-size: 12px;
-      font-weight:  $font-weight-soft-bold;
+.layers-wrapper {
+    font-size: 14px;
+    background-color: $gray-100;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: var(--content-shadow);
+
+    .bulk-actions-wrapper {
+        background: $gray-300;
+        box-shadow: var(--navbar-shadow);
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 20px;
     }
 
-    th:nth-of-type(1) {
-      width: 200px;
+    .custom-checkbox {
+        transform: scale(1.2);
+        position: relative;
+        left: 10px;
     }
 
-    th:nth-of-type(2) {
-      width: 100px;
+    .bulk-actions-button {
+        >button {
+            padding: 5px 10px;
+        }
+
+        li a:active {
+            background: #fff;
+        }
+
+        a .btn {
+            font-size: 10px;
+            padding: 5px 10px;
+        }
+
+        button {
+            font-size: 12px;
+            border-radius: 20px;
+        }
+
+        button:first-child:hover {
+            background-color: #fff;
+            color: var(--redstone-red-color);
+        }
     }
 
-    .source-logo {
-      max-height: 30px;
-      width: 30px;
+    .table-active {
+        box-shadow: -2px 0px 0px 0px var(--redstone-red-color);
+        background-color: #fff7f7 !important;
     }
 
-    .source-name  {
-      text-transform: capitalize;
-    }
-  }
+    thead tr {
+        font-size: 12px;
+        font-weight: 400;
+        background: $gray-200;
 
-  .report-source-link {
-    font-size: 12px;
-    margin-top: 30px;
-  }
+        th {
+            padding: 20px 10px;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+    }
+
+    .layer-details {
+        &__title {
+            label {
+                font-size: 10px;
+            }
+
+            strong {
+                display: block;
+                font-size: 12px;
+            }
+
+            border-bottom: 1px solid #aeaeae;
+        }
+    }
 }

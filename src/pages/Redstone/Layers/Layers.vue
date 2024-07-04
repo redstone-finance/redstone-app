@@ -1,21 +1,58 @@
 <template>
-    <div class="sources-wrapper">
-        <b-table id="sources-table" v-model="displayedTableItems" stacked="md" ref="selectableTable"
-            style="font-size:12x;" :filter="searchTerm" sort-icon-left hover :items="sources" selectable
-            select-mode="multi" :fields="fields" @row-selected="onRowSelected">
+    <div class="layers-wrapper">
+      <div class="bulk-actions-wrapper">
+        <div style="font-size:10px; font-weight: bold;" class="mb-2">Bulk actions:</div>
+        <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
+            :text="`${selectedItems.length} item(s)`" variant="danger" class="bulk-actions-button"
+            split-variant="outline-danger">
+            <b-dropdown-item href="#as">
+                <div class="mb-2">
+                    Open in
+                </div>
+                <b-button class="mr-2" size="sm" href="#foo" variant="outline-danger">Etherscan</b-button>
+                <b-button size="sm" class="mr-2" href="#foo" variant="outline-danger">Blockscout</b-button>
+                <b-button size="sm" href="#foo" variant="outline-danger">Zapper</b-button>
+            </b-dropdown-item>
+            <b-dropdown-item>
+                <div class="copy-section mb-2">Copy</div>
+                <div class="mb-2">
+                    <b-button size="sm" href="#foo" variant="outline-danger">trigger conditions</b-button>
+                    <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">price feeds</b-button>
+                </div>
+                <div>
+                    <b-button size="sm" href="#foo" variant="outline-danger">contract address</b-button>
+                    <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">chain details</b-button>
+                </div>
+            </b-dropdown-item>
+            <b-dropdown-item href="#as">
+
+                <b-button block href="#foo" variant="danger">
+                    <strong>
+                        Full definition
+                    </strong>
+                </b-button>
+
+            </b-dropdown-item>
+        </b-dropdown>
+      </div>
+        <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+            style="font-size:12x;" :filter="searchTerm" @filtered="clearSelected" sort-icon-left hover :items="sources"
+            select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
             <template #head(selected)>
-                <b-form-checkbox size="lg" :checked="selectAll" @change="toggleSelectAll" />
+                <b-form-checkbox size="lg" :checked="allSelected" @change="toggleSelectAll" />
             </template>
 
-            <template #cell(selected)="{ rowSelected, item, index }">
-                <b-form-checkbox size="lg" :id="item.layer" :checked="rowSelected"
-                    @change="handleChange(index, rowSelected)" />
+            <template #cell(selected)="{ item, index }">
+                <b-form-checkbox size="lg" :id="item.layer" :checked="isSelected(index)"
+                    @change="handleChange(index, isSelected(index))" />
             </template>
             <template #cell(layer)="{ item }">
-                <div class="layer">
-                    <span class="ml-3">
-                        {{ item.layer }}
-                    </span>
+                <div class="layer-details">
+                    <div class="layer-details__title">
+                        <label>Layer name</label>
+                        <strong>{{ item.layer }}</strong>
+                    </div>
+
                 </div>
             </template>
             <template #cell(chain)="{ item }">
@@ -93,8 +130,8 @@ export default {
             displayedTableItems: [],
             selectedItems: [],
             fields: [
-                { key: 'selected', label: '#', thStyle: {width: '50px'}},
-                { key: 'layer', label: 'Details',thStyle: {width: '75%'}},
+                { key: 'selected', label: '#', thStyle: { width: '50px' } },
+                { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
                 // { key: 'chain', label: 'Chain', sortable: true },
                 { key: 'blockTimestamp', label: 'Block timestap', sortable: true, },
                 { key: 'feedDataValue', label: 'Feed data', sortable: true },
@@ -109,37 +146,41 @@ export default {
     methods: {
         copyToClipboard: copyToClipboardHelper,
         ...mapActions('layers', ['init']),
+        // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
+        // This is why I had to handle selection on my own
         selectAllRows() {
-            this.$refs.selectableTable.selectAllRows()
+            this.selectedItems = this.displayedTableItems.map(item => item.layer)
         },
         clearSelected() {
-            this.$refs.selectableTable.clearSelected()
+            this.selectedItems = []
         },
         toggleSelectAll(isSelected) {
             isSelected ? this.selectAllRows() : this.clearSelected()
         },
         selectRow(index) {
-            this.$refs.selectableTable.selectRow(index)
+            this.selectedItems.push(this.displayedTableItems[index].layer)
         },
         unselectRow(index) {
-            this.$refs.selectableTable.unselectRow(index)
+            this.selectedItems = this.selectedItems.filter(item => item !== this.displayedTableItems[index].layer)
         },
         handleChange(index, isSelected) {
-            console.log(index, isSelected)
             !isSelected ? this.selectRow(index) : this.unselectRow(index)
-            this.onRowSelected(this.selectedItems)
         },
-        onRowSelected(items) {
-            this.selectedItems = items
-            if (items.length == this.displayedTableItems.length) {
-                this.selectAll = true;
-            } else {
-                this.selectAll = false;
-            }
+        isSelected(index) {
+            return this.selectedItems.includes(this.displayedTableItems[index].layer)
         },
+        rowClass(item) {
+            if (this.selectedItems.includes(item.layer)) return 'table-active'
+        }
     },
 
     computed: {
+        allSelected() {
+            return this.selectedItems.length === this.displayedTableItems.length
+        },
+        allLoadersResolved() {
+            return this.displayedTableItems.every(({ loaders }) => !(loaders.blockTimestamp && loaders.feedDataValue && loaders.feedId))
+        },
         ...mapState({
             searchTerm: state => state.layout.searchTerm,
         }),
