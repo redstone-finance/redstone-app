@@ -1,14 +1,7 @@
 <template>
     <div class="layers">
         <div class="layers__bulk-actions">
-            <div class="layers__bulk-actions-item">
-                <div class="layers__bulk-actions-label">Bulk actions:</div>
-                <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
-                    :text="`${selectedItems.length} item(s)`" variant="danger" class="layers__bulk-actions-dropdown"
-                    split-variant="outline-danger">
-                    <!-- Dropdown content remains the same -->
-                </b-dropdown>
-            </div>
+            <BulkActions :selectedItemsCount="selectedItems.length" />
             <div class="layers__bulk-actions-item">
                 <div class="layers__bulk-actions-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @change="handleFilter('chain', $event)"
@@ -26,97 +19,75 @@
                     displayed</span>
             </div>
         </div>
-        <b-table id="sources-table" class="layers__table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-            @filtered="onFiltered" style="font-size:12x;" :filter="filters" sort-icon-left hover :items="sources"
-            select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
-            <template #head(selected)>
-                <b-form-checkbox class="toggle-all-checkbox" size="lg" :checked="allSelected"
-                    @change="toggleSelectAll" />
-            </template>
+        <template>
+            <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="sources"
+                 @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
+                <template #head(selected)>
+                    <b-form-checkbox class="layers__toggle-all" size="lg" :checked="allSelected"
+                        @change="toggleSelectAll" />
+                </template>
 
-            <template #cell(selected)="{ item, index }">
-                <b-form-checkbox size="lg" :id="item.layer" :checked="isSelected(index)"
-                    @change="handleChange(index, isSelected(index))" />
-            </template>
-            <template #cell(layer)="{ item }">
-                <div class="layer-details d-flex">
-                    <div>
-                        <div class="layer-details__title featured">
-                            <label>Layer name</label>
-                            <strong>{{ item.layer }}</strong>
+                <template #cell(selected)="{ item, index }">
+                    <b-form-checkbox class="layers__checkbox" size="lg" :id="item.layer" :checked="isSelected(index)"
+                        @change="handleChange(index, isSelected(index))" />
+                </template>
+                <template #cell(layer)="{ item }">
+                    <div class="layers__details">
+                        <div class="layers__details-column">
+                            <div class="layers__details-title layers__details-title--featured">
+                                <label class="layers__label">Layer name</label>
+                                <strong class="layers__value">{{ item.layer }}</strong>
+                            </div>
+                            <div class="layers__details-title">
+                                <label class="layers__label">Chain</label>
+                                <strong class="layers__value">{{ item.chain }}</strong>
+                                <span class="layers__chain-id">ID:{{ item.chainId }}</span>
+                            </div>
                         </div>
-                        <div class="layer-details__title mt-2">
-                            <label>Chain</label>
-                            <strong>{{ item.chain }}</strong>
-                            <span>ID:{{ item.chainId }}</span>
+
+                        <div class="layers__details-title layers__details-title--triggers">
+                            <label class="layers__label">Update triggers</label>
+                            <pre class="layers__triggers" v-b-tooltip.hover title="Click to copy"
+                                @click="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
                         </div>
                     </div>
-
-                    <div class="layer-details__title ml-4 triggers">
-                        <label>Update triggers</label>
-                        <pre
-                            @click="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
+                </template>
+                <template #cell(chain)="{ item }">
+                    <div class="layers__chain">
+                        <span class="layers__chain-value">
+                            {{ item.chain }}
+                        </span>
                     </div>
-
-                </div>
-            </template>
-            <template #cell(chain)="{ item }">
-                <div class="layer">
-                    <span class="ml-3">
-                        {{ item.chain }}
-                    </span>
-                </div>
-            </template>
-            <template #cell(address)="{ item }">
-                <div class="layer">
-                    <input class="form-control" readonly :value="item.address" role="button" />
-                </div>
-            </template>
-            <template #cell(blockTimestamp)="{ item }">
-                <div class="layer ">
-                    <Loader style="width: 50px" v-if="item.loaders.blockTimestamp"></Loader>
-                    <span v-else-if="item.blockTimestamp">
-                        {{ item.blockTimestamp }}
-                    </span>
-                    <span v-else v-b-tooltip.hover style="font-size: 10px;"
-                        title="SmartContract does not provide timestamp" class="text-secondary">no data
-                        &times;</span>
-                </div>
-            </template>
-            <template #cell(feedDataValue)="{ item }">
-                <div class="layer">
-                    <Loader style="width: 50px" v-if="item.loaders.feedDataValue"></Loader>
-                    <span v-else-if="item.feedDataValue" class="ml-3">
-                        {{ item.feedDataValue }}
-                    </span>
-                    <div v-else class="text-secondary" style="font-size: 10px;" v-b-tooltip.hover
-                        title="SmartContract does not provide feed data value">No data &times;</div>
-                </div>
-            </template>
-            <template #cell(dataFeedId)="{ item }">
-                <div class="layer text-center">
-                    <Loader v-if="item.loaders.feedId"></Loader>
-                    <input v-else-if="item.dataFeedId" class="form-control" v-b-tooltip.hover title="Click to copy"
-                        readonly @click="copyToClipboard($event, item.dataFeedId)" :value="item.dataFeedId"
-                        role="button" />
-                    <div v-else class="text-secondary" v-b-tooltip.hover title="SmartContract does not provide feed id">
-                        &times;</div>
-                </div>
-            </template>
-            <template #cell(actions)="{ item }">
-                <!-- <b-button :href="`https://etherscan.io/address/${item.address}`"
-                    class="btn btn-danger mr-2 rounded-pill" variant="primary"
-                    style="font-size: 9px;padding: 7px 10px;">
-                    https://etherscan.io/address/ {{ item.address }}
-                </b-button> -->
-                <input class="form-control" readonly :value="'Address: ' + item.address" role="button"
-                    @click="copyToClipboard($event, item.address)" v-b-tooltip.hover title="Click to copy"
-                    variant="primary" style="font-size: 9px;padding: 7px 10px;" />
-                <input v-if="item.dataFeedId" class="form-control" readonly style="font-size: 9px;padding: 7px 10px;"
-                    @click="copyToClipboard($event, item.dataFeedId)" :value="item.dataFeedId" v-b-tooltip.hover
-                    title="Click to copy" variant="primary">
-            </template>
-        </b-table>
+                </template>
+                <template #cell(address)="{ item }">
+                    <div class="layers__address">
+                        <input class="layers__address-input" readonly :value="item.address" role="button" />
+                    </div>
+                </template>
+                <template #cell(blockTimestamp)="{ item }">
+                    <div class="layers__timestamp">
+                        <Loader class="layers__loader" v-if="item.loaders.blockTimestamp"></Loader>
+                        <span v-else-if="item.blockTimestamp" class="layers__timestamp-value">
+                            {{ item.blockTimestamp }}
+                        </span>
+                        <span v-else v-b-tooltip.hover title="SmartContract does not provide timestamp"
+                            class="layers__no-data">no data
+                            &times;</span>
+                    </div>
+                </template>
+                <template #cell(feedDataValue)="{ item }">
+                    <div class="layers__feed-data">
+                        <Loader class="layers__loader" v-if="item.loaders.feedDataValue"></Loader>
+                        <span v-else-if="item.feedDataValue" class="layers__feed-data-value">
+                            {{ item.feedDataValue }}
+                        </span>
+                        <div v-else class="layers__no-data" v-b-tooltip.hover
+                            title="SmartContract does not provide feed data value">No data &times;</div>
+                    </div>
+                </template>
+            </b-table>
+        </template>
     </div>
 </template>
 
@@ -125,9 +96,11 @@ import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
+import BulkActions from './BulkActions.vue'
 export default {
     components: {
-        Loader
+        Loader,
+        BulkActions
     },
     data() {
         return {
@@ -150,6 +123,10 @@ export default {
         await this.init()
     },
     methods: {
+        onRowClick(item) {
+            console.log('ROW CLICK')
+            this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
+        },
         handleFilter(filterType, value) {
             this.resetFilters(filterType)
             this.filters = value,
@@ -240,5 +217,4 @@ export default {
     }
 }
 </script>
-
 <style lang="scss" src="./Layers.scss" />

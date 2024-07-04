@@ -18,25 +18,50 @@
         box-shadow: var(--tabs-shadow);
         display: flex;
         align-items: center;
-    }
 
-    &__bulk-actions-item {
-        margin-right: 1rem;
+        &-item {
+            margin-right: 1rem;
 
-        &--right {
-            margin-left: auto;
+            &--right {
+                margin-left: auto;
+            }
+        }
+
+        &-label {
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        &-dropdown {
+            >button {
+                padding: 5px 10px;
+            }
+
+            li a:active {
+                background: #fff;
+            }
+
+            a .btn {
+                font-size: 10px;
+                padding: 5px 10px;
+            }
+
+            button {
+                font-size: 12px;
+                border-radius: 20px;
+
+                &:first-child:hover {
+                    background-color: #fff;
+                    color: var(--redstone-red-color);
+                }
+            }
         }
     }
 
-    &__bulk-actions-label {
-        font-size: 10px;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
-
     &__chain-select {
-        border: 1px solid var(--redstone-red-color);
-        color: var(--redstone-red-color);
+        border: 1px solid var(--redstone-red-color) !important;
+        color: var(--redstone-red-color) !important;
     }
 
     &__filter-badge {
@@ -46,16 +71,16 @@
         &:hover {
             opacity: 0.9;
         }
-    }
 
-    &__filter-badge-close {
-        background-color: #fff;
-        color: var(--redstone-red-color);
-        width: 10px;
-        height: 10px;
-        display: inline-block;
-        border-radius: 50%;
-        line-height: 11px;
+        &-close {
+            background-color: #fff;
+            color: var(--redstone-red-color);
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+            line-height: 11px;
+        }
     }
 
     &__status-text {
@@ -63,38 +88,10 @@
         display: block;
     }
 
-    &__bulk-actions-dropdown {
-        >button {
-            padding: 5px 10px;
-        }
-
-        li a:active {
-            background: #fff;
-        }
-
-        a .btn {
-            font-size: 10px;
-            padding: 5px 10px;
-        }
-
-        button {
-            font-size: 12px;
-            border-radius: 20px;
-        }
-
-        button:first-child:hover {
-            background-color: #fff;
-            color: var(--redstone-red-color);
-        }
-    }
-
     &__table {
         font-size: 12px;
 
-        .toggle-all-checkbox input:checked+label::before {
-            background: var(--redstone-red-color) !important;
-            border-color: var(--redstone-red-color) !important;
-        }
+
 
         .custom-checkbox {
             transform: scale(1.2);
@@ -106,13 +103,13 @@
                 height: 50px !important;
                 width: 60px !important;
                 cursor: pointer;
-            }
 
-            label::before,
-            label::after {
-                left: 50% !important;
-                top: 50% !important;
-                transform: translate(-50%, -50%);
+                &::before,
+                &::after {
+                    left: 50% !important;
+                    top: 50% !important;
+                    transform: translate(-50%, -50%);
+                }
             }
         }
 
@@ -124,11 +121,9 @@
                 background: inherit !important;
             }
 
-            .custom-checkbox {
-                label::before {
-                    background: var(--redstone-red-color) !important;
-                    border-color: var(--redstone-red-color) !important;
-                }
+            .custom-checkbox label::before {
+                background: var(--redstone-red-color) !important;
+                border-color: var(--redstone-red-color) !important;
             }
         }
 
@@ -140,14 +135,14 @@
             th {
                 vertical-align: middle;
                 padding: 20px 10px;
-            }
 
-            th:first-child {
-                border-top-left-radius: 10px;
-            }
+                &:first-child {
+                    border-top-left-radius: 10px;
+                }
 
-            th:last-child {
-                border-top-right-radius: 10px;
+                &:last-child {
+                    border-top-right-radius: 10px;
+                }
             }
         }
 
@@ -155,56 +150,101 @@
             background-color: #fff !important;
         }
     }
-}
 
-.layer-details {
-    padding: 20px 0;
+    &__toggle-all,
+    &__checkbox {
+        transform: scale(1.2);
+    }
 
-    &__title {
-        padding: 5px 10px;
+    &__toggle-all {
+        input:checked + label::before {
+            background: var(--redstone-red-color) !important;
+            border-color: var(--redstone-red-color) !important;
+        }
+    }
 
-        &--featured {
-            font-size: 14px;
-            background: $gray-200;
-            border-radius: 10px;
+    &__details {
+        display: flex;
+        padding: 20px 0;
 
-            strong {
+        &-column {
+            margin-right: 1rem;
+        }
+
+        &-title {
+            padding: 5px 10px;
+            margin-bottom: 0.5rem;
+
+            &--featured {
                 font-size: 14px;
-                color: var(--redstone-red-color);
+                background: $gray-200;
+                border-radius: 10px;
+
+                strong {
+                    font-size: 14px;
+                    color: var(--redstone-red-color);
+                }
+            }
+
+            &--triggers {
+                width: 100%;
+                flex-grow: 1;
             }
         }
+    }
 
-        &--triggers {
-            width: 100%;
+    &__label {
+        font-size: 10px;
+        display: block;
+        margin-bottom: 0;
+    }
+
+    &__value {
+        font-size: 14px;
+    }
+
+    &__chain-id {
+        font-size: 8px;
+        margin-left: 10px;
+    }
+
+    &__triggers {
+        cursor: copy;
+        border: 1px solid $gray-300;
+        padding: 10px;
+        font-size: 10px;
+        display: block;
+        max-width: 100%;
+        width: auto;
+
+        &:active {
+            background-color: #fff;
         }
+    }
 
-        label {
-            font-size: 10px;
-            margin-bottom: 0;
-            display: block;
-        }
+    &__chain,
+    &__address,
+    &__timestamp,
+    &__feed-data {
+        padding-left: 1rem;
+    }
 
-        strong {
-            font-size: 12px;
-        }
+    &__address-input {
+        cursor: pointer;
+    }
 
-        span {
-            font-size: 8px;
-            margin-left: 10px;
-        }
+    &__loader {
+        width: 50px;
+    }
 
-        pre {
-            cursor: copy;
-            border-color: $gray-300;
-            padding: 10px;
-            font-size: 10px;
-            display: block;
-            max-width: 100%;
-            width: auto;
+    &__no-data {
+        font-size: 10px;
+        color: $secondary;
+    }
 
-            &:active {
-                background-color: #fff;
-            }
-        }
+    &__chain-value,
+    &__timestamp-value,
+    &__feed-data-value {
+        font-size: 12px;
     }
 }
