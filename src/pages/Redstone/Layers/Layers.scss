@@ -8,9 +8,13 @@
     padding: 2rem;
     box-shadow: var(--content-shadow);
 
+    .toggle-all-checkbox input:checked + label::before{
+        background: var(--redstone-red-color) !important;
+        border-color: var(--redstone-red-color) !important;
+    }
+
     .bulk-actions-wrapper {
-        background: $gray-300;
-        box-shadow: var(--navbar-shadow);
+        background: $gray-200;
         padding: 15px;
         border-radius: 15px;
         margin-bottom: 20px;
@@ -49,7 +53,16 @@
 
     .table-active {
         box-shadow: -2px 0px 0px 0px var(--redstone-red-color);
-        background-color: #fff7f7 !important;
+        background: #fff !important;
+        td{
+            background: inherit !important;
+        }
+        .custom-checkbox{
+            label::before{
+                background: var(--redstone-red-color) !important;
+                border-color: var(--redstone-red-color) !important;
+            }
+        }
     }
 
     thead tr {
@@ -72,17 +85,22 @@
     }
 
     .layer-details {
+        padding: 20px 0;
         &__title {
             label {
                 font-size: 10px;
+                margin-bottom: 0;
+                display: block;
             }
 
             strong {
-                display: block;
                 font-size: 12px;
             }
 
-            border-bottom: 1px solid #aeaeae;
+            span{
+                font-size: 8px;
+                margin-left: 10px;
+            }
         }
     }
 }

@@ -39,7 +39,7 @@
             style="font-size:12x;" :filter="searchTerm" @filtered="clearSelected" sort-icon-left hover :items="sources"
             select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
             <template #head(selected)>
-                <b-form-checkbox size="lg" :checked="allSelected" @change="toggleSelectAll" />
+                <b-form-checkbox class="toggle-all-checkbox" size="lg" :checked="allSelected" @change="toggleSelectAll" />
             </template>
 
             <template #cell(selected)="{ item, index }">
@@ -47,10 +47,15 @@
                     @change="handleChange(index, isSelected(index))" />
             </template>
             <template #cell(layer)="{ item }">
-                <div class="layer-details">
+                <div class="layer-details d-flex">
                     <div class="layer-details__title">
                         <label>Layer name</label>
                         <strong>{{ item.layer }}</strong>
+                    </div>
+                    <div class="layer-details__title ml-4">
+                        <label>Chain</label>
+                        <strong>{{ item.chain }}</strong>
+                        <span>ID:{{ item.chainId }}</span>
                     </div>
 
                 </div>
@@ -192,6 +197,7 @@ export default {
                 {
                     layer: item.key,
                     chain: item.values.chain.name,
+                    chainId: item.values.chain.id,
                     address: item.values.adapterContract,
                     timestamp: item.values.details.blockTimestamp,
                     feedDataValue: item.values.details.feedData,
