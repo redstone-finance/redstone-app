@@ -1,9 +1,8 @@
 import { ethers } from 'ethers'
 import axios from 'axios';
-import { isEmpty, debounce} from 'lodash';
+import { isEmpty} from 'lodash';
 import Vue from 'vue';
-// To whoever will be checking this out, I know this should .env 
-const ETHER_SCAN_API_KEY = "F13KVG286SK73T1WYNP1WWJW3C3JQFPEUI"
+
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 
 const CONTRACTS_ABI_DEFINITION = [
@@ -69,7 +68,7 @@ export default {
         // 
         createEtherScanProvider({ commit, state}) {
             if(!isEmpty(state.provider)) return
-            const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), ETHER_SCAN_API_KEY)
+            const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), process.env.VUE_APP_ETHER_SCAN_API_KEY)
             // const provider = new ethers.providers.getDefaultProvider()
             commit('assignEtherScanProvider', provider);
         },
