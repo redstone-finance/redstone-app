@@ -37,7 +37,13 @@
             </div>
             <div class="ml-4">
                 <div style="font-size:10px; font-weight: bold;" class="mb-2">Filter by chain:</div>
-                <b-form-select v-model="selectedChain" size="sm" @change="handleFilter('chain', $event)" :options="chainOptions"></b-form-select>
+                <b-form-select v-model="selectedChain" size="sm" @change="handleFilter('chain', $event)"
+                    :options="chainOptions"></b-form-select>
+            </div>
+            <div class="ml-4" v-if="currentFilter && filters">
+                <div style="font-size:10px; font-weight: bold;" class="mb-2">Applied filters</div>
+                <b-badge @click="resetFilters" pill class="text-center" variant="danger">{{ currentFilter }}:
+                    {{ filters }} <span>&times;</span></b-badge>
             </div>
             <div class="" style="margin-left: auto;">
                 <div style="font-size:10px; font-weight: bold;" class="mb-2">Status</div>
@@ -46,8 +52,7 @@
             </div>
         </div>
         <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-        @filtered="onFiltered"
-            style="font-size:12x;" :filter="filters" sort-icon-left hover :items="sources"
+            @filtered="onFiltered" style="font-size:12x;" :filter="filters" sort-icon-left hover :items="sources"
             select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
             <template #head(selected)>
                 <b-form-checkbox class="toggle-all-checkbox" size="lg" :checked="allSelected"
@@ -74,7 +79,7 @@
 
                     <div class="layer-details__title ml-4 triggers">
                         <label>Update triggers</label>
-                        <pre><code v-text="item.updateTriggers"></code></pre>
+                        <pre @click="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
                     </div>
 
                 </div>
@@ -154,8 +159,8 @@ export default {
             displayedTableItems: [],
             selectedItems: [],
             filters: '',
-            currentFilter:null,
-            selectedChain:null,
+            currentFilter: null,
+            selectedChain: null,
             fields: [
                 { key: 'selected', label: '#', thStyle: { width: '50px' } },
                 { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
@@ -169,14 +174,20 @@ export default {
         await this.init()
     },
     methods: {
-        handleFilter(filterType, value){
-            this.updateSearchTerm('')
+        handleFilter(filterType, value) {
+            this.resetFilters(filterType)
             this.filters = value,
-            this.currentFilter = filterType
+                this.currentFilter = filterType
         },
-        onFiltered(){
-            console.log('filter')
+        onFiltered() {
             this.clearSelected()
+        },
+        resetFilters(filterType) {
+            if (filterType != 'Search query') {
+                this.updateSearchTerm('')
+            }
+            this.filters = null,
+                this.currentFilter = null
         },
         copyToClipboard: copyToClipboardHelper,
         ...mapActions('layers', ['init']),
@@ -208,7 +219,12 @@ export default {
         },
         ...mapActions('layout', ['updateSearchTerm'])
     },
-
+    watch: {
+        // whenever question changes, this function will run
+        searchTerm(searchTerm) {
+            this.handleFilter('Search query', searchTerm)
+        }
+    },
     computed: {
         chainOptions() {
             const options = this.sources.map(item => ({ text: item.chain, value: item.chain }))
@@ -217,6 +233,7 @@ export default {
                 ..._.uniqBy(options, 'value')
             ];
         },
+
         allSelected() {
             return this.selectedItems.length === this.displayedTableItems.length
         },
