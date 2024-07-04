@@ -9,6 +9,7 @@
         <LayerTriggers :updateTriggers="layer.updateTriggers" />
         <LayerPriceFeeds :priceFeeds="layer.priceFeeds" />
         <hr>
+        <vue-loaders-ball-beat v-if="isLoading" class="chart-loader" color="var(--redstone-red-color)" scale="1" />
         <LayerChart v-if="chartData.length > 0" :data="chartData" />
     </div>
 </template>
@@ -32,7 +33,8 @@ export default {
     },
     data() {
         return {
-            chartData: []
+            chartData: [],
+            isLoading: false
         };
     },
 
@@ -45,6 +47,7 @@ export default {
         ...mapActions('layers', ['initSingleContract']),
         ...mapActions('layout', ['updateSearchTerm']),
         async fetchChartData() {
+            this.isLoading = true
             const queryParams = {
                 module: 'logs',
                 action: 'getLogs',
@@ -57,6 +60,7 @@ export default {
             if (data.result.length > 0 && Array.isArray(data.result)) {
                 this.chartData = data.result.map(({ timeStamp, gasUsed, gasPrice }) => ({ timeStamp: this.parseHexTimestamp(timeStamp), gasUsed, gasPrice }))
             }
+            this.isLoading = false;
         },
         parseHexTimestamp,
     },
@@ -74,3 +78,10 @@ export default {
     }
 }
 </script>
+<style lang="scss">
+.chart-loader {
+    margin: 0 auto;
+    display: block;
+    width: 60px;
+}
+</style>
