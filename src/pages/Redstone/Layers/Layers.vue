@@ -37,27 +37,11 @@
                 <template #cell(layer)="{ item }">
                     <div class="layers__details">
                         <div class="layers__details-column">
-                            <div class="layers__details-title layers__details-title--featured">
-                                <label class="layers__label">Layer name</label>
-                                <strong class="layers__value">{{ item.layer }}</strong>
-                            </div>
-                            <div class="layers__details-title">
-                                <label class="layers__label">Chain</label>
-                                <strong class="layers__value">{{ item.chain }}</strong>
-                                <span class="layers__chain-id">ID: {{ item.chainId }}</span>
-                            </div>
-                            <div class="layers__details-title">
-                                <label class="layers__label">Price feeds</label>
-                                <span class="layers__value d-block" v-for="(value, name, index) in item.priceFeeds"
-                                    :key="index">{{ name }}:{{ value }}</span>
-                            </div>
+                            <LayerName :layerName="item.layer" />
+                            <LayerChain :chain="item.chain" :chainId="item.chainId" />
+                            <LayerPriceFeeds :priceFeeds="item.priceFeeds" />
                         </div>
-
-                        <div class="layers__details-title layers__details-title--triggers">
-                            <label class="layers__label">Update triggers</label>
-                            <pre class="layers__triggers" v-b-tooltip.hover title="Click to copy"
-                                @click.stop="copyToClipboard($event, JSON.stringify(item.updateTriggers))"><code v-text="item.updateTriggers"></code></pre>
-                        </div>
+                        <LayerTriggers :updateTriggers="item.updateTriggers" />
                     </div>
                 </template>
                 <template #cell(chain)="{ item }">
@@ -104,10 +88,18 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
 import BulkActions from './components/BulkActions.vue'
+import LayerName from './components/LayerName.vue'
+import LayerChain from './components/LayerChain.vue'
+import LayerPriceFeeds from './components/LayerPriceFeeds.vue'
+import LayerTriggers from './components/LayerTriggers.vue'
 export default {
     components: {
         Loader,
-        BulkActions
+        BulkActions,
+        LayerName,
+        LayerChain,
+        LayerPriceFeeds,
+        LayerTriggers
     },
     data() {
         return {

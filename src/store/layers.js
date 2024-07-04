@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import axios from 'axios';
-import { isEmpty} from 'lodash';
+import { isEmpty } from 'lodash';
 import Vue from 'vue';
 
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
@@ -66,8 +66,8 @@ export default {
         // 
         // Ether.js initialization methods
         // 
-        createEtherScanProvider({ commit, state}) {
-            if(!isEmpty(state.provider)) return
+        createEtherScanProvider({ commit, state }) {
+            if (!isEmpty(state.provider)) return
             const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), process.env.VUE_APP_ETHER_SCAN_API_KEY)
             // const provider = new ethers.providers.getDefaultProvider()
             commit('assignEtherScanProvider', provider);
@@ -111,7 +111,7 @@ export default {
             this.getters['layers/getSmartContractByLayerId'](layerId)[method](feedId).then(dataFeed => {
                 commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed })
             }).catch(() => {
-                console.log(`No dataFeed found for ${layerId}, validate it here: https://etherscan.io/address/${state.layersSchema[layerId].adapterContract}`)
+                console.log(`No dataFeed found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
             }).finally(() => {
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
             })
@@ -155,7 +155,13 @@ export default {
                 this.dispatch('layers/initializeLayerDetails')
             }
         },
-
+        async initSingleContract({ state }, layerId) {
+            await this.dispatch('layers/fetchLayersSchema')
+            await this.dispatch('layers/createEtherScanProvider')
+            await this.dispatch('layers/createSmartContract', { layerId: layerId, contractAddress: state.layersSchema[layerId].adapterContract })
+            await this.dispatch('layers/fetchBlockTimeStamp', layerId)
+            await this.dispatch('layers/fetchFeedIdAndValue', { layerId: layerId, feedId: state.layersDetails[layerId]?.feedId })
+        },
         async init({ state }) {
             await this.dispatch('layers/fetchLayersSchema')
             await this.dispatch('layers/createEtherScanProvider')
