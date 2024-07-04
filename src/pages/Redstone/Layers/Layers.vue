@@ -96,7 +96,7 @@ import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
-import { parseUnixTime } from '../../../core/parseHexTimestamp'
+import { parseUnixTime } from '../../../core/timeHelpers'
 import BulkActions from './components/BulkActions.vue'
 import LayerName from './components/LayerName.vue'
 import LayerChain from './components/LayerChain.vue'
@@ -233,7 +233,7 @@ export default {
                     chainId: item.values.chain.id,
                     updateTriggers: item.values.updateTriggers,
                     address: item.values.adapterContract,
-                    blockTimestamp: item.values.details.blockTimestamp, // Ensure consistency in property names
+                    blockTimestamp: item.values.details.blockTimestamp,
                     priceFeeds: item.values.priceFeeds,
                     feedDataValue: item.values.details.feedData,
                     dataFeedId: item.values.details.feedId,

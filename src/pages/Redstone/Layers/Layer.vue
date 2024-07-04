@@ -21,7 +21,7 @@ import LayerChain from './components/LayerChain.vue'
 import LayerTriggers from './components/LayerTriggers.vue'
 import LayerPriceFeeds from './components/LayerPriceFeeds.vue'
 import LayerChart from "./components/LayerChart.vue";
-import parseHexTimestamp from '../../../core/parseHexTimestamp'
+import parseHexTimestamp from '../../../core/timeHelpers'
 export default {
     components: {
         LayerName,
