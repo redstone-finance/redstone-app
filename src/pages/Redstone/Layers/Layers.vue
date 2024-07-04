@@ -1,39 +1,49 @@
 <template>
     <div class="layers-wrapper">
-        <div class="bulk-actions-wrapper">
-            <div style="font-size:10px; font-weight: bold;" class="mb-2">Bulk actions:</div>
-            <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
-                :text="`${selectedItems.length} item(s)`" variant="danger" class="bulk-actions-button"
-                split-variant="outline-danger">
-                <b-dropdown-item href="#as">
-                    <div class="mb-2">
-                        Open in
-                    </div>
-                    <b-button class="mr-2" size="sm" href="#foo" variant="outline-danger">Etherscan</b-button>
-                    <b-button size="sm" class="mr-2" href="#foo" variant="outline-danger">Blockscout</b-button>
-                    <b-button size="sm" href="#foo" variant="outline-danger">Zapper</b-button>
-                </b-dropdown-item>
-                <b-dropdown-item>
-                    <div class="copy-section mb-2">Copy</div>
-                    <div class="mb-2">
-                        <b-button size="sm" href="#foo" variant="outline-danger">trigger conditions</b-button>
-                        <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">price feeds</b-button>
-                    </div>
-                    <div>
-                        <b-button size="sm" href="#foo" variant="outline-danger">contract address</b-button>
-                        <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">chain details</b-button>
-                    </div>
-                </b-dropdown-item>
-                <b-dropdown-item href="#as">
-
-                    <b-button block href="#foo" variant="danger">
-                        <strong>
-                            Full definition
-                        </strong>
-                    </b-button>
-
-                </b-dropdown-item>
-            </b-dropdown>
+        <div class="bulk-actions-wrapper d-flex align-items-center">
+            <div>
+                <div style="font-size:10px; font-weight: bold;" class="mb-2">Bulk actions:</div>
+                <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
+                    :text="`${selectedItems.length} item(s)`" variant="danger" class="bulk-actions-button"
+                    split-variant="outline-danger">
+                    <b-dropdown-item href="#as">
+                        <div class="mb-2">
+                            Open in
+                        </div>
+                        <b-button class="mr-2" size="sm" href="#foo" variant="outline-danger">Etherscan</b-button>
+                        <b-button size="sm" class="mr-2" href="#foo" variant="outline-danger">Blockscout</b-button>
+                        <b-button size="sm" href="#foo" variant="outline-danger">Zapper</b-button>
+                    </b-dropdown-item>
+                    <b-dropdown-item>
+                        <div class="copy-section mb-2">Copy</div>
+                        <div class="mb-2">
+                            <b-button size="sm" href="#foo" variant="outline-danger">trigger conditions</b-button>
+                            <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">price feeds</b-button>
+                        </div>
+                        <div>
+                            <b-button size="sm" href="#foo" variant="outline-danger">contract address</b-button>
+                            <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">chain
+                                details</b-button>
+                        </div>
+                    </b-dropdown-item>
+                    <b-dropdown-item href="#as">
+                        <b-button block href="#foo" variant="danger">
+                            <strong>
+                                Full definition
+                            </strong>
+                        </b-button>
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+            <div class="ml-4">
+                <div style="font-size:10px; font-weight: bold;" class="mb-2">Filter by chain:</div>
+                <b-form-select size="sm" v-model="selectedChain" :options="chainOptions"></b-form-select>
+            </div>
+            <div class="" style="margin-left: auto;">
+                <div style="font-size:10px; font-weight: bold;" class="mb-2">Status</div>
+                <span style="font-size: 12px; display: block;"><strong>{{ displayedTableItems.length }}</strong> layers
+                    displayed</span>
+            </div>
         </div>
         <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
             style="font-size:12x;" :filter="searchTerm" @filtered="clearSelected" sort-icon-left hover :items="sources"
@@ -63,7 +73,7 @@
 
                     <div class="layer-details__title ml-4 triggers">
                         <label>Update triggers</label>
-                        <pre><code v-text="JSON.stringify(item.updateTriggers, undefined, 2)"></code></pre>
+                        <pre><code v-text="item.updateTriggers"></code></pre>
                     </div>
 
                 </div>
@@ -142,13 +152,12 @@ export default {
             selectAll: false,
             displayedTableItems: [],
             selectedItems: [],
+            selectedChain: null,
             fields: [
                 { key: 'selected', label: '#', thStyle: { width: '50px' } },
                 { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
-                // { key: 'chain', label: 'Chain', sortable: true },
                 { key: 'blockTimestamp', label: 'Block timestap', sortable: true, },
                 { key: 'feedDataValue', label: 'Feed data', sortable: true },
-                // { key: 'actions', label: 'Address' },
             ],
         };
     },
@@ -188,6 +197,13 @@ export default {
     },
 
     computed: {
+        chainOptions() {
+            const options = this.displayedTableItems.map(item => ({ text: item.chain, value: item.chainId }))
+            return [
+                { value: null, text: 'Select chain' },
+                ..._.uniqBy(options, 'value')
+            ];
+        },
         allSelected() {
             return this.selectedItems.length === this.displayedTableItems.length
         },
