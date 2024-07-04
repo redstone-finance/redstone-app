@@ -135,7 +135,6 @@
             th {
                 vertical-align: middle;
                 padding: 20px 10px;
-
                 &:first-child {
                     border-top-left-radius: 10px;
                 }
@@ -167,6 +166,9 @@
     &__details {
         display: flex;
         padding: 20px 0;
+        @include media-breakpoint-down(md) { 
+            flex-flow: column;
+        }
 
         &-column {
             margin-right: 1rem;
@@ -248,4 +250,10 @@
     &__feed-data-value {
         font-size: 12px;
     }
+
+    @include media-breakpoint-down(md) { 
+        .table.b-table.b-table-stacked-md > tbody > tr > [data-label]::before {
+            width: 20% !important;
+        }
+     }
 }
