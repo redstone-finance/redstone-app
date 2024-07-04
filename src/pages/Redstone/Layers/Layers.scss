@@ -7,7 +7,7 @@
     padding: 2rem;
     box-shadow: var(--content-shadow);
 
-    &__bulk-actions {
+    &__actions-wrapper {
         position: sticky;
         top: 70px;
         z-index: 2;
@@ -148,7 +148,7 @@
 
         tbody tr:hover {
             cursor: pointer;
-            background-color: #fff !important;
+            background-color: $gray-200 !important;
         }
     }
 
@@ -201,7 +201,7 @@
     }
 
     &__value {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     &__chain-id {

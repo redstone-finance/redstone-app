@@ -1,8 +1,8 @@
 <template>
-    <div class="layers__bulk-actions-item">
-      <div class="layers__bulk-actions-label">Bulk actions:</div>
+    <div class="layers__actions-wrapper-item">
+      <div class="layers__actions-wrapper-label">Bulk actions:</div>
       <b-dropdown split :disabled="selectedItemsCount < 1" id="dropdown-left" size="sm"
-        :text="`${selectedItemsCount} item(s)`" variant="danger" class="layers__bulk-actions-dropdown"
+        :text="`${selectedItemsCount} item(s)`" variant="danger" class="layers__actions-wrapper-dropdown"
         split-variant="outline-danger">
         <b-dropdown-item>
           <div class="mb-2">

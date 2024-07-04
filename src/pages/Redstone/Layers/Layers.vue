@@ -1,26 +1,28 @@
 <template>
     <div class="layers">
-        <div class="layers__bulk-actions">
+        <div class="layers__actions-wrapper">
             <BulkActions :selectedItemsCount="selectedItems.length" />
-            <div class="layers__bulk-actions-item">
-                <div class="layers__bulk-actions-label">Filter by chain:</div>
+            <div class="layers__actions-wrapper-item">
+                <div class="layers__actions-wrapper-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
                     :options="chainOptions" class="layers__chain-select"></b-form-select>
             </div>
-            <div class="layers__bulk-actions-item" v-if="currentFilter && filters">
-                <div class="layers__bulk-actions-label">Applied filters</div>
+            <div class="layers__actions-wrapper-item" v-if="currentFilter && filters">
+                <div class="layers__actions-wrapper-label">Applied filters</div>
                 <b-badge @click="resetFilters" pill class="layers__filter-badge" variant="danger">
                     {{ currentFilter }}: {{ filters }} <span class="layers__filter-badge-close">&times;</span>
                 </b-badge>
             </div>
-            <div class="layers__bulk-actions-item layers__bulk-actions-item--right">
-                <div class="layers__bulk-actions-label">Status</div>
+            <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
+                <div class="layers__actions-wrapper-label">Status</div>
+                <span class="layers__status-text"><strong>{{ chainOptions.length }}</strong> chains
+                    available</span>
                 <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> layers
                     displayed</span>
             </div>
         </div>
         <template>
-            <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+            <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="sources" @row-clicked="onRowClick"
                 :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
                 <template #head(selected)>
@@ -42,7 +44,12 @@
                             <div class="layers__details-title">
                                 <label class="layers__label">Chain</label>
                                 <strong class="layers__value">{{ item.chain }}</strong>
-                                <span class="layers__chain-id">ID:{{ item.chainId }}</span>
+                                <span class="layers__chain-id">ID: {{ item.chainId }}</span>
+                            </div>
+                            <div class="layers__details-title">
+                                <label class="layers__label">Price feeds</label>
+                                <span class="layers__value d-block" v-for="(value, name, index) in item.priceFeeds"
+                                    :key="index">{{ name }}:{{ value }}</span>
                             </div>
                         </div>
 
@@ -96,7 +103,7 @@ import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
-import BulkActions from './BulkActions.vue'
+import BulkActions from './components/BulkActions.vue'
 export default {
     components: {
         Loader,
@@ -127,10 +134,10 @@ export default {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
         },
         async handleFilter(filterType, value) {
-            if (filterType != 'Search query') {
+            if (filterType != 'Search query' && this.searchTerm != null) {
                 this.updateSearchTerm('')
             }
-            this.filters = value,
+            this.filters = value
             this.currentFilter = filterType
         },
         onFiltered() {
@@ -175,7 +182,9 @@ export default {
     watch: {
         // whenever question changes, this function will run
         searchTerm(searchTerm) {
-            this.handleFilter('Search query', searchTerm)
+            if (searchTerm != '') {
+                this.handleFilter('Search query', searchTerm)
+            }
         }
     },
     computed: {
@@ -208,6 +217,7 @@ export default {
                     updateTriggers: item.values.updateTriggers,
                     address: item.values.adapterContract,
                     timestamp: item.values.details.blockTimestamp,
+                    priceFeeds: item.values.priceFeeds,
                     feedDataValue: item.values.details.feedData,
                     dataFeedId: item.values.details.feedId,
                     loaders: item.values.details.loaders,
