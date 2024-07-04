@@ -67,8 +67,10 @@ export default {
         // 
         // Ether.js initialization methods
         // 
-        createEtherScanProvider({ commit }) {
+        createEtherScanProvider({ commit, state}) {
+            if(!isEmpty(state.provider)) return
             const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), ETHER_SCAN_API_KEY)
+            // const provider = new ethers.providers.getDefaultProvider()
             commit('assignEtherScanProvider', provider);
         },
         createSmartContract({ commit, state }, { layerId, contractAddress }) {
