@@ -37,7 +37,7 @@
             </div>
             <div class="ml-4">
                 <div style="font-size:10px; font-weight: bold;" class="mb-2">Filter by chain:</div>
-                <b-form-select size="sm" v-model="selectedChain" :options="chainOptions"></b-form-select>
+                <b-form-select v-model="selectedChain" size="sm" @change="handleFilter('chain', $event)" :options="chainOptions"></b-form-select>
             </div>
             <div class="" style="margin-left: auto;">
                 <div style="font-size:10px; font-weight: bold;" class="mb-2">Status</div>
@@ -46,7 +46,8 @@
             </div>
         </div>
         <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-            style="font-size:12x;" :filter="searchTerm" @filtered="clearSelected" sort-icon-left hover :items="sources"
+        @filtered="onFiltered"
+            style="font-size:12x;" :filter="filters" sort-icon-left hover :items="sources"
             select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
             <template #head(selected)>
                 <b-form-checkbox class="toggle-all-checkbox" size="lg" :checked="allSelected"
@@ -152,7 +153,9 @@ export default {
             selectAll: false,
             displayedTableItems: [],
             selectedItems: [],
-            selectedChain: null,
+            filters: '',
+            currentFilter:null,
+            selectedChain:null,
             fields: [
                 { key: 'selected', label: '#', thStyle: { width: '50px' } },
                 { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
@@ -166,6 +169,15 @@ export default {
         await this.init()
     },
     methods: {
+        handleFilter(filterType, value){
+            this.updateSearchTerm('')
+            this.filters = value,
+            this.currentFilter = filterType
+        },
+        onFiltered(){
+            console.log('filter')
+            this.clearSelected()
+        },
         copyToClipboard: copyToClipboardHelper,
         ...mapActions('layers', ['init']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
@@ -193,12 +205,13 @@ export default {
         },
         rowClass(item) {
             if (this.selectedItems.includes(item.layer)) return 'table-active'
-        }
+        },
+        ...mapActions('layout', ['updateSearchTerm'])
     },
 
     computed: {
         chainOptions() {
-            const options = this.displayedTableItems.map(item => ({ text: item.chain, value: item.chainId }))
+            const options = this.sources.map(item => ({ text: item.chain, value: item.chain }))
             return [
                 { value: null, text: 'Select chain' },
                 ..._.uniqBy(options, 'value')

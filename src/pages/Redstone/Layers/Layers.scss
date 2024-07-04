@@ -40,7 +40,11 @@
             transform: translate(-50%, -50%);
         }
     }
-
+    
+    .custom-select{
+        border: 1px solid var(--redstone-red-color);
+        color: var(--redstone-red-color);
+    }
     .bulk-actions-button {
         >button {
             padding: 5px 10px;
