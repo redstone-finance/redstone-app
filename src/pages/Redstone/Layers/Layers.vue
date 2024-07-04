@@ -72,6 +72,7 @@
 import _ from "lodash";
 import { mapActions, mapGetters, mapState} from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
+import copyToClipboardHelper from '../../../core/copyToClipboard'
 export default {
     components: {
         Loader
@@ -92,20 +93,8 @@ export default {
         await this.init()
     },
     methods: {
-        async copyToClipboard(event, evmAddress) {
-            event.preventDefault();
-            await navigator.clipboard.writeText(evmAddress);
-        },
+        copyToClipboard: copyToClipboardHelper,
         ...mapActions('layers', ['init']),
-        getColorForPercentage(value) {
-            if (value == 100) {
-                return '#0F9D58'; // green
-            } else if (value >= 99) {
-                return '#ff8c00'; // orange
-            } else {
-                return '#DB4437'; // red
-            }
-        },
     },
 
     computed: {

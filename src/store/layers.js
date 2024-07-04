@@ -148,7 +148,6 @@ export default {
         // Init fetchning of all details required for the UI
         // 
         async fetchLayersSchema({ commit, state }) {
-            if (!isEmpty(state.layersSchema)) return
             const { data } = await axios.get(LAYERS_SCHEMA_URL)
             commit('assignLayerSchema', data)
             if (isEmpty(state.layersDetails)) {
