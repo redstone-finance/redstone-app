@@ -163,6 +163,7 @@ export default {
             await this.dispatch('layers/fetchFeedIdAndValue', { layerId: layerId, feedId: state.layersDetails[layerId]?.feedId })
         },
         async init({ state }) {
+            if(!isEmpty(state.layersSchema)) return
             await this.dispatch('layers/fetchLayersSchema')
             await this.dispatch('layers/createEtherScanProvider')
             Object.keys(state.layersSchema).forEach(async key => {

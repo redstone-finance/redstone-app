@@ -23,7 +23,7 @@
         </div>
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="sources" @row-clicked="onRowClick"
+                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" @row-clicked="onRowClick"
                 :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
                 <template #head(selected)>
                     <b-form-checkbox class="layers__toggle-all" size="lg" :checked="allSelected"
@@ -37,7 +37,12 @@
                 <template #cell(layer)="{ item }">
                     <div class="layers__details">
                         <div class="layers__details-column">
-                            <LayerName :layerName="item.layer" />
+                            <LayerName :layerName="item.layer">
+                                <div v-b-tooltip.hover title="Click to copy"
+                                    @click.stop="copyToClipboard($event, item.address)">
+                                    <strong style="color: #000;">{{ item.address }}</strong>
+                                </div>
+                            </LayerName>
                             <LayerChain :chain="item.chain" :chainId="item.chainId" />
                             <LayerPriceFeeds :priceFeeds="item.priceFeeds" />
                         </div>
@@ -59,15 +64,15 @@
                 <template #cell(blockTimestamp)="{ item }">
                     <div class="layers__timestamp">
                         <Loader class="layers__loader" v-if="item.loaders.blockTimestamp"></Loader>
-                        <span v-else-if="item.blockTimestamp" class="layers__timestamp-value">
-                            {{ item.blockTimestamp }}
+                        <span v-else-if="item.blockTimestamp > 0" class="layers__timestamp-value">
+                            {{ parseUnixTime(item.blockTimestamp) }}
                         </span>
                         <span v-else v-b-tooltip.hover title="SmartContract does not provide timestamp"
                             class="layers__no-data">no data
                             &times;</span>
                     </div>
                 </template>
-                <template #cell(feedDataValue)="{ item }">
+            <template #cell(feedDataValue)="{ item }">
                     <div class="layers__feed-data">
                         <Loader class="layers__loader" v-if="item.loaders.feedDataValue"></Loader>
                         <span v-else-if="item.feedDataValue" class="layers__feed-data-value">
@@ -87,6 +92,7 @@ import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
+import {parseUnixTime} from '../../../core/parseHexTimestamp'
 import BulkActions from './components/BulkActions.vue'
 import LayerName from './components/LayerName.vue'
 import LayerChain from './components/LayerChain.vue'
@@ -122,6 +128,7 @@ export default {
         await this.init()
     },
     methods: {
+        parseUnixTime,
         onRowClick(item) {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
         },
@@ -155,24 +162,23 @@ export default {
             isSelected ? this.selectAllRows() : this.clearSelected()
         },
         selectRow(index) {
-            this.selectedItems.push(this.displayedTableItems[index].layer)
+            this.selectedItems.push(this.displayedTableItems[index]?.layer) // Defensive check
         },
         unselectRow(index) {
-            this.selectedItems = this.selectedItems.filter(item => item !== this.displayedTableItems[index].layer)
+            this.selectedItems = this.selectedItems.filter(item => item !== this.displayedTableItems[index]?.layer) // Defensive check
         },
         handleChange(index, isSelected) {
             !isSelected ? this.selectRow(index) : this.unselectRow(index)
         },
         isSelected(index) {
-            return this.selectedItems.includes(this.displayedTableItems[index].layer)
+            return this.selectedItems.includes(this.displayedTableItems[index]?.layer) // Defensive check
         },
         rowClass(item) {
-            if (this.selectedItems.includes(item.layer)) return 'table-active'
+            if (this.selectedItems.includes(item?.layer)) return 'table-active' // Defensive check
         },
         ...mapActions('layout', ['updateSearchTerm'])
     },
     watch: {
-        // whenever question changes, this function will run
         searchTerm(searchTerm) {
             if (searchTerm != '') {
                 this.handleFilter('Search query', searchTerm)
@@ -181,7 +187,7 @@ export default {
     },
     computed: {
         chainOptions() {
-            const options = this.sources.map(item => ({ text: item.chain, value: item.chain }))
+            const options = this.layers.map(item => ({ text: item.chain, value: item.chain }))
             return [
                 { value: null, text: 'Select chain' },
                 ..._.uniqBy(options, 'value')
@@ -200,7 +206,7 @@ export default {
         ...mapGetters('layers', [
             'combinedLayersWithDetailsArray'
         ]),
-        sources() {
+        layers() {
             return this.combinedLayersWithDetailsArray.map(item => (
                 {
                     layer: item.key,
@@ -208,7 +214,7 @@ export default {
                     chainId: item.values.chain.id,
                     updateTriggers: item.values.updateTriggers,
                     address: item.values.adapterContract,
-                    timestamp: item.values.details.blockTimestamp,
+                    blockTimestamp: item.values.details.blockTimestamp, // Ensure consistency in property names
                     priceFeeds: item.values.priceFeeds,
                     feedDataValue: item.values.details.feedData,
                     dataFeedId: item.values.details.feedId,
