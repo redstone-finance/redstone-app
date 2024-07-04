@@ -1,45 +1,46 @@
 <template>
     <div class="layers-wrapper">
-      <div class="bulk-actions-wrapper">
-        <div style="font-size:10px; font-weight: bold;" class="mb-2">Bulk actions:</div>
-        <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
-            :text="`${selectedItems.length} item(s)`" variant="danger" class="bulk-actions-button"
-            split-variant="outline-danger">
-            <b-dropdown-item href="#as">
-                <div class="mb-2">
-                    Open in
-                </div>
-                <b-button class="mr-2" size="sm" href="#foo" variant="outline-danger">Etherscan</b-button>
-                <b-button size="sm" class="mr-2" href="#foo" variant="outline-danger">Blockscout</b-button>
-                <b-button size="sm" href="#foo" variant="outline-danger">Zapper</b-button>
-            </b-dropdown-item>
-            <b-dropdown-item>
-                <div class="copy-section mb-2">Copy</div>
-                <div class="mb-2">
-                    <b-button size="sm" href="#foo" variant="outline-danger">trigger conditions</b-button>
-                    <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">price feeds</b-button>
-                </div>
-                <div>
-                    <b-button size="sm" href="#foo" variant="outline-danger">contract address</b-button>
-                    <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">chain details</b-button>
-                </div>
-            </b-dropdown-item>
-            <b-dropdown-item href="#as">
+        <div class="bulk-actions-wrapper">
+            <div style="font-size:10px; font-weight: bold;" class="mb-2">Bulk actions:</div>
+            <b-dropdown split :disabled="selectedItems.length < 1" id="dropdown-left" size="sm"
+                :text="`${selectedItems.length} item(s)`" variant="danger" class="bulk-actions-button"
+                split-variant="outline-danger">
+                <b-dropdown-item href="#as">
+                    <div class="mb-2">
+                        Open in
+                    </div>
+                    <b-button class="mr-2" size="sm" href="#foo" variant="outline-danger">Etherscan</b-button>
+                    <b-button size="sm" class="mr-2" href="#foo" variant="outline-danger">Blockscout</b-button>
+                    <b-button size="sm" href="#foo" variant="outline-danger">Zapper</b-button>
+                </b-dropdown-item>
+                <b-dropdown-item>
+                    <div class="copy-section mb-2">Copy</div>
+                    <div class="mb-2">
+                        <b-button size="sm" href="#foo" variant="outline-danger">trigger conditions</b-button>
+                        <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">price feeds</b-button>
+                    </div>
+                    <div>
+                        <b-button size="sm" href="#foo" variant="outline-danger">contract address</b-button>
+                        <b-button size="sm" href="#foo" class="ml-2" variant="outline-danger">chain details</b-button>
+                    </div>
+                </b-dropdown-item>
+                <b-dropdown-item href="#as">
 
-                <b-button block href="#foo" variant="danger">
-                    <strong>
-                        Full definition
-                    </strong>
-                </b-button>
+                    <b-button block href="#foo" variant="danger">
+                        <strong>
+                            Full definition
+                        </strong>
+                    </b-button>
 
-            </b-dropdown-item>
-        </b-dropdown>
-      </div>
+                </b-dropdown-item>
+            </b-dropdown>
+        </div>
         <b-table id="sources-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
             style="font-size:12x;" :filter="searchTerm" @filtered="clearSelected" sort-icon-left hover :items="sources"
             select-mode="multi" :tbody-tr-class="rowClass" :fields="fields">
             <template #head(selected)>
-                <b-form-checkbox class="toggle-all-checkbox" size="lg" :checked="allSelected" @change="toggleSelectAll" />
+                <b-form-checkbox class="toggle-all-checkbox" size="lg" :checked="allSelected"
+                    @change="toggleSelectAll" />
             </template>
 
             <template #cell(selected)="{ item, index }">
@@ -48,14 +49,21 @@
             </template>
             <template #cell(layer)="{ item }">
                 <div class="layer-details d-flex">
-                    <div class="layer-details__title">
-                        <label>Layer name</label>
-                        <strong>{{ item.layer }}</strong>
+                    <div>
+                        <div class="layer-details__title featured">
+                            <label>Layer name</label>
+                            <strong>{{ item.layer }}</strong>
+                        </div>
+                        <div class="layer-details__title mt-2">
+                            <label>Chain</label>
+                            <strong>{{ item.chain }}</strong>
+                            <span>ID:{{ item.chainId }}</span>
+                        </div>
                     </div>
-                    <div class="layer-details__title ml-4">
-                        <label>Chain</label>
-                        <strong>{{ item.chain }}</strong>
-                        <span>ID:{{ item.chainId }}</span>
+
+                    <div class="layer-details__title ml-4 triggers">
+                        <label>Update triggers</label>
+                        <pre><code v-text="JSON.stringify(item.updateTriggers, undefined, 2)"></code></pre>
                     </div>
 
                 </div>
@@ -198,6 +206,7 @@ export default {
                     layer: item.key,
                     chain: item.values.chain.name,
                     chainId: item.values.chain.id,
+                    updateTriggers: item.values.updateTriggers,
                     address: item.values.adapterContract,
                     timestamp: item.values.details.blockTimestamp,
                     feedDataValue: item.values.details.feedData,

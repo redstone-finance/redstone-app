@@ -8,22 +8,37 @@
     padding: 2rem;
     box-shadow: var(--content-shadow);
 
-    .toggle-all-checkbox input:checked + label::before{
+    .toggle-all-checkbox input:checked+label::before {
         background: var(--redstone-red-color) !important;
         border-color: var(--redstone-red-color) !important;
     }
 
     .bulk-actions-wrapper {
+        position: sticky;
+        top: 70px;
+        z-index: 2;
         background: $gray-200;
         padding: 15px;
         border-radius: 15px;
         margin-bottom: 20px;
+        box-shadow: var(--tabs-shadow);
     }
 
     .custom-checkbox {
         transform: scale(1.2);
         position: relative;
+        padding: 0 !important;
         left: 10px;
+        label{
+            height: 50px !important;
+            width: 60px !important;
+            cursor: pointer;
+        }
+        label::before, label::after{
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%);
+        }
     }
 
     .bulk-actions-button {
@@ -54,11 +69,13 @@
     .table-active {
         box-shadow: -2px 0px 0px 0px var(--redstone-red-color);
         background: #fff !important;
-        td{
+
+        td {
             background: inherit !important;
         }
-        .custom-checkbox{
-            label::before{
+
+        .custom-checkbox {
+            label::before {
                 background: var(--redstone-red-color) !important;
                 border-color: var(--redstone-red-color) !important;
             }
@@ -71,6 +88,7 @@
         background: $gray-200;
 
         th {
+            vertical-align: middle;
             padding: 20px 10px;
         }
 
@@ -86,7 +104,26 @@
 
     .layer-details {
         padding: 20px 0;
+
         &__title {
+            padding: 5px 10px;
+
+            &.featured {
+                font-size: 14px;
+                background: $gray-200;
+                border-radius: 10px;
+            
+
+                strong {
+                    font-size: 14px;
+                    color: var(--redstone-red-color);
+                }
+            }
+
+            &.triggers {
+                width: 100%;
+            }
+
             label {
                 font-size: 10px;
                 margin-bottom: 0;
@@ -97,9 +134,18 @@
                 font-size: 12px;
             }
 
-            span{
+            span {
                 font-size: 8px;
                 margin-left: 10px;
+            }
+
+            pre {
+                border-color: $gray-300;
+                padding: 10px;
+                font-size: 10px;
+                display: block;
+                max-width: 100%;
+                width: auto;
             }
         }
     }
