@@ -1,7 +1,11 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <BulkActions :selectedItemsCount="selectedItems.length" />
+            <BulkActions :selectedItemsCount="selectedItems.length" @copy-trigger-conditions="copy('conditions', $event)"
+                @copy-price-feeds="copy('priecFeeds', $event)"
+                @copy-contract-address="copy('contractAddress', $event)"
+                @copy-chain-details="copy('chainDetails', $event)"
+                @copy-full-definition="copy('fullDefinition', $event)" />
             <div class="layers__actions-wrapper-item">
                 <div class="layers__actions-wrapper-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
@@ -65,14 +69,14 @@
                     <div class="layers__timestamp">
                         <Loader class="layers__loader" v-if="item.loaders.blockTimestamp"></Loader>
                         <span v-else-if="item.blockTimestamp > 0" class="layers__timestamp-value">
-                            {{ parseUnixTime(item.blockTimestamp) }}
+                            {{ parseUnixTime(item.blockTimestamp) }} ago
                         </span>
                         <span v-else v-b-tooltip.hover title="SmartContract does not provide timestamp"
                             class="layers__no-data">no data
                             &times;</span>
                     </div>
                 </template>
-            <template #cell(feedDataValue)="{ item }">
+                <template #cell(feedDataValue)="{ item }">
                     <div class="layers__feed-data">
                         <Loader class="layers__loader" v-if="item.loaders.feedDataValue"></Loader>
                         <span v-else-if="item.feedDataValue" class="layers__feed-data-value">
@@ -92,7 +96,7 @@ import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader.vue'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
-import {parseUnixTime} from '../../../core/parseHexTimestamp'
+import { parseUnixTime } from '../../../core/parseHexTimestamp'
 import BulkActions from './components/BulkActions.vue'
 import LayerName from './components/LayerName.vue'
 import LayerChain from './components/LayerChain.vue'
@@ -149,6 +153,17 @@ export default {
             this.currentFilter = null
         },
         copyToClipboard: copyToClipboardHelper,
+
+        copy(type, event) {
+            const methodsMap = {
+                'conditions': () => this.selectedSchemas.map(schema => schema.updateTriggers),
+                'priecFeeds': () => this.selectedSchemas.map(schema => schema.priceFeeds),
+                'contractAddress': () => this.selectedSchemas.map(schema => schema.adapterContract),
+                'chainDetails': () => this.selectedSchemas.map(schema => schema.chain),
+                'fullDefinition': () => this.selectedSchemas
+            }
+            this.copyToClipboard(event, JSON.stringify(methodsMap[type]()))
+        },
         ...mapActions('layers', ['init']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
         // This is why I had to handle selection on my own
@@ -200,7 +215,11 @@ export default {
         allLoadersResolved() {
             return this.displayedTableItems.every(({ loaders }) => !(loaders.blockTimestamp && loaders.feedDataValue && loaders.feedId))
         },
+        selectedSchemas() {
+            return this.selectedItems.map(layerId => this.layersSchema[layerId])
+        },
         ...mapState({
+            layersSchema: state => state.layers.layersSchema,
             searchTerm: state => state.layout.searchTerm,
         }),
         ...mapGetters('layers', [

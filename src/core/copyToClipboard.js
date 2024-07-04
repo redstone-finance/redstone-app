@@ -1,4 +1,6 @@
 export default async (event, value) => {
-    event.preventDefault();
+    if (event) {
+        event.preventDefault();
+    }
     await navigator.clipboard.writeText(value);
 }
