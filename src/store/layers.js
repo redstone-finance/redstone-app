@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import axios from 'axios';
 import { isEmpty } from 'lodash';
 import Vue from 'vue';
+import relayers from '@/data/relayers.js'
 
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 
@@ -15,6 +16,7 @@ const CONTRACTS_ABI_DEFINITION = [
 
 // Helper methods for handling promises
 const etherNetLinkMessage = (address) => `validate it here: https://etherscan.io/address/${address}`
+
 
 export default {
     namespaced: true,
@@ -148,8 +150,8 @@ export default {
         // Init fetchning of all details required for the UI
         // 
         async fetchLayersSchema({ commit, state }) {
-            const { data } = await axios.get(LAYERS_SCHEMA_URL)
-            commit('assignLayerSchema', data)
+            // const { data } = await axios.get(LAYERS_SCHEMA_URL)
+            commit('assignLayerSchema', relayers.standart)
             if (isEmpty(state.layersDetails)) {
                 this.dispatch('layers/initializeLayerDetails')
             }
