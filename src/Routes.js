@@ -11,7 +11,8 @@ import Sources from "@/pages/Redstone/Sources/Sources";
 import Source from "@/pages/Redstone/Source/Source";
 import DataServices from "@/pages/Redstone/DataServices/DataServices";
 import DataService from "@/pages/Redstone/DataService/DataService";
-
+import Layers from "@/pages/Redstone/Layers/Layers"
+import Layer from "@/pages/Redstone/Layers/Layer"
 // Store
 import store from "./store";
 
@@ -53,6 +54,20 @@ const router = new Router({
           path: 'source/:sourceId',
           name: 'SourcePage',
           component: Source,
+        },
+        {
+          path: 'layers',
+          
+          name: 'LayersPage',
+          component: Layers,
+          meta: {
+            showSearchInputInNavbar: true,
+          },
+        },
+        {
+          path: 'layers/:layerId',
+          name: 'LayerSinglePage',
+          component: Layer,
         },
         {
           path: 'data-services',

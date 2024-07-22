@@ -42,6 +42,15 @@
             isHeader
         />
 
+        <NavLink
+            :activeItem="activeItem"
+            header="Layers"
+            link="/app/layers"
+            iconName="flaticon-layers"
+            index="layers"
+            isHeader
+        />
+
       </ul>
 
       <footer class="contentFooter">
