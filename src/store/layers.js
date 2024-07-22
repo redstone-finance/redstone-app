@@ -140,12 +140,14 @@ export default {
             })
         },
         async fetchValueForDataFeed({ commit, state }, { layerId, feedId }) {
+            console.log(feedId)
             if (feedId == null) return
             // Most contract with multiple feeds expose only method for multiple values
             // I'm not sure if this is a general rule for every contract, would be nice to have consistensy across contracts.
             const method = this.getters['layers/hasMultipleFeeds'](layerId) ? 'getValuesForDataFeeds' : 'getValueForDataFeed'
             this.getters['layers/getSmartContractByLayerId'](layerId).methods[method](feedId).call().then(dataFeed => {
-                commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed._hex })
+                console.log({dataFeed})
+                commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed })
             }).catch(() => {
                 console.log(`No dataFeed found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
             }).finally(() => {
