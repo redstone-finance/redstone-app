@@ -151,7 +151,7 @@ export default {
         // 
         async fetchLayersSchema({ commit, state }) {
             // const { data } = await axios.get(LAYERS_SCHEMA_URL)
-            commit('assignLayerSchema', relayers.standart)
+            commit('assignLayerSchema', relayers.standard)
             if (isEmpty(state.layersDetails)) {
                 this.dispatch('layers/initializeLayerDetails')
             }
