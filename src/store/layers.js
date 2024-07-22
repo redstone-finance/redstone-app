@@ -1,18 +1,49 @@
 import { ethers } from 'ethers'
 import axios from 'axios';
+import Web3 from 'web3'
 import { isEmpty } from 'lodash';
 import Vue from 'vue';
 import relayers from '@/data/relayers.js'
-
+import networks from '@/data/networks.js'
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 
 const CONTRACTS_ABI_DEFINITION = [
-    "function getBlockTimestampFromLatestUpdate() public view returns (uint256 blockTimestamp)",
-    "function getValueForDataFeed(bytes32 dataFeedId) external view returns (uint256)",
-    "function getValuesForDataFeeds(bytes32[] memory requestedDataFeedIds) external view returns (uint256[] memory)",
-    "function getDataFeedId() external view returns (bytes32)",
-    "function getDataFeedIds() external view returns (bytes32[] memory)"
-];
+    {
+      "inputs": [],
+      "name": "getBlockTimestampFromLatestUpdate",
+      "outputs": [{"name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"name": "dataFeedId", "type": "bytes32"}],
+      "name": "getValueForDataFeed",
+      "outputs": [{"name": "", "type": "uint256"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{"name": "requestedDataFeedIds", "type": "bytes32[]"}],
+      "name": "getValuesForDataFeeds",
+      "outputs": [{"name": "", "type": "uint256[]"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getDataFeedId",
+      "outputs": [{"name": "", "type": "bytes32"}],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getDataFeedIds",
+      "outputs": [{"name": "", "type": "bytes32[]"}],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ];
 
 // Helper methods for handling promises
 const etherNetLinkMessage = (address) => `validate it here: https://etherscan.io/address/${address}`
@@ -46,6 +77,7 @@ export default {
     getters: {
         getSmartContractByLayerId: (state) => (layerId) => {
             const contract = state.smartContracts[layerId]
+            // console.log(contract.methods.getBlockTimestampFromLatestUpdate().call())
             if (contract == null) throw Error('No contract assigned to layer id:', layerId)
             return contract
         },
@@ -69,13 +101,16 @@ export default {
         // Ether.js initialization methods
         // 
         createEtherScanProvider({ commit, state }) {
-            if (!isEmpty(state.provider)) return
-            const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), process.env.VUE_APP_ETHER_SCAN_API_KEY)
-            commit('assignEtherScanProvider', provider);
+            // if (!isEmpty(state.provider)) return
+            // const provider = new ethers.providers.EtherscanProvider(ethers.providers.getNetwork(), process.env.VUE_APP_ETHER_SCAN_API_KEY)
+            // commit('assignEtherScanProvider', provider);
         },
-        createSmartContract({ commit, state }, { layerId, contractAddress }) {
-            if (state.etherScanProvider == null) throw Error('Cannot create contract before establishing EtherScan provider. Please call createEtherScanProvider method before creating a contract')
-            const contract = new ethers.Contract(contractAddress, CONTRACTS_ABI_DEFINITION, state.etherScanProvider);
+        createSmartContract({ commit, state }, { layerId, contractAddress, chainId }) {
+            // if (state.etherScanProvider == null) throw Error('Cannot create contract before establishing EtherScan provider. Please call createEtherScanProvider method before creating a contract')
+
+            const contractNetwork = Object.values(networks).find(network => network.chainId === chainId)
+            const web3 = new Web3(new Web3.providers.HttpProvider(contractNetwork.rpcUrl));
+            const contract = new web3.eth.Contract(CONTRACTS_ABI_DEFINITION, contractAddress);
             commit('assignCreatedSmartContract', { contract, layerId })
         },
         // 
@@ -85,7 +120,7 @@ export default {
         // 
         async fetchDataFeedId({ commit, state }, layerId) {
             const method = this.getters['layers/hasMultipleFeeds'](layerId) ? 'getDataFeedIds' : 'getDataFeedId'
-            return this.getters['layers/getSmartContractByLayerId'](layerId)[method]().then(feedId => {
+            return this.getters['layers/getSmartContractByLayerId'](layerId).methods[method]().call().then(feedId => {
                 commit('assignLayerDetails', { key: 'feedId', layerId, data: feedId })
             }).catch(() => {
                 // since data feed id is required for fetching feed value we disable the feed value loader as well
@@ -96,7 +131,7 @@ export default {
             })
         },
         async fetchBlockTimeStamp({ commit, state }, layerId) {
-            this.getters['layers/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
+            this.getters['layers/getSmartContractByLayerId'](layerId).methods.getBlockTimestampFromLatestUpdate().call().then(timestamp => {
                 commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp })
             }).catch(() => {
                 console.log(`No blockTimestamp found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
@@ -109,7 +144,7 @@ export default {
             // Most contract with multiple feeds expose only method for multiple values
             // I'm not sure if this is a general rule for every contract, would be nice to have consistensy across contracts.
             const method = this.getters['layers/hasMultipleFeeds'](layerId) ? 'getValuesForDataFeeds' : 'getValueForDataFeed'
-            this.getters['layers/getSmartContractByLayerId'](layerId)[method](feedId).then(dataFeed => {
+            this.getters['layers/getSmartContractByLayerId'](layerId).methods[method](feedId).call().then(dataFeed => {
                 commit('assignLayerDetails', { key: 'dataFeed', layerId, data: dataFeed._hex })
             }).catch(() => {
                 console.log(`No dataFeed found for ${layerId}, ${etherNetLinkMessage(state.layersSchema[layerId].adapterContract)}`)
@@ -159,16 +194,16 @@ export default {
         async initSingleContract({ state }, layerId) {
             await this.dispatch('layers/fetchLayersSchema')
             await this.dispatch('layers/createEtherScanProvider')
-            await this.dispatch('layers/createSmartContract', { layerId: layerId, contractAddress: state.layersSchema[layerId].adapterContract })
+            await this.dispatch('layers/createSmartContract', { layerId: layerId, contractAddress: state.layersSchema[layerId].adapterContract, chainId: state.layersSchema[layerId].chain.id })
             await this.dispatch('layers/fetchBlockTimeStamp', layerId)
             await this.dispatch('layers/fetchFeedIdAndValue', { layerId: layerId, feedId: state.layersDetails[layerId]?.feedId })
         },
         async init({ state }) {
-            if(!isEmpty(state.layersSchema)) return
+            if (!isEmpty(state.layersSchema)) return
             await this.dispatch('layers/fetchLayersSchema')
             await this.dispatch('layers/createEtherScanProvider')
             Object.keys(state.layersSchema).forEach(async key => {
-                await this.dispatch('layers/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract })
+                await this.dispatch('layers/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract, chainId: state.layersSchema[key].chain.id })
                 await this.dispatch('layers/fetchBlockTimeStamp', key)
                 await this.dispatch('layers/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
             })

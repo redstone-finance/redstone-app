@@ -1,6 +1,6 @@
 export default {
     ethereum: {
-      rpcUrl: 'https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID',
+      rpcUrl: 'https://eth.llamarpc.com',
       chainId: 1,
       name: 'Ethereum Mainnet'
     },
@@ -15,7 +15,7 @@ export default {
       name: 'Base'
     },
     berachainTestnet: {
-      rpcUrl: 'https://testnet-rpc.berachain.com',
+      rpcUrl: 'https://bera-testnet.nodeinfra.com',
       chainId: 80084,
       name: 'Berachain Testnet'
     },
@@ -35,7 +35,7 @@ export default {
       name: 'BNB Chain'
     },
     bob: {
-      rpcUrl: 'https://mainnet.rpc.gobob.xyz',
+      rpcUrl: 'https://rpc.gobob.xyz',
       chainId: 60808,
       name: 'Bob'
     },
@@ -55,7 +55,7 @@ export default {
       name: 'Cyber'
     },
     etherlink: {
-      rpcUrl: 'https://node.ghostnet.etherlink.com',
+      rpcUrl: 'https://node.mainnet.etherlink.com',
       chainId: 42793,
       name: 'Etherlink'
     },
@@ -105,7 +105,7 @@ export default {
       name: 'Real'
     },
     sei: {
-      rpcUrl: 'https://evm.sei.wfirma.io',
+      rpcUrl: 'https://evm-rpc.sei-apis.com',
       chainId: 1329,
       name: 'Sei'
     },
@@ -140,7 +140,7 @@ export default {
       name: 'Kava EVM'
     },
     b2: {
-      rpcUrl: 'https://rpc.b2.network',
+      rpcUrl: 'https://rpc.ankr.com/b2',
       chainId: 223,
       name: 'B2 Network'
     }
