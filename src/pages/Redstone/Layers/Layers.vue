@@ -1,12 +1,12 @@
 <template>
     <div class="layers">
-        {{ priceFeeds }}
         <div class="layers__actions-wrapper">
             <div class="layers__actions-wrapper-item">
                 <div class="layers__actions-wrapper-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
                     :options="chainOptions" class="layers__chain-select"></b-form-select>
             </div>
+            <FeedPicker></FeedPicker>
             <div class="layers__actions-wrapper-item" v-if="currentFilter && filters">
                 <div class="layers__actions-wrapper-label">Applied filters</div>
                 <b-badge @click="resetFilters" pill class="layers__filter-badge" variant="danger">
@@ -89,6 +89,7 @@ import LayerName from './components/LayerName'
 import LayerChain from './components/LayerChain'
 import LayerPriceFeeds from './components/LayerPriceFeeds'
 import LayerTriggers from './components/LayerTriggers'
+import FeedPicker from "./components/FeedPicker.vue";
 export default {
     components: {
         Loader,
@@ -96,7 +97,8 @@ export default {
         LayerName,
         LayerChain,
         LayerPriceFeeds,
-        LayerTriggers
+        LayerTriggers,
+        FeedPicker
     },
     data() {
         return {
