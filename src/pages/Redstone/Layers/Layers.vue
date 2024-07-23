@@ -1,11 +1,6 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <BulkActions :selectedItemsCount="selectedItems.length"
-                @copy-trigger-conditions="copy('conditions', $event)" @copy-price-feeds="copy('priecFeeds', $event)"
-                @copy-contract-address="copy('contractAddress', $event)"
-                @copy-chain-details="copy('chainDetails', $event)"
-                @copy-full-definition="copy('fullDefinition', $event)" />
             <div class="layers__actions-wrapper-item">
                 <div class="layers__actions-wrapper-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
@@ -29,15 +24,6 @@
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" @row-clicked="onRowClick"
                 :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
-                <template #head(selected)>
-                    <b-form-checkbox class="layers__toggle-all" size="lg" :checked="allSelected"
-                        @change="toggleSelectAll" />
-                </template>
-
-                <template #cell(selected)="{ item, index }">
-                    <b-form-checkbox class="layers__checkbox" size="lg" :id="item.layer" :checked="isSelected(index)"
-                        @change="handleChange(index, isSelected(index))" />
-                </template>
                 <template #cell(layer)="{ item }">
                     <div class="layers__details">
                         <div class="layers__details-column">
@@ -120,7 +106,6 @@ export default {
             currentFilter: null,
             selectedChain: null,
             fields: [
-                { key: 'selected', label: '#', thStyle: { width: '50px' } },
                 { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
                 { key: 'blockTimestamp', label: 'Block timestap', sortable: true, },
                 { key: 'feedDataValue', label: 'Feed data', sortable: true },
