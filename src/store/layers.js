@@ -120,8 +120,10 @@ export default {
         },
         async fetchBlockTimeStamp({ commit, state }, layerId) {
             this.getters['layers/getSmartContractByLayerId'](layerId).methods.getBlockTimestampFromLatestUpdate().call().then(timestamp => {
+                console.log(timestamp, layerId)
                 commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp })
-            }).catch(() => {
+            }).catch((error) => {
+                console.log('timestamp error', layerId, error)
             }).finally(() => {
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'blockTimestamp' })
             })
@@ -184,7 +186,7 @@ export default {
         // 
         async fetchLayersSchema({ commit, state }) {
             // const { data } = await axios.get(LAYERS_SCHEMA_URL)
-            commit('assignLayerSchema', relayers.standard)
+            commit('assignLayerSchema', {...relayers.standard})
             if (isEmpty(state.layersDetails)) {
                 this.dispatch('layers/initializeLayerDetails')
             }

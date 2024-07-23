@@ -1,8 +1,8 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <BulkActions :selectedItemsCount="selectedItems.length" @copy-trigger-conditions="copy('conditions', $event)"
-                @copy-price-feeds="copy('priecFeeds', $event)"
+            <BulkActions :selectedItemsCount="selectedItems.length"
+                @copy-trigger-conditions="copy('conditions', $event)" @copy-price-feeds="copy('priecFeeds', $event)"
                 @copy-contract-address="copy('contractAddress', $event)"
                 @copy-chain-details="copy('chainDetails', $event)"
                 @copy-full-definition="copy('fullDefinition', $event)" />
@@ -191,6 +191,12 @@ export default {
         rowClass(item) {
             if (this.selectedItems.includes(item?.layer)) return 'table-active' // Defensive check
         },
+        transformHexString(str) {
+            if(str == null) return 'no data'
+            if (str?.length <= 10) return str;
+            return `${str?.slice(0, 8)}...${str?.slice(-3)}`;
+        },
+
         ...mapActions('layout', ['updateSearchTerm'])
     },
     watch: {
@@ -235,7 +241,7 @@ export default {
                     address: item.values.adapterContract,
                     blockTimestamp: item.values.details.blockTimestamp,
                     priceFeeds: item.values.priceFeeds,
-                    feedDataValue: [...new Set(item.values.details.dataFeed?.flat(Infinity))][0], // flat array without duplicates
+                    feedDataValue: this.transformHexString([...new Set(item.values.details.dataFeed?.flat(Infinity))][0]), // flat array without duplicates
                     dataFeedId: item.values.details.feedId,
                     loaders: item.values.details.loaders,
                 }
