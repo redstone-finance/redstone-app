@@ -82,11 +82,12 @@ export default {
         combinedLayersWithDetailsArray(state) {
             return Object.keys(state.layersSchema)
                 .map((key) => ({
-                    key,
-                    values: {
-                        ...state.layersSchema[key],
-                        details: { ...state.layersDetails[key] }
-                    }
+                    feeds: Object.keys(state.layersSchema[key].priceFeeds).map((feedId => ({
+                        networkId: state.layersSchema[key].chain.id,
+                        feedId: feedId,
+                        contractAddress: state.layersSchema[key].adapterContract,
+                        triggers:  state.layersSchema[key].updateTriggers
+                    })))
                 }))
         }
     },
