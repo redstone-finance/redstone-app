@@ -1,12 +1,13 @@
 <template>
     <div class="layers">
+        {{ filters }}
         <div class="layers__actions-wrapper">
             <div class="layers__actions-wrapper-item">
                 <div class="layers__actions-wrapper-label">Filter by chain:</div>
                 <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
                     :options="chainOptions" class="layers__chain-select"></b-form-select>
             </div>
-            <FeedPicker></FeedPicker>
+            <FeedPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></FeedPicker>
             <div class="layers__actions-wrapper-item" v-if="currentFilter && filters">
                 <div class="layers__actions-wrapper-label">Applied filters</div>
                 <b-badge @click="resetFilters" pill class="layers__filter-badge" variant="danger">
@@ -23,8 +24,9 @@
         </div>
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" @row-clicked="onRowClick"
-                :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
+                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers"
+                :filter-function="customFilter" @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields"
+                class="layers__table">
                 <template #cell(layer)="{ item }">
                     <div class="layers__details">
                         <div class="layers__details-column">
@@ -108,6 +110,7 @@ export default {
             filters: null,
             currentFilter: null,
             selectedChain: null,
+            selectedCryptos: [],
             fields: [
                 { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
                 { key: 'blockTimestamp', label: 'Block timestap', sortable: true, },
@@ -129,10 +132,21 @@ export default {
                 this.updateSearchTerm('')
             }
             this.filters = value
+            if (filterType === 'cryptos') return
             this.currentFilter = filterType
         },
         onFiltered() {
             this.clearSelected()
+        },
+        customFilter(row, filterValue) {
+            const rowDataString = JSON.stringify(row).toLowerCase();
+            if (Array.isArray(filterValue)) {
+                return filterValue.some(value =>
+                    rowDataString.includes(String(value).toLowerCase())
+                );
+            } else {
+                return rowDataString.includes(String(filterValue).toLowerCase());
+            }
         },
         async resetFilters() {
             this.updateSearchTerm('')
@@ -180,7 +194,7 @@ export default {
             if (this.selectedItems.includes(item?.layer)) return 'table-active' // Defensive check
         },
         transformHexString(str) {
-            if(str == null) return 'no data'
+            if (str == null) return 'no data'
             if (str?.length <= 10) return str;
             return `${str?.slice(0, 8)}...${str?.slice(-3)}`;
         },
@@ -203,7 +217,7 @@ export default {
             ];
         },
         priceFeeds() {
-           return [...new Set(this.layers.map(item => Object.keys(item.priceFeeds)).flat())]
+            return [...new Set(this.layers.map(item => Object.keys(item.priceFeeds)).flat())]
         },
 
         allSelected() {
@@ -235,6 +249,7 @@ export default {
                     feedDataValue: this.transformHexString([...new Set(item.values.details.dataFeed?.flat(Infinity))][0]), // flat array without duplicates
                     dataFeedId: item.values.details.feedId,
                     loaders: item.values.details.loaders,
+                    cryptos: Object.keys(item.values.priceFeeds)
                 }
             ))
         },
