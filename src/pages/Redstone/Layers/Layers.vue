@@ -1,13 +1,8 @@
 <template>
     <div class="layers">
-        {{ filters }}
         <div class="layers__actions-wrapper">
-            <div class="layers__actions-wrapper-item">
-                <div class="layers__actions-wrapper-label">Filter by chain:</div>
-                <b-form-select v-model="selectedChain" size="sm" @input="handleFilter('chain', $event)"
-                    :options="chainOptions" class="layers__chain-select"></b-form-select>
-            </div>
-            <FeedPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></FeedPicker>
+            <NetworkPicker v-model="selectedNetworks" :items="networksMap" />
+            <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
             <div class="layers__actions-wrapper-item" v-if="currentFilter && filters">
                 <div class="layers__actions-wrapper-label">Applied filters</div>
                 <b-badge @click="resetFilters" pill class="layers__filter-badge" variant="danger">
@@ -16,7 +11,7 @@
             </div>
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
                 <div class="layers__actions-wrapper-label">Status</div>
-                <span class="layers__status-text"><strong>{{ chainOptions.length }}</strong> chains
+                <span class="layers__status-text"><strong>{{ networksMap.length }}</strong> networks
                     available</span>
                 <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> layers
                     displayed</span>
@@ -86,21 +81,22 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
 import { parseUnixTime } from '../../../core/timeHelpers'
-import BulkActions from './components/BulkActions'
 import LayerName from './components/LayerName'
 import LayerChain from './components/LayerChain'
 import LayerPriceFeeds from './components/LayerPriceFeeds'
 import LayerTriggers from './components/LayerTriggers'
-import FeedPicker from "./components/FeedPicker.vue";
+import CryptoPicker from "./components/CryptoPicker.vue"
+import NetworkPicker from "./components/NetworkPicker.vue"
+import networks from '@/data//networks.js'
 export default {
     components: {
         Loader,
-        BulkActions,
         LayerName,
         LayerChain,
         LayerPriceFeeds,
         LayerTriggers,
-        FeedPicker
+        CryptoPicker,
+        NetworkPicker
     },
     data() {
         return {
@@ -111,6 +107,7 @@ export default {
             currentFilter: null,
             selectedChain: null,
             selectedCryptos: [],
+            selectedNetworks: [],
             fields: [
                 { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
                 { key: 'blockTimestamp', label: 'Block timestap', sortable: true, },
@@ -209,6 +206,9 @@ export default {
         }
     },
     computed: {
+        networksMap() {
+            return Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
+        },
         chainOptions() {
             const options = this.layers.map(item => ({ text: item.chain, value: item.chain }))
             return [
