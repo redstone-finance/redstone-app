@@ -1,5 +1,6 @@
 <template>
     <div class="layers">
+        {{ priceFeeds }}
         <div class="layers__actions-wrapper">
             <div class="layers__actions-wrapper-item">
                 <div class="layers__actions-wrapper-label">Filter by chain:</div>
@@ -198,6 +199,9 @@ export default {
                 { value: null, text: 'Select chain' },
                 ..._.uniqBy(options, 'value')
             ];
+        },
+        priceFeeds() {
+           return [...new Set(this.layers.map(item => Object.keys(item.priceFeeds)).flat())]
         },
 
         allSelected() {
