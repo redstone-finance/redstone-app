@@ -22,54 +22,6 @@
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers"
                 :filter-function="customFilter" @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields"
                 class="layers__table">
-                <template #cell(layer)="{ item }">
-                    <div class="layers__details">
-                        <div class="layers__details-column">
-                            <LayerName :layerName="item.layer">
-                                <div v-b-tooltip.hover title="Click to copy"
-                                    @click.stop="copyToClipboard($event, item.address)">
-                                    <strong style="color: #000;">{{ item.address }}</strong>
-                                </div>
-                            </LayerName>
-                            <LayerChain :chain="item.chain" :chainId="item.chainId" />
-                            <LayerPriceFeeds :priceFeeds="item.priceFeeds" />
-                        </div>
-                        <LayerTriggers :updateTriggers="item.updateTriggers" />
-                    </div>
-                </template>
-                <template #cell(chain)="{ item }">
-                    <div class="layers__chain">
-                        <span class="layers__chain-value">
-                            {{ item.chain }}
-                        </span>
-                    </div>
-                </template>
-                <template #cell(address)="{ item }">
-                    <div class="layers__address">
-                        <input class="layers__address-input" readonly :value="item.address" role="button" />
-                    </div>
-                </template>
-                <template #cell(blockTimestamp)="{ item }">
-                    <div class="layers__timestamp">
-                        <Loader class="layers__loader" v-if="item.loaders.blockTimestamp"></Loader>
-                        <span v-else-if="item.blockTimestamp > 0" class="layers__timestamp-value">
-                            {{ parseUnixTime(item.blockTimestamp) }} ago
-                        </span>
-                        <span v-else v-b-tooltip.hover title="SmartContract does not provide timestamp"
-                            class="layers__no-data">no data
-                            &times;</span>
-                    </div>
-                </template>
-                <template #cell(feedDataValue)="{ item }">
-                    <div class="layers__feed-data">
-                        <Loader class="layers__loader" v-if="item.loaders.feedDataValue"></Loader>
-                        <span v-else-if="item.feedDataValue" class="layers__feed-data-value">
-                            {{ item.feedDataValue }}
-                        </span>
-                        <div v-else class="layers__no-data" v-b-tooltip.hover
-                            title="SmartContract does not provide feed data value">No data &times;</div>
-                    </div>
-                </template>
             </b-table>
         </template>
     </div>
@@ -109,9 +61,10 @@ export default {
             selectedCryptos: [],
             selectedNetworks: [],
             fields: [
-                { key: 'layer', label: 'Details', thStyle: { width: '70%' } },
-                { key: 'blockTimestamp', label: 'Block timestap', sortable: true, },
-                { key: 'feedDataValue', label: 'Feed data', sortable: true },
+                { key: 'feed', label: 'Feed', sortable: true },
+                { key: 'network', label: 'Network', sortable: true },
+                { key: 'contract_address', label: 'Contract address' },
+                { key: 'timestamp', label: 'Block timestap', sortable: true },
             ],
         };
     },
@@ -193,7 +146,7 @@ export default {
         transformHexString(str) {
             if (str == null) return 'no data'
             if (str?.length <= 10) return str;
-            return `${str?.slice(0, 8)}...${str?.slice(-3)}`;
+            return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`;
         },
 
         ...mapActions('layout', ['updateSearchTerm'])
@@ -240,11 +193,11 @@ export default {
             return this.combinedLayersWithDetailsArray.map(item => (
                 {
                     layer: item.key,
-                    chain: item.values.chain.name,
+                    network: item.values.chain.name,
                     chainId: item.values.chain.id,
                     updateTriggers: item.values.updateTriggers,
-                    address: item.values.adapterContract,
-                    blockTimestamp: item.values.details.blockTimestamp,
+                    contract_address: this.transformHexString(item.values.adapterContract),
+                    timestamp: item.values.details.blockTimestamp,
                     priceFeeds: item.values.priceFeeds,
                     feedDataValue: this.transformHexString([...new Set(item.values.details.dataFeed?.flat(Infinity))][0]), // flat array without duplicates
                     dataFeedId: item.values.details.feedId,
