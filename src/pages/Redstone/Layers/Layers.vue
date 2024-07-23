@@ -235,7 +235,7 @@ export default {
                     address: item.values.adapterContract,
                     blockTimestamp: item.values.details.blockTimestamp,
                     priceFeeds: item.values.priceFeeds,
-                    feedDataValue: item.values.details.dataFeed,
+                    feedDataValue: [...new Set(item.values.details.dataFeed?.flat(Infinity))][0], // flat array without duplicates
                     dataFeedId: item.values.details.feedId,
                     loaders: item.values.details.loaders,
                 }

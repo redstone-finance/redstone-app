@@ -100,7 +100,7 @@ export default {
       name: 'Optimism'
     },
     real: {
-      rpcUrl: 'https://rpc.realweb3.io',
+      rpcUrl: 'wss://real.drpc.org',
       chainId: 111188,
       name: 'Real'
     },
