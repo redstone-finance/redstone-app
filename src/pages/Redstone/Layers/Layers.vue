@@ -19,10 +19,12 @@
         </div>
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers"
-                :filter-function="customFilter" @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields"
-                class="layers__table">
+                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
+                :current-page="currentPage" :filter-function="customFilter" @row-clicked="onRowClick"
+                :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
             </b-table>
+            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
+                class="my-3"></b-pagination>
         </template>
     </div>
 </template>
@@ -60,6 +62,9 @@ export default {
             selectedChain: null,
             selectedCryptos: [],
             selectedNetworks: [],
+            perPage: 10,
+            currentPage: 1,
+            filteredItems: [],
             fields: [
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
@@ -86,7 +91,9 @@ export default {
             if (filterType === 'cryptos') return
             this.currentFilter = filterType
         },
-        onFiltered() {
+        onFiltered(filteredItems) {
+            this.filteredItems = filteredItems;
+            this.currentPage = 1;
             this.clearSelected()
         },
         customFilter(row, filterValue) {
@@ -146,9 +153,16 @@ export default {
             if (searchTerm != '') {
                 this.handleFilter('Search query', searchTerm)
             }
-        }
+        },
+        layers() {
+            this.filteredItems = [];
+            this.currentPage = 1;
+        },
     },
     computed: {
+        totalRows() {
+            return this.filteredItems.length > 0 ? this.filteredItems.length : this.layers.length;
+        },
         networksMap() {
             return Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
         },
@@ -162,7 +176,11 @@ export default {
         priceFeeds() {
             return [...new Set(this.layers.map(item => Object.keys(item.priceFeeds)).flat())]
         },
-
+        paginatedLayers() {
+            const startIndex = (this.currentPage - 1) * this.perPage;
+            const endIndex = startIndex + this.perPage;
+            return this.layers.slice(startIndex, endIndex);
+        },
         allSelected() {
             return this.selectedItems.length === this.displayedTableItems.length
         },
