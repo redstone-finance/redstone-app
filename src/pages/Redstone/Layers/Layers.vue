@@ -1,6 +1,5 @@
 <template>
     <div class="layers">
-        {{ paginatedLayersLayerIds }}
         <div class="layers__actions-wrapper">
             <NetworkPicker v-model="selectedNetworks" :items="networksMap" />
             <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
@@ -19,10 +18,10 @@
             </div>
         </div>
         <template>
-            <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
-                :current-page="currentPage" :filter-function="customFilter" @row-clicked="onRowClick"
-                :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
+            <b-table id="layers-table" v-model="displayedTableItems" key="table"
+                stacked="md" ref="selectableTable" @filtered="onFiltered" :filter="filters" sort-icon-left hover
+                :items="layers" :per-page="perPage" :current-page="currentPage" :filter-function="customFilter"
+                @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
             </b-table>
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
                 class="my-3"></b-pagination>
@@ -146,7 +145,6 @@ export default {
             if (str?.length <= 10) return str;
             return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`
         },
-
         ...mapActions('layout', ['updateSearchTerm'])
     },
     watch: {
@@ -181,11 +179,6 @@ export default {
             const startIndex = (this.currentPage - 1) * this.perPage;
             const endIndex = startIndex + this.perPage;
             return this.layers.slice(startIndex, endIndex);
-        },
-        paginatedLayersLayerIds() {
-            return this.paginatedLayers.forEach(item => {
-                this.initSingleContract(item.layer_id)
-            })
         },
         allSelected() {
             return this.selectedItems.length === this.displayedTableItems.length
