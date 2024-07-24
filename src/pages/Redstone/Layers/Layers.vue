@@ -1,5 +1,6 @@
 <template>
     <div class="layers">
+        {{ paginatedLayersLayerIds }}
         <div class="layers__actions-wrapper">
             <NetworkPicker v-model="selectedNetworks" :items="networksMap" />
             <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
@@ -62,14 +63,14 @@ export default {
             selectedChain: null,
             selectedCryptos: [],
             selectedNetworks: [],
-            perPage: 10,
+            perPage: 15,
             currentPage: 1,
             filteredItems: [],
             fields: [
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
                 { key: 'contract_address', label: 'Contract address' },
-                { key: 'timestamp', label: 'Block timestap', sortable: true },
+                { key: 'timestamp', label: 'Block timestamp', sortable: true },
             ],
         };
     },
@@ -92,18 +93,18 @@ export default {
             this.currentFilter = filterType
         },
         onFiltered(filteredItems) {
-            this.filteredItems = filteredItems;
-            this.currentPage = 1;
+            this.filteredItems = filteredItems
+            this.currentPage = 1
             this.clearSelected()
         },
         customFilter(row, filterValue) {
-            const rowDataString = JSON.stringify(row).toLowerCase();
+            const rowDataString = JSON.stringify(row).toLowerCase()
             if (Array.isArray(filterValue)) {
                 return filterValue.some(value =>
                     rowDataString.includes(String(value).toLowerCase())
                 );
             } else {
-                return rowDataString.includes(String(filterValue).toLowerCase());
+                return rowDataString.includes(String(filterValue).toLowerCase())
             }
         },
         async resetFilters() {
@@ -113,7 +114,7 @@ export default {
             this.currentFilter = null
         },
         copyToClipboard: copyToClipboardHelper,
-        ...mapActions('layers', ['init']),
+        ...mapActions('layers', ['init', 'initSingleContract']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
         // This is why I had to handle selection on my own
         selectAllRows() {
@@ -143,7 +144,7 @@ export default {
         transformHexString(str) {
             if (str == null) return 'no data'
             if (str?.length <= 10) return str;
-            return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`;
+            return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`
         },
 
         ...mapActions('layout', ['updateSearchTerm'])
@@ -155,8 +156,8 @@ export default {
             }
         },
         layers() {
-            this.filteredItems = [];
-            this.currentPage = 1;
+            this.filteredItems = []
+            this.currentPage = 1
         },
     },
     computed: {
@@ -171,7 +172,7 @@ export default {
             return [
                 { value: null, text: 'Select chain' },
                 ..._.uniqBy(options, 'value')
-            ];
+            ]
         },
         priceFeeds() {
             return [...new Set(this.layers.map(item => Object.keys(item.priceFeeds)).flat())]
@@ -180,6 +181,11 @@ export default {
             const startIndex = (this.currentPage - 1) * this.perPage;
             const endIndex = startIndex + this.perPage;
             return this.layers.slice(startIndex, endIndex);
+        },
+        paginatedLayersLayerIds() {
+            return this.paginatedLayers.forEach(item => {
+                this.initSingleContract(item.layer_id)
+            })
         },
         allSelected() {
             return this.selectedItems.length === this.displayedTableItems.length
@@ -198,14 +204,15 @@ export default {
             'combinedLayersWithDetailsArray'
         ]),
         layers() {
-            return this.combinedLayersWithDetailsArray.map(item => (
-                {
+            return this.combinedLayersWithDetailsArray.map(item => {
+                return {
                     feed: item.feedId,
                     network: item.networkId,
                     contract_address: item.contractAddress,
-                    timestamp: 'ggg'
+                    timestamp: item.timestamp,
+                    layer_id: item.layerId
                 }
-            ))
+            })
         },
     }
 }

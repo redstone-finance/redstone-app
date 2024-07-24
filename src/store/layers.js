@@ -86,7 +86,10 @@ export default {
                     networkId: layer.chain.id,
                     feedId: feedId,
                     contractAddress: layer.adapterContract,
-                    triggers: layer.updateTriggers
+                    triggers: layer.updateTriggers,
+                    layerId: key,
+                    timestamp: state.layersDetails[key].blockTimestamp,
+                    loaders: state.layersDetails[key].loaders
                 }));
             });
         }
@@ -183,7 +186,7 @@ export default {
             })
         },
         // 
-        // Init fetchning of all details required for the UI
+        // Init fetching of all details required for the UI
         // 
         async fetchLayersSchema({ commit, state }) {
             // const { data } = await axios.get(LAYERS_SCHEMA_URL)
@@ -201,11 +204,11 @@ export default {
         async init({ state }) {
             if (!isEmpty(state.layersSchema)) return
             await this.dispatch('layers/fetchLayersSchema')
-            Object.keys(state.layersSchema).forEach(async key => {
-                await this.dispatch('layers/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract, chainId: state.layersSchema[key].chain.id })
-                await this.dispatch('layers/fetchBlockTimeStamp', key)
-                await this.dispatch('layers/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
-            })
+            // Object.keys(state.layersSchema).forEach(async key => {
+            //     await this.dispatch('layers/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract, chainId: state.layersSchema[key].chain.id })
+            //     await this.dispatch('layers/fetchBlockTimeStamp', key)
+            //     await this.dispatch('layers/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
+            // })
         }
     }
 }
