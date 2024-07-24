@@ -71,6 +71,7 @@ export default {
 
     async mounted() {
         await this.init()
+        console.log({ ee: this.combinedLayersWithDetailsArray })
     },
     methods: {
         parseUnixTime,
@@ -105,17 +106,6 @@ export default {
             this.currentFilter = null
         },
         copyToClipboard: copyToClipboardHelper,
-
-        copy(type, event) {
-            const methodsMap = {
-                'conditions': () => this.selectedSchemas.map(schema => schema.updateTriggers),
-                'priecFeeds': () => this.selectedSchemas.map(schema => schema.priceFeeds),
-                'contractAddress': () => this.selectedSchemas.map(schema => schema.adapterContract),
-                'chainDetails': () => this.selectedSchemas.map(schema => schema.chain),
-                'fullDefinition': () => this.selectedSchemas
-            }
-            this.copyToClipboard(event, JSON.stringify(methodsMap[type]()))
-        },
         ...mapActions('layers', ['init']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
         // This is why I had to handle selection on my own
@@ -192,17 +182,10 @@ export default {
         layers() {
             return this.combinedLayersWithDetailsArray.map(item => (
                 {
-                    layer: item.key,
-                    network: item.values.chain.name,
-                    chainId: item.values.chain.id,
-                    updateTriggers: item.values.updateTriggers,
-                    contract_address: this.transformHexString(item.values.adapterContract),
-                    timestamp: item.values.details.blockTimestamp,
-                    priceFeeds: item.values.priceFeeds,
-                    feedDataValue: this.transformHexString([...new Set(item.values.details.dataFeed?.flat(Infinity))][0]), // flat array without duplicates
-                    dataFeedId: item.values.details.feedId,
-                    loaders: item.values.details.loaders,
-                    cryptos: Object.keys(item.values.priceFeeds)
+                    feed: item.feedId,
+                    network: item.networkId,
+                    contract_address: item.contractAddress,
+                    timestamp: 'ggg'
                 }
             ))
         },

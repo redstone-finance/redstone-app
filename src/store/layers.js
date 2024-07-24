@@ -80,15 +80,15 @@ export default {
         },
         // combined data which will be displayed as a UI - mapping fetched data with initial schema layers
         combinedLayersWithDetailsArray(state) {
-            return Object.keys(state.layersSchema)
-                .map((key) => ({
-                    feeds: Object.keys(state.layersSchema[key].priceFeeds).map((feedId => ({
-                        networkId: state.layersSchema[key].chain.id,
-                        feedId: feedId,
-                        contractAddress: state.layersSchema[key].adapterContract,
-                        triggers:  state.layersSchema[key].updateTriggers
-                    })))
-                }))
+            return Object.keys(state.layersSchema).flatMap((key) => {
+                const layer = state.layersSchema[key];
+                return Object.keys(layer.priceFeeds).map((feedId) => ({
+                    networkId: layer.chain.id,
+                    feedId: feedId,
+                    contractAddress: layer.adapterContract,
+                    triggers: layer.updateTriggers
+                }));
+            });
         }
     },
     actions: {
@@ -187,7 +187,7 @@ export default {
         // 
         async fetchLayersSchema({ commit, state }) {
             // const { data } = await axios.get(LAYERS_SCHEMA_URL)
-            commit('assignLayerSchema', {...relayers.standard})
+            commit('assignLayerSchema', { ...relayers.standard })
             if (isEmpty(state.layersDetails)) {
                 this.dispatch('layers/initializeLayerDetails')
             }
