@@ -18,10 +18,15 @@
             </div>
         </div>
         <template>
-            <b-table id="layers-table" v-model="displayedTableItems" key="table"
-                stacked="md" ref="selectableTable" @filtered="onFiltered" :filter="filters" sort-icon-left hover
-                :items="layers" :per-page="perPage" :current-page="currentPage" :filter-function="customFilter"
-                @row-clicked="onRowClick" :tbody-tr-class="rowClass" :fields="fields" class="layers__table">
+            <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
+                :current-page="currentPage" :filter-function="customFilter" :tbody-tr-class="rowClass" :fields="fields"
+                class="layers__table">
+                <template #cell(contract_address)="{ item }">
+                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
+                        title="Copy contract address" style="color: var(--redstone-red-color)"> {{
+                            truncateString(item.contract_address) }}</span>
+                </template>
             </b-table>
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
                 class="my-3"></b-pagination>
@@ -34,6 +39,8 @@ import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader'
 import { parseUnixTime } from '../../../core/timeHelpers'
+import copyToClipboardHelper from '../../../core/copyToClipboard'
+import truncateString from "../../../core/truncate";
 import LayerName from './components/LayerName'
 import LayerChain from './components/LayerChain'
 import LayerPriceFeeds from './components/LayerPriceFeeds'
@@ -78,6 +85,8 @@ export default {
         console.log({ ee: this.combinedLayersWithDetailsArray })
     },
     methods: {
+        copyToClipboardHelper,
+        truncateString,
         parseUnixTime,
         onRowClick(item) {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
@@ -105,7 +114,7 @@ export default {
                 return rowDataString.includes(String(filterValue).toLowerCase())
             }
         },
-        findNetworkName(networkId){
+        findNetworkName(networkId) {
             return Object.values(networks).find(network => network.chainId === networkId).name
         },
         async resetFilters() {
