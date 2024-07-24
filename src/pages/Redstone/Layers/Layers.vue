@@ -33,7 +33,6 @@
 import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader'
-import copyToClipboardHelper from '../../../core/copyToClipboard'
 import { parseUnixTime } from '../../../core/timeHelpers'
 import LayerName from './components/LayerName'
 import LayerChain from './components/LayerChain'
@@ -106,13 +105,15 @@ export default {
                 return rowDataString.includes(String(filterValue).toLowerCase())
             }
         },
+        findNetworkName(networkId){
+            return Object.values(networks).find(network => network.chainId === networkId).name
+        },
         async resetFilters() {
             this.updateSearchTerm('')
             this.selectedChain = null
             this.filters = null
             this.currentFilter = null
         },
-        copyToClipboard: copyToClipboardHelper,
         ...mapActions('layers', ['init', 'initSingleContract']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
         // This is why I had to handle selection on my own
@@ -200,9 +201,9 @@ export default {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
                     feed: item.feedId,
-                    network: item.networkId,
+                    network: this.findNetworkName(item.networkId),
                     contract_address: item.contractAddress,
-                    timestamp: item.timestamp,
+                    timestamp: parseUnixTime(item.timestamp),
                     layer_id: item.layerId
                 }
             })
