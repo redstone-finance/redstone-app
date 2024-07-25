@@ -27,6 +27,9 @@
                         title="Copy contract address" style="color: var(--redstone-red-color)"> {{
                             truncateString(item.contract_address) }}</span>
                 </template>
+                <template #cell(feed)="{ item }">
+                    <img :src="getImageUrl(item.token_image.imageName)" class="token-image"> {{ item.feed }}
+                </template>
             </b-table>
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
                 class="my-3"></b-pagination>
@@ -48,6 +51,7 @@ import LayerTriggers from './components/LayerTriggers'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
 import networks from '@/data//networks.js'
+import images from '@/core/logosDefinitions.js'
 export default {
     components: {
         Loader,
@@ -135,6 +139,9 @@ export default {
         toggleSelectAll(isSelected) {
             isSelected ? this.selectAllRows() : this.clearSelected()
         },
+        getImageUrl(imageName) {
+            return `/logos/${imageName}`
+        },
         selectRow(index) {
             this.selectedItems.push(this.displayedTableItems[index]?.layer) // Defensive check
         },
@@ -157,6 +164,9 @@ export default {
             if (str == null) return 'no data'
             if (str?.length <= 10) return str;
             return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`
+        },
+        getTokenImage(token) {
+            return images.find(image => token.indexOf(image.token) >= 0)
         },
         ...mapActions('layout', ['updateSearchTerm'])
     },
@@ -212,11 +222,12 @@ export default {
         layers() {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
-                    feed: this.hasSlash(item.feedId) ? item.feedId : item.feedId+'/USD',
+                    feed: this.hasSlash(item.feedId) ? item.feedId : item.feedId + '/USD',
                     network: this.findNetworkName(item.networkId),
                     contract_address: item.contractAddress,
                     timestamp: parseUnixTime(item.timestamp),
-                    layer_id: item.layerId
+                    layer_id: item.layerId,
+                    token_image: this.getTokenImage(item.feedId)
                 }
             })
         },
