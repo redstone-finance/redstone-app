@@ -22,6 +22,12 @@
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
                 :current-page="currentPage" :filter-function="customFilter" :tbody-tr-class="rowClass" :fields="fields"
                 class="layers__table">
+                findNetworkImage
+                <template #cell(network)="{ item }">
+                    <img class="token-image"
+                        :src="item.network.image ">
+                    {{ item.network.name }}
+                </template>
                 <template #cell(contract_address)="{ item }">
                     <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
                         title="Copy contract address" style="color: var(--redstone-red-color)"> {{
@@ -55,6 +61,7 @@ import LayerPriceFeeds from './components/LayerPriceFeeds'
 import LayerTriggers from './components/LayerTriggers'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
+import networkImages from "../../../data/networkImages";
 import networks from '@/data//networks.js'
 import images from '@/core/logosDefinitions.js'
 export default {
@@ -135,6 +142,10 @@ export default {
         },
         findNetworkName(networkId) {
             return Object.values(networks).find(network => network.chainId === networkId).name
+        },
+        findNetworkImage(networkId) {
+            const networkKey = Object.keys(networks).find(key => networks[key].chainId === networkId)
+            return networkImages[networkKey]
         },
         async resetFilters() {
             this.updateSearchTerm('')
@@ -238,7 +249,7 @@ export default {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
-                    network: this.findNetworkName(item.networkId),
+                    network: { name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId) },
                     contract_address: item.contractAddress,
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp },
                     layer_id: item.layerId,
