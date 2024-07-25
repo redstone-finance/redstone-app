@@ -95,6 +95,16 @@ export default {
         onRowClick(item) {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
         },
+        stripAdditionalFeedInfo(string) {
+            const hasUnderscore = string.indexOf('_') >= 0
+            const hasDash = string.indexOf('-') >= 0
+            if (hasUnderscore) {
+                return string.split('_')[0]
+            } else if (hasDash) {
+                return string.split('-')[0]
+            }
+            return string
+        },
         async handleFilter(filterType, value) {
             if (filterType != 'Search query' && this.searchTerm != null) {
                 this.updateSearchTerm('')
@@ -222,7 +232,7 @@ export default {
         layers() {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
-                    feed: this.hasSlash(item.feedId) ? item.feedId : item.feedId + '/USD',
+                    feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
                     network: this.findNetworkName(item.networkId),
                     contract_address: item.contractAddress,
                     timestamp: parseUnixTime(item.timestamp),
