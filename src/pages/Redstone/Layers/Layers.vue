@@ -28,7 +28,7 @@
                             truncateString(item.contract_address) }}</span>
                 </template>
                 <template #cell(feed)="{ item }">
-                    <img :src="getImageUrl(item.token_image.imageName)" class="token-image"> {{ item.feed }}
+                    <img :src="getImageUrl(item.token_image?.imageName)" class="token-image"> {{ item.feed }}
                 </template>
             </b-table>
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"

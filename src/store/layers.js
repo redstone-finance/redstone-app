@@ -1,48 +1,23 @@
 import axios from 'axios';
 import Web3 from 'web3'
+import { ethers } from 'ethers';
 import { isEmpty } from 'lodash';
 import Vue from 'vue';
 import relayers from '@/data/relayers.js'
 import networks from '@/data/networks.js'
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 
+
+
 const CONTRACTS_ABI_DEFINITION = [
-    {
-        "inputs": [],
-        "name": "getBlockTimestampFromLatestUpdate",
-        "outputs": [{ "name": "", "type": "uint256" }],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [{ "name": "dataFeedId", "type": "bytes32" }],
-        "name": "getValueForDataFeed",
-        "outputs": [{ "name": "", "type": "uint256" }],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [{ "name": "requestedDataFeedIds", "type": "bytes32[]" }],
-        "name": "getValuesForDataFeeds",
-        "outputs": [{ "name": "", "type": "uint256[]" }],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getDataFeedId",
-        "outputs": [{ "name": "", "type": "bytes32" }],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getDataFeedIds",
-        "outputs": [{ "name": "", "type": "bytes32[]" }],
-        "stateMutability": "view",
-        "type": "function"
-    }
+    "function getBlockTimestampFromLatestUpdate() view returns (uint256)",
+    "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
+    "function getValuesForDataFeeds(bytes32[] requestedDataFeedIds) view returns (uint256[])",
+    "function getDataFeedId() view returns (bytes32)",
+    "function getDataFeedIds() view returns (bytes32[])"
 ];
+
+
 
 // Helper methods for handling promises
 const etherNetLinkMessage = (address) => `validate it here: https://etherscan.io/address/${address}`
@@ -97,8 +72,9 @@ export default {
     actions: {
         createSmartContract({ commit, state }, { layerId, contractAddress, chainId }) {
             const contractNetwork = Object.values(networks).find(network => network.chainId === chainId)
-            const web3 = new Web3(new Web3.providers.HttpProvider(contractNetwork.rpcUrl));
-            const contract = new web3.eth.Contract(CONTRACTS_ABI_DEFINITION, contractAddress);
+            const provider = new ethers.providers.JsonRpcProvider(contractNetwork.rpcUrl);
+            const contract = new ethers.Contract(contractAddress, CONTRACTS_ABI_DEFINITION, provider);
+            console.log({contract})
             commit('assignCreatedSmartContract', { contract, layerId })
         },
         // 
@@ -107,38 +83,38 @@ export default {
         // But only when we are sure the business logic + it will be much easier to provide unit tests
         // 
         async fetchDataFeedId({ commit, state }, layerId) {
-            const api = this.getters['layers/getSmartContractByLayerId'](layerId).methods
+            const api = this.getters['layers/getSmartContractByLayerId'](layerId)
             try {
-                var id = await api.getDataFeedId().call()
+                var id = await api.getDataFeedId()
             } catch (error) {
-                console.log('error, id, single', layerId, error)
+                // console.log('error, id, single', layerId, error)
             }
             try {
-                var ids = await api.getDataFeedIds().call()
+                var ids = await api.getDataFeedIds()
             } catch (error) {
-                console.log('error, id, multiple', layerId, error)
+                // console.log('error, id, multiple', layerId, error)
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
             }
             commit('assignLayerDetails', { key: 'feedId', layerId, data: id || ids })
             this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedId' })
         },
         async fetchBlockTimeStamp({ commit, state }, layerId) {
-            this.getters['layers/getSmartContractByLayerId'](layerId).methods.getBlockTimestampFromLatestUpdate().call().then(timestamp => {
-                console.log(timestamp, layerId)
-                commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp })
+            this.getters['layers/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
+                console.log(timestamp)
+                commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp._hex })
             }).catch((error) => {
-                console.log('timestamp error', layerId, error)
+                // console.log('timestamp error', layerId, error)
             }).finally(() => {
                 this.dispatch('layers/disableLoader', { layerId, loaderId: 'blockTimestamp' })
             })
         },
         async fetchValueForDataFeed({ commit, state }, { layerId, feedId }) {
             if (feedId == null) return
-            const api = this.getters['layers/getSmartContractByLayerId'](layerId).methods
+            const api = this.getters['layers/getSmartContractByLayerId'](layerId)
             try {
                 var value = await api.getValueForDataFeed(feedId)
             } catch (error) {
-                console.log({ error, layerId }, 'single')
+                // console.log({ error, layerId }, 'single')
             }
             if (isEmpty(value)) {
                 try {
@@ -146,7 +122,7 @@ export default {
                     commit('assignLayerDetails', { key: 'dataFeed', layerId, data: values.arguments })
                     this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
                 } catch (error) {
-                    console.log({ error, layerId }, 'multiple')
+                    // console.log({ error, layerId }, 'multiple')
                 }
 
 
