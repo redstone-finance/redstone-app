@@ -150,6 +150,9 @@ export default {
         rowClass(item) {
             if (this.selectedItems.includes(item?.layer)) return 'table-active' // Defensive check
         },
+        hasSlash(string) {
+            return string.indexOf('/') >= 0
+        },
         transformHexString(str) {
             if (str == null) return 'no data'
             if (str?.length <= 10) return str;
@@ -209,7 +212,7 @@ export default {
         layers() {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
-                    feed: item.feedId,
+                    feed: this.hasSlash(item.feedId) ? item.feedId : item.feedId+'/USD',
                     network: this.findNetworkName(item.networkId),
                     contract_address: item.contractAddress,
                     timestamp: parseUnixTime(item.timestamp),
