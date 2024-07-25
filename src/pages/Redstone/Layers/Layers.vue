@@ -30,6 +30,11 @@
                 <template #cell(feed)="{ item }">
                     <img :src="getImageUrl(item.token_image?.imageName)" class="token-image"> {{ item.feed }}
                 </template>
+                <template #cell(timestamp)="{ item }">
+                    <Loader v-if="item.loaders.blockTimestamp" />
+                    <span v-else-if="item.timestamp.raw">{{ item.timestamp.parsed }}</span>
+                    <span v-else>no-data</span>
+                </template>
             </b-table>
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
                 class="my-3"></b-pagination>
@@ -235,9 +240,10 @@ export default {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
                     network: this.findNetworkName(item.networkId),
                     contract_address: item.contractAddress,
-                    timestamp: parseUnixTime(item.timestamp),
+                    timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp },
                     layer_id: item.layerId,
-                    token_image: this.getTokenImage(item.feedId)
+                    token_image: this.getTokenImage(item.feedId),
+                    loaders: item.loaders
                 }
             })
         },
