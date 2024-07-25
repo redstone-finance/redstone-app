@@ -1,7 +1,7 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <NetworkPicker v-model="selectedNetworks" :items="networksMap" />
+            <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap" />
             <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
             <div class="layers__actions-wrapper-item" v-if="currentFilter && filters">
                 <div class="layers__actions-wrapper-label">Applied filters</div>
@@ -10,6 +10,7 @@
                 </b-badge>
             </div>
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
+                <div v-if="filters" @click="resetFilters">Rest filters</div>
                 <div class="layers__actions-wrapper-label">Status</div>
                 <span class="layers__status-text"><strong>{{ networksMap.length }}</strong> networks
                     available</span>
@@ -22,10 +23,8 @@
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
                 :current-page="currentPage" :filter-function="customFilter" :tbody-tr-class="rowClass" :fields="fields"
                 class="layers__table">
-                findNetworkImage
                 <template #cell(network)="{ item }">
-                    <img class="token-image"
-                        :src="item.network.image ">
+                    <img class="token-image" :src="item.network.image">
                     {{ item.network.name }}
                 </template>
                 <template #cell(contract_address)="{ item }">
@@ -117,28 +116,47 @@ export default {
             }
             return string
         },
-        async handleFilter(filterType, value) {
-            if (filterType != 'Search query' && this.searchTerm != null) {
-                this.updateSearchTerm('')
+        handleFilter(filterType, value) {
+            if (filterType === 'cryptos') {
+                this.selectedCryptos = value;
+            } else if (filterType === 'networks') {
+                this.selectedNetworks = value;
             }
-            this.filters = value
-            if (filterType === 'cryptos') return
-            this.currentFilter = filterType
+            this.applyFilters()
+        },
+
+        applyFilters() {
+            this.filters = {
+                selectedCryptos: this.selectedCryptos,
+                selectedNetworks: this.selectedNetworks
+            };
+
+            this.$refs.selectableTable.refresh();
+        },
+        resetFilters() {
+            this.selectedCryptos = [];
+            this.selectedNetworks = [];
+            this.filters = null;
+            this.currentFilter = null;
+            this.$refs.selectableTable.refresh();
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
             this.currentPage = 1
             this.clearSelected()
         },
-        customFilter(row, filterValue) {
-            const rowDataString = JSON.stringify(row).toLowerCase()
-            if (Array.isArray(filterValue)) {
-                return filterValue.some(value =>
-                    rowDataString.includes(String(value).toLowerCase())
-                );
-            } else {
-                return rowDataString.includes(String(filterValue).toLowerCase())
-            }
+        customFilter(row, filters) {
+            if (!filters) return true;
+
+            const { selectedCryptos, selectedNetworks } = filters;
+
+            const cryptoMatch = selectedCryptos.length === 0 || selectedCryptos.some(crypto =>
+                row.feed.toLowerCase().includes(crypto.toLowerCase())
+            );
+
+            const networkMatch = selectedNetworks.length === 0 || selectedNetworks.includes(row.network.id);
+
+            return cryptoMatch && networkMatch;
         },
         findNetworkName(networkId) {
             return Object.values(networks).find(network => network.chainId === networkId).name
@@ -249,7 +267,7 @@ export default {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
-                    network: { name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId) },
+                    network: { id: item.networkId, name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId) },
                     contract_address: item.contractAddress,
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp },
                     layer_id: item.layerId,
