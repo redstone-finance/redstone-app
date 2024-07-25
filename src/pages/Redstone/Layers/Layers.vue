@@ -165,12 +165,6 @@ export default {
             const networkKey = Object.keys(networks).find(key => networks[key].chainId === networkId)
             return networkImages[networkKey]
         },
-        async resetFilters() {
-            this.updateSearchTerm('')
-            this.selectedChain = null
-            this.filters = null
-            this.currentFilter = null
-        },
         ...mapActions('layers', ['init', 'initSingleContract']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
         // This is why I had to handle selection on my own
