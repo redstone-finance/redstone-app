@@ -96,6 +96,7 @@ export default {
     },
 
     async mounted() {
+        this.prefetchImages(networkImages)
         await this.init()
         console.log({ ee: this.combinedLayersWithDetailsArray })
     },
@@ -170,6 +171,20 @@ export default {
         // This is why I had to handle selection on my own
         selectAllRows() {
             this.selectedItems = this.displayedTableItems.map(item => item.layer)
+        },
+        prefetchImages(images = networkImages) {
+            const prefetchPromises = Object.values(images).map(url => {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = url;
+                });
+            });
+
+            return Promise.all(prefetchPromises)
+                .then(() => console.log('All images prefetched successfully'))
+                .catch(error => console.error('Error prefetching images:', error));
         },
         clearSelected() {
             this.selectedItems = []
