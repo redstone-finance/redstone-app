@@ -28,9 +28,11 @@
                     {{ item.network.name }}
                 </template>
                 <template #cell(contract_address)="{ item }">
-                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
-                        title="Copy contract address" style="color: var(--redstone-red-color)"> {{
-                            truncateString(item.contract_address) }}</span>
+                    <a target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
+                        style="color: var(--redstone-red-color)"> {{
+                            truncateString(item.contract_address) }}</a>
+                    <div v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
+                        title="Copy contract address">asd</div>
                 </template>
                 <template #cell(feed)="{ item }">
                     <img :src="getImageUrl(item.token_image?.imageName)" class="token-image"> {{ item.feed }}
@@ -63,6 +65,7 @@ import NetworkPicker from "./components/NetworkPicker.vue"
 import networkImages from "../../../data/networkImages";
 import networks from '@/data//networks.js'
 import images from '@/core/logosDefinitions.js'
+import explorers from "../../../data/explorers";
 export default {
     components: {
         Loader,
@@ -165,6 +168,9 @@ export default {
         findNetworkImage(networkId) {
             const networkKey = Object.keys(networks).find(key => networks[key].chainId === networkId)
             return networkImages[networkKey]
+        },
+        findExplorer(networkId) {
+            return Object.values(explorers).find(explorer => explorer.chainId === networkId)
         },
         ...mapActions('layers', ['init', 'initSingleContract']),
         // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
@@ -281,7 +287,8 @@ export default {
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp },
                     layer_id: item.layerId,
                     token_image: this.getTokenImage(item.feedId),
-                    loaders: item.loaders
+                    loaders: item.loaders,
+                    explorer: this.findExplorer(item.networkId)
                 }
             })
         },
