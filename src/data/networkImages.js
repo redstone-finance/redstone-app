@@ -15,11 +15,11 @@ const networkImages = {
     fraxtal: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/fraxswap.svg', // No matching image found
     linea: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/linea.png',
     manta: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/manta.png',
-    mantle: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mantle.png',
+    mantle: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp',
     merlin: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp', // No matching image found
     mode: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mode.png',
     optimism: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/op.png', // Assuming 'op' is short for Optimism
-    real: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/real.webp', // No matching image found
+    real: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/real.png', // No matching image found
     sei: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png',
     sepolia: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sepolia.jpeg', // No matching image found
     bscTestnet: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.svg', // Using the same image as BNB Chain
