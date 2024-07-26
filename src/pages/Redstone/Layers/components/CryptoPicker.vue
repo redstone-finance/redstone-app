@@ -6,8 +6,8 @@
         <b-form-checkbox-group class="crypto-checkbox-group" v-model="internalSelectedCryptos" stacked>
           <b-form-checkbox class="crypto-checkbox" variant="danger" v-for="crypto in cryptoImageData"
             :key="crypto.token" :value="crypto.token">
-            <b-img :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20" class="mr-1" />
-            {{ crypto.name }}
+            <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20" class="mr-1" />
+            <span :title="crypto.name">{{ crypto.token }}</span>
           </b-form-checkbox>
         </b-form-checkbox-group>
       </b-dropdown-form>
