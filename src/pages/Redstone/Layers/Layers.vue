@@ -31,8 +31,8 @@
                     <a target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
                         style="color: var(--redstone-red-color)"> {{
                             truncateString(item.contract_address) }}</a>
-                    <div v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
-                        title="Copy contract address">asd</div>
+                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
+                        title="Copy to clipboard" class="copy-icon glyphicon glyphicon-book"></span>
                 </template>
                 <template #cell(feed)="{ item }">
                     <img :src="getImageUrl(item.token_image?.imageName)" class="token-image"> {{ item.feed }}
