@@ -3,19 +3,17 @@
         <div class="layers__actions-wrapper">
             <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap" />
             <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
-            <div class="layers__actions-wrapper-item" v-if="currentFilter && filters">
-                <div class="layers__actions-wrapper-label">Applied filters</div>
-                <b-badge @click="resetFilters" pill class="layers__filter-badge" variant="danger">
-                    {{ currentFilter }}: {{ filters }} <span class="layers__filter-badge-close">&times;</span>
-                </b-badge>
-            </div>
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
-                <div v-if="filters" @click="resetFilters">Rest filters</div>
-                <div class="layers__actions-wrapper-label">Status</div>
-                <span class="layers__status-text"><strong>{{ networksMap.length }}</strong> networks
-                    available</span>
-                <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> layers
-                    displayed</span>
+
+                <div class="d-flex align-items-end">
+                    <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
+                    <div>
+                        <div class="layers__actions-wrapper-label">Status</div>
+                        <span class="layers__status-text"><strong>{{ networksMap.length }}</strong> networks
+                            available</span>
+                        <span class="layers__status-text"><strong>{{ layers.length }}</strong> feeds</span>
+                    </div>
+                </div>
             </div>
         </div>
         <template>
@@ -66,6 +64,7 @@ import networkImages from "../../../data/networkImages";
 import networks from '@/data//networks.js'
 import images from '@/core/logosDefinitions.js'
 import explorers from "../../../data/explorers";
+
 export default {
     components: {
         Loader,
@@ -82,7 +81,6 @@ export default {
             displayedTableItems: [],
             selectedItems: [],
             filters: null,
-            currentFilter: null,
             selectedChain: null,
             selectedCryptos: [],
             selectedNetworks: [],
@@ -241,6 +239,9 @@ export default {
         },
     },
     computed: {
+        hasFilters() {
+            return this.filters && (this.filters.selectedCryptos.length > 0 || this.filters.selectedNetworks.length > 0)
+        },
         totalRows() {
             return this.filteredItems.length > 0 ? this.filteredItems.length : this.layers.length;
         },

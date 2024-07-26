@@ -12,12 +12,6 @@
         </b-form-checkbox-group>
       </b-dropdown-form>
     </b-dropdown>
-
-    <div class="ml-2 selected-cryptos" v-if="internalSelectedCryptos.length">
-      <b-img @click="uncheck(token)" :key="token" v-for="token in internalSelectedCryptos"
-        :src="getImageUrl(getCryptoByToken(token).imageName)" :alt="getCryptoByToken(token).name" width="20" height="20"
-        class="mr-2" />
-    </div>
   </div>
 </template>
 
@@ -76,17 +70,6 @@ export default {
 </script>
 
 <style lang="scss">
-.selected-cryptos {
-  background: #fff;
-  border-radius: 15px;
-  box-shadow: var(--table-shadow);
-  border: 1px solid #dedede;
-  padding: 6px 10px;
-
-  img {
-    cursor: pointer;
-  }
-}
 
 .crypto-checkbox-group {
   display: flex;
