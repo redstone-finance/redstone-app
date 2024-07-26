@@ -106,7 +106,6 @@
   ],
   "resolutions": {
     "@achrinza/node-ipc": "9.2.7",
-    "glob": "10.3.10",
     "**/normalize-url": "^6.0.1",
     "**/css-what": "^5.0.1",
     "**/lodash": "^4.17.21",
