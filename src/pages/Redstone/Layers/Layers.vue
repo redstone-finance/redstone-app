@@ -26,7 +26,7 @@
                     {{ item.network.name }}
                 </template>
                 <template #cell(contract_address)="{ item }">
-                    <a target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
+                    <a :title="`Open address in ${item.explorer.name} explorer`" target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
                         style="color: var(--redstone-red-color)"> {{
                             truncateString(item.contract_address) }}</a>
                     <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
