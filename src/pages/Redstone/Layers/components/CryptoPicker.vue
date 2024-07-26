@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex items-center">
-    <b-dropdown class="dropdown crypto-dropdown" size="sm"
+    <b-dropdown class="dropdown crypto-dropdown"
       :text="buttonText" multiple>
       <b-dropdown-form>
         <b-form-checkbox-group class="crypto-checkbox-group" v-model="internalSelectedCryptos" stacked>
@@ -92,6 +92,12 @@ export default {
   display: flex;
   flex-flow: row wrap;
 }
+.dropdown.show{
+  button {
+    background: var(--redstone-red-color) !important;
+    border: 2px solid darken(#FD627A, $amount: 15) !important;
+  }
+}
 
 .dropdown {
   margin: 0 !important;
@@ -100,13 +106,13 @@ export default {
     min-width: 250px;
   }
   button {
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: 10px 18px;
+    font-size: 14px;
     background: #fff;
-
+    border: 2px solid #e4e4e4;
     &:hover {
       background: #fff;
-      color: var(--redstone-red-color)
+      color: #1a1414;
     }
   }
 }
