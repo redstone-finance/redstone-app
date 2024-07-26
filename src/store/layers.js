@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Web3 from 'web3'
 import { ethers } from 'ethers';
 import { isEmpty } from 'lodash';
 import Vue from 'vue';
