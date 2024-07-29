@@ -106,12 +106,12 @@ export default {
 
 .search-input-container {
   position: sticky;
-  top: -7px;
+  top: 0px;
   background: #fff;
   z-index: 2;
   .form-control {
     border: none;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid rgb(192, 192, 192);
     border-radius: 0;
     padding: 20px;
 
@@ -120,9 +120,13 @@ export default {
     }
   }
 }
+.dropdown-menu{
+  padding: 0 !important;
+}
 
 .crypto-dropdown-container {
   position: relative;
+  z-index: 999;
 }
 
 .dropdown.show {
@@ -134,8 +138,8 @@ export default {
 
 
 .crypto-name {
-  position: relative;
-  top: 2px;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 .dropdown {
@@ -195,7 +199,6 @@ export default {
   }
 
   .crypto-checkbox {
-    font-size: 16px !important;
     border-bottom: 1px solid rgb(228, 228, 228);
     margin: 5px 0;
     padding: 8px 10px;

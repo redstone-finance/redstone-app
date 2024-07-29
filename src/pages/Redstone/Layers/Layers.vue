@@ -48,7 +48,7 @@
                 </template>
             </b-table>
             <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
-                class="my-3"></b-pagination>
+                class="my-3" style="z-index: 0; position: relative;"></b-pagination>
         </template>
     </div>
 </template>
@@ -97,7 +97,7 @@ export default {
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
                 { key: 'contract_address', label: 'Contract address' },
-                { key: 'timestamp', label: 'Block timestamp', sortable: true },
+                { key: 'timestamp', label: 'Last update', sortable: true },
             ],
         };
     },

@@ -95,7 +95,7 @@ export default {
 }
 
 .network-name {
-  position: relative;
-  top: 3px;
+  font-size: 14px;
+  font-weight: 300;
 }
 </style>
