@@ -9,7 +9,8 @@
                         v-model="selectedCryptos" />
                 </div>
                 <div class="mt-2 d-flex">
-                    <CheckboxButton :disabled="!filteredCurrencies.includes(crypto.token)" v-for="crypto in mostUsedCryptos" :key="crypto.token"
+                    <CheckboxButton :disabled="!filteredCurrencies.includes(crypto.token)"
+                        v-for="crypto in mostUsedCryptos" :key="crypto.token"
                         :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
                         :name="crypto.name" :token="crypto.token" :imageName="crypto.image" />
                 </div>
@@ -124,11 +125,32 @@ export default {
     async mounted() {
         this.prefetchImages(networkImages)
         await this.init()
-        console.log({ ee: this.combinedLayersWithDetailsArray })
+        this.initializeFiltersFromRoute()
     },
     methods: {
         copyToClipboardHelper,
         truncateString,
+        initializeFiltersFromRoute() {
+            const { cryptos, networks } = this.$route.query;
+            this.selectedCryptos = cryptos ? cryptos.split(',') : [];
+            this.selectedNetworks = networks ? networks.split(',').map(Number) : [];
+            this.applyFilters();
+        },
+
+        updateRouteParams() {
+            const query = {};
+            if (this.selectedCryptos.length > 0) {
+                query.cryptos = this.selectedCryptos.join(',');
+            }
+            if (this.selectedNetworks.length > 0) {
+                query.networks = this.selectedNetworks.join(',');
+            }
+            this.$router.push({ query }).catch(err => {
+                if (err.name !== 'NavigationDuplicated') {
+                    throw err;
+                }
+            });
+        },
         onRowClick(item) {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
         },
@@ -148,7 +170,8 @@ export default {
             } else if (filterType === 'networks') {
                 this.selectedNetworks = value;
             }
-            this.applyFilters()
+            this.applyFilters();
+            this.updateRouteParams();
         },
 
         applyFilters() {
@@ -156,15 +179,16 @@ export default {
                 selectedCryptos: this.selectedCryptos,
                 selectedNetworks: this.selectedNetworks
             };
-
             this.$refs.selectableTable.refresh();
         },
+
         resetFilters() {
             this.selectedCryptos = [];
             this.selectedNetworks = [];
             this.filters = null;
             this.currentFilter = null;
             this.$refs.selectableTable.refresh();
+            this.updateRouteParams();
         },
         handleSingleFilterCheckbox(data) {
             if (!data.isChecked) {
