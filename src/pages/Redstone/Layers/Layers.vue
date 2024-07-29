@@ -298,7 +298,7 @@ export default {
                 }
 
                 const networkSet = new Set();
-                this.layers?.forEach(layer => {
+                this.displayedTableItems?.forEach(layer => {
                     if (this.selectedCryptos.some(crypto => layer.feed.indexOf(crypto) >= 0)) {
                         networkSet.add(layer.network.id);
                     }
@@ -314,7 +314,7 @@ export default {
                 }
 
                 const networkSet = new Set();
-                this.layers?.forEach(layer => {
+                this.displayedTableItems?.forEach(layer => {
                     if (this.selectedNetworks.some(chainId => layer.network.id === chainId)) {
                         networkSet.add(layer.token);
                     }
