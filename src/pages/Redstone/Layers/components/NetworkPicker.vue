@@ -7,7 +7,7 @@
       <b-dropdown-form>
         <b-form-checkbox-group v-model="localSelected" class="crypto-checkbox-group" stacked>
           <b-form-checkbox
-            class="crypto-checkbox"
+            class="crypto-checkbox-list"
             variant="danger"
             v-for="item in filteredItems"
             :key="item.value"

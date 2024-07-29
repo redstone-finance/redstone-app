@@ -1,15 +1,24 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap"
-                class="mr-2" />
-            <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)" v-model="selectedCryptos">
-            </CryptoPicker>
-            <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
+            <div>
+                <div class="d-flex">
+                    <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks"
+                        :items="networksMap" class="mr-2" />
+                    <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)"
+                        v-model="selectedCryptos" />
+                </div>
+                <div class="mt-2 d-flex">
+                    <CheckboxButton :disabled="!filteredCurrencies.includes(crypto.token)" v-for="crypto in mostUsedCryptos" :key="crypto.token"
+                        :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
+                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image" />
+                </div>
+            </div>
 
+            <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
                 <div class="d-flex align-items-end">
-                    <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
                     <div>
+                        <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
                         <div class="layers__actions-wrapper-label">Status</div>
                         <span class="layers__status-text"><strong>{{ networksMap.length }}</strong> networks
                             available</span>
@@ -53,6 +62,7 @@
                 style="z-index: 0; position: relative;"></b-pagination>
         </template>
     </div>
+
 </template>
 
 <script>
@@ -72,6 +82,7 @@ import networkImages from "../../../data/networkImages";
 import networks from '@/data/networks.js'
 import images from '@/core/logosDefinitions.js'
 import explorers from "../../../data/explorers";
+import CheckboxButton from "./components/CheckboxButton.vue";
 
 export default {
     components: {
@@ -81,7 +92,8 @@ export default {
         LayerPriceFeeds,
         LayerTriggers,
         CryptoPicker,
-        NetworkPicker
+        NetworkPicker,
+        CheckboxButton
     },
     data() {
         return {
@@ -96,6 +108,10 @@ export default {
             currentPage: 1,
             filteredItems: [],
             isUnselecting: false,
+            mostUsedCryptos: [
+                { name: 'BitCoin', token: 'BTC', image: 'btc.webp' },
+                { name: 'Ethereum', token: 'ETH', image: 'eth.webp' },
+            ],
             fields: [
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
@@ -150,7 +166,16 @@ export default {
             this.currentFilter = null;
             this.$refs.selectableTable.refresh();
         },
+        handleSingleFilterCheckbox(data) {
+            if (!data.isChecked) {
+                this.selectedCryptos.push(data.value)
+            } else {
+                this.selectedCryptos = this.selectedCryptos.filter(token => token != data.value)
+            }
+            this.handleFilter('crypto', this.selectedCryptos)
+        },
         onFiltered(filteredItems) {
+            console.log({ filteredItems })
             this.filteredItems = filteredItems
             this.currentPage = 1
             this.clearSelected()

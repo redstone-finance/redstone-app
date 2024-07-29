@@ -6,7 +6,7 @@
       </div>
       <b-dropdown-form>
         <b-form-checkbox-group class="crypto-checkbox-group" v-model="internalSelectedCryptos" stacked>
-          <b-form-checkbox class="crypto-checkbox" variant="danger" v-for="crypto in filteredCryptoImageData"
+          <b-form-checkbox class="crypto-checkbox-list" variant="danger" v-for="crypto in filteredCryptoImageData"
             :key="crypto.token" :value="crypto.token">
            <div class="crypto-name">
             <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
@@ -200,7 +200,7 @@ export default {
     }
   }
 
-  .crypto-checkbox {
+  .crypto-checkbox-list {
     border-bottom: 1px solid rgb(228, 228, 228);
     margin: 5px 0;
     padding: 8px 10px;

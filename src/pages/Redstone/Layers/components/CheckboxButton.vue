@@ -1,9 +1,8 @@
 <template>
-    <b-form-checkbox class="crypto-checkbox" variant="danger" v-for="crypto in cryptoImageData" :key="crypto.token"
-        :value="crypto.token">
-        <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
-            class="mr-1" />
-        <span :title="crypto.name">{{ crypto.token }}</span>
+    <b-form-checkbox :disabled="disabled" class="crypto-checkbox" variant="danger" :checked="isChecked"
+        @change="toggleCheckbox">
+        <b-img :title="name" :src="getImageUrl(imageName)" :alt="name" width="20" height="20" class="mr-1" />
+        <span :title="name">{{ name }}</span>
     </b-form-checkbox>
 </template>
 
@@ -11,79 +10,41 @@
 export default {
     name: 'CheckboxButton',
     props: {
-        imageSrc: {
+        name: {
             type: String,
             required: true
         },
-        text: {
+        token: {
             type: String,
             required: true
         },
-        label: {
+        imageName: {
             type: String,
-            required: true
-        }
-    },
-    data() {
-        return {
-            isChecked: false
+            required: true,
+        },
+        isChecked: {
+            type: Boolean,
+            required: true,
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
         }
     },
     methods: {
         toggleCheckbox() {
-            this.isChecked = !this.isChecked;
-            this.$emit('change', this.isChecked);
-        }
+            this.$emit('change', { value: this.token, isChecked: this.isChecked });
+        },
+        getImageUrl(imageName) {
+            return `/logos/${imageName}`
+        },
     }
 }
 </script>
 
-<style scoped lang="scss">
-.crypto-checkbox-group {
-    display: flex;
-    flex-flow: row wrap;
-}
-
-.dropdown.show {
-    button {
-        background: var(--redstone-red-color) !important;
-        border: 2px solid darken(#FD627A, $amount: 15) !important;
-    }
-}
-
-.dropdown {
-    margin: 0 !important;
-
-    ul {
-        min-width: 250px;
-    }
-
-    button {
-        padding: 10px 18px;
-        font-size: 14px;
-        background: #fff;
-        border: 2px solid #e4e4e4;
-
-        &:hover {
-            background: #fff;
-            color: #1a1414;
-        }
-    }
-}
-
-.crypto-dropdown {
-    position: static !important;
-
-    ul {
-        width: 100%;
-        left: 0;
-        top: 100% !important;
-        transform: none !important;
-    }
-}
-
+<style lang="scss">
 .crypto-checkbox {
-    margin: 10px !important;
+    margin: 0 5px 0;
     padding: 0 !important;
 
     input:checked+label {
