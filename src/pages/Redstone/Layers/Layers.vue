@@ -18,7 +18,6 @@
                 </div>
             </div>
         </div>
-        {{ selectedCryptos }}
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
@@ -96,6 +95,7 @@ export default {
             perPage: 15,
             currentPage: 1,
             filteredItems: [],
+            isUnselecting: false,
             fields: [
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
@@ -154,6 +154,7 @@ export default {
             this.filteredItems = filteredItems
             this.currentPage = 1
             this.clearSelected()
+            this.unselectInvalidItems()
         },
         customFilter(row, filters) {
             if (!filters) return true;
@@ -232,6 +233,31 @@ export default {
         },
         getTokenImage(token) {
             return images.find(image => token.indexOf(image.token) >= 0)
+        },
+        unselectInvalidItems() {
+            if (this.isUnselecting) return; // Prevent recursive calls
+            this.isUnselecting = true;
+
+            const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
+                this.filteredCurrencies.some(currency =>
+                    currency.toLowerCase().includes(crypto.toLowerCase())
+                )
+            );
+
+            const newSelectedNetworks = this.selectedNetworks.filter(network =>
+                this.filteredNetworks.includes(network)
+            );
+
+            // Only update if there's a change
+            if (!_.isEqual(newSelectedCryptos, this.selectedCryptos)) {
+                this.selectedCryptos = newSelectedCryptos;
+            }
+
+            if (!_.isEqual(newSelectedNetworks, this.selectedNetworks)) {
+                this.selectedNetworks = newSelectedNetworks;
+            }
+
+            this.isUnselecting = false;
         },
         ...mapActions('layout', ['updateSearchTerm'])
     },
