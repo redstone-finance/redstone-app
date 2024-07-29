@@ -1,6 +1,6 @@
 export default {
     ethereum: {
-      rpcUrl: 'https://eth.llamarpc.com',
+      rpcUrl: 'https://rpc.flashbots.net/fast',
       chainId: 1,
       name: 'Ethereum Mainnet'
     },
@@ -100,7 +100,7 @@ export default {
       name: 'Optimism'
     },
     real: {
-      rpcUrl: 'wss://real.drpc.org',
+      rpcUrl: 'https://real.drpc.org',
       chainId: 111188,
       name: 'Real'
     },

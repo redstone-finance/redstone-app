@@ -1,8 +1,10 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap" class="mr-2" />
-            <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
+            <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap"
+                class="mr-2" />
+            <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)" v-model="selectedCryptos">
+            </CryptoPicker>
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
 
                 <div class="d-flex align-items-end">
@@ -16,6 +18,7 @@
                 </div>
             </div>
         </div>
+        {{ selectedCryptos }}
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
@@ -47,8 +50,8 @@
                     <span v-else>no-data</span>
                 </template>
             </b-table>
-            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center"
-                class="my-3" style="z-index: 0; position: relative;"></b-pagination>
+            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center" class="my-3"
+                style="z-index: 0; position: relative;"></b-pagination>
         </template>
     </div>
 </template>
@@ -67,7 +70,7 @@ import LayerTriggers from './components/LayerTriggers'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
 import networkImages from "../../../data/networkImages";
-import networks from '@/data//networks.js'
+import networks from '@/data/networks.js'
 import images from '@/core/logosDefinitions.js'
 import explorers from "../../../data/explorers";
 
@@ -244,6 +247,9 @@ export default {
         },
     },
     computed: {
+        cryptoImages() {
+            return images.filter(image => this.filteredCurrencies?.some(currency => currency.indexOf(image.token) >= 0))
+        },
         hasFilters() {
             return this.filters && (this.filters.selectedCryptos.length > 0 || this.filters.selectedNetworks.length > 0)
         },
@@ -251,7 +257,8 @@ export default {
             return this.filteredItems.length > 0 ? this.filteredItems.length : this.layers.length;
         },
         networksMap() {
-            return Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
+            const map = Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
+            return map.filter(item => this.filteredNetworks.includes(item.value))
         },
         chainOptions() {
             const options = this.layers.map(item => ({ text: item.chain, value: item.chain }))
@@ -284,6 +291,38 @@ export default {
         ...mapGetters('layers', [
             'combinedLayersWithDetailsArray'
         ]),
+        filteredNetworks() {
+            {
+                if (this.selectedCryptos.length === 0) {
+                    return Object.values(networks).map(item => item.chainId);
+                }
+
+                const networkSet = new Set();
+                this.layers?.forEach(layer => {
+                    if (this.selectedCryptos.some(crypto => layer.feed.indexOf(crypto) >= 0)) {
+                        networkSet.add(layer.network.id);
+                    }
+                });
+
+                return Array.from(networkSet);
+            }
+        },
+        filteredCurrencies() {
+            {
+                if (this.selectedNetworks.length === 0) {
+                    return images.map(image => image.token)
+                }
+
+                const networkSet = new Set();
+                this.layers?.forEach(layer => {
+                    if (this.selectedNetworks.some(chainId => layer.network.id === chainId)) {
+                        networkSet.add(layer.token);
+                    }
+                });
+
+                return Array.from(networkSet);
+            }
+        },
         layers() {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
@@ -292,6 +331,7 @@ export default {
                     contract_address: item.contractAddress,
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.layerId,
+                    token: item.feedId,
                     token_image: this.getTokenImage(item.feedId),
                     loaders: item.loaders,
                     explorer: this.findExplorer(item.networkId)

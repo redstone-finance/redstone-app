@@ -30,7 +30,6 @@ import {
   BImg,
   BFormInput,
 } from 'bootstrap-vue'
-import images from '@/core/logosDefinitions.js'
 
 export default {
   name: 'CryptoMultiselectDropdown',
@@ -43,6 +42,10 @@ export default {
     BFormInput,
   },
   props: {
+    items: {
+      type: Array,
+      default: () => []
+    },
     value: {
       type: Array,
       default: () => []
@@ -50,14 +53,13 @@ export default {
   },
   data() {
     return {
-      cryptoImageData: images,
       searchQuery: '',
     }
   },
   computed: {
     buttonText() {
       const selectedCount = this.value.length
-      const optionsCount = this.cryptoImageData.length
+      const optionsCount = this.items.length
       return selectedCount === 0 ? `All currencies (${optionsCount})` : `Currencies (${selectedCount})`;
     },
     internalSelectedCryptos: {
@@ -70,10 +72,10 @@ export default {
     },
     filteredCryptoImageData() {
       if (!this.searchQuery) {
-        return this.cryptoImageData;
+        return this.items;
       }
       const query = this.searchQuery.toLowerCase();
-      return this.cryptoImageData.filter(crypto =>
+      return this.items.filter(crypto =>
         crypto.token.toLowerCase().includes(query) ||
         crypto.name.toLowerCase().includes(query)
       );
@@ -88,7 +90,7 @@ export default {
       return `/logos/${imageName}`
     },
     getCryptoByToken(token) {
-      return this.cryptoImageData.find(crypto => crypto.token === token) || { name: token, imageName: '' }
+      return this.items.find(crypto => crypto.token === token) || { name: token, imageName: '' }
     }
   }
 }
