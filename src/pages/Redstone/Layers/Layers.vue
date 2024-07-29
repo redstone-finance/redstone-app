@@ -1,7 +1,7 @@
 <template>
     <div class="layers">
         <div class="layers__actions-wrapper">
-            <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap" />
+            <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks" :items="networksMap" class="mr-2" />
             <CryptoPicker @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"></CryptoPicker>
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
 

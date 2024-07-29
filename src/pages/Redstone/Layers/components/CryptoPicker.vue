@@ -1,22 +1,35 @@
 <template>
-  <div class="d-flex items-center">
-    <b-dropdown class="dropdown crypto-dropdown"
-      :text="buttonText" multiple>
+  <div class="crypto-dropdown-container">
+    <b-dropdown class="dropdown crypto-dropdown" :text="buttonText" multiple>
+      <div class="search-input-container">
+        <b-form-input variant="danger" v-model="searchQuery" placeholder="Search..." class="pr-4"></b-form-input>
+      </div>
       <b-dropdown-form>
         <b-form-checkbox-group class="crypto-checkbox-group" v-model="internalSelectedCryptos" stacked>
-          <b-form-checkbox class="crypto-checkbox" variant="danger" v-for="crypto in cryptoImageData"
+          <b-form-checkbox class="crypto-checkbox" variant="danger" v-for="crypto in filteredCryptoImageData"
             :key="crypto.token" :value="crypto.token">
-            <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20" class="mr-1" />
+           <div class="crypto-name">
+            <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
+              class="mr-1" />
             <span :title="crypto.name">{{ crypto.token }}</span>
+           </div>
           </b-form-checkbox>
         </b-form-checkbox-group>
+        <span class="no-results" v-if="filteredCryptoImageData.length === 0">No results found</span>
       </b-dropdown-form>
     </b-dropdown>
   </div>
 </template>
 
 <script>
-import { BDropdown, BDropdownForm, BFormCheckboxGroup, BFormCheckbox, BImg } from 'bootstrap-vue'
+import {
+  BDropdown,
+  BDropdownForm,
+  BFormCheckboxGroup,
+  BFormCheckbox,
+  BImg,
+  BFormInput,
+} from 'bootstrap-vue'
 import images from '@/core/logosDefinitions.js'
 
 export default {
@@ -27,6 +40,7 @@ export default {
     BFormCheckboxGroup,
     BFormCheckbox,
     BImg,
+    BFormInput,
   },
   props: {
     value: {
@@ -37,6 +51,7 @@ export default {
   data() {
     return {
       cryptoImageData: images,
+      searchQuery: '',
     }
   },
   computed: {
@@ -52,6 +67,16 @@ export default {
       set(newValue) {
         this.$emit('input', newValue)
       }
+    },
+    filteredCryptoImageData() {
+      if (!this.searchQuery) {
+        return this.cryptoImageData;
+      }
+      const query = this.searchQuery.toLowerCase();
+      return this.cryptoImageData.filter(crypto =>
+        crypto.token.toLowerCase().includes(query) ||
+        crypto.name.toLowerCase().includes(query)
+      );
     }
   },
   methods: {
@@ -70,29 +95,62 @@ export default {
 </script>
 
 <style lang="scss">
+.remove-query {
+  line-height: 15px;
 
-.crypto-checkbox-group {
-  display: flex;
-  flex-flow: row wrap;
+  &:hover {
+    cursor: pointer;
+    color: var(--redstone-red-color)
+  }
 }
-.dropdown.show{
+
+.search-input-container {
+  position: sticky;
+  top: -7px;
+  background: #fff;
+  z-index: 2;
+  .form-control {
+    border: none;
+    border-bottom: 1px solid gray;
+    border-radius: 0;
+    padding: 20px;
+
+    &:active,&:focus {
+      border-color: var(--redstone-red-color);
+    }
+  }
+}
+
+.crypto-dropdown-container {
+  position: relative;
+}
+
+.dropdown.show {
   button {
     background: var(--redstone-red-color) !important;
     border: 2px solid darken(#FD627A, $amount: 15) !important;
   }
 }
 
+
+.crypto-name {
+  position: relative;
+  top: 2px;
+}
+
 .dropdown {
   margin: 0 !important;
 
-  ul{
+  ul {
     min-width: 250px;
   }
+
   button {
     padding: 10px 18px;
     font-size: 14px;
     background: #fff;
     border: 2px solid #e4e4e4;
+
     &:hover {
       background: #fff;
       color: #1a1414;
@@ -101,35 +159,53 @@ export default {
 }
 
 .crypto-dropdown {
-  position: static !important;
+  width: 100%;
+
+  .b-dropdown-form {
+    padding: 0;
+  }
+
   ul {
     width: 100%;
+    height: 350px;
+    overflow: scroll;
     left: 0;
     top: 100% !important;
     transform: none !important;
   }
-}
-
-.crypto-checkbox {
-  margin: 10px !important;
-  padding: 0 !important;
-  input:checked+label {
-    border: 2px solid var(--redstone-red-color);
-  }
 
   label {
-    line-height: 25px;
-    cursor: pointer;
-    padding: 5px 10px;
-    margin: 0 !important;
-    border-radius: 30px;
-    background: #fcfcfc;
-    border: 2px solid #ececec;
-
-    &::before,
-    &::after {
-      display: none !important;
+    margin-left: 20px;
+    &:focus,&:active{
+      &::before{
+        border-color: var(--redstone-red-color) !important;
+      }
     }
+    &::before, &::after{
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  input:checked + label{
+    &::before{
+      background-color: var(--redstone-red-color) !important;
+      border-color: var(--redstone-red-color) !important;
+    }
+  }
+
+  .crypto-checkbox {
+    font-size: 16px !important;
+    border-bottom: 1px solid rgb(228, 228, 228);
+    margin: 5px 0;
+    padding: 8px 10px;
+  }
+  .no-results{
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 15px;
+    color: gray;
   }
 }
 </style>

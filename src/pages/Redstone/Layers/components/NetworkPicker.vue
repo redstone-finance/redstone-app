@@ -1,26 +1,25 @@
 <template>
-  <b-dropdown :text="buttonText" class="m-2">
-    <b-dropdown-form>
-      <div class="d-flex mb-2">
-        <b-form-input v-model="searchQuery" :placeholder="searchPlaceholder" class="pr-4" />
-        <span class="remove-query" v-b-tooltip.hover title="Clear query" icon @click="clearSearch">
-          &times;
-          <span class="sr-only">Clear search</span>
-        </span>
+  <div class="crypto-dropdown-container">
+    <b-dropdown class="dropdown crypto-dropdown" :text="buttonText" multiple>
+      <div class="search-input-container">
+        <b-form-input variant="danger" v-model="searchQuery" placeholder="Search..." class="pr-4"></b-form-input>
       </div>
-      <div style="max-height: 200px; overflow-y: auto;">
-        <template v-if="filteredItems.length">
-          <b-form-checkbox v-for="item in filteredItems" :key="item.value" :checked="isSelected(item.value)"
-            @change="toggleSelection(item.value)">
-            {{ item.label }}
+      <b-dropdown-form>
+        <b-form-checkbox-group v-model="localSelected" class="crypto-checkbox-group" stacked>
+          <b-form-checkbox
+            class="crypto-checkbox"
+            variant="danger"
+            v-for="item in filteredItems"
+            :key="item.value"
+            :value="item.value"
+          >
+            <span class="network-name">{{ item.label }}</span>
           </b-form-checkbox>
-        </template>
-        <p v-else class="text-muted">
-          {{ noResultsText }}
-        </p>
-      </div>
-    </b-dropdown-form>
-  </b-dropdown>
+        </b-form-checkbox-group>
+        <span class="no-results" v-if="filteredItems.length === 0">{{ noResultsText }}</span>
+      </b-dropdown-form>
+    </b-dropdown>
+  </div>
 </template>
 
 <script>
@@ -61,28 +60,20 @@ export default {
       );
     },
     buttonText() {
-      const selectedCount = this.localSelected.length
-      const optionsCount = this.items.length
+      const selectedCount = this.localSelected.length;
+      const optionsCount = this.items.length;
       return selectedCount === 0 ? `${this.defaultButtonText} (${optionsCount})` : `Networks (${selectedCount})`;
     }
   },
   watch: {
     value(newValue) {
       this.localSelected = newValue;
+    },
+    localSelected(newValue) {
+      this.$emit('input', newValue);
     }
   },
   methods: {
-    isSelected(value) {
-      return this.localSelected.includes(value);
-    },
-    toggleSelection(value) {
-      if (this.isSelected(value)) {
-        this.localSelected = this.localSelected.filter(itemValue => itemValue !== value);
-      } else {
-        this.localSelected = [...this.localSelected, value];
-      }
-      this.$emit('input', this.localSelected);
-    },
     clearSearch() {
       this.searchQuery = '';
     }
@@ -101,5 +92,10 @@ export default {
     cursor: pointer;
     color: var(--redstone-red-color)
   }
+}
+
+.network-name {
+  position: relative;
+  top: 3px;
 }
 </style>
