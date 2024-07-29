@@ -1,12 +1,23 @@
-export default (timestamp) => {
+export const hexToDate = (timestamp) => {
     const timeInSeconds = parseInt(timestamp, 16)
-    // convert to miliseconds
-    const timeInMiliseconds = timeInSeconds * 1000
-    return new Date(timeInMiliseconds).toLocaleDateString()
+    const timeInMilliseconds = timeInSeconds * 1000
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: 'UTC'
+    };
+
+    const formattedDate = new Date(timeInMilliseconds).toLocaleString('en-US', options);
+    return formattedDate.replace(',', '') + ' ' + options.timeZone;
+
 }
 
 export const parseUnixTime = (time) => {
-    if(time == 0) return undefined
+    if (time == 0) return undefined
     return timeSince(new Date(time * 1000))
 }
 

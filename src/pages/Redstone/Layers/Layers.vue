@@ -26,7 +26,8 @@
                     {{ item.network.name }}
                 </template>
                 <template #cell(contract_address)="{ item }">
-                    <a :title="`Open address in ${item.explorer.name} explorer`" target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
+                    <a :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
+                        :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
                         style="color: var(--redstone-red-color)"> {{
                             truncateString(item.contract_address) }}</a>
                     <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
@@ -37,7 +38,12 @@
                 </template>
                 <template #cell(timestamp)="{ item }">
                     <Loader v-if="item.loaders.blockTimestamp" />
-                    <span v-else-if="item.timestamp.raw">{{ item.timestamp.parsed }}</span>
+                    <span v-else-if="item.timestamp.raw">
+                        <span class="timestamp-date">
+                            {{ item.timestamp.date }}
+                        </span>
+                        {{ item.timestamp.parsed }} ago
+                    </span>
                     <span v-else>no-data</span>
                 </template>
             </b-table>
@@ -51,7 +57,7 @@
 import _ from "lodash";
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Loader from '../../../components/Loader/Loader'
-import { parseUnixTime } from '../../../core/timeHelpers'
+import { hexToDate, parseUnixTime } from '../../../core/timeHelpers'
 import copyToClipboardHelper from '../../../core/copyToClipboard'
 import truncateString from "../../../core/truncate";
 import LayerName from './components/LayerName'
@@ -104,7 +110,6 @@ export default {
     methods: {
         copyToClipboardHelper,
         truncateString,
-        parseUnixTime,
         onRowClick(item) {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
         },
@@ -285,7 +290,7 @@ export default {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
                     network: { id: item.networkId, name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId) },
                     contract_address: item.contractAddress,
-                    timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp },
+                    timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.layerId,
                     token_image: this.getTokenImage(item.feedId),
                     loaders: item.loaders,
