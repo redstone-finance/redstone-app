@@ -62,7 +62,7 @@ const router = new Router({
           component: Layers,
         },
         {
-          path: 'layers/:layerId',
+          path: 'layers/:contractAddress/:feedAddress',
           name: 'LayerSinglePage',
           component: Layer,
         },

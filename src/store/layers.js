@@ -60,6 +60,7 @@ export default {
                     networkId: layer.chain.id,
                     feedId: feedId,
                     contractAddress: layer.adapterContract,
+                    feedAddress: layer.priceFeeds[feedId],
                     triggers: layer.updateTriggers,
                     layerId: key,
                     timestamp: state.layersDetails[key].blockTimestamp,

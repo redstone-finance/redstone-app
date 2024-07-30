@@ -31,8 +31,7 @@
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
-                :current-page="currentPage" :filter-function="customFilter" :fields="fields"
-                class="layers__table">
+                :current-page="currentPage" :filter-function="customFilter" :fields="fields" class="layers__table">
                 <template #cell(network)="{ item }">
                     <img class="token-image" :src="item.network.image">
                     {{ item.network.name }}
@@ -46,7 +45,10 @@
                         title="Copy to clipboard" class="copy-icon glyphicon glyphicon-book"></span>
                 </template>
                 <template #cell(feed)="{ item }">
-                    <img :src="getImageUrl(item.token_image?.imageName)" class="token-image"> {{ item.feed }}
+                    <img :src="getImageUrl(item.token_image?.imageName)" class="token-image">
+                    <router-link class="feed-link" :to="{name: 'LayerSinglePage', params: {contractAddress: item.contract_address, feedAddress: item.feed_address}}">
+                        <span>{{ item.feed }}</span>
+                    </router-link>
                 </template>
                 <template #cell(timestamp)="{ item }">
                     <Loader v-if="item.loaders.blockTimestamp" />
@@ -358,6 +360,7 @@ export default {
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.layerId,
                     token: item.feedId,
+                    feed_address: item.feedAddress,
                     crypto_token: this.getFirstPart(item.feedId),
                     token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
                     loaders: item.loaders,
