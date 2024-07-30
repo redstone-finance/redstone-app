@@ -21,7 +21,7 @@
                         <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
                         <div class="layers__actions-wrapper-label">Displaying</div>
                         <span class="layers__status-text"><strong>{{ selectedNetworks.length ||
-                                networksMap.length}}</strong> networks
+                            networksMap.length }}</strong> networks
                         </span>
                         <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> feeds</span>
                     </div>
@@ -274,7 +274,10 @@ export default {
             this.selectedItems = []
         },
         getFirstPart(s) {
-            return s.split('/')[0];
+            const noSlash = s.split('/')[0];
+            const noUnder = noSlash.split('_')[0]
+            const noDash = noUnder.split('-')[0]
+            return noDash
         },
         toggleSelectAll(isSelected) {
             isSelected ? this.selectAllRows() : this.clearSelected()
@@ -308,14 +311,14 @@ export default {
         getTokenImage(token) {
             const idealMatchImg = images.find(image => token === image.token)
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
-            return idealMatchImg || secondMatch ||  { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
+            return idealMatchImg || secondMatch || images.find(image => image.token === 'placeholder')
         },
         unselectInvalidItems() {
             if (this.isUnselecting) return; // Prevent recursive calls
             this.isUnselecting = true;
 
             const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
-            this.filteredCurrencies.some(currency =>
+                this.filteredCurrencies.some(currency =>
                     currency.toLowerCase().includes(crypto.toLowerCase())
                 )
             );
@@ -349,7 +352,11 @@ export default {
     },
     computed: {
         cryptoImages() {
-            return images.filter(image => this.filteredCurrencies?.some(currency => currency.indexOf(image.token) >= 0))
+            return images.filter(image =>
+                this.filteredCurrencies?.some(currency =>
+                    currency === image.token
+                )
+            )
         },
         hasFilters() {
             return this.filters && (this.filters.selectedCryptos.length > 0 || this.filters.selectedNetworks.length > 0)
@@ -417,7 +424,7 @@ export default {
                 const networkSet = new Set();
                 this.displayedTableItems?.forEach(layer => {
                     if (this.selectedNetworks.some(chainId => layer.network.id === chainId)) {
-                        networkSet.add(layer.token);
+                        networkSet.add(layer.crypto_token);
                     }
                 });
 
