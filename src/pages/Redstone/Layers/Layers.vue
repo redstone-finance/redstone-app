@@ -23,7 +23,7 @@
                         <span class="layers__status-text"><strong>{{ selectedNetworks.length ||
                             networksMap.length }}</strong> networks
                         </span>
-                        <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> feeds</span>
+                        <span class="layers__status-text"><strong>{{ filteredItems.length }}</strong> feeds</span>
                     </div>
                 </div>
             </div>
