@@ -19,10 +19,11 @@
                 <div class="d-flex align-items-end">
                     <div>
                         <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
-                        <div class="layers__actions-wrapper-label">Status</div>
-                        <span class="layers__status-text"><strong>{{ networksMap.length }}</strong> networks
-                            available</span>
-                        <span class="layers__status-text"><strong>{{ layers.length }}</strong> feeds</span>
+                        <div class="layers__actions-wrapper-label">Displaying</div>
+                        <span class="layers__status-text"><strong>{{ selectedNetworks.length ||
+                                networksMap.length}}</strong> networks
+                        </span>
+                        <span class="layers__status-text"><strong>{{ displayedTableItems.length }}</strong> feeds</span>
                     </div>
                 </div>
             </div>
@@ -230,9 +231,10 @@ export default {
 
             const { selectedCryptos, selectedNetworks } = filters;
 
-            const cryptoMatch = selectedCryptos.length === 0 || selectedCryptos.some(crypto =>
-                row.feed.toLowerCase().includes(crypto.toLowerCase())
-            );
+            const cryptoMatch = selectedCryptos.length === 0 || selectedCryptos.some(crypto => {
+                const feedParts = row.feed.split('/');
+                return feedParts[0].toLowerCase() === crypto.toLowerCase();
+            });
 
             const networkMatch = selectedNetworks.length === 0 || selectedNetworks.includes(row.network.id);
 
