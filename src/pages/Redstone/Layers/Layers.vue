@@ -308,14 +308,14 @@ export default {
         getTokenImage(token) {
             const idealMatchImg = images.find(image => token === image.token)
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
-            return idealMatchImg || secondMatch || images.find(image => image.token === 'placeholder')
+            return idealMatchImg || secondMatch ||  { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
         },
         unselectInvalidItems() {
             if (this.isUnselecting) return; // Prevent recursive calls
             this.isUnselecting = true;
 
             const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
-                this.filteredCurrencies.some(currency =>
+            this.filteredCurrencies.some(currency =>
                     currency.toLowerCase().includes(crypto.toLowerCase())
                 )
             );
