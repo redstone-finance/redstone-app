@@ -62,7 +62,7 @@ const router = new Router({
           component: Layers,
         },
         {
-          path: 'layers/:contractAddress/:feedAddress',
+          path: 'layers/:network/:token',
           name: 'LayerSinglePage',
           component: Layer,
         },

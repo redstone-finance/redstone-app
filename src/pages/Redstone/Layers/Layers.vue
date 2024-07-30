@@ -46,7 +46,7 @@
                 </template>
                 <template #cell(feed)="{ item }">
                     <img :src="getImageUrl(item.token_image?.imageName)" class="token-image">
-                    <router-link class="feed-link" :to="{name: 'LayerSinglePage', params: {contractAddress: item.contract_address, feedAddress: item.feed_address}}">
+                    <router-link class="feed-link" :to="{name: 'LayerSinglePage', params: {network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase()}}">
                         <span>{{ item.feed }}</span>
                     </router-link>
                 </template>
@@ -286,6 +286,9 @@ export default {
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
             return idealMatchImg || secondMatch || images.find(image => image.token === 'placeholder')
         },
+        createNetworkUrlParam(networkName){
+            return networkName.toLowerCase().replace(' ', '-')
+        },
         ...mapActions('layers', ['init', 'initSingleContract']),
     },
     watch: {
@@ -355,7 +358,7 @@ export default {
             return this.combinedLayersWithDetailsArray.map(item => {
                 return {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
-                    network: { id: item.networkId, name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId) },
+                    network: { id: item.networkId, name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId), },
                     contract_address: item.contractAddress,
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.layerId,
