@@ -58,8 +58,9 @@
                     <span v-else>no-data</span>
                 </template>
             </b-table>
-            <b-pagination @change="onPageChange" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"
-                align="center" class="my-3" style="z-index: 0; position: relative;"></b-pagination>
+            <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange" v-model="currentPage"
+                :total-rows="totalRows" :per-page="perPage" align="fill" class="my-3 custom-pagination"
+                style="z-index: 0; position: relative;"></b-pagination>
         </template>
     </div>
 
@@ -104,7 +105,7 @@ export default {
             selectedChain: null,
             selectedCryptos: [],
             selectedNetworks: [],
-            perPage: 15,
+            perPage: 8,
             currentPage: 1,
             filteredItems: [],
             isUnselecting: false,
