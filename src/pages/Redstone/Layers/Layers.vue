@@ -15,7 +15,6 @@
                         :name="crypto.name" :token="crypto.token" :imageName="crypto.image" />
                 </div>
             </div>
-
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
                 <div class="d-flex align-items-end">
                     <div>
@@ -59,8 +58,8 @@
                     <span v-else>no-data</span>
                 </template>
             </b-table>
-            <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="center" class="my-3"
-                style="z-index: 0; position: relative;"></b-pagination>
+            <b-pagination @change="onPageChange" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"
+                align="center" class="my-3" style="z-index: 0; position: relative;"></b-pagination>
         </template>
     </div>
 
@@ -109,6 +108,7 @@ export default {
             currentPage: 1,
             filteredItems: [],
             isUnselecting: false,
+            isInitialLoad: true,
             mostUsedCryptos: [
                 { name: 'BitCoin', token: 'BTC', image: 'btc.webp' },
                 { name: 'Ethereum', token: 'ETH', image: 'eth.webp' },
@@ -126,30 +126,64 @@ export default {
         this.prefetchImages(networkImages)
         await this.init()
         this.initializeFiltersFromRoute()
+        this.$nextTick(() => {
+            this.isInitialLoad = false // Set to false after initial load
+        })
     },
     methods: {
         copyToClipboardHelper,
         truncateString,
         initializeFiltersFromRoute() {
-            const { cryptos, networks } = this.$route.query;
+            const { cryptos, networks, page } = this.$route.query;
+            console.log({ page })
             this.selectedCryptos = cryptos ? cryptos.split(',') : [];
             this.selectedNetworks = networks ? networks.split(',').map(Number) : [];
+            this.currentPage = page ? parseInt(page) : 1;
             this.applyFilters();
         },
 
         updateRouteParams() {
-            const query = {};
+            if (this.isInitialLoad) return; // Skip update during initial load
+
+            const query = { ...this.$route.query };
             if (this.selectedCryptos.length > 0) {
                 query.cryptos = this.selectedCryptos.join(',');
+            } else {
+                delete query.cryptos;
             }
             if (this.selectedNetworks.length > 0) {
                 query.networks = this.selectedNetworks.join(',');
+            } else {
+                delete query.networks;
             }
+            query.page = this.currentPage.toString();
+
             this.$router.push({ query }).catch(err => {
                 if (err.name !== 'NavigationDuplicated') {
                     throw err;
                 }
             });
+        },
+
+        handleFilter(filterType, value) {
+            if (filterType === 'cryptos') {
+                this.selectedCryptos = value;
+            } else if (filterType === 'networks') {
+                this.selectedNetworks = value;
+            }
+            if (!this.isInitialLoad) {
+                this.currentPage = 1; // Reset to first page when filters change, but not on initial load
+            }
+            this.applyFilters();
+            this.updateRouteParams();
+        },
+
+        applyFilters() {
+            this.filters = {
+                selectedCryptos: this.selectedCryptos,
+                selectedNetworks: this.selectedNetworks
+            };
+            this.$refs.selectableTable.refresh();
         },
         onRowClick(item) {
             this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
@@ -164,30 +198,18 @@ export default {
             }
             return string
         },
-        handleFilter(filterType, value) {
-            if (filterType === 'cryptos') {
-                this.selectedCryptos = value;
-            } else if (filterType === 'networks') {
-                this.selectedNetworks = value;
-            }
-            this.applyFilters();
-            this.updateRouteParams();
-        },
-
-        applyFilters() {
-            this.filters = {
-                selectedCryptos: this.selectedCryptos,
-                selectedNetworks: this.selectedNetworks
-            };
-            this.$refs.selectableTable.refresh();
-        },
-
         resetFilters() {
             this.selectedCryptos = [];
             this.selectedNetworks = [];
             this.filters = null;
             this.currentFilter = null;
+            this.currentPage = 1;
             this.$refs.selectableTable.refresh();
+            this.updateRouteParams();
+        },
+
+        onPageChange(page) {
+            this.currentPage = page
             this.updateRouteParams();
         },
         handleSingleFilterCheckbox(data) {
@@ -199,9 +221,7 @@ export default {
             this.handleFilter('crypto', this.selectedCryptos)
         },
         onFiltered(filteredItems) {
-            console.log({ filteredItems })
             this.filteredItems = filteredItems
-            this.currentPage = 1
             this.clearSelected()
             this.unselectInvalidItems()
         },
@@ -318,7 +338,6 @@ export default {
         },
         layers() {
             this.filteredItems = []
-            this.currentPage = 1
         },
     },
     computed: {
