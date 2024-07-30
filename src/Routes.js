@@ -60,9 +60,6 @@ const router = new Router({
           
           name: 'LayersPage',
           component: Layers,
-          meta: {
-            showSearchInputInNavbar: true,
-          },
         },
         {
           path: 'layers/:layerId',
