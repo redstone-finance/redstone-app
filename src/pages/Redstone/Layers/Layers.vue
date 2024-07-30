@@ -306,7 +306,7 @@ export default {
         getTokenImage(token) {
             const idealMatchImg = images.find(image => token === image.token)
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
-            return idealMatchImg || secondMatch || 
+            return idealMatchImg || secondMatch
         },
         unselectInvalidItems() {
             if (this.isUnselecting) return; // Prevent recursive calls
