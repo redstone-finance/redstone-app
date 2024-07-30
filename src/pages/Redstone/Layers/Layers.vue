@@ -58,9 +58,9 @@
                     <span v-else>no-data</span>
                 </template>
             </b-table>
-            <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange" v-model="currentPage"
-                :total-rows="totalRows" :per-page="perPage" align="fill" class="my-3 custom-pagination"
-                style="z-index: 0; position: relative;"></b-pagination>
+            <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
+                v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill"
+                class="my-3 custom-pagination" style="z-index: 0; position: relative;"></b-pagination>
         </template>
     </div>
 
@@ -136,7 +136,6 @@ export default {
         truncateString,
         initializeFiltersFromRoute() {
             const { cryptos, networks, page } = this.$route.query;
-            console.log({ page })
             this.selectedCryptos = cryptos ? cryptos.split(',') : [];
             this.selectedNetworks = networks ? networks.split(',').map(Number) : [];
             this.currentPage = page ? parseInt(page) : 1;
@@ -272,6 +271,9 @@ export default {
         clearSelected() {
             this.selectedItems = []
         },
+        getFirstPart(s) {
+            return s.split('/')[0];
+        },
         toggleSelectAll(isSelected) {
             isSelected ? this.selectAllRows() : this.clearSelected()
         },
@@ -302,7 +304,9 @@ export default {
             return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`
         },
         getTokenImage(token) {
-            return images.find(image => token.indexOf(image.token) >= 0)
+            const idealMatchImg = images.find(image => token === image.token)
+            const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
+            return idealMatchImg || secondMatch || 
         },
         unselectInvalidItems() {
             if (this.isUnselecting) return; // Prevent recursive calls
@@ -427,7 +431,8 @@ export default {
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.layerId,
                     token: item.feedId,
-                    token_image: this.getTokenImage(item.feedId),
+                    crypto_token: this.getFirstPart(item.feedId),
+                    token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
                     loaders: item.loaders,
                     explorer: this.findExplorer(item.networkId)
                 }

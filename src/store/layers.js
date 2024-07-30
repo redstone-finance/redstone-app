@@ -73,7 +73,6 @@ export default {
             const contractNetwork = Object.values(networks).find(network => network.chainId === chainId)
             const provider = new ethers.providers.JsonRpcProvider(contractNetwork.rpcUrl);
             const contract = new ethers.Contract(contractAddress, CONTRACTS_ABI_DEFINITION, provider);
-            console.log({contract})
             commit('assignCreatedSmartContract', { contract, layerId })
         },
         // 
@@ -99,7 +98,6 @@ export default {
         },
         async fetchBlockTimeStamp({ commit, state }, layerId) {
             this.getters['layers/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
-                console.log(timestamp)
                 commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp._hex })
             }).catch((error) => {
                 // console.log('timestamp error', layerId, error)
