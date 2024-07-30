@@ -13,7 +13,7 @@ const networkImages = {
     etherlink: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherlink.svg', // No matching image found
     etherlinkGhostnet: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherlink.svg', // No matching image found
     fraxtal: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/fraxswap.svg', // No matching image found
-    linea: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/linea.png',
+    linea: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png',
     manta: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/manta.png',
     mantle: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp',
     merlin: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp', // No matching image found
