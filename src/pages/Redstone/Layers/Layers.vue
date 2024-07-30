@@ -31,7 +31,7 @@
         <template>
             <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
                 @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
-                :current-page="currentPage" :filter-function="customFilter" :tbody-tr-class="rowClass" :fields="fields"
+                :current-page="currentPage" :filter-function="customFilter" :fields="fields"
                 class="layers__table">
                 <template #cell(network)="{ item }">
                     <img class="token-image" :src="item.network.image">
@@ -69,22 +69,26 @@
 
 <script>
 import _ from "lodash";
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+//Helpers
+import { hexToDate, parseUnixTime } from '@/core/timeHelpers'
+import copyToClipboardHelper from '@/core/copyToClipboard'
+import prefetchImages from "@/core/prefetchImages";
+import truncateString from "@/core/truncate";
+//Components
 import Loader from '../../../components/Loader/Loader'
-import { hexToDate, parseUnixTime } from '../../../core/timeHelpers'
-import copyToClipboardHelper from '../../../core/copyToClipboard'
-import truncateString from "../../../core/truncate";
 import LayerName from './components/LayerName'
 import LayerChain from './components/LayerChain'
 import LayerPriceFeeds from './components/LayerPriceFeeds'
 import LayerTriggers from './components/LayerTriggers'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
-import networkImages from "../../../data/networkImages";
+import CheckboxButton from "./components/CheckboxButton.vue";
+// Definitions
+import networkImages from "@/data/networkImages";
 import networks from '@/data/networks.js'
 import images from '@/core/logosDefinitions.js'
-import explorers from "../../../data/explorers";
-import CheckboxButton from "./components/CheckboxButton.vue";
+import explorers from "@/data/explorers";
 
 export default {
     components: {
@@ -99,9 +103,7 @@ export default {
     },
     data() {
         return {
-            selectAll: false,
             displayedTableItems: [],
-            selectedItems: [],
             filters: null,
             selectedChain: null,
             selectedCryptos: [],
@@ -125,11 +127,11 @@ export default {
     },
 
     async mounted() {
-        this.prefetchImages(networkImages)
+        prefetchImages(networkImages)
         await this.init()
         this.initializeFiltersFromRoute()
         this.$nextTick(() => {
-            this.isInitialLoad = false // Set to false after initial load
+            this.isInitialLoad = false
         })
     },
     methods: {
@@ -142,10 +144,8 @@ export default {
             this.currentPage = page ? parseInt(page) : 1;
             this.applyFilters();
         },
-
         updateRouteParams() {
-            if (this.isInitialLoad) return; // Skip update during initial load
-
+            if (this.isInitialLoad) return;
             const query = { ...this.$route.query };
             if (this.selectedCryptos.length > 0) {
                 query.cryptos = this.selectedCryptos.join(',');
@@ -165,7 +165,6 @@ export default {
                 }
             });
         },
-
         handleFilter(filterType, value) {
             if (filterType === 'cryptos') {
                 this.selectedCryptos = value;
@@ -178,26 +177,12 @@ export default {
             this.applyFilters();
             this.updateRouteParams();
         },
-
         applyFilters() {
             this.filters = {
                 selectedCryptos: this.selectedCryptos,
                 selectedNetworks: this.selectedNetworks
             };
             this.$refs.selectableTable.refresh();
-        },
-        onRowClick(item) {
-            this.$router.push({ name: 'LayerSinglePage', params: { layerId: item.layer } })
-        },
-        stripAdditionalFeedInfo(string) {
-            const hasUnderscore = string.indexOf('_') >= 0
-            const hasDash = string.indexOf('-') >= 0
-            if (hasUnderscore) {
-                return string.split('_')[0]
-            } else if (hasDash) {
-                return string.split('-')[0]
-            }
-            return string
         },
         resetFilters() {
             this.selectedCryptos = [];
@@ -208,22 +193,12 @@ export default {
             this.$refs.selectableTable.refresh();
             this.updateRouteParams();
         },
-
         onPageChange(page) {
             this.currentPage = page
             this.updateRouteParams();
         },
-        handleSingleFilterCheckbox(data) {
-            if (!data.isChecked) {
-                this.selectedCryptos.push(data.value)
-            } else {
-                this.selectedCryptos = this.selectedCryptos.filter(token => token != data.value)
-            }
-            this.handleFilter('crypto', this.selectedCryptos)
-        },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
-            this.clearSelected()
             this.unselectInvalidItems()
         },
         customFilter(row, filters) {
@@ -235,10 +210,47 @@ export default {
                 const feedParts = row.feed.split('/');
                 return feedParts[0].toLowerCase() === crypto.toLowerCase();
             });
-
             const networkMatch = selectedNetworks.length === 0 || selectedNetworks.includes(row.network.id);
 
             return cryptoMatch && networkMatch;
+        },
+        unselectInvalidItems() {
+            if (this.isUnselecting) return; // Prevent recursive calls
+            this.isUnselecting = true;
+
+            const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
+                this.filteredCurrencies.some(currency =>
+                    currency.toLowerCase().includes(crypto.toLowerCase())
+                )
+            );
+            const newSelectedNetworks = this.selectedNetworks.filter(network =>
+                this.filteredNetworks.includes(network)
+            );
+            if (!_.isEqual(newSelectedCryptos, this.selectedCryptos)) {
+                this.selectedCryptos = newSelectedCryptos;
+            }
+            if (!_.isEqual(newSelectedNetworks, this.selectedNetworks)) {
+                this.selectedNetworks = newSelectedNetworks;
+            }
+            this.isUnselecting = false;
+        },
+        handleSingleFilterCheckbox(data) {
+            if (!data.isChecked) {
+                this.selectedCryptos.push(data.value)
+            } else {
+                this.selectedCryptos = this.selectedCryptos.filter(token => token != data.value)
+            }
+            this.handleFilter('crypto', this.selectedCryptos)
+        },
+        stripAdditionalFeedInfo(string) {
+            const hasUnderscore = string.indexOf('_') >= 0
+            const hasDash = string.indexOf('-') >= 0
+            if (hasUnderscore) {
+                return string.split('_')[0]
+            } else if (hasDash) {
+                return string.split('-')[0]
+            }
+            return string
         },
         findNetworkName(networkId) {
             return Object.values(networks).find(network => network.chainId === networkId).name
@@ -250,55 +262,14 @@ export default {
         findExplorer(networkId) {
             return Object.values(explorers).find(explorer => explorer.chainId === networkId)
         },
-        ...mapActions('layers', ['init', 'initSingleContract']),
-        // Bootstrap selection handling was broken due to rerenders caused byt fetching async data
-        // This is why I had to handle selection on my own
-        selectAllRows() {
-            this.selectedItems = this.displayedTableItems.map(item => item.layer)
-        },
-        prefetchImages(images = networkImages) {
-            const prefetchPromises = Object.values(images).map(url => {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.onload = resolve;
-                    img.onerror = reject;
-                    img.src = url;
-                });
-            });
-
-            return Promise.all(prefetchPromises)
-                .then(() => console.log('All images prefetched successfully'))
-                .catch(error => console.error('Error prefetching images:', error));
-        },
-        clearSelected() {
-            this.selectedItems = []
-        },
-        getFirstPart(s) {
-            const noSlash = s.split('/')[0];
+        getFirstPart(string) {
+            const noSlash = string.split('/')[0];
             const noUnder = noSlash.split('_')[0]
             const noDash = noUnder.split('-')[0]
             return noDash
         },
-        toggleSelectAll(isSelected) {
-            isSelected ? this.selectAllRows() : this.clearSelected()
-        },
         getImageUrl(imageName) {
             return `/logos/${imageName}`
-        },
-        selectRow(index) {
-            this.selectedItems.push(this.displayedTableItems[index]?.layer) // Defensive check
-        },
-        unselectRow(index) {
-            this.selectedItems = this.selectedItems.filter(item => item !== this.displayedTableItems[index]?.layer) // Defensive check
-        },
-        handleChange(index, isSelected) {
-            !isSelected ? this.selectRow(index) : this.unselectRow(index)
-        },
-        isSelected(index) {
-            return this.selectedItems.includes(this.displayedTableItems[index]?.layer) // Defensive check
-        },
-        rowClass(item) {
-            if (this.selectedItems.includes(item?.layer)) return 'table-active' // Defensive check
         },
         hasSlash(string) {
             return string.indexOf('/') >= 0
@@ -313,39 +284,9 @@ export default {
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
             return idealMatchImg || secondMatch || images.find(image => image.token === 'placeholder')
         },
-        unselectInvalidItems() {
-            if (this.isUnselecting) return; // Prevent recursive calls
-            this.isUnselecting = true;
-
-            const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
-                this.filteredCurrencies.some(currency =>
-                    currency.toLowerCase().includes(crypto.toLowerCase())
-                )
-            );
-
-            const newSelectedNetworks = this.selectedNetworks.filter(network =>
-                this.filteredNetworks.includes(network)
-            );
-
-            // Only update if there's a change
-            if (!_.isEqual(newSelectedCryptos, this.selectedCryptos)) {
-                this.selectedCryptos = newSelectedCryptos;
-            }
-
-            if (!_.isEqual(newSelectedNetworks, this.selectedNetworks)) {
-                this.selectedNetworks = newSelectedNetworks;
-            }
-
-            this.isUnselecting = false;
-        },
-        ...mapActions('layout', ['updateSearchTerm'])
+        ...mapActions('layers', ['init', 'initSingleContract']),
     },
     watch: {
-        searchTerm(searchTerm) {
-            if (searchTerm != '') {
-                this.handleFilter('Search query', searchTerm)
-            }
-        },
         layers() {
             this.filteredItems = []
         },
@@ -368,34 +309,11 @@ export default {
             const map = Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
             return map.filter(item => this.filteredNetworks.includes(item.value))
         },
-        chainOptions() {
-            const options = this.layers.map(item => ({ text: item.chain, value: item.chain }))
-            return [
-                { value: null, text: 'Select chain' },
-                ..._.uniqBy(options, 'value')
-            ]
-        },
-        priceFeeds() {
-            return [...new Set(this.layers.map(item => Object.keys(item.priceFeeds)).flat())]
-        },
         paginatedLayers() {
             const startIndex = (this.currentPage - 1) * this.perPage;
             const endIndex = startIndex + this.perPage;
             return this.layers.slice(startIndex, endIndex);
         },
-        allSelected() {
-            return this.selectedItems.length === this.displayedTableItems.length
-        },
-        allLoadersResolved() {
-            return this.displayedTableItems.every(({ loaders }) => !(loaders.blockTimestamp && loaders.feedDataValue && loaders.feedId))
-        },
-        selectedSchemas() {
-            return this.selectedItems.map(layerId => this.layersSchema[layerId])
-        },
-        ...mapState({
-            layersSchema: state => state.layers.layersSchema,
-            searchTerm: state => state.layout.searchTerm,
-        }),
         ...mapGetters('layers', [
             'combinedLayersWithDetailsArray'
         ]),
