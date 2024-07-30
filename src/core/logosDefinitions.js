@@ -45,5 +45,6 @@ export default [
     { name: "Gold", imageName: "xaut.webp", token: "XAU" },
     { name: "Tezos", imageName: "xtz.webp", token: "XTZ" },
     { name: "Venus", imageName: "xvs.webp", token: "XVS" },
-    { name: "ZK", imageName: "zk.webp", token: "ZK" }
+    { name: "ZK", imageName: "zk.webp", token: "ZK" },
+    { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
 ];
