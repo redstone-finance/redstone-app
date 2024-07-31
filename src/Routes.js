@@ -62,7 +62,7 @@ const router = new Router({
           component: Feeds,
         },
         {
-          path: 'feeds/:network/:token',
+          path: 'feeds/:relayerId/:network/:token',
           name: 'SingleFeed',
           component: Feed,
         },

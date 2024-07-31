@@ -49,6 +49,8 @@ export default {
             return Object.keys(state.layersSchema).flatMap((key) => {
                 const layer = state.layersSchema[key];
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
+                    routeNetwork: Object.values(networks).find(network => network.chainId === layer.chain.id).name.toLowerCase().replace(' ', '-'),
+                    routeToken: feedId.toLowerCase(),
                     networkId: layer.chain.id,
                     feedId: feedId,
                     contractAddress: layer.adapterContract,

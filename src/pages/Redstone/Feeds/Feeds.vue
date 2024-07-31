@@ -48,7 +48,7 @@
             <template #cell(feed)="{ item }">
                 <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
                 <router-link class="feeds__feed-link"
-                    :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase() } }">
+                    :to="{ name: 'SingleFeed', params: { relayerId: item.relayerId, network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
                     <span>{{ item.feed }}</span>
                 </router-link>
             </template>
@@ -380,6 +380,7 @@ export default {
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.feedId,
                     token: item.feedId,
+                    relayerId: item.layerId,
                     feed_address: item.feedAddress,
                     crypto_token: this.getFirstPart(item.feedId),
                     token_image: this.getTokenImage(this.getFirstPart(item.feedId)),

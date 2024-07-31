@@ -1,13 +1,5 @@
 <template>
-    <div class="layers" v-if="layer">
-        <LayerName :layerName="layerId">
-            <div>
-                <strong style="color: #000;">{{ layer.adapterContract }}</strong>
-            </div>
-        </LayerName>
-        <LayerChain :chain="layer.chain.name" :chainId="layer.chain.id" />
-        <LayerTriggers :updateTriggers="layer.updateTriggers" />
-        <LayerPriceFeeds :priceFeeds="layer.priceFeeds" />
+    <div class="layers">
         <hr>
         <vue-loaders-ball-beat v-if="isLoading" class="chart-loader" color="var(--redstone-red-color)" scale="1" />
         <LayerChart v-if="chartData.length > 0" :data="chartData" />
@@ -22,7 +14,6 @@ import LayerChain from './components/LayerChain'
 import LayerTriggers from './components/LayerTriggers'
 import LayerPriceFeeds from './components/LayerPriceFeeds'
 import LayerChart from "./components/LayerChart";
-import parseHexTimestamp from '../../../core/timeHelpers'
 export default {
     components: {
         LayerName,
@@ -39,19 +30,18 @@ export default {
     },
 
     async mounted() {
-        this.initSingleContract(this.$route.params.layerId).then(async () => {
+        this.initSingleContract(this.relayerId).then(async () => {
             await this.fetchChartData()
         })
     },
     methods: {
-        ...mapActions('layers', ['initSingleContract']),
-        ...mapActions('layout', ['updateSearchTerm']),
+        ...mapActions('feeds', ['initSingleContract']),
         async fetchChartData() {
             this.isLoading = true
             const queryParams = {
                 module: 'logs',
                 action: 'getLogs',
-                address: this.layer?.adapterContract,
+                address: this.feedData.contractAddress,
                 page: '1',
                 offset: '1000',
                 apikey: process.env.VUE_APP_ETHER_SCAN_API_KEY
@@ -62,15 +52,23 @@ export default {
             }
             this.isLoading = false;
         },
-        parseHexTimestamp,
     },
     computed: {
-        layerId() {
-            return this.$route.params.layerId
+        network() {
+            return this.$route.params.network
         },
-        ...mapState('layers', ['layersDetails', 'layersSchema']),
-        ...mapGetters('layers', [
-            'combinedLayersWithDetailsArray'
+        token() {
+            return this.$route.params.token
+        },
+        relayerId(){
+            return this.$route.params.relayerId
+        }, 
+        feedData() {
+            return this.combinedFeedsWithDetailsArray.find(feed => feed.routeNetwork === this.network && feed.routeToken === this.token)
+        },
+        ...mapState('feeds', ['layersDetails', 'layersSchema']),
+        ...mapGetters('feeds', [
+            'combinedFeedsWithDetailsArray'
         ]),
         layer() {
             return this.layersSchema[this.layerId]
