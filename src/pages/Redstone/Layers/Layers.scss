@@ -1,12 +1,14 @@
-@import '~@/styles/app';
 
+@import '~@/styles/app';
 .layers {
     font-size: 14px;
     background-color: $gray-100;
     border-radius: 10px;
     padding: 2rem;
     box-shadow: var(--content-shadow);
-
+    &__network-picker{
+        margin-right: 10px;
+    }
     &__actions-wrapper {
         position: sticky;
         top: 70px;
@@ -21,6 +23,8 @@
 
         &-item {
             margin-right: 1rem;
+            display: flex;
+            margin-bottom: 1rem;
 
             &--right {
                 margin-left: auto;
@@ -32,250 +36,55 @@
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
-
-        &-dropdown {
-            >button {
-                padding: 5px 10px;
-            }
-
-            li a:active {
-                background: #fff;
-            }
-
-            a .btn {
-                font-size: 10px;
-                padding: 5px 10px;
-            }
-
-            button {
-                font-size: 12px;
-                border-radius: 20px;
-
-                &:first-child:hover {
-                    background-color: #fff;
-                    color: var(--redstone-red-color);
-                }
-            }
-        }
-    }
-
-    &__chain-select {
-        border: 1px solid var(--redstone-red-color) !important;
-        color: var(--redstone-red-color) !important;
-    }
-
-    &__filter-badge {
-        width: 100%;
-        cursor: pointer;
-
-        &:hover {
-            opacity: 0.9;
-        }
-
-        &-close {
-            background-color: #fff;
-            color: var(--redstone-red-color);
-            width: 10px;
-            height: 10px;
-            display: inline-block;
-            border-radius: 50%;
-            line-height: 11px;
-        }
     }
 
     &__status-text {
         font-size: 12px;
         display: block;
+
+        strong {
+            font-weight: bold;
+        }
     }
 
     &__table {
         font-size: 12px;
-
-
-
-        .custom-checkbox {
-            transform: scale(1.2);
-            position: relative;
-            padding: 0 !important;
-            left: 10px;
-
-            label {
-                height: 50px !important;
-                width: 60px !important;
-                cursor: pointer;
-
-                &::before,
-                &::after {
-                    left: 50% !important;
-                    top: 50% !important;
-                    transform: translate(-50%, -50%);
-                }
-            }
-        }
-
-        .table-active {
-            box-shadow: -2px 0px 0px 0px var(--redstone-red-color);
-            background: #fff !important;
-
-            td {
-                background: inherit !important;
-            }
-
-            .custom-checkbox label::before {
-                background: var(--redstone-red-color) !important;
-                border-color: var(--redstone-red-color) !important;
-            }
-        }
-
-        thead tr {
-            font-size: 12px;
-            font-weight: 400;
-            background: $gray-200;
-
-            th {
-                vertical-align: middle;
-                padding: 20px 10px;
-
-                &:first-child {
-                    border-top-left-radius: 10px;
-                }
-
-                &:last-child {
-                    border-top-right-radius: 10px;
-                }
-            }
-        }
-
-        tbody tr:hover {
-            cursor: pointer;
-            background-color: $gray-200 !important;
-        }
     }
 
-    &__toggle-all,
-    &__checkbox {
-        transform: scale(1.2);
+    &__token-image {
+        width: 40px;
+        height: 40px;
+        padding: 5px;
+        box-shadow: var(--content-shadow);
+        border-radius: 40px;
+        border: 2px solid #ebebeb;
+        margin: 10px;
     }
 
-    &__toggle-all {
-        input:checked+label::before {
-            background: var(--redstone-red-color) !important;
-            border-color: var(--redstone-red-color) !important;
-        }
+    &__contract-address {
+        color: var(--redstone-red-color);
     }
 
-    &__details {
-        display: flex;
-        padding: 20px 0;
-
-        @include media-breakpoint-down(md) {
-            flex-flow: column;
-        }
-
-        &-column {
-            margin-right: 1rem;
-        }
-
-        &-title {
-            padding: 5px 10px;
-            margin-bottom: 0.5rem;
-
-            &--featured {
-                font-size: 14px;
-                background: $gray-200;
-                border-radius: 10px;
-
-                strong {
-                    font-size: 14px;
-                    color: var(--redstone-red-color);
-                }
-            }
-
-            &--triggers {
-                width: 100%;
-                flex-grow: 1;
-            }
-        }
-    }
-
-    &__label {
-        font-size: 10px;
-        display: block;
-        margin-bottom: 0;
-    }
-
-    &__value {
-        font-size: 12px;
-    }
-
-    &__chain-id {
-        font-size: 8px;
+    &__copy-icon {
         margin-left: 10px;
-    }
-
-    &__triggers {
-        cursor: copy;
-        border: 1px solid $gray-300;
-        padding: 10px;
-        font-size: 10px;
+        position: relative;
         display: block;
-        max-width: 100%;
-        width: auto;
-
-        &:active {
-            background-color: #fff;
-        }
-    }
-
-    &__chain,
-    &__address,
-    &__timestamp,
-    &__feed-data {
-        padding-left: 1rem;
-    }
-
-    &__address-input {
+        top: -1px !important;
+        color: #989898;
         cursor: pointer;
     }
 
-    &__loader {
-        width: 50px;
+    &__feed-link {
+        color: var(--redstone-red-color) !important;
     }
 
-    &__no-data {
-        font-size: 10px;
-        color: $secondary;
-    }
-
-    &__chain-value,
-    &__timestamp-value,
-    &__feed-data-value {
-        font-size: 12px;
-    }
-
-    @include media-breakpoint-down(md) {
-        .table.b-table.b-table-stacked-md>tbody>tr>[data-label]::before {
-            width: 20% !important;
+    &__timestamp {
+        &-date {
+            display: block;
+            font-size: 10px;
+            color: gray;
         }
     }
-}
-
-.token-image {
-    width: 40px;
-    height: 40px;
-    padding: 5px;
-    box-shadow: var(--content-shadow);
-    border-radius: 40px;
-    border: 2px solid #ebebeb;
-    margin: 10px;
-}
-
-.copy-icon {
-    margin-left: 10px;
-    position: relative;
-    display: block;
-    top: -1px !important;
-    color: #989898;
 }
 
 .clear-filters {
@@ -286,25 +95,24 @@
     cursor: pointer;
 }
 
-.timestamp-date {
-    display: block;
-    font-size: 10px;
-    color: gray;
-}
-
 .custom-pagination {
     li {
         width: 200px !important;
-    }
 
-    li:nth-child(4) {
-        flex: unset !important;
-        margin-left: auto;
-    }
+        &:nth-child(4) {
+            flex: unset !important;
+            margin-left: auto;
+        }
 
-    li:nth-child(2) {
-        flex: unset !important;
-        margin-right: auto;
+        &:nth-child(2) {
+            flex: unset !important;
+            margin-right: auto;
+        }
+
+        &:first-child,
+        &:last-child {
+            display: none !important;
+        }
     }
 
     button {
@@ -319,20 +127,10 @@
         }
     }
 
-    li:first-child,
-    li:last-child {
-        display: none !important;
+    .page-item {
+        &.disabled,
+        &.active {
+            display: none !important;
+        }
     }
-
-    .page-item.disabled {
-        display: none !important;
-    }
-
-    .page-item.active {
-        display: none !important;
-    }
-}
-
-.feed-link {
-    color: var(--redstone-red-color) !important;
 }

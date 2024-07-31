@@ -2,71 +2,70 @@
     <div class="layers">
         <div class="layers__actions-wrapper">
             <div>
-                <div class="d-flex">
+                <div class="layers__actions-wrapper-item">
                     <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks"
-                        :items="networksMap" class="mr-2" />
+                        :items="networksMap" class="layers__network-picker" />
                     <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)"
-                        v-model="selectedCryptos" />
+                        v-model="selectedCryptos" class="layers__crypto-picker" />
                 </div>
-                <div class="mt-2 d-flex">
-                    <CheckboxButton :disabled="!filteredCurrencies.includes(crypto.token)"
-                        v-for="crypto in mostUsedCryptos" :key="crypto.token"
-                        :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
-                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image" />
+                <div class="layers__actions-wrapper-item">
+                    <CheckboxButton v-for="crypto in mostUsedCryptos" :key="crypto.token"
+                        :disabled="!filteredCurrencies.includes(crypto.token)"
+                        :isChecked="selectedCryptos.includes(crypto.token)" 
+                        @change="handleSingleFilterCheckbox"
+                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image" 
+                        class="layers__checkbox-button" />
                 </div>
             </div>
             <div class="layers__actions-wrapper-item layers__actions-wrapper-item--right">
-                <div class="d-flex align-items-end">
-                    <div>
-                        <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
-                        <div class="layers__actions-wrapper-label">Displaying</div>
-                        <span class="layers__status-text"><strong>{{ selectedNetworks.length ||
-                            networksMap.length }}</strong> networks
-                        </span>
-                        <span class="layers__status-text"><strong>{{ filteredItems.length }}</strong> feeds</span>
-                    </div>
+                <div class="layers__status">
+                    <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
+                    <div class="layers__actions-wrapper-label">Displaying</div>
+                    <span class="layers__status-text">
+                        <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks
+                    </span>
+                    <span class="layers__status-text">
+                        <strong>{{ filteredItems.length }}</strong> feeds
+                    </span>
                 </div>
             </div>
         </div>
-        <template>
-            <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-                @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
-                :current-page="currentPage" :filter-function="customFilter" :fields="fields" class="layers__table">
-                <template #cell(network)="{ item }">
-                    <img class="token-image" :src="item.network.image">
-                    {{ item.network.name }}
-                </template>
-                <template #cell(contract_address)="{ item }">
-                    <a :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
-                        :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
-                        style="color: var(--redstone-red-color)"> {{
-                            truncateString(item.contract_address) }}</a>
-                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
-                        title="Copy to clipboard" class="copy-icon glyphicon glyphicon-book"></span>
-                </template>
-                <template #cell(feed)="{ item }">
-                    <img :src="getImageUrl(item.token_image?.imageName)" class="token-image">
-                    <router-link class="feed-link" :to="{name: 'LayerSinglePage', params: {network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase()}}">
-                        <span>{{ item.feed }}</span>
-                    </router-link>
-                </template>
-                <template #cell(timestamp)="{ item }">
-                    <Loader v-if="item.loaders.blockTimestamp" />
-                    <span v-else-if="item.timestamp.raw">
-                        <span class="timestamp-date">
-                            {{ item.timestamp.date }}
-                        </span>
-                        {{ item.timestamp.parsed }} ago
+        <b-table id="layers-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+            @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="layers" :per-page="perPage"
+            :current-page="currentPage" :filter-function="customFilter" :fields="fields" class="layers__table">
+            <template #cell(network)="{ item }">
+                <img class="layers__token-image" :src="item.network.image" :alt="item.network.name">
+                {{ item.network.name }}
+            </template>
+            <template #cell(contract_address)="{ item }">
+                <a class="layers__contract-address" :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
+                    :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
+                    {{ truncateString(item.contract_address) }}
+                </a>
+                <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
+                    title="Copy to clipboard" class="layers__copy-icon glyphicon glyphicon-book"></span>
+            </template>
+            <template #cell(feed)="{ item }">
+                <img :src="getImageUrl(item.token_image?.imageName)" class="layers__token-image" :alt="item.feed">
+                <router-link class="layers__feed-link" :to="{name: 'LayerSinglePage', params: {network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase()}}">
+                    <span>{{ item.feed }}</span>
+                </router-link>
+            </template>
+            <template #cell(timestamp)="{ item }">
+                <Loader v-if="item.loaders.blockTimestamp" class="layers__loader" />
+                <span v-else-if="item.timestamp.raw" class="layers__timestamp">
+                    <span class="layers__timestamp-date">
+                        {{ item.timestamp.date }}
                     </span>
-                    <span v-else>no-data</span>
-                </template>
-            </b-table>
-            <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
-                v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill"
-                class="my-3 custom-pagination" style="z-index: 0; position: relative;"></b-pagination>
-        </template>
+                    {{ item.timestamp.parsed }} ago
+                </span>
+                <span v-else class="layers__no-data">no-data</span>
+            </template>
+        </b-table>
+        <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
+            v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill"
+            class="my-3 custom-pagination"></b-pagination>
     </div>
-
 </template>
 
 <script>
