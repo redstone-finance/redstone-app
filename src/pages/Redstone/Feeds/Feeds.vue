@@ -118,7 +118,11 @@ export default {
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
                 { key: 'contract_address', label: 'Contract address' },
-                { key: 'timestamp', label: 'Last update', sortable: true },
+                {
+                    key: 'timestamp', label: 'Last update', sortable: true,
+                    sortByFormatted: true,
+                    formatter: (value, key, item) => item.timestamp.raw
+                },
             ],
         };
     },
