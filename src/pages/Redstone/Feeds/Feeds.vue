@@ -11,9 +11,8 @@
                 <div class="feeds__actions-wrapper-item">
                     <CheckboxButton v-for="crypto in mostUsedCryptos" :key="crypto.token"
                         :disabled="!filteredCurrencies.includes(crypto.token)"
-                        :isChecked="selectedCryptos.includes(crypto.token)" 
-                        @change="handleSingleFilterCheckbox"
-                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image" 
+                        :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
+                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image"
                         class="feeds__checkbox-button" />
                 </div>
             </div>
@@ -31,15 +30,16 @@
             </div>
         </div>
         <b-table id="feeds-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-            @filtered="onFiltered" :filter="filters" sort-icon-left hover :items="feeds" :per-page="perPage"
-            :current-page="currentPage" :filter-function="customFilter" :fields="fields" class="feeds__table">
+            :sortBy="sortBy" :sortDesc="sortDesc" @filtered="onFiltered" :filter="filters" sort-icon-left hover
+            :items="feeds" :per-page="perPage" @sort-changed="handleSort" :current-page="currentPage"
+            :filter-function="customFilter" :fields="fields" class="feeds__table">
             <template #cell(network)="{ item }">
                 <img class="feeds__token-image" :src="item.network.image" :alt="item.network.name">
                 {{ item.network.name }}
             </template>
             <template #cell(contract_address)="{ item }">
-                <a class="feeds__contract-address" :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
-                    :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
+                <a class="feeds__contract-address" :title="`Open address in ${item.explorer.name} explorer`"
+                    target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                     {{ truncateString(item.contract_address) }}
                 </a>
                 <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
@@ -47,7 +47,8 @@
             </template>
             <template #cell(feed)="{ item }">
                 <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
-                <router-link class="feeds__feed-link" :to="{name: 'SingleFeed', params: {network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase()}}">
+                <router-link class="feeds__feed-link"
+                    :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase() } }">
                     <span>{{ item.feed }}</span>
                 </router-link>
             </template>
@@ -86,6 +87,7 @@ import networkImages from "@/data/networkImages";
 import networks from '@/data/networks.js'
 import images from '@/core/logosDefinitions.js'
 import explorers from "@/data/explorers";
+import { sortBy } from "lodash";
 
 export default {
     components: {
@@ -102,6 +104,8 @@ export default {
             selectedCryptos: [],
             selectedNetworks: [],
             perPage: 8,
+            sortBy: null,
+            sortDesc: false,
             currentPage: 1,
             filteredItems: [],
             isUnselecting: false,
@@ -131,10 +135,12 @@ export default {
         copyToClipboardHelper,
         truncateString,
         initializeFiltersFromRoute() {
-            const { cryptos, networks, page } = this.$route.query;
+            const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query;
             this.selectedCryptos = cryptos ? cryptos.split(',') : [];
             this.selectedNetworks = networks ? networks.split(',').map(Number) : [];
             this.currentPage = page ? parseInt(page) : 1;
+            this.sortBy = sortBy || null;
+            this.sortDesc = sortDesc === 'true';
             this.applyFilters();
         },
         updateRouteParams() {
@@ -151,6 +157,15 @@ export default {
                 delete query.networks;
             }
             query.page = this.currentPage.toString();
+
+            // Add sorting parameters
+            if (this.sortBy) {
+                query.sortBy = this.sortBy;
+                query.sortDesc = this.sortDesc.toString();
+            } else {
+                delete query.sortBy;
+                delete query.sortDesc;
+            }
 
             this.$router.push({ query }).catch(err => {
                 if (err.name !== 'NavigationDuplicated') {
@@ -170,6 +185,11 @@ export default {
             this.applyFilters();
             this.updateRouteParams();
         },
+        handleSort(ctx) {
+            this.sortBy = ctx.sortBy;
+            this.sortDesc = ctx.sortDesc;
+            this.updateRouteParams();
+        },
         applyFilters() {
             this.filters = {
                 selectedCryptos: this.selectedCryptos,
@@ -183,6 +203,8 @@ export default {
             this.filters = null;
             this.currentFilter = null;
             this.currentPage = 1;
+            this.sortBy = null;
+            this.sortDesc = false;
             this.$refs.selectableTable.refresh();
             this.updateRouteParams();
         },
@@ -277,7 +299,7 @@ export default {
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
             return idealMatchImg || secondMatch || { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
         },
-        createNetworkUrlParam(networkName){
+        createNetworkUrlParam(networkName) {
             return networkName.toLowerCase().replace(' ', '-')
         },
         ...mapActions('feeds', ['init', 'initSingleContract']),
