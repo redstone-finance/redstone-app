@@ -275,7 +275,7 @@ export default {
         getTokenImage(token) {
             const idealMatchImg = images.find(image => token === image.token)
             const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
-            return idealMatchImg || secondMatch || images.find(image => image.token === 'placeholder')
+            return idealMatchImg || secondMatch || { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
         },
         createNetworkUrlParam(networkName){
             return networkName.toLowerCase().replace(' ', '-')
