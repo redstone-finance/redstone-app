@@ -11,8 +11,8 @@ import Sources from "@/pages/Redstone/Sources/Sources";
 import Source from "@/pages/Redstone/Source/Source";
 import DataServices from "@/pages/Redstone/DataServices/DataServices";
 import DataService from "@/pages/Redstone/DataService/DataService";
-import Layers from "@/pages/Redstone/Layers/Layers"
-import Layer from "@/pages/Redstone/Layers/Layer"
+import Feeds from "@/pages/Redstone/Feeds/Feeds"
+import Feed from "@/pages/Redstone/Feeds/Feed"
 // Store
 import store from "./store";
 
@@ -56,15 +56,15 @@ const router = new Router({
           component: Source,
         },
         {
-          path: 'layers',
+          path: 'feeds',
           
-          name: 'LayersPage',
-          component: Layers,
+          name: 'Feeds list',
+          component: Feeds,
         },
         {
-          path: 'layers/:network/:token',
-          name: 'LayerSinglePage',
-          component: Layer,
+          path: 'feeds/:network/:token',
+          name: 'SingleFeed',
+          component: Feed,
         },
         {
           path: 'data-services',

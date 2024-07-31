@@ -4,10 +4,8 @@ import { isEmpty } from 'lodash';
 import Vue from 'vue';
 import relayers from '@/data/relayers.js'
 import networks from '@/data/networks.js'
+
 const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
-
-
-
 const CONTRACTS_ABI_DEFINITION = [
     "function getBlockTimestampFromLatestUpdate() view returns (uint256)",
     "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
@@ -15,12 +13,6 @@ const CONTRACTS_ABI_DEFINITION = [
     "function getDataFeedId() view returns (bytes32)",
     "function getDataFeedIds() view returns (bytes32[])"
 ];
-
-
-
-// Helper methods for handling promises
-const etherNetLinkMessage = (address) => `validate it here: https://etherscan.io/address/${address}`
-
 
 export default {
     namespaced: true,
@@ -53,7 +45,7 @@ export default {
             return state.layersSchema[layerId].priceFeeds.length > 1
         },
         // combined data which will be displayed as a UI - mapping fetched data with initial schema layers
-        combinedLayersWithDetailsArray(state) {
+        combinedFeedsWithDetailsArray(state) {
             return Object.keys(state.layersSchema).flatMap((key) => {
                 const layer = state.layersSchema[key];
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
@@ -82,7 +74,7 @@ export default {
         // But only when we are sure the business logic + it will be much easier to provide unit tests
         // 
         async fetchDataFeedId({ commit, state }, layerId) {
-            const api = this.getters['layers/getSmartContractByLayerId'](layerId)
+            const api = this.getters['feeds/getSmartContractByLayerId'](layerId)
             try {
                 var id = await api.getDataFeedId()
             } catch (error) {
@@ -92,23 +84,23 @@ export default {
                 var ids = await api.getDataFeedIds()
             } catch (error) {
                 // console.log('error, id, multiple', layerId, error)
-                this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
+                this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
             }
             commit('assignLayerDetails', { key: 'feedId', layerId, data: id || ids })
-            this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedId' })
+            this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedId' })
         },
         async fetchBlockTimeStamp({ commit, state }, layerId) {
-            this.getters['layers/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
+            this.getters['feeds/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
                 commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp._hex })
             }).catch((error) => {
                 // console.log('timestamp error', layerId, error)
             }).finally(() => {
-                this.dispatch('layers/disableLoader', { layerId, loaderId: 'blockTimestamp' })
+                this.dispatch('feeds/disableLoader', { layerId, loaderId: 'blockTimestamp' })
             })
         },
         async fetchValueForDataFeed({ commit, state }, { layerId, feedId }) {
             if (feedId == null) return
-            const api = this.getters['layers/getSmartContractByLayerId'](layerId)
+            const api = this.getters['feeds/getSmartContractByLayerId'](layerId)
             try {
                 var value = await api.getValueForDataFeed(feedId)
             } catch (error) {
@@ -118,7 +110,7 @@ export default {
                 try {
                     const values = await api.getValuesForDataFeeds(feedId)
                     commit('assignLayerDetails', { key: 'dataFeed', layerId, data: values.arguments })
-                    this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
+                    this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
                 } catch (error) {
                     // console.log({ error, layerId }, 'multiple')
                 }
@@ -126,15 +118,15 @@ export default {
 
             } else {
                 commit('assignLayerDetails', { key: 'dataFeed', layerId, data: value.arguments })
-                this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
+                this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
             }
-            this.dispatch('layers/disableLoader', { layerId, loaderId: 'feedDataValue' })
+            this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
         },
         // This one should be used to obtain feed value thus it requires feedId query to be chained
         async fetchFeedIdAndValue({ state }, { layerId }) {
-            this.dispatch('layers/fetchDataFeedId', layerId).then(() => {
+            this.dispatch('feeds/fetchDataFeedId', layerId).then(() => {
                 const feedId = state.layersDetails[layerId]?.feedId
-                this.dispatch('layers/fetchValueForDataFeed', { layerId, feedId })
+                this.dispatch('feeds/fetchValueForDataFeed', { layerId, feedId })
             })
         },
         // 
@@ -166,22 +158,22 @@ export default {
             // const { data } = await axios.get(LAYERS_SCHEMA_URL)
             commit('assignLayerSchema', { ...relayers.standard })
             if (isEmpty(state.layersDetails)) {
-                this.dispatch('layers/initializeLayerDetails')
+                this.dispatch('feeds/initializeLayerDetails')
             }
         },
         async initSingleContract({ state }, layerId) {
-            await this.dispatch('layers/fetchLayersSchema')
-            await this.dispatch('layers/createSmartContract', { layerId: layerId, contractAddress: state.layersSchema[layerId].adapterContract, chainId: state.layersSchema[layerId].chain.id })
-            await this.dispatch('layers/fetchBlockTimeStamp', layerId)
-            await this.dispatch('layers/fetchFeedIdAndValue', { layerId: layerId, feedId: state.layersDetails[layerId]?.feedId })
+            await this.dispatch('feeds/fetchLayersSchema')
+            await this.dispatch('feeds/createSmartContract', { layerId: layerId, contractAddress: state.layersSchema[layerId].adapterContract, chainId: state.layersSchema[layerId].chain.id })
+            await this.dispatch('feeds/fetchBlockTimeStamp', layerId)
+            await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: layerId, feedId: state.layersDetails[layerId]?.feedId })
         },
         async init({ state }) {
             if (!isEmpty(state.layersSchema)) return
-            await this.dispatch('layers/fetchLayersSchema')
+            await this.dispatch('feeds/fetchLayersSchema')
             Object.keys(state.layersSchema).forEach(async key => {
-                await this.dispatch('layers/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract, chainId: state.layersSchema[key].chain.id })
-                await this.dispatch('layers/fetchBlockTimeStamp', key)
-                await this.dispatch('layers/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
+                await this.dispatch('feeds/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract, chainId: state.layersSchema[key].chain.id })
+                await this.dispatch('feeds/fetchBlockTimeStamp', key)
+                await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
             })
         }
     }

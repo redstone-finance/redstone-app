@@ -44,10 +44,10 @@
 
         <NavLink
             :activeItem="activeItem"
-            header="Layers"
-            link="/app/layers"
+            header="Feeds"
+            link="/app/feeds"
             iconName="flaticon-layers"
-            index="layers"
+            index="feeds"
             isHeader
         />
 
