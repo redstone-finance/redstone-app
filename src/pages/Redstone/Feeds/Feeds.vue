@@ -118,6 +118,8 @@ export default {
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
                 { key: 'contract_address', label: 'Contract address' },
+                { key: 'heartbeat', label: 'Heartbeat' },
+                { key: 'deviation', label: 'Deviation threshold ' },
                 {
                     key: 'timestamp', label: 'Last update', sortable: true,
                     sortByFormatted: true,
