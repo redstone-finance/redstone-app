@@ -62,6 +62,18 @@
                 </span>
                 <span v-else class="feeds__no-data">no-data</span>
             </template>
+            <template #cell(heartbeat)="{ item }">
+                <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
+                <span v-else class="feeds__timestamp">
+                    <span v-if="heartbeatIsNumber(item.heartbeat)">
+                        {{ item.heartbeat }}
+                    </span>
+                    <span v-else>
+                        cron
+                      {{ item.heartbeat }}
+                    </span>
+                </span>
+            </template>
         </b-table>
         <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
             v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill"
@@ -309,6 +321,10 @@ export default {
         createNetworkUrlParam(networkName) {
             return networkName.toLowerCase().replace(' ', '-')
         },
+        heartbeatIsNumber(heartbeat){
+            console.log(typeof heartbeat)
+            return typeof heartbeat === 'number'
+        },
         ...mapActions('feeds', ['init', 'initSingleContract']),
     },
     watch: {
@@ -382,7 +398,7 @@ export default {
                     contract_address: item.contractAddress,
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.feedId,
-                    heartbeat: getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) ||  JSON.stringify(item.triggers.cron),
+                    heartbeat: getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) || JSON.stringify(item.triggers.cron),
                     deviation: item.triggers.deviationPercentage ? item.triggers.deviationPercentage + '%' : 'n/a',
                     cron: item.triggers.cron,
                     token: item.feedId,
