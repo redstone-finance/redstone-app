@@ -70,7 +70,7 @@
                     </span>
                     <span v-else>
                         cron
-                      {{ item.heartbeat }}
+                      {{ cronObjectStringToHumanReadable(item.heartbeat) }}
                     </span>
                 </span>
             </template>
@@ -322,7 +322,6 @@ export default {
             return networkName.toLowerCase().replace(' ', '-')
         },
         heartbeatIsNumber(heartbeat){
-            console.log(typeof heartbeat)
             return typeof heartbeat === 'number'
         },
         ...mapActions('feeds', ['init', 'initSingleContract']),
