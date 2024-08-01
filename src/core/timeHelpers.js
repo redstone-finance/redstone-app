@@ -45,3 +45,23 @@ function timeSince(date) {
     }
     return Math.floor(seconds) + " seconds";
 }
+
+
+export function getTimeUntilNextHeartbeat(lastHeartbeatItem, heartbeatInterval) {
+    // Convert the lastHeartbeatTimestamp to milliseconds
+    const lastHeartbeatTimestamp = lastHeartbeatItem * 1000;
+    
+    // Calculate when the next heartbeat should occur
+    const nextHeartbeatTimestamp = lastHeartbeatTimestamp + heartbeatInterval;
+    
+    // Calculate the time difference
+    let timeUntilNextHeartbeat = nextHeartbeatTimestamp -  Date.now();
+    
+    // If the next heartbeat time is in the past, calculate the next one
+    if (timeUntilNextHeartbeat < 0) {
+        const missedHeartbeats = Math.floor(Math.abs(timeUntilNextHeartbeat) / heartbeatInterval) + 1;
+        timeUntilNextHeartbeat = (missedHeartbeats * heartbeatInterval) + timeUntilNextHeartbeat;
+    }
+    
+    return timeUntilNextHeartbeat;
+}

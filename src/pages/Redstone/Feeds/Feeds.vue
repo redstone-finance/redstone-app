@@ -73,7 +73,7 @@
 import _ from "lodash";
 import { mapActions, mapGetters } from 'vuex'
 //Helpers
-import { hexToDate, parseUnixTime } from '@/core/timeHelpers'
+import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat} from '@/core/timeHelpers'
 import copyToClipboardHelper from '@/core/copyToClipboard'
 import prefetchImages from "@/core/prefetchImages";
 import truncateString from "@/core/truncate";
@@ -381,6 +381,9 @@ export default {
                     contract_address: item.contractAddress,
                     timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
                     layer_id: item.feedId,
+                    heartbeat: item?.timestamp ? getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) || item.triggers.cron : '',
+                    deviation: item.triggers.deviationPercentage ? item.triggers.deviationPercentage + '%' : 'n/a',
+                    cron: item.triggers.cron,
                     token: item.feedId,
                     relayerId: item.layerId,
                     feed_address: item.feedAddress,

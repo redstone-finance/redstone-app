@@ -45,7 +45,7 @@ export default {
             return state.layersSchema[layerId].priceFeeds.length > 1
         },
         // combined data which will be displayed as a UI - mapping fetched data with initial schema layers
-        combinedFeedsWithDetailsArray(state) {
+        combinedFeedsWithDetailsArray(state, getters) {
             return Object.keys(state.layersSchema).flatMap((key) => {
                 const layer = state.layersSchema[key];
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
