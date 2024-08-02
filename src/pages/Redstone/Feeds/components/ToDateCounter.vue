@@ -28,15 +28,8 @@ export default {
             const seconds = Math.floor((this.remainingTime % 60000) / 1000);
 
             let result = '';
-
-            if (hours > 0) {
-                result += `${hours.toString().padStart(2, '0')}:`;
-            }
-
-            if (hours > 0 || minutes > 0) {
-                result += `${minutes.toString().padStart(2, '0')}:`;
-            }
-
+            result += `${hours.toString().padStart(2, '0')}:`;
+            result += `${minutes.toString().padStart(2, '0')}:`;
             result += seconds.toString().padStart(2, '0');
 
             return result;
