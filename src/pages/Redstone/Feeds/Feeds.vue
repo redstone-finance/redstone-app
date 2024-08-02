@@ -68,10 +68,13 @@
                     <span v-if="heartbeatIsNumber(item.heartbeat)">
                         {{ item.heartbeat }}
                     </span>
-                    <span v-else>
-                        cron
-                      {{ cronObjectStringToHumanReadable(item.heartbeat) }}
-                    </span>
+                    <div class="cron-schedule" v-else>
+                        Cron schedule
+                        <ol>
+                            <li v-for="cron in cronObjectStringToHumanReadable(item.heartbeat)" :key="cron">{{ cron }}
+                            </li>
+                        </ol>
+                    </div>
                 </span>
             </template>
         </b-table>
@@ -296,6 +299,9 @@ export default {
         findExplorer(networkId) {
             return Object.values(explorers).find(explorer => explorer.chainId === networkId)
         },
+        cronObjectStringToHumanReadable(cronString) {
+            return JSON.parse(cronString).map(string => cronstrue.toString(string))
+        },
         getFirstPart(string) {
             const noSlash = string.split('/')[0];
             const noUnder = noSlash.split('_')[0]
@@ -321,7 +327,7 @@ export default {
         createNetworkUrlParam(networkName) {
             return networkName.toLowerCase().replace(' ', '-')
         },
-        heartbeatIsNumber(heartbeat){
+        heartbeatIsNumber(heartbeat) {
             return typeof heartbeat === 'number'
         },
         ...mapActions('feeds', ['init', 'initSingleContract']),

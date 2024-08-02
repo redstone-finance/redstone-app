@@ -1,14 +1,16 @@
-
 @import '~@/styles/app';
+
 .feeds {
     font-size: 14px;
     background-color: $gray-100;
     border-radius: 10px;
     padding: 2rem;
     box-shadow: var(--content-shadow);
-    &__network-picker{
+
+    &__network-picker {
         margin-right: 10px;
     }
+
     &__actions-wrapper {
         position: sticky;
         top: 70px;
@@ -128,9 +130,33 @@
     }
 
     .page-item {
+
         &.disabled,
         &.active {
             display: none !important;
+        }
+    }
+}
+
+.cron-schedule {
+    border: 1px solid rgb(152, 152, 152);
+    border-radius: 5px;
+    background: rgb(215, 215, 215);
+    padding-top: 5px;
+    text-align: center;
+    font-weight: 700;
+    overflow: hidden;
+    ol {
+        font-weight: 400;
+        margin-top: 5px;
+        background: #fff;
+        font-size: 12px;
+        margin-bottom: 0;
+        li{
+            padding: 2px;
+        }
+        li:nth-child(odd) {
+            background: rgb(230, 230, 230);
         }
     }
 }
