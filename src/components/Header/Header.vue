@@ -31,7 +31,7 @@
             Use Push Model
           </b-button>
         </a>
-        <a  id="use-pull-button" target="_blank" href="https://docs.redstone.finance/docs/smart-contract-devs/get-started/redstone-core">
+        <a  id="use-pull-button" target="_blank" href="https://docs.redstone.finance/docs/get-started/models/redstone-core">
           <b-button class="btn btn-danger rounded-pill" variant="primary">
             Use Pull Model
           </b-button>
