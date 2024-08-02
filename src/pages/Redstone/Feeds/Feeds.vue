@@ -69,7 +69,10 @@
                         <to-date-counter :duration="item.heartbeat" />
                     </span>
                     <div v-else>
-                        <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">CRON <span class="entity-icon">&#9432;</span></span>
+                        <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">
+                            <to-date-counter class="d-inline" :duration="nearestCron(item.heartbeat)"/>
+                            <span
+                                class="entity-icon">&#9432;</span></span>
                         <b-tooltip custom-class="no-padding-tooltip" variant="light"
                             :target="`cron-trigger-${item.layer_id}`" placement="top">
                             <div class="cron-schedule">
@@ -96,7 +99,7 @@
 import _ from "lodash";
 import { mapActions, mapGetters } from 'vuex'
 //Helpers
-import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat } from '@/core/timeHelpers'
+import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat, timeUntilDate, findNearestCronDate } from '@/core/timeHelpers'
 import copyToClipboardHelper from '@/core/copyToClipboard'
 import prefetchImages from "@/core/prefetchImages";
 import truncateString from "@/core/truncate";
@@ -311,6 +314,11 @@ export default {
         },
         cronObjectStringToHumanReadable(cronString) {
             return JSON.parse(cronString).map(string => cronstrue.toString(string))
+        },
+        nearestCron(cronString){
+            const nearestDate = findNearestCronDate(JSON.parse(cronString));
+            const timeUntil = timeUntilDate(nearestDate);
+            return timeUntil
         },
         getFirstPart(string) {
             const noSlash = string.split('/')[0];

@@ -65,3 +65,53 @@ export function getTimeUntilNextHeartbeat(lastHeartbeatItem, heartbeatInterval) 
     
     return timeUntilNextHeartbeat;
 }
+
+export function parseCustomCron(cronExpr) {
+    const [minute, hour, , , dayOfWeek] = cronExpr.split(' ');
+    const now = new Date();
+    const result = new Date(now);
+    result.setSeconds(0);
+    result.setMilliseconds(0);
+
+    // Set minute and hour
+    result.setMinutes(parseInt(minute));
+    result.setHours(parseInt(hour));
+
+    // If the resulting time is in the past, move to the next day
+    if (result <= now) {
+        result.setDate(result.getDate() + 1);
+    }
+
+    // Adjust for day of week if specified
+    if (dayOfWeek !== '*') {
+        const targetDay = parseInt(dayOfWeek);
+        while (result.getDay() !== targetDay) {
+            result.setDate(result.getDate() + 1);
+        }
+    }
+
+    return result;
+}
+
+export function findNearestCronDate(cronExpressions) {
+    const now = new Date();
+    let nearestDate = null;
+
+    cronExpressions.forEach(cronExpr => {
+        try {
+            const nextDate = parseCustomCron(cronExpr);
+            if (nearestDate === null || nextDate < nearestDate) {
+                nearestDate = nextDate;
+            }
+        } catch (err) {
+            console.error(`Error parsing cron expression: ${cronExpr}`, err);
+        }
+    });
+
+    return nearestDate;
+}
+
+export function timeUntilDate(targetDate) {
+    const now = new Date();
+    return targetDate.getTime() - now.getTime();
+}
