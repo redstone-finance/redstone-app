@@ -66,7 +66,7 @@
                 <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
                 <span v-else class="feeds__timestamp">
                     <span v-if="heartbeatIsNumber(item.heartbeat)">
-                        {{ item.heartbeat }}
+                        <to-date-counter :duration="item.heartbeat" />
                     </span>
                     <div v-else>
                         <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">CRON &#9432;</span>
@@ -106,6 +106,7 @@ import Loader from '../../../components/Loader/Loader'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue";
+import ToDateCounter from "./components/ToDateCounter.vue";
 // Definitions
 import networkImages from "@/data/networkImages";
 import networks from '@/data/networks.js'
@@ -118,7 +119,8 @@ export default {
         Loader,
         CryptoPicker,
         NetworkPicker,
-        CheckboxButton
+        CheckboxButton,
+        ToDateCounter
     },
     data() {
         return {
