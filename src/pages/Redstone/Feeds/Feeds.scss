@@ -18,7 +18,7 @@
             background-position: 30px !important;
             padding: 30px 30px !important;
             text-align: center;
-            border: 1px solid rgb(227, 227, 227);
+            border: 1px solid rgb(227, 227, 227) !important;
         }
     }
 
@@ -34,9 +34,12 @@
         padding: 10px !important;
 
         td {
+            text-align: center;
             border-top: 1px solid rgb(227, 227, 227);
             border-bottom: 1px solid rgb(227, 227, 227);
-
+            &:nth-child(2){
+                text-align: left;
+            }
             &:first-child {
                 border-left: 1px solid rgb(227, 227, 227);
             }
@@ -52,14 +55,8 @@
     }
 
     &__actions-wrapper {
-        position: sticky;
-        top: 70px;
         z-index: 2;
-        background: $gray-200;
         padding: 15px;
-        border-radius: 15px;
-        margin-bottom: 20px;
-        box-shadow: var(--tabs-shadow);
         display: flex;
         align-items: center;
 
@@ -179,9 +176,10 @@
 }
 
 .cron-schedule {
-    border: 1px solid rgb(205, 205, 205);
+    border: 1px solid #d8d8d8;
     border-radius: 5px;
-    background: rgb(215, 215, 215);
+    background: rgb(227, 227, 227);
+    box-shadow: var(--content-shadow);
     padding-top: 5px;
     text-align: center;
     font-weight: 600;
@@ -200,7 +198,7 @@
         }
 
         li:nth-child(even) {
-            background: rgb(227, 227, 227);
+            background: #f4f4f4;
         }
     }
 }
