@@ -69,7 +69,7 @@
                         <to-date-counter :duration="item.heartbeat" />
                     </span>
                     <div v-else>
-                        <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">CRON &#9432;</span>
+                        <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">CRON <span class="entity-icon">&#9432;</span></span>
                         <b-tooltip custom-class="no-padding-tooltip" variant="light"
                             :target="`cron-trigger-${item.layer_id}`" placement="top">
                             <div class="cron-schedule">

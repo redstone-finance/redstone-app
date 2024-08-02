@@ -6,6 +6,46 @@
     border-radius: 10px;
     padding: 2rem;
     box-shadow: var(--content-shadow);
+    table{
+        border-top: 1px solid rgb(227, 227, 227);
+    }
+    thead {
+        tr {
+            background: #f4f4f4;
+        }
+
+        th {
+            background-position: 30px !important;
+            padding: 30px 30px !important;
+            text-align: center;
+            border: 1px solid rgb(227, 227, 227);
+        }
+    }
+
+    tbody tr {
+        &:hover {
+            background: #fff !important;
+        }
+
+        &:nth-child(even) {
+            background: #f4f4f4 !important;
+        }
+
+        padding: 10px !important;
+
+        td {
+            border-top: 1px solid rgb(227, 227, 227);
+            border-bottom: 1px solid rgb(227, 227, 227);
+
+            &:first-child {
+                border-left: 1px solid rgb(227, 227, 227);
+            }
+
+            &:last-child {
+                border-right: 1px solid rgb(227, 227, 227);
+            }
+        }
+    }
 
     &__network-picker {
         margin-right: 10px;
@@ -174,4 +214,10 @@
         background: transparent !important;
         padding-bottom: 0px !important;
     }
+}
+
+.entity-icon {
+    font-size: 8px;
+    position: relative;
+    top: -1px;
 }
