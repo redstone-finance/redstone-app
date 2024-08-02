@@ -139,24 +139,39 @@
 }
 
 .cron-schedule {
-    border: 1px solid rgb(152, 152, 152);
+    border: 1px solid rgb(205, 205, 205);
     border-radius: 5px;
     background: rgb(215, 215, 215);
     padding-top: 5px;
     text-align: center;
-    font-weight: 700;
+    font-weight: 600;
     overflow: hidden;
+    font-size: 10px !important;
+
     ol {
         font-weight: 400;
         margin-top: 5px;
         background: #fff;
-        font-size: 12px;
         margin-bottom: 0;
-        li{
-            padding: 2px;
+
+        li {
+            padding: 2px 10px;
+            font-size: 10px;
         }
-        li:nth-child(odd) {
-            background: rgb(230, 230, 230);
+
+        li:nth-child(even) {
+            background: rgb(227, 227, 227);
         }
+    }
+}
+
+.no-padding-tooltip {
+    .arrow::before {
+        border-top-color: rgb(205, 205, 205) !important;
+    }
+
+    .tooltip-inner {
+        background: transparent !important;
+        padding-bottom: 0px !important;
     }
 }

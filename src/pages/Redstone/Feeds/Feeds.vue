@@ -68,12 +68,20 @@
                     <span v-if="heartbeatIsNumber(item.heartbeat)">
                         {{ item.heartbeat }}
                     </span>
-                    <div class="cron-schedule" v-else>
-                        Cron schedule
-                        <ol>
-                            <li v-for="cron in cronObjectStringToHumanReadable(item.heartbeat)" :key="cron">{{ cron }}
-                            </li>
-                        </ol>
+                    <div v-else>
+                        <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">CRON &#9432;</span>
+                        <b-tooltip custom-class="no-padding-tooltip" variant="light"
+                            :target="`cron-trigger-${item.layer_id}`" placement="top">
+                            <div class="cron-schedule">
+                                Cron schedule
+                                <ol>
+                                    <li v-for="cron in cronObjectStringToHumanReadable(item.heartbeat)" :key="cron">{{
+                                        cron }}
+                                    </li>
+                                </ol>
+                            </div>
+                        </b-tooltip>
+
                     </div>
                 </span>
             </template>
