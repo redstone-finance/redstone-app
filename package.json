@@ -1,6 +1,6 @@
 {
   "name": "redstone-app",
-  "version": "2.1.7",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
