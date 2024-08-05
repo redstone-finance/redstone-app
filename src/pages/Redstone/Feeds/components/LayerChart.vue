@@ -64,6 +64,8 @@ export default {
 <style scoped>
 div {
   position: relative;
-  height: 400px;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
 }
 </style>
