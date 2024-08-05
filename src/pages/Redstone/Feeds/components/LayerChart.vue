@@ -8,19 +8,19 @@
 import Chart from 'chart.js'
 
 const crosshairPlugin = {
-  afterDatasetsDraw: function (chart) {
+  afterDatasetsDraw: function(chart) {
     if (chart.tooltip._active && chart.tooltip._active.length) {
       var activePoint = chart.tooltip._active[0],
-        ctx = chart.ctx,
-        x = activePoint.tooltipPosition().x,
-        y = activePoint.tooltipPosition().y,
-        topY = chart.scales['y-axis-0'].top,
-        bottomY = chart.scales['y-axis-0'].bottom,
-        leftX = chart.scales['x-axis-0'].left,
-        rightX = chart.scales['x-axis-0'].right;
+          ctx = chart.ctx,
+          x = activePoint.tooltipPosition().x,
+          y = activePoint.tooltipPosition().y,
+          topY = chart.scales['y-axis-0'].top,
+          bottomY = chart.scales['y-axis-0'].bottom,
+          leftX = chart.scales['x-axis-0'].left,
+          rightX = chart.scales['x-axis-0'].right;
 
       // Set the line color
-      ctx.strokeStyle = 'rgba(253, 98, 122, 1)'; // Using the specified color with 75% opacity
+      ctx.strokeStyle = 'rgba(253, 98, 122, 0.75)'; // Using the specified color with 75% opacity
 
       // draw vertical line
       ctx.beginPath();
@@ -89,7 +89,7 @@ export default {
     },
     createChart() {
       const ctx = this.$refs.chart.getContext('2d');
-
+      
       this.chart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -98,7 +98,7 @@ export default {
             ...this.chartData.datasets[0],
             backgroundColor: (context) => {
               const chart = context.chart;
-              const { ctx, chartArea } = chart;
+              const {ctx, chartArea} = chart;
               if (!chartArea) {
                 // This case happens on initial chart load
                 return null;
@@ -108,11 +108,11 @@ export default {
           }]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           legend: {
             display: false
           },
-          responsive: true,
-          maintainAspectRatio: false,
           tooltips: {
             mode: 'index',
             intersect: false,
@@ -122,13 +122,33 @@ export default {
             mode: 'index',
             intersect: false
           },
+          layout: {
+            padding: {
+              bottom: 20 // Add padding to the bottom of the chart
+            }
+          },
           scales: {
             xAxes: [{
               type: 'category',
-              display: true
+              display: true,
+              gridLines: {
+                display: false,
+                drawBorder: true,
+                drawOnChartArea: false
+              },
+              ticks: {
+                display: true,
+                padding: 20 // Move labels 20px down
+              }
             }],
             yAxes: [{
-              display: false,
+              display: true,
+              ticks: {
+                beginAtZero: true
+              },
+              gridLines: {
+                display: true
+              }
             }]
           }
         }
