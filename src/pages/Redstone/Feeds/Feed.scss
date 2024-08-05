@@ -1,6 +1,6 @@
 .feed-details {
     background: #fff;
-    padding: 15px;
+    // padding: 15px;
     border-radius: 15px;
     display: flex;
     flex-flow: row wrap;
@@ -8,8 +8,10 @@
     &__infos {
         width: 25%;
         padding: 20px;
-        border: 1px solid #f3f4f6;
+        border: 1px solid hsl(220, 14%, 96%);
         border-radius: 15px;
+        border-top-right-radius: unset;
+        border-bottom-right-radius: unset;
     }
 }
 

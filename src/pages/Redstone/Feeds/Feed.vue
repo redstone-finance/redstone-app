@@ -51,6 +51,9 @@
             </div>
         </div>
     </div>
+    <div class="feed-chart">
+            <layer-chart :data="sampleData" />
+        </div>
     </div>
 </template>
 
@@ -73,7 +76,31 @@ export default {
     data() {
         return {
             chartData: [],
-            isLoading: false
+            isLoading: false,
+            sampleData:[
+                { timeStamp: '2024-08-01 09:15:00', action: 'start' },
+                { timeStamp: '2024-08-01 12:30:00', action: 'stop' },
+                { timeStamp: '2024-08-01 14:45:00', action: 'start' },
+                { timeStamp: '2024-08-01 18:00:00', action: 'stop' },
+                { timeStamp: '2024-08-02 08:00:00', action: 'start' },
+                { timeStamp: '2024-08-02 17:30:00', action: 'stop' },
+                { timeStamp: '2024-08-03 10:00:00', action: 'start' },
+                { timeStamp: '2024-08-03 11:30:00', action: 'stop' },
+                { timeStamp: '2024-08-03 14:00:00', action: 'start' },
+                { timeStamp: '2024-08-03 16:00:00', action: 'stop' },
+                { timeStamp: '2024-08-04 09:30:00', action: 'start' },
+                { timeStamp: '2024-08-04 18:30:00', action: 'stop' },
+                { timeStamp: '2024-08-05 08:45:00', action: 'start' },
+                { timeStamp: '2024-08-05 12:15:00', action: 'stop' },
+                { timeStamp: '2024-08-05 13:30:00', action: 'start' },
+                { timeStamp: '2024-08-05 17:45:00', action: 'stop' },
+                { timeStamp: '2024-08-06 10:00:00', action: 'start' },
+                { timeStamp: '2024-08-06 19:00:00', action: 'stop' },
+                { timeStamp: '2024-08-07 08:30:00', action: 'start' },
+                { timeStamp: '2024-08-07 11:45:00', action: 'stop' },
+                { timeStamp: '2024-08-07 13:15:00', action: 'start' },
+                { timeStamp: '2024-08-07 18:30:00', action: 'stop' },
+            ],
         };
     },
 
