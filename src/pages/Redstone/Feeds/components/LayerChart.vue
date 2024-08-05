@@ -8,7 +8,7 @@
 import Chart from 'chart.js'
 
 const crosshairPlugin = {
-  afterDraw: function(chart) {
+  afterDatasetsDraw: function(chart) {
     if (chart.tooltip._active && chart.tooltip._active.length) {
       var activePoint = chart.tooltip._active[0],
           ctx = chart.ctx,
@@ -19,13 +19,14 @@ const crosshairPlugin = {
           leftX = chart.scales['x-axis-0'].left,
           rightX = chart.scales['x-axis-0'].right;
 
+      // Set the line color
+      ctx.strokeStyle = 'rgba(253, 98, 122, 0.75)'; // Using the specified color with 75% opacity
+
       // draw vertical line
-      ctx.save();
       ctx.beginPath();
       ctx.moveTo(x, topY);
       ctx.lineTo(x, bottomY);
       ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(0,0,0,0.3)';
       ctx.setLineDash([6, 6]);
       ctx.stroke();
 
@@ -34,8 +35,6 @@ const crosshairPlugin = {
       ctx.moveTo(leftX, y);
       ctx.lineTo(rightX, y);
       ctx.stroke();
-      
-      ctx.restore();
     }
   }
 };
@@ -69,10 +68,9 @@ export default {
           {
             label: 'Number of actions',
             borderColor: '#FD627A',
-            backgroundColor: 'rgba(253, 98, 122, 0.1)',
             data: Object.values(dateCounts),
             fill: true,
-            lineTension: 0.4
+            lineTension: 0.1
           }
         ]
       };
@@ -82,17 +80,40 @@ export default {
     this.createChart();
   },
   methods: {
+    createGradient(ctx, chartArea) {
+      const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+      gradient.addColorStop(0, 'rgba(253, 98, 122, 0.1)');   // Start color (top)
+      gradient.addColorStop(0.8, 'rgba(253, 98, 122, 0)');   // End color (80% from top)
+      gradient.addColorStop(1, 'rgba(253, 98, 122, 0)');     // Ensure it stays transparent to the bottom
+      return gradient;
+    },
     createChart() {
       const ctx = this.$refs.chart.getContext('2d');
+      
       this.chart = new Chart(ctx, {
         type: 'line',
-        data: this.chartData,
+        data: {
+          labels: this.chartData.labels,
+          datasets: [{
+            ...this.chartData.datasets[0],
+            backgroundColor: (context) => {
+              const chart = context.chart;
+              const {ctx, chartArea} = chart;
+              if (!chartArea) {
+                // This case happens on initial chart load
+                return null;
+              }
+              return this.createGradient(ctx, chartArea);
+            }
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           tooltips: {
             mode: 'index',
             intersect: false,
+            position: 'nearest'
           },
           hover: {
             mode: 'index',
@@ -118,7 +139,8 @@ export default {
     data: {
       handler() {
         if (this.chart) {
-          this.chart.data = this.chartData;
+          this.chart.data.labels = this.chartData.labels;
+          this.chart.data.datasets[0].data = this.chartData.datasets[0].data;
           this.chart.update();
         }
       },
