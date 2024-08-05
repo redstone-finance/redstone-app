@@ -41,7 +41,7 @@
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
       <template #cell(name)="data">
-        <img class="token-logo" :src="data.item.logoURI" />
+        <img class="token-logo" :src="data.item.logoURI || 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png'" />
         <span class="token-name ml-3">{{ data.item.name }}</span> 
       </template>
       <template #cell(symbol)="data">
@@ -51,7 +51,7 @@
         <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
           <div class="d-flex source-links" >
             <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name"/>
+              <img class="source-logo" :src="source.logoURI || 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png'" v-b-tooltip.hover :title="source.name"/>
             </a>
           </div>
         </div>
