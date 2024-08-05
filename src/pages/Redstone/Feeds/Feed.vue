@@ -1,8 +1,56 @@
 <template>
-    <div class="layers">
-        <hr>
-        <vue-loaders-ball-beat v-if="isLoading" class="chart-loader" color="var(--redstone-red-color)" scale="1" />
-        <LayerChart v-if="chartData.length > 0" :data="chartData" />
+    <div class="feed-details">
+        <div class="feed-details__infos">
+            <div class="applicant-info">
+                <div class="applicant-info__header">
+                    <h3 class="applicant-info__title">1INCH / ETH</h3>
+                    <p class="applicant-info__description">1inch</p>
+                </div>
+                <div class="applicant-info__content">
+                    <dl class="applicant-info__list">
+                        <div class="applicant-info__item">
+                            <dt class="applicant-info__label">Answer</dt>
+                            <dd class="applicant-info__value">
+                                <span class="applicant-info__text">0.0001044191</span>
+                            </dd>
+                        </div>
+                        <div class="applicant-info__item">
+                            <dt class="applicant-info__label">Network</dt>
+                            <dd class="applicant-info__value">
+                                <span class="applicant-info__text">Ethereum Mainnet</span>
+                            </dd>
+                        </div>
+                        <div class="applicant-info__item">
+                            <dt class="applicant-info__label">Trigger parameters</dt>
+                            <dd class="applicant-info__column-value">
+                                <div class="applicant-info__item">
+                            <dt class="applicant-info__label">Deviation threshold
+                            </dt>
+                            <dd class="applicant-info__value">
+                                <span class="applicant-info__text">2</span>
+                            </dd>
+                        </div>
+                        <div class="applicant-info__item">
+                            <dt class="applicant-info__label">Heartbeat</dt>
+                            <dd class="applicant-info__value">
+                                <span class="applicant-info__text">22:05:50</span>
+                            </dd>
+                        </div>
+                        </dd>
+                </div>
+                <div class="applicant-info__item">
+                    <dt class="applicant-info__label">Last update</dt>
+                    <dd class="applicant-info__value">
+                        <span class="applicant-info__text">
+                            <div class="date-subvalue">August 5, 2024</div>
+                            <div>1 hour ago</div>
+                        </span>
+                    </dd>
+                </div>
+                </dl>
+            </div>
+        </div>
+    </div>
     </div>
 </template>
 
@@ -60,9 +108,9 @@ export default {
         token() {
             return this.$route.params.token
         },
-        relayerId(){
+        relayerId() {
             return this.$route.params.relayerId
-        }, 
+        },
         feedData() {
             return this.combinedFeedsWithDetailsArray.find(feed => feed.routeNetwork === this.network && feed.routeToken === this.token)
         },
@@ -76,10 +124,4 @@ export default {
     }
 }
 </script>
-<style lang="scss">
-.chart-loader {
-    margin: 0 auto;
-    display: block;
-    width: 60px;
-}
-</style>
+<style lang="scss" scoped src="./Feed.scss" />
