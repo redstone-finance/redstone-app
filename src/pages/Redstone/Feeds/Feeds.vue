@@ -70,21 +70,8 @@
                     </span>
                     <div v-else>
                         <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">
-                            <to-date-counter class="d-inline" :duration="nearestCron(item.heartbeat)"/>
-                            <span
-                                class="entity-icon">&#9432;</span></span>
-                        <b-tooltip custom-class="no-padding-tooltip" variant="light"
-                            :target="`cron-trigger-${item.layer_id}`" placement="top">
-                            <div class="cron-schedule">
-                                Cron schedule
-                                <ol>
-                                    <li v-for="cron in cronObjectStringToHumanReadable(item.heartbeat)" :key="cron">{{
-                                        cron }}
-                                    </li>
-                                </ol>
-                            </div>
-                        </b-tooltip>
-
+                            <to-date-counter class="d-inline" :duration="nearestCron(item.heartbeat)" />
+                        </span>
                     </div>
                 </span>
             </template>
@@ -315,7 +302,7 @@ export default {
         cronObjectStringToHumanReadable(cronString) {
             return JSON.parse(cronString).map(string => cronstrue.toString(string))
         },
-        nearestCron(cronString){
+        nearestCron(cronString) {
             const nearestDate = findNearestCronDate(JSON.parse(cronString));
             const timeUntil = timeUntilDate(nearestDate);
             return timeUntil
