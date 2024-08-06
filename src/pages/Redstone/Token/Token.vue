@@ -4,17 +4,8 @@
       <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0">
         <div v-if="providers.length > 1" class="select-provider">
           <b-form>
-            <b-form-group
-              label="Data provider:"
-              label-for="select-provider"
-              label-cols="6"
-              content-cols="6"
-            >
-              <b-form-select
-                v-model="selectedProvider"
-                :options="providers"
-                id="select-provider"
-              ></b-form-select>
+            <b-form-group label="Data provider:" label-for="select-provider" label-cols="6" content-cols="6">
+              <b-form-select v-model="selectedProvider" :options="providers" id="select-provider"></b-form-select>
             </b-form-group>
           </b-form>
         </div>
@@ -25,20 +16,11 @@
 
       <!-- We use :key="symbol" to rerender components on each symbol change -->
       <div class="token-data-wrapper">
-        <TokenPriceChartContainer
-          :symbol="symbol"
-          :key="symbol + selectedProvider + '-chart'"
-          :provider="selectedProvider"
-          :currentPrice="currentPrice"
-        />
-
-        <TokenPriceTableContainer
-          id="token-price-table"
-          :symbol="symbol"
-          :key="symbol + selectedProvider + '-table'"
-          :provider="selectedProvider"
-          :currentPrice="currentPrice"
-        />
+        <TokenPriceChartContainer :symbol="symbol" :key="symbol + selectedProvider + '-chart'"
+          :provider="selectedProvider" :currentPrice="currentPrice" />
+        {{ selectedProvider }}
+        <TokenPriceTableContainer id="token-price-table" :symbol="symbol" :key="symbol + selectedProvider + '-table'"
+          :provider="selectedProvider" :currentPrice="currentPrice" />
       </div>
 
       <div class="space"></div>
@@ -95,7 +77,7 @@ export default {
     },
 
     parseSymbol() {
-    let symbol = this.$route.params.symbol;
+      let symbol = this.$route.params.symbol;
       if (symbol.includes("\\")) {
         symbol = symbol.replace("\\", "/");
       }
@@ -156,7 +138,7 @@ export default {
     max-width: fit-content;
   }
 
-  label + div {
+  label+div {
     max-width: 200px;
   }
 
@@ -184,5 +166,4 @@ export default {
 .token-wrapper {
   scroll-behavior: smooth;
 }
-
 </style>
