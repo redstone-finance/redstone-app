@@ -31,7 +31,6 @@
           :provider="selectedProvider"
           :currentPrice="currentPrice"
         />
-        {{ selectedProvider }}
         <TokenPriceTableContainer
           id="token-price-table"
           :symbol="symbol"
