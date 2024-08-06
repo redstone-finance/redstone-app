@@ -10,6 +10,7 @@
             <div class="datepicker-container">
               <label class="mt-2 mt-md-0" for="from-datepicker">Show services from: </label>
               <b-datepicker id="from-datepicker" v-model="fromDate" :value-as-date="true" locale="en-GB"
+                :max="toDate"
                 :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
               </b-datepicker>
               <b-form-timepicker v-model="fromTime" locale="en" no-close-button></b-form-timepicker>
@@ -21,6 +22,8 @@
             <div class="datepicker-container">
               <label class="mt-2 mt-md-0" for="to-datepicker">to:</label>
               <b-datepicker id="to-datepicker" v-model="toDate" :value-as-date="true" locale="en-GB"
+                :min="fromDate"
+                :max="new Date()"
                 :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
               </b-datepicker>
               <b-form-timepicker v-model="toTime" locale="en" no-close-button></b-form-timepicker>
