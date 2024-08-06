@@ -102,7 +102,7 @@ export default {
       limit: 20,
       currentPage: 1,
       perPage: 10,
-      fromTime: this.getCurrentTime(),
+      fromTime: this.getCurrentTime(1),
       toTime: this.getCurrentTime(),
       fromDate: new Date(Date.now() - 24 * 3600 * 1000),
       toDate: new Date(),
@@ -126,8 +126,10 @@ export default {
   // },
 
   methods: {
-    getCurrentTime() {
+    getCurrentTime(hoursAgo = 0) {
       const now = new Date();
+      now.setHours(now.getHours() - hoursAgo);
+
       let hours = now.getHours();
       let minutes = now.getMinutes();
       let seconds = now.getSeconds();
