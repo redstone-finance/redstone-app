@@ -86,7 +86,6 @@ import redstoneAdapter from "@/redstone-api-adapter";
 import dateFormat from 'dateformat';
 import utils from '@/utils';
 import { DEFAULT_PROVIDER, getCurrency, getDetailsForSymbol, isCurrencyToken } from "@/tokens";
-import constants from "@/constants";
 import _ from "lodash";
 
 export default {
