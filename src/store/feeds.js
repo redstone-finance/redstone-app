@@ -2,7 +2,6 @@ import axios from 'axios'
 import { ethers } from 'ethers'
 import { isEmpty } from 'lodash'
 import Vue from 'vue'
-import relayers from '@/data/relayers.js'
 import networks from '@/data/networks'
 
 const RELAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
@@ -142,8 +141,8 @@ export default {
             })
         },
         async fetchRelayerSchema({ commit, state }) {
-            // const { data } = await axios.get(RELAYERS_SCHEMA_URL)
-            commit('assignRelayerSchema', { ...relayers.standard, ...relayers.multifeed })
+            const { data } = await axios.get(RELAYERS_SCHEMA_URL)
+            commit('assignRelayerSchema', { ...data.standard, ...data.multifeed })
             if (isEmpty(state.relayersDetails)) {
                 this.dispatch('feeds/initializeLayerDetails')
             }
