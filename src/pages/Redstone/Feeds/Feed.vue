@@ -103,27 +103,11 @@ export default {
 
     async mounted() {
         this.initSingleContract(this.relayerId).then(async () => {
-            await this.fetchChartData()
+
         })
     },
     methods: {
         ...mapActions('feeds', ['initSingleContract']),
-        async fetchChartData() {
-            this.isLoading = true
-            const queryParams = {
-                module: 'logs',
-                action: 'getLogs',
-                address: this.feedData.contractAddress,
-                page: '1',
-                offset: '1000',
-                apikey: process.env.VUE_APP_ETHER_SCAN_API_KEY
-            };
-            const { data } = await axios.get('https://api.etherscan.io/api', { params: queryParams })
-            if (data.result.length > 0 && Array.isArray(data.result)) {
-                this.chartData = data.result.map(({ timeStamp, gasUsed, gasPrice }) => ({ timeStamp: this.parseHexTimestamp(timeStamp), gasUsed, gasPrice }))
-            }
-            this.isLoading = false;
-        },
     },
     computed: {
         network() {
