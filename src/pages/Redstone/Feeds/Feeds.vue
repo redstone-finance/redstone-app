@@ -60,9 +60,9 @@
             </template>
             <template #cell(feed)="{ item }">
                 <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
-                <router-link class="feeds__feed-link"
-                    :to="{ name: 'SingleFeed', params: { relayerId: item.relayerId, network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
-                </router-link>
+                <!-- <router-link class="feeds__feed-link"
+                    :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
+                </router-link> -->
                 <span>{{ item.feed }}</span>
 
             </template>

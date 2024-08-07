@@ -107,9 +107,6 @@ export default {
         token() {
             return this.$route.params.token
         },
-        relayerId() {
-            return this.$route.params.relayerId
-        },
         feedData() {
             return this.combinedFeedsWithDetailsArray.find(feed => feed.routeNetwork === this.network && feed.routeToken === this.token)
         },
