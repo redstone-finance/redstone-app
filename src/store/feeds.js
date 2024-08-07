@@ -22,13 +22,13 @@ export default {
         relayersDetails: {},
     },
     mutations: {
-        assignLayerSchema(state, schema) {
+        assignRelayerSchema(state, schema) {
             state.relayerSchema = schema
         },
         assignCreatedSmartContract(state, { contract, layerId }) {
             state.smartContracts[layerId] = contract
         },
-        assignLayerDetails(state, { key, layerId, data }) {
+        assignRelayerDetails(state, { key, layerId, data }) {
             state.relayersDetails[layerId][key] = data
         },
         disableLoaderMutation(state, { loaderId, layerId }) {
@@ -79,15 +79,14 @@ export default {
             try {
                 var ids = await api.getDataFeedIds()
             } catch (error) {
-                // console.log('error, id, multiple', layerId, error)
                 this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
             }
-            commit('assignLayerDetails', { key: 'feedId', layerId, data: id || ids })
+            commit('assignRelayerDetails', { key: 'feedId', layerId, data: id || ids })
             this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedId' })
         },
         async fetchBlockTimeStamp({ commit, state }, layerId) {
             this.getters['feeds/getSmartContractByLayerId'](layerId).getBlockTimestampFromLatestUpdate().then(timestamp => {
-                commit('assignLayerDetails', { key: 'blockTimestamp', layerId, data: timestamp._hex })
+                commit('assignRelayerDetails', { key: 'blockTimestamp', layerId, data: timestamp._hex })
             }).catch((error) => {
                 // console.log('timestamp error', layerId, error)
             }).finally(() => {
@@ -105,7 +104,7 @@ export default {
             if (isEmpty(value)) {
                 try {
                     const values = await api.getValuesForDataFeeds(feedId)
-                    commit('assignLayerDetails', { key: 'dataFeed', layerId, data: values.arguments })
+                    commit('assignRelayerDetails', { key: 'dataFeed', layerId, data: values.arguments })
                     this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
                 } catch (error) {
                     // console.log({ error, layerId }, 'multiple')
@@ -113,7 +112,7 @@ export default {
 
 
             } else {
-                commit('assignLayerDetails', { key: 'dataFeed', layerId, data: value.arguments })
+                commit('assignRelayerDetails', { key: 'dataFeed', layerId, data: value.arguments })
                 this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
             }
             this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
@@ -144,7 +143,7 @@ export default {
         },
         async fetchRelayerSchema({ commit, state }) {
             // const { data } = await axios.get(RELAYERS_SCHEMA_URL)
-            commit('assignLayerSchema', { ...relayers.standard, ...relayers.multifeed })
+            commit('assignRelayerSchema', { ...relayers.standard, ...relayers.multifeed })
             if (isEmpty(state.relayersDetails)) {
                 this.dispatch('feeds/initializeLayerDetails')
             }
