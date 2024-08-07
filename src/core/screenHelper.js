@@ -7,10 +7,10 @@ const screens = {
   'lg-min': 992,
   'lg-max': 1199,
   'xl-min': 1200,
-};
+}
 
 export default function isScreen(size) {
-  const screenPx = window.innerWidth;
+  const screenPx = window.innerWidth
   return (screenPx >= screens[`${size}-min`] || size === 'xs')
-    && (screenPx <= screens[`${size}-max`] || size === 'xl');
+    && (screenPx <= screens[`${size}-max`] || size === 'xl')
 }

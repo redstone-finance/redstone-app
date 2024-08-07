@@ -58,13 +58,12 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import LayerName from './components/LayerName'
 import LayerChain from './components/LayerChain'
 import LayerTriggers from './components/LayerTriggers'
 import LayerPriceFeeds from './components/LayerPriceFeeds'
-import LayerChart from "./components/LayerChart";
+import LayerChart from "./components/LayerChart"
 
 
 export default {

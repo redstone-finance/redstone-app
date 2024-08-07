@@ -102,21 +102,21 @@ import { mapActions, mapGetters } from 'vuex'
 //Helpers
 import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat, timeUntilDate, findNearestCronDate } from '@/core/timeHelpers'
 import copyToClipboardHelper from '@/core/copyToClipboard'
-import prefetchImages from "@/core/prefetchImages";
-import truncateString from "@/core/truncate";
-import cronstrue from 'cronstrue';
+import prefetchImages from "@/core/prefetchImages"
+import truncateString from "@/core/truncate"
+import cronstrue from 'cronstrue'
 //Components
 import Loader from '../../../components/Loader/Loader'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
-import CheckboxButton from "./components/CheckboxButton.vue";
-import ToDateCounter from "./components/ToDateCounter.vue";
+import CheckboxButton from "./components/CheckboxButton.vue"
+import ToDateCounter from "./components/ToDateCounter.vue"
 // Definitions
-import networkImages from "@/data/networkImages";
+import networkImages from "@/data/networkImages"
 import networks from '@/data/networks.js'
 import images from '@/core/logosDefinitions.js'
-import explorers from "@/data/explorers";
-import { sortBy } from "lodash";
+import explorers from "@/data/explorers"
+import { sortBy } from "lodash"
 
 export default {
     components: {
@@ -171,103 +171,103 @@ export default {
         copyToClipboardHelper,
         truncateString,
         initializeFiltersFromRoute() {
-            const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query;
-            this.selectedCryptos = cryptos ? cryptos.split(',') : [];
-            this.selectedNetworks = networks ? networks.split(',').map(Number) : [];
-            this.currentPage = page ? parseInt(page) : 1;
-            this.sortBy = sortBy || null;
-            this.sortDesc = sortDesc === 'true';
-            this.applyFilters();
+            const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query
+            this.selectedCryptos = cryptos ? cryptos.split(',') : []
+            this.selectedNetworks = networks ? networks.split(',').map(Number) : []
+            this.currentPage = page ? parseInt(page) : 1
+            this.sortBy = sortBy || null
+            this.sortDesc = sortDesc === 'true'
+            this.applyFilters()
         },
         updateRouteParams() {
-            if (this.isInitialLoad) return;
-            const query = { ...this.$route.query };
+            if (this.isInitialLoad) return
+            const query = { ...this.$route.query }
             if (this.selectedCryptos.length > 0) {
-                query.cryptos = this.selectedCryptos.join(',');
+                query.cryptos = this.selectedCryptos.join(',')
             } else {
-                delete query.cryptos;
+                delete query.cryptos
             }
             if (this.selectedNetworks.length > 0) {
-                query.networks = this.selectedNetworks.join(',');
+                query.networks = this.selectedNetworks.join(',')
             } else {
-                delete query.networks;
+                delete query.networks
             }
-            query.page = this.currentPage.toString();
+            query.page = this.currentPage.toString()
 
             // Add sorting parameters
             if (this.sortBy) {
-                query.sortBy = this.sortBy;
-                query.sortDesc = this.sortDesc.toString();
+                query.sortBy = this.sortBy
+                query.sortDesc = this.sortDesc.toString()
             } else {
-                delete query.sortBy;
-                delete query.sortDesc;
+                delete query.sortBy
+                delete query.sortDesc
             }
 
             this.$router.push({ query }).catch(err => {
                 if (err.name !== 'NavigationDuplicated') {
-                    throw err;
+                    throw err
                 }
             });
         },
         handleFilter(filterType, value) {
             if (filterType === 'cryptos') {
-                this.selectedCryptos = value;
+                this.selectedCryptos = value
             } else if (filterType === 'networks') {
-                this.selectedNetworks = value;
+                this.selectedNetworks = value
             }
             if (!this.isInitialLoad) {
-                this.currentPage = 1; // Reset to first page when filters change, but not on initial load
+                this.currentPage = 1 // Reset to first page when filters change, but not on initial load
             }
-            this.applyFilters();
-            this.updateRouteParams();
+            this.applyFilters()
+            this.updateRouteParams()
         },
         handleSort(ctx) {
-            this.sortBy = ctx.sortBy;
-            this.sortDesc = ctx.sortDesc;
-            this.updateRouteParams();
+            this.sortBy = ctx.sortBy
+            this.sortDesc = ctx.sortDesc
+            this.updateRouteParams()
         },
         applyFilters() {
             this.filters = {
                 selectedCryptos: this.selectedCryptos,
                 selectedNetworks: this.selectedNetworks
             };
-            this.$refs.selectableTable.refresh();
+            this.$refs.selectableTable.refresh()
         },
         resetFilters() {
-            this.selectedCryptos = [];
-            this.selectedNetworks = [];
-            this.filters = null;
-            this.currentFilter = null;
-            this.currentPage = 1;
-            this.sortBy = null;
-            this.sortDesc = false;
-            this.$refs.selectableTable.refresh();
-            this.updateRouteParams();
+            this.selectedCryptos = []
+            this.selectedNetworks = []
+            this.filters = null
+            this.currentFilter = null
+            this.currentPage = 1
+            this.sortBy = null
+            this.sortDesc = false
+            this.$refs.selectableTable.refresh()
+            this.updateRouteParams()
         },
         onPageChange(page) {
             this.currentPage = page
-            this.updateRouteParams();
+            this.updateRouteParams()
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
             this.unselectInvalidItems()
         },
         customFilter(row, filters) {
-            if (!filters) return true;
+            if (!filters) return true
 
-            const { selectedCryptos, selectedNetworks } = filters;
+            const { selectedCryptos, selectedNetworks } = filters
 
             const cryptoMatch = selectedCryptos.length === 0 || selectedCryptos.some(crypto => {
-                const feedParts = row.feed.split('/');
+                const feedParts = row.feed.split('/')
                 return feedParts[0].toLowerCase() === crypto.toLowerCase();
             });
-            const networkMatch = selectedNetworks.length === 0 || selectedNetworks.includes(row.network.id);
+            const networkMatch = selectedNetworks.length === 0 || selectedNetworks.includes(row.network.id)
 
-            return cryptoMatch && networkMatch;
+            return cryptoMatch && networkMatch
         },
         unselectInvalidItems() {
             if (this.isUnselecting) return; // Prevent recursive calls
-            this.isUnselecting = true;
+            this.isUnselecting = true
 
             const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
                 this.filteredCurrencies.some(currency =>
@@ -278,10 +278,10 @@ export default {
                 this.filteredNetworks.includes(network)
             );
             if (!_.isEqual(newSelectedCryptos, this.selectedCryptos)) {
-                this.selectedCryptos = newSelectedCryptos;
+                this.selectedCryptos = newSelectedCryptos
             }
             if (!_.isEqual(newSelectedNetworks, this.selectedNetworks)) {
-                this.selectedNetworks = newSelectedNetworks;
+                this.selectedNetworks = newSelectedNetworks
             }
             this.isUnselecting = false;
         },
@@ -317,12 +317,12 @@ export default {
             return JSON.parse(cronString).map(string => cronstrue.toString(string))
         },
         nearestCron(cronString) {
-            const nearestDate = findNearestCronDate(JSON.parse(cronString));
-            const timeUntil = timeUntilDate(nearestDate);
+            const nearestDate = findNearestCronDate(JSON.parse(cronString))
+            const timeUntil = timeUntilDate(nearestDate)
             return timeUntil
         },
         getFirstPart(string) {
-            const noSlash = string.split('/')[0];
+            const noSlash = string.split('/')[0]
             const noUnder = noSlash.split('_')[0]
             const noDash = noUnder.split('-')[0]
             return noDash
@@ -335,7 +335,7 @@ export default {
         },
         transformHexString(str) {
             if (str == null) return 'no data'
-            if (str?.length <= 10) return str;
+            if (str?.length <= 10) return str
             return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`
         },
         getTokenImage(token) {
@@ -368,16 +368,16 @@ export default {
             return this.filters && (this.filters.selectedCryptos.length > 0 || this.filters.selectedNetworks.length > 0)
         },
         totalRows() {
-            return this.filteredItems.length > 0 ? this.filteredItems.length : this.feeds.length;
+            return this.filteredItems.length > 0 ? this.filteredItems.length : this.feeds.length
         },
         networksMap() {
             const map = Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
             return map.filter(item => this.filteredNetworks.includes(item.value))
         },
         paginatedFeeds() {
-            const startIndex = (this.currentPage - 1) * this.perPage;
-            const endIndex = startIndex + this.perPage;
-            return this.feeds.slice(startIndex, endIndex);
+            const startIndex = (this.currentPage - 1) * this.perPage
+            const endIndex = startIndex + this.perPage
+            return this.feeds.slice(startIndex, endIndex)
         },
         ...mapGetters('feeds', [
             'combinedFeedsWithDetailsArray'
@@ -385,17 +385,17 @@ export default {
         filteredNetworks() {
             {
                 if (this.selectedCryptos.length === 0) {
-                    return Object.values(networks).map(item => item.chainId);
+                    return Object.values(networks).map(item => item.chainId)
                 }
 
-                const networkSet = new Set();
+                const networkSet = new Set()
                 this.displayedTableItems?.forEach(feed => {
                     if (this.selectedCryptos.some(crypto => feed.feed.indexOf(crypto) >= 0)) {
-                        networkSet.add(feed.network.id);
+                        networkSet.add(feed.network.id)
                     }
-                });
+                })
 
-                return Array.from(networkSet);
+                return Array.from(networkSet)
             }
         },
         filteredCurrencies() {
@@ -404,13 +404,13 @@ export default {
                     return images.map(image => image.token)
                 }
 
-                const networkSet = new Set();
+                const networkSet = new Set()
                 this.displayedTableItems?.forEach(feed => {
                     if (this.selectedNetworks.some(chainId => feed.network.id === chainId)) {
-                        networkSet.add(feed.crypto_token);
+                        networkSet.add(feed.crypto_token)
                     }
-                });
-                return Array.from(networkSet);
+                })
+                return Array.from(networkSet)
             }
         },
         feeds() {
