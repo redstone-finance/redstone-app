@@ -135,7 +135,7 @@ export default {
       name: 'Celo Mainnet'
     },
     kava: {
-      explorerUrl: 'https://explorer.kava.io',
+      explorerUrl: 'https://explorer.kavalabs.io',
       chainId: 2222,
       name: 'Kava EVM'
     },

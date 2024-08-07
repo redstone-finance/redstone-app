@@ -8,13 +8,13 @@
                     <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)"
                         v-model="selectedCryptos" class="feeds__crypto-picker" />
                 </div>
-                <div class="feeds__actions-wrapper-item">
+                <!-- <div class="feeds__actions-wrapper-item">
                     <CheckboxButton v-for="crypto in mostUsedCryptos" :key="crypto.token"
                         :disabled="!filteredCurrencies.includes(crypto.token)"
                         :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
                         :name="crypto.name" :token="crypto.token" :imageName="crypto.image"
                         class="feeds__checkbox-button" />
-                </div>
+                </div> -->
             </div>
             <div class="feeds__actions-wrapper-item feeds__actions-wrapper-item--right">
                 <div class="feeds__status">
@@ -29,29 +29,42 @@
                 </div>
             </div>
         </div>
-        <b-table v-if="displayedTableItems" id="feeds-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
-            :sortBy="sortBy" :sortDesc="sortDesc" @filtered="onFiltered" :filter="filters" sort-icon-left hover
-            :items="feeds" :per-page="perPage" @sort-changed="handleSort" :current-page="currentPage"
-            :filter-function="customFilter" :fields="fields" class="feeds__table">
+        <b-table v-if="displayedTableItems" id="feeds-table" v-model="displayedTableItems" key="table" stacked="md"
+            ref="selectableTable" :sortBy="sortBy" :sortDesc="sortDesc" @filtered="onFiltered" :filter="filters"
+            sort-icon-left hover :items="feeds" :per-page="perPage" @sort-changed="handleSort"
+            :current-page="currentPage" :filter-function="customFilter" :fields="fields" class="feeds__table">
             <template #cell(network)="{ item }">
                 <img class="feeds__token-image" :src="item.network.image" :alt="item.network.name">
                 {{ item.network.name }}
             </template>
             <template #cell(contract_address)="{ item }">
-                <a class="feeds__contract-address" :title="`Open address in ${item.explorer.name} explorer`"
-                    target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
-                    {{ truncateString(item.contract_address) }}
-                </a>
-                <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
-                    title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
+                <div>
+                    Contract address: <a class="feeds__contract-address"
+                        :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
+                        :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
+                        {{ truncateString(item.contract_address) }}
+                    </a>
+                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
+                        title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
+                </div>
+                <div>
+                    Feed address: <a class="feeds__contract-address"
+                        :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
+                        :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
+                        {{ truncateString(item.feed_address) }}
+                    </a>
+                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.feed_address)"
+                        title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
+                </div>
+
             </template>
             <template #cell(feed)="{ item }">
                 <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
                 <router-link class="feeds__feed-link"
                     :to="{ name: 'SingleFeed', params: { relayerId: item.relayerId, network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
                 </router-link>
-                    <span>{{ item.feed }}</span>
-               
+                <span>{{ item.feed }}</span>
+
             </template>
             <template #cell(timestamp)="{ item }">
                 <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
@@ -134,7 +147,7 @@ export default {
             fields: [
                 { key: 'feed', label: 'Feed', sortable: true },
                 { key: 'network', label: 'Network', sortable: true },
-                { key: 'contract_address', label: 'Contract address' },
+                { key: 'contract_address', label: 'Addresses' },
                 { key: 'heartbeat', label: 'Heartbeat' },
                 { key: 'deviation', label: 'Deviation threshold ' },
                 {
@@ -397,12 +410,11 @@ export default {
                         networkSet.add(feed.crypto_token);
                     }
                 });
-
                 return Array.from(networkSet);
             }
         },
         feeds() {
-            if(this.combinedFeedsWithDetailsArray.length === 0) return []
+            if (this.combinedFeedsWithDetailsArray.length === 0) return []
             return this.combinedFeedsWithDetailsArray.map(item => {
                 return {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
