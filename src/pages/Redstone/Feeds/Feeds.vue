@@ -49,8 +49,9 @@
                 <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
                 <router-link class="feeds__feed-link"
                     :to="{ name: 'SingleFeed', params: { relayerId: item.relayerId, network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
-                    <span>{{ item.feed }}</span>
                 </router-link>
+                    <span>{{ item.feed }}</span>
+               
             </template>
             <template #cell(timestamp)="{ item }">
                 <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
