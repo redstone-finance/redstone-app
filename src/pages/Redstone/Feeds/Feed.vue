@@ -59,19 +59,11 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import LayerName from './components/LayerName'
-import LayerChain from './components/LayerChain'
-import LayerTriggers from './components/LayerTriggers'
-import LayerPriceFeeds from './components/LayerPriceFeeds'
 import LayerChart from "./components/LayerChart"
 
 
 export default {
     components: {
-        LayerName,
-        LayerChain,
-        LayerPriceFeeds,
-        LayerTriggers,
         LayerChart
     },
     data() {
