@@ -112,10 +112,10 @@ import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
 // Definitions
-import networkImages from "@/data/networkImages"
-import networks from '@/data/networks.js'
-import images from '@/core/logosDefinitions.js'
-import explorers from "@/data/explorers"
+import networkImages from "@/data/networkImages.json"
+import networks from '@/data/networks.json'
+import images from '@/data/logosDefinitions.json'
+import explorers from "@/data/explorers.json"
 import { sortBy } from "lodash"
 
 export default {

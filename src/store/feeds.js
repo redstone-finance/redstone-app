@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import { isEmpty } from 'lodash'
 import Vue from 'vue'
 import relayers from '@/data/relayers.js'
-import networks from '@/data/networks.js'
+import networks from '@/data/networks'
 
 const RELAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 const CONTRACTS_ABI_DEFINITION = [
