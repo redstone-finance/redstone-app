@@ -49,7 +49,7 @@ export default {
       Vue.set(providers[id], key, value)
       commit('setProviders', providers)
     },
-    async fetchProviders({ commit, _state, dispatch }) {
+    async fetchProviders({ commit, dispatch }) {
       const contractState = await getOracleRegistryState()
       const providers = contractState.dataServices
       delete providers['redstone-custom-urls-demo']

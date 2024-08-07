@@ -103,7 +103,6 @@
 
 <script>
   import Widget from '@/components/Widget/Widget'
-  import _ from 'lodash'
   import { mapState } from 'vuex'
   import showMoreTokensMixin from '@/mixins/show-more-tokens'
   import { getCurrency, isCurrencyToken } from '@/tokens'

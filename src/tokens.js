@@ -57,13 +57,13 @@ function getAllSymbolDetails() {
 
   symbolDetails = {}
   for (const [symbol, config] of Object.entries(tokenDetails).filter(
-    ([symbol, config]) => config.providers[0] !== DEFAULT_PROVIDER
+    ([, config]) => config.providers[0] !== DEFAULT_PROVIDER
   )) {
     symbolDetails[symbol] = config
   }
 
   for (const [symbol, config] of Object.entries(tokenDetails).filter(
-    ([symbol, config]) => config.providers[0] === DEFAULT_PROVIDER
+    ([, config]) => config.providers[0] === DEFAULT_PROVIDER
   )) {
     symbolDetails[symbol] = config
   }
@@ -77,13 +77,13 @@ export function isCurrencyToken(details) {
 
 export function getCurrency(details) {
   if (details.name?.includes('/')) {
-    const [x, currency] = details.name?.split('/')
+    const [, currency] = details.name?.split('/')
 
     return currency
   }
 
   if (details.symbol?.includes('/')) {
-    const [x, currency] = details.symbol?.split('/')
+    const [, currency] = details.symbol?.split('/')
 
     return currency
   }

@@ -191,10 +191,6 @@
   import { getCurrency, getDetailsForSymbol, isCurrencyToken } from '@/tokens'
   import { mapState } from 'vuex'
 
-  function formatPrice(value) {
-    return (value || 0).toFixed(2)
-  }
-
   function getSourceColor(source) {
     return source === 'aggregated' ? '#fd627a' : getSourceDetail(source, 'color', '#000')
   }

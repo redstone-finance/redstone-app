@@ -1,7 +1,6 @@
 <script>
   import Chart from 'chart.js'
   import { generateChart } from 'vue-chartjs'
-  import { getDetailsForSymbol, getCurrency } from '@/tokens'
 
   Chart.defaults.LineWithLine = Chart.defaults.line
   Chart.controllers.LineWithLine = Chart.controllers.line.extend({
@@ -52,7 +51,6 @@
     watch: {
       data: function (chartData) {
         // watch it
-        const symbol = this.symbol
         this.renderChart(
           {
             labels: chartData.labels,
@@ -81,7 +79,7 @@
               yAxes: [
                 {
                   ticks: {
-                    userCallback: function (value, index, values) {
+                    userCallback: function (value) {
                       const valueCalculated = value.toFixed(chartData.decimals)
                       return this.isUsdBased ? `$${valueCalculated}` : valueCalculated
                     },
