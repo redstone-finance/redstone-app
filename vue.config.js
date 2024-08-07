@@ -37,21 +37,5 @@ module.exports = {
             '@babel/plugin-transform-modules-commonjs'
           ]
         });
-
-    // New ESLint configuration with Prettier integration
-    config.module
-      .rule('eslint')
-      .use('eslint-loader')
-      .tap(options => {
-        options.plugins = [...(options.plugins || []), 'prettier'];
-        options.extends = [...(options.extends || []), 'plugin:prettier/recommended'];
-        options.rules = {
-          ...options.rules,
-          'prettier/prettier': 'error',
-        };
-        return options;
-      });
-  },
-  // Add lintOnSave option
-  lintOnSave: true
+  }
 }
