@@ -47,7 +47,7 @@
                     <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
                         title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
                 </div>
-                <div>
+                <div v-if="item.feed_address != '__NO_FEED__'">
                     Feed address: <a class="feeds__contract-address"
                         :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
@@ -328,7 +328,7 @@ export default {
             return noDash
         },
         getImageUrl(imageName) {
-            return `/logos/${imageName}`
+            return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
         },
         hasSlash(string) {
             return string.indexOf('/') >= 0

@@ -107,7 +107,7 @@ export default {
         })
     },
     methods: {
-        ...mapActions('feeds', ['initSingleContract']),
+        ...mapActions('feeds', ['initSingleContract'])
     },
     computed: {
         network() {

@@ -87,7 +87,7 @@ export default {
       this.$emit('input', updatedSelection)
     },
     getImageUrl(imageName) {
-      return `/logos/${imageName}`
+      return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
     },
     getCryptoByToken(token) {
       return this.items.find(crypto => crypto.token === token) || { name: token, imageName: '' }

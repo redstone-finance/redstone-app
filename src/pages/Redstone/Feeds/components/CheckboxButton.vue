@@ -36,7 +36,7 @@ export default {
             this.$emit('change', { value: this.token, isChecked: this.isChecked });
         },
         getImageUrl(imageName) {
-            return `/logos/${imageName}`
+            return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
         },
     }
 }
