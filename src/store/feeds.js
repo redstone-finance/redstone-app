@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { ethers } from 'ethers';
-import { isEmpty } from 'lodash';
-import Vue from 'vue';
+import axios from 'axios'
+import { ethers } from 'ethers'
+import { isEmpty } from 'lodash'
+import Vue from 'vue'
 import relayers from '@/data/relayers.js'
 import networks from '@/data/networks.js'
 
@@ -23,10 +23,10 @@ export default {
     },
     mutations: {
         assignLayerSchema(state, schema) {
-            state.relayerSchema = schema;
+            state.relayerSchema = schema
         },
         assignCreatedSmartContract(state, { contract, layerId }) {
-            state.smartContracts[layerId] = contract;
+            state.smartContracts[layerId] = contract
         },
         assignLayerDetails(state, { key, layerId, data }) {
             state.relayersDetails[layerId][key] = data
@@ -46,7 +46,7 @@ export default {
         },
         combinedFeedsWithDetailsArray(state, getters) {
             return Object.keys(state.relayerSchema).flatMap((key) => {
-                const layer = state.relayerSchema[key];
+                const layer = state.relayerSchema[key]
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
                     routeNetwork: Object.values(networks).find(network => network.chainId === layer.chain.id).name.toLowerCase().replace(' ', '-'),
                     routeToken: feedId.toLowerCase(),
