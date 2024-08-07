@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <b-table id="feeds-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
+        <b-table v-if="displayedTableItems" id="feeds-table" v-model="displayedTableItems" key="table" stacked="md" ref="selectableTable"
             :sortBy="sortBy" :sortDesc="sortDesc" @filtered="onFiltered" :filter="filters" sort-icon-left hover
             :items="feeds" :per-page="perPage" @sort-changed="handleSort" :current-page="currentPage"
             :filter-function="customFilter" :fields="fields" class="feeds__table">
@@ -402,6 +402,7 @@ export default {
             }
         },
         feeds() {
+            if(this.combinedFeedsWithDetailsArray.length === 0) return []
             return this.combinedFeedsWithDetailsArray.map(item => {
                 return {
                     feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',

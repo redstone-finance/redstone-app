@@ -5,7 +5,7 @@ import Vue from 'vue';
 import relayers from '@/data/relayers.js'
 import networks from '@/data/networks.js'
 
-const LAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
+const RELAYERS_SCHEMA_URL = "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 const CONTRACTS_ABI_DEFINITION = [
     "function getBlockTimestampFromLatestUpdate() view returns (uint256)",
     "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
@@ -143,8 +143,8 @@ export default {
             })
         },
         async fetchRelayerSchema({ commit, state }) {
-            // const { data } = await axios.get(LAYERS_SCHEMA_URL)
-            commit('assignLayerSchema', { ...relayers.standard, ...relayers.multifeed })
+            const { data } = await axios.get(RELAYERS_SCHEMA_URL)
+            commit('assignLayerSchema', { ...data.standard, ...data.multifeed })
             if (isEmpty(state.relayersDetails)) {
                 this.dispatch('feeds/initializeLayerDetails')
             }
