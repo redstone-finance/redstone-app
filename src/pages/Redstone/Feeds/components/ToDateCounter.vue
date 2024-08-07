@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { intervalToDuration } from 'date-fns'
+
 export default {
     props: {
         duration: {
@@ -20,19 +22,15 @@ export default {
     computed: {
         formattedTime() {
             if (this.remainingTime <= 0) {
-                return '00';
+                return '00:00:00';
             }
 
-            const hours = Math.floor(this.remainingTime / 3600000);
-            const minutes = Math.floor((this.remainingTime % 3600000) / 60000);
-            const seconds = Math.floor((this.remainingTime % 60000) / 1000);
+            const duration = intervalToDuration({ start: 0, end: this.remainingTime });
+            const hours = String(duration.hours || 0).padStart(2, '0');
+            const minutes = String(duration.minutes || 0).padStart(2, '0');
+            const seconds = String(duration.seconds || 0).padStart(2, '0');
 
-            let result = '';
-            result += `${hours.toString().padStart(2, '0')}:`;
-            result += `${minutes.toString().padStart(2, '0')}:`;
-            result += seconds.toString().padStart(2, '0');
-
-            return result;
+            return `${hours}:${minutes}:${seconds}`;
         }
     },
     watch: {

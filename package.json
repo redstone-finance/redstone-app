@@ -19,6 +19,7 @@
     "chart.js": "2",
     "cronstrue": "^2.50.0",
     "css-loader": "^1.0.1",
+    "date-fns": "^3.6.0",
     "dateformat": "^4.5.1",
     "echarts": "^4.9.0",
     "ethers": "5.4.0",
