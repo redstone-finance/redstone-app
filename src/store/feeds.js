@@ -17,22 +17,22 @@ const CONTRACTS_ABI_DEFINITION = [
 export default {
     namespaced: true,
     state: {
-        layersSchema: {},
+        relayerSchema: {},
         smartContracts: {},
-        layersDetails: {},
+        relayersDetails: {},
     },
     mutations: {
         assignLayerSchema(state, schema) {
-            state.layersSchema = schema;
+            state.relayerSchema = schema;
         },
         assignCreatedSmartContract(state, { contract, layerId }) {
             state.smartContracts[layerId] = contract;
         },
         assignLayerDetails(state, { key, layerId, data }) {
-            state.layersDetails[layerId][key] = data
+            state.relayersDetails[layerId][key] = data
         },
         disableLoaderMutation(state, { loaderId, layerId }) {
-            state.layersDetails[layerId].loaders[loaderId] = false
+            state.relayersDetails[layerId].loaders[loaderId] = false
         },
     },
     getters: {
@@ -42,12 +42,11 @@ export default {
             return contract
         },
         hasMultipleFeeds: (state) => (layerId) => {
-            return state.layersSchema[layerId].priceFeeds.length > 1
+            return state.relayerSchema[layerId].priceFeeds.length > 1
         },
-        // combined data which will be displayed as a UI - mapping fetched data with initial schema layers
         combinedFeedsWithDetailsArray(state, getters) {
-            return Object.keys(state.layersSchema).flatMap((key) => {
-                const layer = state.layersSchema[key];
+            return Object.keys(state.relayerSchema).flatMap((key) => {
+                const layer = state.relayerSchema[key];
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
                     routeNetwork: Object.values(networks).find(network => network.chainId === layer.chain.id).name.toLowerCase().replace(' ', '-'),
                     routeToken: feedId.toLowerCase(),
@@ -57,8 +56,8 @@ export default {
                     feedAddress: layer.priceFeeds[feedId],
                     triggers: layer.updateTriggers,
                     layerId: key,
-                    timestamp: state.layersDetails[key].blockTimestamp,
-                    loaders: state.layersDetails[key].loaders
+                    timestamp: state.relayersDetails[key].blockTimestamp,
+                    loaders: state.relayersDetails[key].loaders
                 }));
             });
         }
@@ -70,11 +69,6 @@ export default {
             const contract = new ethers.Contract(contractAddress, CONTRACTS_ABI_DEFINITION, provider);
             commit('assignCreatedSmartContract', { contract, layerId })
         },
-        // 
-        // Handling smart contracts
-        // Condider making some sort of handler for async then/catch/finally cause it hurts eyes. Would be nice to have some sort of generic handler since, methods are very similar
-        // But only when we are sure the business logic + it will be much easier to provide unit tests
-        // 
         async fetchDataFeedId({ commit, state }, layerId) {
             const api = this.getters['feeds/getSmartContractByLayerId'](layerId)
             try {
@@ -124,27 +118,22 @@ export default {
             }
             this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
         },
-        // This one should be used to obtain feed value thus it requires feedId query to be chained
         async fetchFeedIdAndValue({ state }, { layerId }) {
             this.dispatch('feeds/fetchDataFeedId', layerId).then(() => {
-                const feedId = state.layersDetails[layerId]?.feedId
+                const feedId = state.relayersDetails[layerId]?.feedId
                 this.dispatch('feeds/fetchValueForDataFeed', { layerId, feedId })
             })
         },
-        // 
-        // Helpers
-        // 
         disableLoader({ commit }, { layerId, loaderId }) {
             commit('disableLoaderMutation', { layerId, loaderId })
         },
         initializeLayerDetails({ state }) {
-            Object.keys(state.layersSchema).forEach(layerId => {
+            Object.keys(state.relayerSchema).forEach(layerId => {
                 // Using Vue.set to make values reactive
-                Vue.set(state.layersDetails, layerId, {
+                Vue.set(state.relayersDetails, layerId, {
                     feedId: null,
                     blockTimestamp: null,
                     dataFeed: null,
-                    // additional loader object for each property we fetch so we can reflect it in the ui
                     loaders: {
                         feedId: true,
                         feedDataValue: true,
@@ -153,29 +142,26 @@ export default {
                 });
             })
         },
-        // 
-        // Init fetching of all details required for the UI
-        // 
-        async fetchLayersSchema({ commit, state }) {
+        async fetchRelayerSchema({ commit, state }) {
             // const { data } = await axios.get(LAYERS_SCHEMA_URL)
             commit('assignLayerSchema', { ...relayers.standard, ...relayers.multifeed })
-            if (isEmpty(state.layersDetails)) {
+            if (isEmpty(state.relayersDetails)) {
                 this.dispatch('feeds/initializeLayerDetails')
             }
         },
         async initSingleContract({ state }, layerId) {
-            await this.dispatch('feeds/fetchLayersSchema')
-            await this.dispatch('feeds/createSmartContract', { layerId: layerId, contractAddress: state.layersSchema[layerId].adapterContract, chainId: state.layersSchema[layerId].chain.id })
+            await this.dispatch('feeds/fetchRelayerSchema')
+            await this.dispatch('feeds/createSmartContract', { layerId: layerId, contractAddress: state.relayerSchema[layerId].adapterContract, chainId: state.relayerSchema[layerId].chain.id })
             await this.dispatch('feeds/fetchBlockTimeStamp', layerId)
-            await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: layerId, feedId: state.layersDetails[layerId]?.feedId })
+            await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: layerId, feedId: state.relayersDetails[layerId]?.feedId })
         },
         async init({ state }) {
-            if (!isEmpty(state.layersSchema)) return
-            await this.dispatch('feeds/fetchLayersSchema')
-            Object.keys(state.layersSchema).forEach(async key => {
-                await this.dispatch('feeds/createSmartContract', { layerId: key, contractAddress: state.layersSchema[key].adapterContract, chainId: state.layersSchema[key].chain.id })
+            if (!isEmpty(state.relayerSchema)) return
+            await this.dispatch('feeds/fetchRelayerSchema')
+            Object.keys(state.relayerSchema).forEach(async key => {
+                await this.dispatch('feeds/createSmartContract', { layerId: key, contractAddress: state.relayerSchema[key].adapterContract, chainId: state.relayerSchema[key].chain.id })
                 await this.dispatch('feeds/fetchBlockTimeStamp', key)
-                await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: key, feedId: state.layersDetails[key]?.feedId })
+                await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: key, feedId: state.relayersDetails[key]?.feedId })
             })
         }
     }

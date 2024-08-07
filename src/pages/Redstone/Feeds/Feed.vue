@@ -138,12 +138,12 @@ export default {
         feedData() {
             return this.combinedFeedsWithDetailsArray.find(feed => feed.routeNetwork === this.network && feed.routeToken === this.token)
         },
-        ...mapState('feeds', ['layersDetails', 'layersSchema']),
+        ...mapState('feeds', ['relayersDetails', 'relayersSchema']),
         ...mapGetters('feeds', [
             'combinedFeedsWithDetailsArray'
         ]),
         layer() {
-            return this.layersSchema[this.layerId]
+            return this.relayersSchema[this.layerId]
         },
     }
 }
