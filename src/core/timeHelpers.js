@@ -6,6 +6,8 @@ import {
     differenceInMonths,
     differenceInYears
 } from 'date-fns'
+import { parseExpression } from "cron-parser"
+
 
 export const hexToDate = (timestamp) => {
     const timeInSeconds = parseInt(timestamp, 16)
@@ -65,27 +67,18 @@ export function getTimeUntilNextHeartbeat(lastHeartbeatItem, heartbeatInterval) 
 }
 
 export function parseCustomCron(cronExpr) {
-    const [minute, hour, , , dayOfWeek] = cronExpr.split(' ')
-    const now = new Date()
-    const result = new Date(now)
-    result.setSeconds(0)
-    result.setMilliseconds(0)
-
-    result.setMinutes(parseInt(minute))
-    result.setHours(parseInt(hour))
-
-    if (result <= now) {
-        result.setDate(result.getDate() + 1)
-    }
-
-    if (dayOfWeek !== '*') {
-        const targetDay = parseInt(dayOfWeek)
-        while (result.getDay() !== targetDay) {
-            result.setDate(result.getDate() + 1)
+    try {
+        const options = {
+            currentDate: new Date(),
+            utc: true // Assuming UTC, adjust if needed
         }
+        
+        const interval = parseExpression(cronExpr, options)
+        return interval.next().toDate()
+    } catch (err) {
+        console.error(`Error parsing cron expression: ${cronExpr}`, err)
+        return null
     }
-
-    return result
 }
 
 export function findNearestCronDate(cronExpressions) {
