@@ -7,7 +7,7 @@
 // -------------------------
 @mixin property-variants($base, $property, $variants: ()) {
   @each $size, $value in $variants {
-    @if $size == "md" {
+    @if $size == 'md' {
       #{$base} {
         #{$property}: $value;
       }

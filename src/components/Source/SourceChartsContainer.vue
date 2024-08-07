@@ -12,10 +12,7 @@
         title="Fetching failed count"
       />
     </div>
-    <div
-      v-show="hasAnyStats('incorrect-price-value')"
-      class="source-chart-wrapper"
-    >
+    <div v-show="hasAnyStats('incorrect-price-value')" class="source-chart-wrapper">
       <div class="chart-title">Incorrect price value</div>
       <SourceChart
         :stats="stats['incorrect-price-value']"
@@ -27,47 +24,44 @@
 </template>
 
 <script>
-import SourceChart from "./SourceChart.vue";
+  import SourceChart from './SourceChart.vue'
 
-export default {
-  name: "SourceChartsContainer",
-  props: ["stats"],
-  components: {
-    SourceChart,
-  },
-
-  methods: {
-    hasAnyStats(statKey) {
-      return this.stats[statKey] && Object.keys(this.stats[statKey]).length > 0;
+  export default {
+    name: 'SourceChartsContainer',
+    props: ['stats'],
+    components: {
+      SourceChart,
     },
-  },
 
-  computed: {
-    sourceHasNoErrors() {
-      return (
-        !this.hasAnyStats("fetching-failed") &&
-        !this.hasAnyStats("incorrect-price-value")
-      );
+    methods: {
+      hasAnyStats(statKey) {
+        return this.stats[statKey] && Object.keys(this.stats[statKey]).length > 0
+      },
     },
-  },
-};
+
+    computed: {
+      sourceHasNoErrors() {
+        return !this.hasAnyStats('fetching-failed') && !this.hasAnyStats('incorrect-price-value')
+      },
+    },
+  }
 </script>
 
 <style scoped>
-.chart-title {
-  font-size: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
+  .chart-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 
-.charts-container {
-  display: flex;
-  flex-direction: row;
-  column-gap: 70px;
-}
+  .charts-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 70px;
+  }
 
-.source-chart-wrapper {
-  width: 40%;
-  min-width: 300px;
-}
+  .source-chart-wrapper {
+    width: 40%;
+    min-width: 300px;
+  }
 </style>

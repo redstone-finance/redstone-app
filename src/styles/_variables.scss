@@ -6,8 +6,8 @@ $glyphicons-halflings-include-bonus: false !default;
 $glyphicons-halflings-class-prefix: glyphicon !default;
 $glyphicons-halflings-font-base-size: 14px !default;
 
-$glyphicons-halflings-font-path: "../fonts/glyphicons" !default;
-$fa-font-path: "../fonts/font-awesome" !default;
+$glyphicons-halflings-font-path: '../fonts/glyphicons' !default;
+$fa-font-path: '../fonts/font-awesome' !default;
 
 /*
  * Typography
@@ -20,7 +20,7 @@ $font-size-larger: 1.1rem;
 $font-size-mini: 0.9rem;
 $font-size-index: 0.7rem;
 
-$font-family-base: "Poppins";
+$font-family-base: 'Poppins';
 
 // Color system
 //
@@ -122,7 +122,7 @@ $sidebar-transition-time: 0.3s !default;
 $sidebar-item-border-color: transparent !default;
 $sidebar-scrollbar-bg: $gray-200;
 
-$breadcrumb-divider: ">";
+$breadcrumb-divider: '>';
 $breadcrumb-padding-y: 0;
 $breadcrumb-bg: transparent;
 

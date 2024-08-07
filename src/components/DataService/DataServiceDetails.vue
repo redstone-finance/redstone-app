@@ -18,16 +18,12 @@
         <!-- <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" /> -->
         <LabelValue
           label="Nodes"
-          :value="
-            provider && provider?.nodes?.length ? provider.nodes.length : '0'
-          "
+          :value="provider && provider?.nodes?.length ? provider.nodes.length : '0'"
           :alignRight="true"
         />
         <LabelValue
           label="Assets"
-          :value="
-            provider && provider?.assetsCount ? provider.assetsCount : '0'
-          "
+          :value="provider && provider?.assetsCount ? provider.assetsCount : '0'"
           :alignRight="true"
         />
         <LabelValue
@@ -60,19 +56,12 @@
           <span class="token-name ml-3">{{ data.item.name }}</span>
         </template>
         <template #cell(symbol)="data">
-          <span
-            class="text-truncate d-block"
-            v-b-tooltip.hover
-            :title="data.item.symbol"
-          >
+          <span class="text-truncate d-block" v-b-tooltip.hover :title="data.item.symbol">
             {{ data.item.symbol }}
           </span>
         </template>
         <template #cell(sources)="data">
-          <div
-            class="d-flex source-links-wrapper"
-            :ref="'symbols_' + data.item.symbol"
-          >
+          <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
             <div class="d-flex source-links">
               <a
                 class="source-link mb-2 mb-md-0"
@@ -92,10 +81,7 @@
           </div>
         </template>
       </b-table>
-      <div
-        v-if="!allTokensVisible"
-        v-observe-visibility="loadMoreSectionVisibilityChanged"
-      >
+      <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged">
         <div v-for="n in 5" :key="n" class="preloader token-preloader"></div>
       </div>
     </div>
@@ -103,278 +89,274 @@
 </template>
 
 <script>
-import LabelValue from "@/components/DataService/LabelValue";
-import sourcesData from "../../config/sources.json";
-import _ from "lodash";
-import showMoreTokensMixin from "@/mixins/show-more-tokens";
-import { getDetailsForSymbol } from "@/tokens";
+  import LabelValue from '@/components/DataService/LabelValue'
+  import sourcesData from '../../config/sources.json'
+  import _ from 'lodash'
+  import showMoreTokensMixin from '@/mixins/show-more-tokens'
+  import { getDetailsForSymbol } from '@/tokens'
 
-export default {
-  name: "DataService",
+  export default {
+    name: 'DataService',
 
-  props: {
-    provider: {},
-  },
-
-  mixins: [showMoreTokensMixin],
-
-  data() {
-    return {
-      fields: [{ key: "name", label: "Asset" }, "symbol", "sources"],
-      firstManifest: null,
-      transactionTime: null,
-      tokens: null,
-      VISIBLE_CHUNK_SIZE: 10,
-      logoPlaceholder:
-        "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
-    };
-  },
-
-  methods: {
-    removeContentAfterLastDash(str) {
-      const lastDashIndex = str.lastIndexOf("-");
-      if (lastDashIndex === -1) {
-        return str;
-      }
-      return str.substring(0, lastDashIndex);
+    props: {
+      provider: {},
     },
-    formatSources(source) {
-      return source.map((s) => _.startCase(s)).join(", ");
-    },
-    prepareTokensDataForTable() {
-      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) => {
-        const [symbol, detailsInManifest] = entry;
-        let tokenInfo = getDetailsForSymbol(symbol);
 
-        let sourceList =
-          detailsInManifest.source || this.currentManifest.defaultSource;
+    mixins: [showMoreTokensMixin],
 
-        return {
-          logoURI: tokenInfo?.logoURI,
-          symbol,
-          name: tokenInfo?.name,
-          source: sourceList.map((el) => {
-            console.log({ el });
-            return {
-              name: el,
-              ...sourcesData[this.removeContentAfterLastDash(el)],
-            };
-          }),
-        };
-      });
-
-      setTimeout(this.showMoreTokens, 0);
-    },
-    loadMoreSectionVisibilityChanged() {
-      this.showMoreTokens();
-    },
-    scrollFunction() {
-      if (
-        window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight
-      ) {
-        this.showMoreTokens();
+    data() {
+      return {
+        fields: [{ key: 'name', label: 'Asset' }, 'symbol', 'sources'],
+        firstManifest: null,
+        transactionTime: null,
+        tokens: null,
+        VISIBLE_CHUNK_SIZE: 10,
+        logoPlaceholder:
+          'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png',
       }
     },
-  },
 
-  components: {
-    LabelValue,
-  },
+    methods: {
+      removeContentAfterLastDash(str) {
+        const lastDashIndex = str.lastIndexOf('-')
+        if (lastDashIndex === -1) {
+          return str
+        }
+        return str.substring(0, lastDashIndex)
+      },
+      formatSources(source) {
+        return source.map((s) => _.startCase(s)).join(', ')
+      },
+      prepareTokensDataForTable() {
+        this.tokens = Object.entries(this.currentManifest.tokens).map((entry) => {
+          const [symbol, detailsInManifest] = entry
+          let tokenInfo = getDetailsForSymbol(symbol)
 
-  computed: {
-    currentManifest() {
-      return this.provider?.currentManifest;
-    },
-    dataServiceId() {
-      return this.$route.params.id;
-    },
-    fieldsFiltered() {
-      return this.fields;
-    },
-  },
+          let sourceList = detailsInManifest.source || this.currentManifest.defaultSource
 
-  created() {
-    document.addEventListener("scroll", this.scrollFunction);
-  },
+          return {
+            logoURI: tokenInfo?.logoURI,
+            symbol,
+            name: tokenInfo?.name,
+            source: sourceList.map((el) => {
+              console.log({ el })
+              return {
+                name: el,
+                ...sourcesData[this.removeContentAfterLastDash(el)],
+              }
+            }),
+          }
+        })
 
-  watch: {
-    currentManifest: {
-      immediate: true,
-      handler: function () {
-        if (this.currentManifest) {
-          this.prepareTokensDataForTable();
+        setTimeout(this.showMoreTokens, 0)
+      },
+      loadMoreSectionVisibilityChanged() {
+        this.showMoreTokens()
+      },
+      scrollFunction() {
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+          this.showMoreTokens()
         }
       },
     },
-  },
-};
+
+    components: {
+      LabelValue,
+    },
+
+    computed: {
+      currentManifest() {
+        return this.provider?.currentManifest
+      },
+      dataServiceId() {
+        return this.$route.params.id
+      },
+      fieldsFiltered() {
+        return this.fields
+      },
+    },
+
+    created() {
+      document.addEventListener('scroll', this.scrollFunction)
+    },
+
+    watch: {
+      currentManifest: {
+        immediate: true,
+        handler: function () {
+          if (this.currentManifest) {
+            this.prepareTokensDataForTable()
+          }
+        },
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/app";
+  @import '~@/styles/app';
 
-.provider-details {
-  .token-logo {
-    height: 30px;
-    width: 30px;
-  }
+  .provider-details {
+    .token-logo {
+      height: 30px;
+      width: 30px;
+    }
 
-  .provider-info {
-    margin-bottom: 30px;
-  }
+    .provider-info {
+      margin-bottom: 30px;
+    }
 
-  LabelValue {
-    margin-bottom: 10px;
-  }
+    LabelValue {
+      margin-bottom: 10px;
+    }
 
-  .provider-www,
-  .provider-description {
-    margin-left: 10px;
-  }
+    .provider-www,
+    .provider-description {
+      margin-left: 10px;
+    }
 
-  .provider-description {
-    font-weight: $font-weight-normal;
-  }
+    .provider-description {
+      font-weight: $font-weight-normal;
+    }
 
-  .provider-www {
-    font-weight: $font-weight-soft-bold;
+    .provider-www {
+      font-weight: $font-weight-soft-bold;
 
-    i {
-      transform: translate(3px, 1px);
+      i {
+        transform: translate(3px, 1px);
+      }
     }
   }
-}
 
-.provider-values {
-  margin-left: 10px;
-
-  & > div {
-    flex: 0 0 13%;
-  }
-
-  @media (max-width: breakpoint-max(sm)) {
-    flex-wrap: wrap;
+  .provider-values {
+    margin-left: 10px;
 
     & > div {
-      flex: 0 0 50%;
+      flex: 0 0 13%;
+    }
+
+    @media (max-width: breakpoint-max(sm)) {
+      flex-wrap: wrap;
+
+      & > div {
+        flex: 0 0 50%;
+      }
     }
   }
-}
 
-.token-name {
-  font-size: 14px;
-  font-weight: $font-weight-soft-bold;
-  color: $navy;
-}
-
-hr {
-  border-top: 1px solid $gray-300;
-}
-
-.table-title {
-  margin-left: 10px;
-  color: $navy;
-  font-size: 20px;
-  font-weight: $font-weight-soft-bold;
-}
-
-.source-link {
-  min-width: 30px;
-  display: inline-block;
-  text-align: center;
-}
-
-.source-logo {
-  height: 20px;
-  margin: 4px;
-}
-
-.text-preloader {
-  width: 350px;
-  @include preload-animation(2.5s, 350px);
-
-  &:first-of-type {
-    height: 16px;
-    margin-bottom: 6px;
+  .token-name {
+    font-size: 14px;
+    font-weight: $font-weight-soft-bold;
+    color: $navy;
   }
 
-  &:nth-of-type(2) {
-    height: 16px;
-    margin-bottom: 5px;
+  hr {
+    border-top: 1px solid $gray-300;
   }
-}
 
-.token-preloader {
-  height: 35px;
-  margin-bottom: 20px;
-  border-radius: 3px;
-  @include preload-animation(2.5s, 100vw);
-}
+  .table-title {
+    margin-left: 10px;
+    color: $navy;
+    font-size: 20px;
+    font-weight: $font-weight-soft-bold;
+  }
+
+  .source-link {
+    min-width: 30px;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .source-logo {
+    height: 20px;
+    margin: 4px;
+  }
+
+  .text-preloader {
+    width: 350px;
+    @include preload-animation(2.5s, 350px);
+
+    &:first-of-type {
+      height: 16px;
+      margin-bottom: 6px;
+    }
+
+    &:nth-of-type(2) {
+      height: 16px;
+      margin-bottom: 5px;
+    }
+  }
+
+  .token-preloader {
+    height: 35px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    @include preload-animation(2.5s, 100vw);
+  }
 </style>
 
 <style lang="scss">
-@import "~@/styles/app";
+  @import '~@/styles/app';
 
-.label-value {
-  .value {
-    color: $gray-750;
-    font-weight: $font-weight-normal;
-  }
+  .label-value {
+    .value {
+      color: $gray-750;
+      font-weight: $font-weight-normal;
+    }
 
-  .label {
-    font-weight: $font-weight-soft-bold;
-    color: $navy;
-  }
-}
-
-.provider-details #assets-table {
-  table-layout: fixed;
-
-  th {
-    text-transform: none;
-    color: $navy;
-    font-size: 12px;
-    font-weight: $font-weight-soft-bold;
-  }
-
-  th:nth-of-type(1) {
-    width: 250px;
-  }
-
-  th:nth-of-type(2) {
-    width: 100px;
-  }
-
-  th:nth-of-type(3) {
-    width: fit-content;
-  }
-
-  th:nth-of-type(4) {
-    width: 250px;
-  }
-
-  th:nth-of-type(2) {
-    overflow: hidden;
-  }
-
-  td .source-links {
-    overflow: hidden;
-  }
-
-  td:not(:hover) .source-links-wrapper:after {
-    content: "";
-    box-shadow: inset -19px 0px 12px -10px $gray-100;
-    z-index: 1;
-    transform: translateX(-10px);
-    height: 30px;
-    width: 30px;
-  }
-
-  td:hover {
-    .source-links {
-      flex-wrap: wrap;
+    .label {
+      font-weight: $font-weight-soft-bold;
+      color: $navy;
     }
   }
-}
+
+  .provider-details #assets-table {
+    table-layout: fixed;
+
+    th {
+      text-transform: none;
+      color: $navy;
+      font-size: 12px;
+      font-weight: $font-weight-soft-bold;
+    }
+
+    th:nth-of-type(1) {
+      width: 250px;
+    }
+
+    th:nth-of-type(2) {
+      width: 100px;
+    }
+
+    th:nth-of-type(3) {
+      width: fit-content;
+    }
+
+    th:nth-of-type(4) {
+      width: 250px;
+    }
+
+    th:nth-of-type(2) {
+      overflow: hidden;
+    }
+
+    td .source-links {
+      overflow: hidden;
+    }
+
+    td:not(:hover) .source-links-wrapper:after {
+      content: '';
+      box-shadow: inset -19px 0px 12px -10px $gray-100;
+      z-index: 1;
+      transform: translateX(-10px);
+      height: 30px;
+      width: 30px;
+    }
+
+    td:hover {
+      .source-links {
+        flex-wrap: wrap;
+      }
+    }
+  }
 </style>

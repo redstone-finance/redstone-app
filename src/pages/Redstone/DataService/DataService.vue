@@ -28,52 +28,52 @@
 </template>
 
 <script>
-import DataServiceDetails from "@/components/DataService/DataServiceDetails";
-import Nodes from "@/components/DataService/Nodes";
-import { mapState } from "vuex";
+  import DataServiceDetails from '@/components/DataService/DataServiceDetails'
+  import Nodes from '@/components/DataService/Nodes'
+  import { mapState } from 'vuex'
 
-export default {
-  name: "DataService",
+  export default {
+    name: 'DataService',
 
-  data() {
-    return {
-      fetching: true,
-    };
-  },
-
-  created() {},
-
-  methods: {},
-
-  components: {
-    DataServiceDetails,
-    Nodes,
-    // Manifests
-  },
-
-  computed: {
-    providerId() {
-      return this.$route.params.id;
+    data() {
+      return {
+        fetching: true,
+      }
     },
-    ...mapState("prefetch", {
-      providers: (state) => state.providers,
-    }),
-    provider() {
-      return this.providers ? this.providers[this.providerId] : null;
+
+    created() {},
+
+    methods: {},
+
+    components: {
+      DataServiceDetails,
+      Nodes,
+      // Manifests
     },
-  },
-};
+
+    computed: {
+      providerId() {
+        return this.$route.params.id
+      },
+      ...mapState('prefetch', {
+        providers: (state) => state.providers,
+      }),
+      provider() {
+        return this.providers ? this.providers[this.providerId] : null
+      },
+    },
+  }
 </script>
 
 <style src="./DataService.scss" lang="scss" scoped />
 <style lang="scss">
-.provider-tabs > .tabs > div:first-of-type {
-  height: 44px;
-}
-
-.provider-tabs {
-  .nav-tabs > .nav-item {
-    flex: 0 0 124px;
+  .provider-tabs > .tabs > div:first-of-type {
+    height: 44px;
   }
-}
+
+  .provider-tabs {
+    .nav-tabs > .nav-item {
+      flex: 0 0 124px;
+    }
+  }
 </style>
