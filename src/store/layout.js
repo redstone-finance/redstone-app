@@ -11,52 +11,52 @@ export default {
   },
   mutations: {
     toggleSidebar(state) {
-      state.showSidebar = !state.showSidebar;
+      state.showSidebar = !state.showSidebar
     },
     switchSidebar(state, value) {
       if (value) {
-        state.showSidebar = value;
+        state.showSidebar = value
       }
     },
     handleSwipe(state, e) {
       if ('ontouchstart' in window) {
         if (e.direction === 4) {
-          state.showSidebar = true;
+          state.showSidebar = true
         }
 
         if (e.direction === 2 && state.showSidebar) {
-          state.showSidebar = false;
+          state.showSidebar = false
         }
       }
     },
     changeSidebarActive(state, index) {
-      state.sidebarActiveElement = index;
+      state.sidebarActiveElement = index
     },
     setSearchInputVisibilityInHeader(state, visibility) {
-      state.showSearchInputInHeader = visibility;
+      state.showSearchInputInHeader = visibility
     },
     updateSearchTerm(state, searchTerm) {
-      state.searchTerm = searchTerm;
+      state.searchTerm = searchTerm
     },
   },
   actions: {
     toggleSidebar({ commit }) {
-      commit('toggleSidebar');
+      commit('toggleSidebar')
     },
     switchSidebar({ commit }, value) {
-      commit('switchSidebar', value);
+      commit('switchSidebar', value)
     },
     handleSwipe({ commit }, e) {
-      commit('handleSwipe', e);
+      commit('handleSwipe', e)
     },
     changeSidebarActive({ commit }, index) {
-      commit('changeSidebarActive', index);
+      commit('changeSidebarActive', index)
     },
     setSearchInputVisibilityInHeader({ commit }, visibility) {
-      commit('setSearchInputVisibilityInHeader', visibility);
+      commit('setSearchInputVisibilityInHeader', visibility)
     },
     updateSearchTerm({ commit }, searchTerm) {
-      commit('updateSearchTerm', searchTerm);
+      commit('updateSearchTerm', searchTerm)
     },
   },
-};
+}

@@ -7,20 +7,20 @@
 
     computed: {
       dataPoints() {
-        return Object.fromEntries(Object.entries(this.stats).reverse());
+        return Object.fromEntries(Object.entries(this.stats).reverse())
       },
 
       labels() {
-        return Object.keys(this.dataPoints);
+        return Object.keys(this.dataPoints)
       },
 
       values() {
-        return Object.values(this.dataPoints);
-      }
+        return Object.values(this.dataPoints)
+      },
     },
 
     watch: {
-      "stats": function() {
+      stats: function () {
         const chartData = {
           labels: this.labels,
           datasets: [
@@ -30,20 +30,20 @@
               backgroundColor: this.color,
             },
           ],
-        };
+        }
         this.renderChart(chartData, {
           scales: {
             y: {
-              beginAtZero: true
-            }
+              beginAtZero: true,
+            },
           },
           legend: {
-            display: false
+            display: false,
           },
           responsive: true,
-          maintainAspectRatio: false
-        });
-      }
-    }
-  };
+          maintainAspectRatio: false,
+        })
+      },
+    },
+  }
 </script>

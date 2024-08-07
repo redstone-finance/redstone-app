@@ -1,9 +1,9 @@
 @media (min-width: 2000px) {
   .col-xxl-3 {
-      -webkit-box-flex: 0;
-      -ms-flex: 0 0 253%;
-      flex: 0 0 25%;
-      max-width: 25%;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 253%;
+    flex: 0 0 25%;
+    max-width: 25%;
   }
 }
 
@@ -29,7 +29,8 @@
   height: 5px;
 }
 
-a, a:not([href]):not([class]) {
+a,
+a:not([href]):not([class]) {
   color: var(--redstone-red-color);
   text-decoration: none;
 
@@ -260,32 +261,36 @@ small {
 
 .btn-danger {
   &:hover {
-    background-color: #FF788A;
-    border-color: #FF788A;
+    background-color: #ff788a;
+    border-color: #ff788a;
   }
 
-  &:not(:disabled):not(:disabled):active, &:focus, &.focus {
-    background-color: #E9586F;
-    border-color: #E9586F;
+  &:not(:disabled):not(:disabled):active,
+  &:focus,
+  &.focus {
+    background-color: #e9586f;
+    border-color: #e9586f;
     color: rgba(255, 255, 255, 0.7);
   }
 }
 
 .btn-inverted {
-  color: #E9586F;
+  color: #e9586f;
   background: none;
-  border-color: #E9586F;
-  
+  border-color: #e9586f;
+
   &:hover {
-    color: #FF788A;
+    color: #ff788a;
     background: none;
-    border-color: #FF788A;
+    border-color: #ff788a;
   }
 
-  &:not(:disabled):not(:disabled):active, &:focus, &.focus {
-    color: #E9586F;
+  &:not(:disabled):not(:disabled):active,
+  &:focus,
+  &.focus {
+    color: #e9586f;
     background: none;
-    border-color: #E9586F;
+    border-color: #e9586f;
   }
 }
 
@@ -311,12 +316,12 @@ small {
 
 .dropdown-toggle::after {
   font-family: 'Line Awesome Free', sans-serif;
-  content: "\f107";
+  content: '\f107';
   border: none;
   width: auto;
   height: auto;
   vertical-align: baseline;
-  opacity: .8;
+  opacity: 0.8;
   font-size: 85%;
   font-weight: $font-weight-semi-bold;
 }
@@ -651,7 +656,7 @@ h6,
   background-color: $white;
 
   > .tab-pane {
-    padding: $spacer*2;
+    padding: $spacer * 2;
   }
 }
 
@@ -694,7 +699,7 @@ pre {
   background-color: $gray-100;
   border: 1px solid $gray-400;
   border-radius: $border-radius;
-  white-space: pre-line;       /* css-3 */
+  white-space: pre-line; /* css-3 */
 
   // Account for some code outputs that place code tags in pre tags
   code {
@@ -755,7 +760,7 @@ pre {
     border-color: darken($purple, 10%);
 
     .remove:before {
-      content: " ×" !important;
+      content: ' ×' !important;
       color: white;
     }
   }
@@ -800,12 +805,10 @@ pre {
   }
 }
 
-
 ////// ECharts //////
 .echarts {
   width: 100%;
 }
-
 
 ////// Bootstrap checkboxes //////
 .custom-checkbox {
@@ -839,7 +842,8 @@ pre {
   }
 }
 
-.table th, .table td {
+.table th,
+.table td {
   vertical-align: middle;
 }
 
@@ -867,7 +871,9 @@ pre {
   flex: 1;
 }
 
-.nav-tabs > .nav-item .nav-link.active, .nav-tabs > .nav-item .nav-link.active:hover, .nav-tabs > .nav-item .nav-link.active:focus {
+.nav-tabs > .nav-item .nav-link.active,
+.nav-tabs > .nav-item .nav-link.active:hover,
+.nav-tabs > .nav-item .nav-link.active:focus {
   background-color: $gray-100;
   color: $navy;
 }
@@ -894,7 +900,7 @@ pre {
 
 .nav-tabs > .nav-item:not(:first-of-type) > .nav-link:not(.active) {
   &:after {
-    content: " ";
+    content: ' ';
     height: 23px;
     border-right: 1px solid $gray-450;
     border-top-width: 0;
@@ -920,14 +926,14 @@ pre {
 }
 
 a {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none !important;
 }
 
 .input-group > input.form-control:not(.no-radius):nth-of-type(1n),

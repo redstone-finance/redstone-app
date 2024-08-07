@@ -6,10 +6,7 @@
           <Widget class="node-card">
             <div class="node-details">
               <div class="node-logo">
-                <img
-                  v-if="node.logo"
-                  :src="node.logo"
-                />
+                <img v-if="node.logo" :src="node.logo" />
               </div>
               <h6 class="node-name">
                 {{ node.name }}
@@ -40,11 +37,7 @@
       </b-col>
     </b-row>
     <b-row v-if="!nodes" class="justify-content-center">
-      <b-col
-        v-for="n in 4"
-        :key="n"
-        cols="12"
-      >
+      <b-col v-for="n in 4" :key="n" cols="12">
         <div class="preloader node-card-preloader"></div>
       </b-col>
     </b-row>
@@ -55,24 +48,23 @@
 </template>
 
 <script>
+  export default {
+    name: 'Nodes',
 
-export default {
-  name: "Nodes",
-
-  props: {
-    nodes: []
-  },
-
-  methods: {
-    shortenEvmAddress(evmAddress) {
-      return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`
+    props: {
+      nodes: [],
     },
-    async copyToClipboard(event, evmAddress) {
-      event.preventDefault();
-      await navigator.clipboard.writeText(evmAddress);
-    }
-  },
-};
+
+    methods: {
+      shortenEvmAddress(evmAddress) {
+        return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`
+      },
+      async copyToClipboard(event, evmAddress) {
+        event.preventDefault()
+        await navigator.clipboard.writeText(evmAddress)
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -82,12 +74,12 @@ export default {
   }
 
   .node-card {
-      cursor: pointer;
-      transition: all 0.5s ease;
+    cursor: pointer;
+    transition: all 0.5s ease;
 
-      &:hover {
-          transform: scale(1.03);
-      }
+    &:hover {
+      transform: scale(1.03);
+    }
   }
 
   .node-details {
@@ -97,49 +89,49 @@ export default {
     color: $gray-750;
 
     .node-name {
-        margin-bottom: 0;
-        font-weight: $font-weight-semi-bold;
-        font-size: $font-size-larger;
-        flex: 0 0 20%;
-        color: var(--redstone-dark-blue-color);
+      margin-bottom: 0;
+      font-weight: $font-weight-semi-bold;
+      font-size: $font-size-larger;
+      flex: 0 0 20%;
+      color: var(--redstone-dark-blue-color);
     }
 
     .node-description {
-        margin-bottom: 0;
-        flex: 0 0 35%;
-        font-family: Poppins;
-        font-size: $font-size-mini;
-        font-weight: $font-weight-thin;
-        font-style: italic;
+      margin-bottom: 0;
+      flex: 0 0 35%;
+      font-family: Poppins;
+      font-size: $font-size-mini;
+      font-weight: $font-weight-thin;
+      font-style: italic;
     }
 
     .node-column {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
 
     .label {
-        font-size: 12px;
-        border-bottom: none;
-        color: var(--sidebar-item-active);
+      font-size: 12px;
+      border-bottom: none;
+      color: var(--sidebar-item-active);
     }
 
     .copy-icon {
-        margin-left: 8px;
-        color: var(--redstone-red-color);
+      margin-left: 8px;
+      color: var(--redstone-red-color);
 
-        &:hover {
-            color: $gray-750;
-        }
+      &:hover {
+        color: $gray-750;
+      }
     }
 
     .node-logo {
-        flex: 0 0 5%;
+      flex: 0 0 5%;
 
-        img {
-          width: 50px;
-        }        
+      img {
+        width: 50px;
+      }
     }
-}
+  }
 </style>

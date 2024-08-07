@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "format": "prettier --write \"src/**/*.{js,vue,json,css,scss}\""
   },
   "dependencies": {
     "@adraffy/ens-normalize": "^1.10.1",
@@ -59,6 +60,9 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "prettier": "^2.8.8",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "@babel/core": "^7.24.9",
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/plugin-proposal-private-methods": "^7.18.6",
