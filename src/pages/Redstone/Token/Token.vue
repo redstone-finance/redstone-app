@@ -1,7 +1,9 @@
 <template>
   <div class="token-wrapper">
     <div class="token">
-      <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0">
+      <div
+        class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0"
+      >
         <div v-if="providers.length > 1" class="select-provider">
           <b-form>
             <b-form-group
@@ -19,7 +21,9 @@
           </b-form>
         </div>
         <div class="data-services-wrapper">
-          <a class="data-services" @click="scrollToDataServices">View data services</a>
+          <a class="data-services" @click="scrollToDataServices"
+            >View data services</a
+          >
         </div>
       </div>
 
@@ -31,7 +35,7 @@
           :provider="selectedProvider"
           :currentPrice="currentPrice"
         />
-        
+
         <TokenPriceTableContainer
           id="token-price-table"
           :symbol="symbol"
@@ -52,7 +56,6 @@ import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContaine
 import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
 import _ from "lodash";
 import { getDetailsForSymbol } from "@/tokens";
-
 
 export default {
   name: "Token",
@@ -85,7 +88,7 @@ export default {
     },
 
     getProviders() {
-      const symbol = this.parseSymbol()
+      const symbol = this.parseSymbol();
       return getDetailsForSymbol(symbol).providers;
     },
 
@@ -95,12 +98,12 @@ export default {
     },
 
     parseSymbol() {
-    let symbol = this.$route.params.symbol;
+      let symbol = this.$route.params.symbol;
       if (symbol.includes("\\")) {
         symbol = symbol.replace("\\", "/");
       }
       return symbol;
-    }
+    },
   },
 
   components: {
@@ -124,7 +127,7 @@ export default {
     tokenDetails() {
       return {
         ...getDetailsForSymbol(this.symbol),
-        symbol: this.symbol
+        symbol: this.symbol,
       };
     },
   },
@@ -165,7 +168,8 @@ export default {
     background-color: transparent;
     box-shadow: none;
     font-weight: $font-weight-soft-bold;
-    background: transparent url("../../../assets/icons/select-down.svg") right 1rem center/16px 16px no-repeat;
+    background: transparent url("../../../assets/icons/select-down.svg") right
+      1rem center/16px 16px no-repeat;
     border-radius: 7px;
     height: 28px;
     padding: 0 0 0 11px;
@@ -184,5 +188,4 @@ export default {
 .token-wrapper {
   scroll-behavior: smooth;
 }
-
 </style>

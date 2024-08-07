@@ -14,10 +14,10 @@
     <div class="provider-tabs">
       <b-tabs>
         <b-tab title="Details">
-          <DataServiceDetails :provider="provider"/>
+          <DataServiceDetails :provider="provider" />
         </b-tab>
         <b-tab title="Nodes">
-          <Nodes :nodes="provider?.nodes ?? []"/>
+          <Nodes :nodes="provider?.nodes ?? []" />
         </b-tab>
         <!-- <b-tab title="Manifests">
           <Manifests :provider="provider" :providerId="providerId" />
@@ -28,30 +28,27 @@
 </template>
 
 <script>
-import DataServiceDetails from '@/components/DataService/DataServiceDetails';
-import Nodes from '@/components/DataService/Nodes';
-import { mapState } from 'vuex';
+import DataServiceDetails from "@/components/DataService/DataServiceDetails";
+import Nodes from "@/components/DataService/Nodes";
+import { mapState } from "vuex";
 
 export default {
   name: "DataService",
 
   data() {
     return {
-      fetching: true
-    }; 
+      fetching: true,
+    };
   },
 
-  created() {
+  created() {},
 
-  },
-
-  methods: {
-  },
+  methods: {},
 
   components: {
     DataServiceDetails,
-    Nodes
-    // Manifests  
+    Nodes,
+    // Manifests
   },
 
   computed: {
@@ -59,19 +56,19 @@ export default {
       return this.$route.params.id;
     },
     ...mapState("prefetch", {
-      providers: (state) => state.providers
+      providers: (state) => state.providers,
     }),
     provider() {
       return this.providers ? this.providers[this.providerId] : null;
-    }
+    },
   },
-}
+};
 </script>
 
 <style src="./DataService.scss" lang="scss" scoped />
-<style lang="scss"  >
+<style lang="scss">
 .provider-tabs > .tabs > div:first-of-type {
-   height: 44px; 
+  height: 44px;
 }
 
 .provider-tabs {
@@ -80,4 +77,3 @@ export default {
   }
 }
 </style>
-

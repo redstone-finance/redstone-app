@@ -9,7 +9,15 @@
         <div id="rightArr" class="arrow" @click="scrollRight()">
           <i :class="'fi flaticon-arrow-left-active'"></i>
         </div>
-        <b-tabs v-model="selectedTabIndex" sm-pills md-tabs nav-class="bg-transparent" ref="tabScroll" class="showArrows" @scroll="alert('jo')">                
+        <b-tabs
+          v-model="selectedTabIndex"
+          sm-pills
+          md-tabs
+          nav-class="bg-transparent"
+          ref="tabScroll"
+          class="showArrows"
+          @scroll="alert('jo')"
+        >
           <b-tab v-for="type in tokenTypes" :key="type.label">
             <template #title>
               {{ type.label }}
@@ -17,7 +25,10 @@
                 {{ getFilteredTokensWithPrices(type.tag).length }}
               </span>
             </template>
-            <TokenCards :key="searchTerm + type.tag" :tokens="getFilteredTokensWithPrices(type.tag)" />
+            <TokenCards
+              :key="searchTerm + type.tag"
+              :tokens="getFilteredTokensWithPrices(type.tag)"
+            />
           </b-tab>
         </b-tabs>
       </div>
@@ -27,37 +38,37 @@
 
 <script>
 import redstoneAdapter from "@/redstone-api-adapter";
-import { BTabs, BTab } from 'bootstrap-vue';
-import Tokens from '@/components/Tokens/Tokens';
-import Loader from '@/components/Loader/Loader';
-import { getAllSupportedTokens, getOrderedProviders } from '@/tokens';
-import { mapActions, mapState } from 'vuex';
+import { BTabs, BTab } from "bootstrap-vue";
+import Tokens from "@/components/Tokens/Tokens";
+import Loader from "@/components/Loader/Loader";
+import { getAllSupportedTokens, getOrderedProviders } from "@/tokens";
+import { mapActions, mapState } from "vuex";
 
 const TOKEN_TYPES = [
   {
     label: "All",
-    tag: null
+    tag: null,
   },
   {
     label: "Cryptos",
-    tag: "crypto"
+    tag: "crypto",
   },
   {
     label: "LST/LRT",
-    tag: "lst/lrt"
+    tag: "lst/lrt",
   },
   {
     label: "Currencies",
-    tag: "currencies"
+    tag: "currencies",
   },
   {
     label: "Avalanche",
-    tag: "avax"
+    tag: "avax",
   },
   {
     label: "ETF",
-    tag: "etfs"
-  }
+    tag: "etfs",
+  },
 ];
 
 function simplifyPricesObject(pricesObj) {
@@ -77,7 +88,7 @@ export default {
       back: false,
       selectedTabIndex: 0,
       tokensData: {},
-      loading: true
+      loading: true,
     };
   },
 
@@ -85,7 +96,7 @@ export default {
     TokenCards: Tokens,
     BTabs,
     BTab,
-    Loader: Loader
+    Loader: Loader,
   },
 
   async beforeCreate() {
@@ -104,22 +115,24 @@ export default {
   watch: {
     selectedTabIndex(newValue) {
       if (this.$route.query["selected-tab"] != newValue) {
-        this.$router.push({ query: {
-          ...this.$route.query,
-          "selected-tab": newValue
-        }});
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            "selected-tab": newValue,
+          },
+        });
       }
     },
 
     $route() {
       this.selectTabFromUrlParam();
-    }
+    },
   },
-  
+
   methods: {
     ...mapActions({
-      setPricesLoadingAsCompleted: 'prices/setPricesLoadingAsCompleted',
-      addPrices: 'prices/addPrices',
+      setPricesLoadingAsCompleted: "prices/setPricesLoadingAsCompleted",
+      addPrices: "prices/addPrices",
     }),
 
     async lazyLoadPricesForAllTokens() {
@@ -162,24 +175,30 @@ export default {
         const searchTerm = this.searchTerm || "";
         const searchTermLowerCase = searchTerm.toLowerCase();
         if (searchTerm) {
-          const nameIncludesSearchTerm =
-            (token.name || '').toLowerCase().includes(searchTermLowerCase);
-          const symbolIncludesSearchTerm =
-            (symbol || '').toLowerCase().includes(searchTermLowerCase);
+          const nameIncludesSearchTerm = (token.name || "")
+            .toLowerCase()
+            .includes(searchTermLowerCase);
+          const symbolIncludesSearchTerm = (symbol || "")
+            .toLowerCase()
+            .includes(searchTermLowerCase);
           const customCommentIncludesSearchTerm =
-            (token?.comment && token.comment.toLowerCase().includes(searchTermLowerCase));
-          if (!nameIncludesSearchTerm && !symbolIncludesSearchTerm && !customCommentIncludesSearchTerm) {
+            token?.comment &&
+            token.comment.toLowerCase().includes(searchTermLowerCase);
+          if (
+            !nameIncludesSearchTerm &&
+            !symbolIncludesSearchTerm &&
+            !customCommentIncludesSearchTerm
+          ) {
             shouldBeAdded = false;
           }
         }
 
         if (shouldBeAdded) {
           result.push({
-              symbol: symbol,
-              ...token,
-              price: this.prices[symbol]
-            }
-          );
+            symbol: symbol,
+            ...token,
+            price: this.prices[symbol],
+          });
         }
       }
       return result;
@@ -187,33 +206,33 @@ export default {
 
     scrollLeft() {
       let content = document.querySelector(".nav-tabs");
-      content.scrollBy({ 
-        left: -200, 
-        behavior: 'smooth' 
+      content.scrollBy({
+        left: -200,
+        behavior: "smooth",
       });
     },
     scrollRight() {
       let content = document.querySelector(".nav-tabs");
-      content.scrollBy({ 
-        left: 200, 
-        behavior: 'smooth' 
+      content.scrollBy({
+        left: 200,
+        behavior: "smooth",
       });
     },
   },
 
   computed: {
     ...mapState({
-      searchTerm: state => state.layout.searchTerm,
-      prices: state => state.prices.prices,
-      pricesLoadingCompleted: state => state.prices.pricesLoadingCompleted,
+      searchTerm: (state) => state.layout.searchTerm,
+      prices: (state) => state.prices.prices,
+      pricesLoadingCompleted: (state) => state.prices.pricesLoadingCompleted,
     }),
-  }
-}
+  },
+};
 </script>
 
 <style src="./Tokens.scss" lang="scss" scoped />
 <style lang="scss">
-@import '../../../styles/app';
+@import "../../../styles/app";
 
 //scrollable tabs
 .token-tabs {
@@ -234,7 +253,7 @@ export default {
     background-color: $gray-350;
     top: 9px;
     display: flex;
-  } 
+  }
 
   #leftArr {
     left: 0;

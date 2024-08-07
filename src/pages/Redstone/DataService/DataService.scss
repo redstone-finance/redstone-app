@@ -1,55 +1,55 @@
-@import '~@/styles/app';
+@import "~@/styles/app";
 
-.provider{
-    .provider-logo {
-        width: 4rem;
-    }
+.provider {
+  .provider-logo {
+    width: 4rem;
+  }
 
-    .provider-name {
-        color: $navy;
-        font-size: 34px;
-    }
+  .provider-name {
+    color: $navy;
+    font-size: 34px;
+  }
 
-    .provider-www {
-        i {
-            display: block;
-        }
+  .provider-www {
+    i {
+      display: block;
     }
+  }
 
-    h1 {
-        margin-bottom: 0;
-    }
+  h1 {
+    margin-bottom: 0;
+  }
 
-    .provider-id {
-        margin-left: 5rem;
-        font-weight: $font-weight-semi-bold;
-        font-size: $font-size-mini;
-        flex: 0 0 25%;
-        color: var(--redstone-dark-blue-color);
-    }
+  .provider-id {
+    margin-left: 5rem;
+    font-weight: $font-weight-semi-bold;
+    font-size: $font-size-mini;
+    flex: 0 0 25%;
+    color: var(--redstone-dark-blue-color);
+  }
 }
 
 .loader {
-    width: 60px;
+  width: 60px;
 }
 
 .logo-preloader {
-    width: 4rem;
-    height: 4rem;
+  width: 4rem;
+  height: 4rem;
 }
 
 .preloaders {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    
-    .preloader {
-        margin-right: 10px;
-        @include preload-animation(2.5s, 350px);
-    }
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 
-    .text-preloader {
-        height: 34px;
-        width: 250px;
-    }
+  .preloader {
+    margin-right: 10px;
+    @include preload-animation(2.5s, 350px);
+  }
+
+  .text-preloader {
+    height: 34px;
+    width: 250px;
+  }
 }

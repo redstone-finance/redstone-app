@@ -1,39 +1,59 @@
 <template>
-<div :class="[{root: true, showSidebar}, 'sing-dashboard']">
-  <Sidebar />
-  <div class="wrap">
-    <div class="banner">
-      ⭐️ If you like RedStone, join our
-      <a href="https://discord.com/invite/PVxBZKFr46" target="_blank" referrerpolicy="no-referrer">
-        Discord</a> and follow us on 
-      <a href="https://twitter.com/redstone_defi" target="_blank" referrerpolicy="no-referrer">
-        Twitter</a> ⭐️
+  <div :class="[{ root: true, showSidebar }, 'sing-dashboard']">
+    <Sidebar />
+    <div class="wrap">
+      <div class="banner">
+        ⭐️ If you like RedStone, join our
+        <a
+          href="https://discord.com/invite/PVxBZKFr46"
+          target="_blank"
+          referrerpolicy="no-referrer"
+        >
+          Discord</a
+        >
+        and follow us on
+        <a
+          href="https://twitter.com/redstone_defi"
+          target="_blank"
+          referrerpolicy="no-referrer"
+        >
+          Twitter</a
+        >
+        ⭐️
+      </div>
+      <Header />
+      <v-touch
+        class="content"
+        @swipe="handleSwipe"
+        :swipe-options="{ direction: 'horizontal' }"
+      >
+        <transition name="router-animation">
+          <router-view />
+        </transition>
+      </v-touch>
     </div>
-    <Header />
-    <v-touch class="content" @swipe="handleSwipe" :swipe-options="{direction: 'horizontal'}">
-      <transition name="router-animation">
-        <router-view />
-      </transition>
-    </v-touch>
   </div>
-</div>
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex';
-const { mapState, mapActions } = createNamespacedHelpers('layout');
+import { createNamespacedHelpers } from "vuex";
+const { mapState, mapActions } = createNamespacedHelpers("layout");
 
-import Sidebar from '@/components/Sidebar/Sidebar';
-import Header from '@/components/Header/Header';
+import Sidebar from "@/components/Sidebar/Sidebar";
+import Header from "@/components/Header/Header";
 
-import './Layout.scss';
+import "./Layout.scss";
 
 export default {
-  name: 'Layout',
+  name: "Layout",
   components: { Sidebar, Header },
   methods: {
-    ...mapActions(['switchSidebar', 'handleSwipe', 'changeSidebarActive', 'toggleSidebar'],
-    ),
+    ...mapActions([
+      "switchSidebar",
+      "handleSwipe",
+      "changeSidebarActive",
+      "toggleSidebar",
+    ]),
     handleWindowResize() {
       const width = window.innerWidth;
 
@@ -50,11 +70,11 @@ export default {
   },
   created() {
     this.handleWindowResize();
-    window.addEventListener('resize', this.handleWindowResize);
+    window.addEventListener("resize", this.handleWindowResize);
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleWindowResize);
-  }
+    window.removeEventListener("resize", this.handleWindowResize);
+  },
 };
 </script>
 

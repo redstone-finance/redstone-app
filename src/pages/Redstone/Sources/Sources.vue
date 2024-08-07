@@ -8,22 +8,26 @@
       hover
       :items="sources"
       :fields="fields"
-      >
-
+    >
       <template #cell(name)="source">
         <div class="source-name">
           <img class="source-logo" :src="source.item.logoURI" />
           <span class="ml-3">
             {{ source.item.id }}
           </span>
-        </div> 
+        </div>
       </template>
 
       <template #cell(fetching-success-percentage)="source">
         <span
           class="stability-percantage"
-          :style="{color: getColorForPercentage(source.item['fetching-success-percentage'])}">
-          {{ source.item['fetching-success-percentage'] }}%
+          :style="{
+            color: getColorForPercentage(
+              source.item['fetching-success-percentage']
+            ),
+          }"
+        >
+          {{ source.item["fetching-success-percentage"] }}%
         </span>
       </template>
 
@@ -45,8 +49,11 @@
 
     <div v-if="showReportsLink" class="report-source-link">
       Data source:
-      <a target="_blank" href="https://github.com/redstone-finance/redstone-reports">
-      github.com/redstone-finance/redstone-reports
+      <a
+        target="_blank"
+        href="https://github.com/redstone-finance/redstone-reports"
+      >
+        github.com/redstone-finance/redstone-reports
       </a>
     </div>
   </div>
@@ -57,11 +64,16 @@ import axios from "axios";
 import _ from "lodash";
 import sources from "../../../config/sources.json";
 
-const SOURCE_REPORT_URL = "https://raw.githubusercontent.com/redstone-finance/redstone-reports/main/last/sources-report.json";
+const SOURCE_REPORT_URL =
+  "https://raw.githubusercontent.com/redstone-finance/redstone-reports/main/last/sources-report.json";
 const MAX_FETCHING_SUCCESS = 60 * 24 * 5; // 5 days of the main redstone-node work
 
 function getFetchingSuccessPercentage(failCount) {
-  return Number((100 * (MAX_FETCHING_SUCCESS - failCount) / MAX_FETCHING_SUCCESS).toFixed(2));
+  return Number(
+    ((100 * (MAX_FETCHING_SUCCESS - failCount)) / MAX_FETCHING_SUCCESS).toFixed(
+      2
+    )
+  );
 }
 
 export default {
@@ -71,12 +83,20 @@ export default {
       showReportsLink: false,
       sourcesReportFromGH: {},
       fields: [
-        { key: 'name', label: 'Source', stickyColumn: true},
-        { key: 'link', label: 'URL'},
-        { key: 'incorrect-price-value', label: 'Incorrect price', sortable: true },
-        { key: 'fetching-failed', label: 'Fetching failed', sortable: true },
-        { key: 'fetching-success-percentage', label: 'Success', sortable: true },
-        { key: 'detailed-report', label: 'Stability report'},
+        { key: "name", label: "Source", stickyColumn: true },
+        { key: "link", label: "URL" },
+        {
+          key: "incorrect-price-value",
+          label: "Incorrect price",
+          sortable: true,
+        },
+        { key: "fetching-failed", label: "Fetching failed", sortable: true },
+        {
+          key: "fetching-success-percentage",
+          label: "Success",
+          sortable: true,
+        },
+        { key: "detailed-report", label: "Stability report" },
       ],
     };
   },
@@ -88,28 +108,28 @@ export default {
   methods: {
     async loadSourcesReport() {
       try {
-        this.loading = true
+        this.loading = true;
         const response = await axios.get(SOURCE_REPORT_URL);
         this.sourcesReportFromGH = response.data;
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
 
     getColorForPercentage(value) {
       if (value == 100) {
-        return '#0F9D58'; // green
+        return "#0F9D58"; // green
       } else if (value >= 99) {
-        return '#ff8c00'; // orange
+        return "#ff8c00"; // orange
       } else {
-        return '#DB4437'; // red
+        return "#DB4437"; // red
       }
     },
 
     getReportForSource(source) {
       const reportWithDefaultValue = (defaultVal) => ({
-        'incorrect-price-value': defaultVal,
-        'fetching-failed': defaultVal,
+        "incorrect-price-value": defaultVal,
+        "fetching-failed": defaultVal,
       });
 
       const getErrCount = (errType) => {
@@ -117,22 +137,24 @@ export default {
         if (!errors) {
           return 0;
         } else {
-          const sumFromLogs = _.sum(Object.values(errors).map(count => Number(count)));
+          const sumFromLogs = _.sum(
+            Object.values(errors).map((count) => Number(count))
+          );
           return sumFromLogs / 2; // Aws cloudwatch counts errors twice
         }
       };
 
       if (this.loading) {
-        return reportWithDefaultValue('...');
+        return reportWithDefaultValue("...");
       } else if (this.sourcesReportFromGH && this.sourcesReportFromGH[source]) {
         return {
-          'incorrect-price-value': getErrCount('incorrect-price-value'),
-          'fetching-failed': getErrCount('fetching-failed'),
+          "incorrect-price-value": getErrCount("incorrect-price-value"),
+          "fetching-failed": getErrCount("fetching-failed"),
         };
       } else {
         return reportWithDefaultValue(0);
       }
-    }
+    },
   },
 
   computed: {
@@ -140,19 +162,19 @@ export default {
       const result = [];
       for (const [id, details] of Object.entries(sources)) {
         const sourceReport = this.getReportForSource(id);
-        const failsCount = sourceReport['fetching-failed'];
+        const failsCount = sourceReport["fetching-failed"];
         const successPercentage = getFetchingSuccessPercentage(failsCount);
         result.push({
           ...details,
           id,
           ...sourceReport,
-          'fetching-success-percentage': successPercentage,
+          "fetching-success-percentage": successPercentage,
         });
       }
       return result;
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" src="./Sources.scss" />

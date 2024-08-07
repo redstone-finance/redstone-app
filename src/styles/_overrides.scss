@@ -1,9 +1,9 @@
 @media (min-width: 2000px) {
   .col-xxl-3 {
-      -webkit-box-flex: 0;
-      -ms-flex: 0 0 253%;
-      flex: 0 0 25%;
-      max-width: 25%;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 253%;
+    flex: 0 0 25%;
+    max-width: 25%;
   }
 }
 
@@ -29,7 +29,8 @@
   height: 5px;
 }
 
-a, a:not([href]):not([class]) {
+a,
+a:not([href]):not([class]) {
   color: var(--redstone-red-color);
   text-decoration: none;
 
@@ -260,32 +261,36 @@ small {
 
 .btn-danger {
   &:hover {
-    background-color: #FF788A;
-    border-color: #FF788A;
+    background-color: #ff788a;
+    border-color: #ff788a;
   }
 
-  &:not(:disabled):not(:disabled):active, &:focus, &.focus {
-    background-color: #E9586F;
-    border-color: #E9586F;
+  &:not(:disabled):not(:disabled):active,
+  &:focus,
+  &.focus {
+    background-color: #e9586f;
+    border-color: #e9586f;
     color: rgba(255, 255, 255, 0.7);
   }
 }
 
 .btn-inverted {
-  color: #E9586F;
+  color: #e9586f;
   background: none;
-  border-color: #E9586F;
-  
+  border-color: #e9586f;
+
   &:hover {
-    color: #FF788A;
+    color: #ff788a;
     background: none;
-    border-color: #FF788A;
+    border-color: #ff788a;
   }
 
-  &:not(:disabled):not(:disabled):active, &:focus, &.focus {
-    color: #E9586F;
+  &:not(:disabled):not(:disabled):active,
+  &:focus,
+  &.focus {
+    color: #e9586f;
     background: none;
-    border-color: #E9586F;
+    border-color: #e9586f;
   }
 }
 
@@ -310,13 +315,13 @@ small {
 }
 
 .dropdown-toggle::after {
-  font-family: 'Line Awesome Free', sans-serif;
+  font-family: "Line Awesome Free", sans-serif;
   content: "\f107";
   border: none;
   width: auto;
   height: auto;
   vertical-align: baseline;
-  opacity: .8;
+  opacity: 0.8;
   font-size: 85%;
   font-weight: $font-weight-semi-bold;
 }
@@ -377,62 +382,62 @@ small {
 }
 
 .alert-success {
-  background: theme-color('success');
+  background: theme-color("success");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('success');
-    background: rgba(theme-color('success'), $alert-transparent);
+    color: theme-color("success");
+    background: rgba(theme-color("success"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('success');
+    color: theme-color("success");
   }
 }
 
 .alert-info {
-  background: theme-color('info');
+  background: theme-color("info");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('info');
-    background: rgba(theme-color('info'), $alert-transparent);
+    color: theme-color("info");
+    background: rgba(theme-color("info"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('info');
+    color: theme-color("info");
   }
 }
 
 .alert-warning {
-  background: theme-color('warning');
+  background: theme-color("warning");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('warning');
-    background: rgba(theme-color('warning'), $alert-transparent);
+    color: theme-color("warning");
+    background: rgba(theme-color("warning"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('warning');
+    color: theme-color("warning");
   }
 }
 
 .alert-danger {
-  background: theme-color('danger');
+  background: theme-color("danger");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('danger');
-    background: rgba(theme-color('danger'), $alert-transparent);
+    color: theme-color("danger");
+    background: rgba(theme-color("danger"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('danger');
+    color: theme-color("danger");
   }
 }
 
@@ -462,7 +467,7 @@ small {
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
-  content: '>';
+  content: ">";
   color: $gray-600;
 }
 
@@ -651,7 +656,7 @@ h6,
   background-color: $white;
 
   > .tab-pane {
-    padding: $spacer*2;
+    padding: $spacer * 2;
   }
 }
 
@@ -677,7 +682,7 @@ h6,
 
 code {
   font-size: 85%;
-  background-color: theme-color('danger-light');
+  background-color: theme-color("danger-light");
   color: $pink;
   padding: 0;
 }
@@ -694,7 +699,7 @@ pre {
   background-color: $gray-100;
   border: 1px solid $gray-400;
   border-radius: $border-radius;
-  white-space: pre-line;       /* css-3 */
+  white-space: pre-line; /* css-3 */
 
   // Account for some code outputs that place code tags in pre tags
   code {
@@ -774,24 +779,24 @@ pre {
     border-radius: $border-radius;
 
     &.default {
-      background: theme-color('default');
+      background: theme-color("default");
       color: $text-color;
     }
 
     &.error {
-      background: theme-color('danger');
+      background: theme-color("danger");
     }
 
     &.success {
-      background: theme-color('success');
+      background: theme-color("success");
     }
 
     &.info {
-      background: theme-color('info');
+      background: theme-color("info");
     }
 
     &.warning {
-      background: theme-color('warning');
+      background: theme-color("warning");
     }
 
     .action {
@@ -800,12 +805,10 @@ pre {
   }
 }
 
-
 ////// ECharts //////
 .echarts {
   width: 100%;
 }
-
 
 ////// Bootstrap checkboxes //////
 .custom-checkbox {
@@ -839,7 +842,8 @@ pre {
   }
 }
 
-.table th, .table td {
+.table th,
+.table td {
   vertical-align: middle;
 }
 
@@ -867,7 +871,9 @@ pre {
   flex: 1;
 }
 
-.nav-tabs > .nav-item .nav-link.active, .nav-tabs > .nav-item .nav-link.active:hover, .nav-tabs > .nav-item .nav-link.active:focus {
+.nav-tabs > .nav-item .nav-link.active,
+.nav-tabs > .nav-item .nav-link.active:hover,
+.nav-tabs > .nav-item .nav-link.active:focus {
   background-color: $gray-100;
   color: $navy;
 }
@@ -920,18 +926,19 @@ pre {
 }
 
 a {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    outline: none !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none !important;
 }
 
 .input-group > input.form-control:not(.no-radius):nth-of-type(1n),
-.input-group:not(.has-validation) > input.form-control:not(.no-radius):nth-of-type(1n) {
+.input-group:not(.has-validation)
+  > input.form-control:not(.no-radius):nth-of-type(1n) {
   border-radius: $border-radius;
 }
 

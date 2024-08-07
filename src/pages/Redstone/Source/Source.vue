@@ -16,7 +16,8 @@ import axios from "axios";
 import SourceChartsContainer from "@/components/Source/SourceChartsContainer";
 import sources from "../../../config/sources.json";
 
-const SOURCE_REPORT_URL = "https://raw.githubusercontent.com/redstone-finance/redstone-reports/main/last/sources-report.json";
+const SOURCE_REPORT_URL =
+  "https://raw.githubusercontent.com/redstone-finance/redstone-reports/main/last/sources-report.json";
 
 export default {
   name: "Source",
@@ -46,16 +47,14 @@ export default {
       return sources[this.sourceId];
     },
     sourceStats() {
-      return this.report
-        ? (this.report[this.sourceId] || {})
-        : {};
+      return this.report ? this.report[this.sourceId] || {} : {};
     },
   },
 
   components: {
     SourceChartsContainer,
   },
-}
+};
 </script>
 
 <style lang="scss" src="./Source.scss" scoped />

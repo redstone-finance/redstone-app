@@ -1,18 +1,32 @@
 <template>
   <div class="price-table">
-    <div class="table-title">
-      Data services
-    </div>
+    <div class="table-title">Data services</div>
     <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
         <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label class="mt-2 mt-md-0" for="from-datepicker">Show services from: </label>
-              <b-datepicker id="from-datepicker" v-model="fromDate" :value-as-date="true" locale="en-GB" :max="toDate"
-                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+              <label class="mt-2 mt-md-0" for="from-datepicker"
+                >Show services from:
+              </label>
+              <b-datepicker
+                id="from-datepicker"
+                v-model="fromDate"
+                :value-as-date="true"
+                locale="en-GB"
+                :max="toDate"
+                :date-format-options="{
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                }"
+              >
               </b-datepicker>
-              <b-form-timepicker v-model="fromTime" locale="en" no-close-button></b-form-timepicker>
+              <b-form-timepicker
+                v-model="fromTime"
+                locale="en"
+                no-close-button
+              ></b-form-timepicker>
             </div>
           </b-form>
         </b-col>
@@ -20,10 +34,25 @@
           <b-form inline>
             <div class="datepicker-container">
               <label class="mt-2 mt-md-0" for="to-datepicker">to:</label>
-              <b-datepicker id="to-datepicker" v-model="toDate" :value-as-date="true" locale="en-GB" :min="fromDate"
-                :max="new Date()" :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+              <b-datepicker
+                id="to-datepicker"
+                v-model="toDate"
+                :value-as-date="true"
+                locale="en-GB"
+                :min="fromDate"
+                :max="new Date()"
+                :date-format-options="{
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                }"
+              >
               </b-datepicker>
-              <b-form-timepicker v-model="toTime" locale="en" no-close-button></b-form-timepicker>
+              <b-form-timepicker
+                v-model="toTime"
+                locale="en"
+                no-close-button
+              ></b-form-timepicker>
             </div>
           </b-form>
         </b-col>
@@ -32,9 +61,19 @@
 
     <hr />
 
-    <b-table id="prices-table" stacked="md" hover :busy.sync="loading" :items="pricesDataForTable" :fields="fields">
+    <b-table
+      id="prices-table"
+      stacked="md"
+      hover
+      :busy.sync="loading"
+      :items="pricesDataForTable"
+      :fields="fields"
+    >
       <template #table-busy>
-        <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
+        <vue-loaders-ball-beat
+          color="var(--redstone-red-color)"
+          scale="1"
+        ></vue-loaders-ball-beat>
       </template>
 
       <template #cell(value)="data">
@@ -42,7 +81,13 @@
           {{ data.item.value }}
         </div>
         <div class="price" v-else>
-          {{ data.item.value | price({ currency: getCurrency(tokenDetails), decimals: priceDecimals() }) }}
+          {{
+            data.item.value
+              | price({
+                currency: getCurrency(tokenDetails),
+                decimals: priceDecimals(),
+              })
+          }}
         </div>
       </template>
 
@@ -53,7 +98,9 @@
       </template>
 
       <template #cell(providerId)="data">
-        <div class="tx-link d-flex flex-column flex-md-row align-items-md-center">
+        <div
+          class="tx-link d-flex flex-column flex-md-row align-items-md-center"
+        >
           <div class="link align-center mt-2 mt-md-0">
             {{ data.item.providerId }}
           </div>
@@ -61,18 +108,29 @@
       </template>
 
       <template #cell(dispute)="data">
-        <b-btn @click="showNotification('The disputing feature is still under development')" target="_blank"
-          variant="dispute" :disabled="false">
+        <b-btn
+          @click="
+            showNotification('The disputing feature is still under development')
+          "
+          target="_blank"
+          variant="dispute"
+          :disabled="false"
+        >
           Raise dispute
         </b-btn>
       </template>
     </b-table>
 
-    <div v-if="prices.length > 0 && prices[0].provider != DEFAULT_PROVIDER()" class="load-more-link-container"
-      v-observe-visibility="loadMoreButtonVisibilityChanged">
-
+    <div
+      v-if="prices.length > 0 && prices[0].provider != DEFAULT_PROVIDER()"
+      class="load-more-link-container"
+      v-observe-visibility="loadMoreButtonVisibilityChanged"
+    >
       <div class="loading-more-container" v-if="loadingMore">
-        <vue-loaders-ball-beat color="#3e86ca" scale="0.5"></vue-loaders-ball-beat>
+        <vue-loaders-ball-beat
+          color="#3e86ca"
+          scale="0.5"
+        ></vue-loaders-ball-beat>
       </div>
     </div>
   </div>
@@ -80,17 +138,22 @@
 
 <script>
 import redstoneAdapter from "@/redstone-api-adapter";
-import dateFormat from 'dateformat';
-import utils from '@/utils';
-import { DEFAULT_PROVIDER, getCurrency, getDetailsForSymbol, isCurrencyToken } from "@/tokens";
+import dateFormat from "dateformat";
+import utils from "@/utils";
+import {
+  DEFAULT_PROVIDER,
+  getCurrency,
+  getDetailsForSymbol,
+  isCurrencyToken,
+} from "@/tokens";
 import _ from "lodash";
 
 export default {
-  name: 'TokenPriceTableContainer',
+  name: "TokenPriceTableContainer",
 
   props: {
     symbol: String,
-    provider: String
+    provider: String,
   },
 
   data() {
@@ -108,7 +171,7 @@ export default {
       toDate: new Date(),
       lastConfirmedTxTimestamp: 0,
 
-      fields: ['value', 'time', 'providerId', 'dispute'],
+      fields: ["value", "time", "providerId", "dispute"],
     };
   },
 
@@ -135,18 +198,18 @@ export default {
       let seconds = now.getSeconds();
 
       // Add leading zeros
-      hours = hours.toString().padStart(2, '0');
-      minutes = minutes.toString().padStart(2, '0');
-      seconds = seconds.toString().padStart(2, '0');
+      hours = hours.toString().padStart(2, "0");
+      minutes = minutes.toString().padStart(2, "0");
+      seconds = seconds.toString().padStart(2, "0");
 
       return `${hours}:${minutes}:${seconds}`;
     },
     getCurrency,
     DEFAULT_PROVIDER() {
-      return DEFAULT_PROVIDER
+      return DEFAULT_PROVIDER;
     },
     showNotification(msg) {
-      this.$toasted.show(msg, { type: 'info' });
+      this.$toasted.show(msg, { type: "info" });
     },
 
     getViewblockTxLink: utils.getViewblockTxLink,
@@ -193,20 +256,23 @@ export default {
         provider: this.provider,
         limit: this.limit,
         offset: this.offset,
-      }
+      };
       if (this.isValidDate(this.startDate)) {
-        params.startDate = this.startDate
+        params.startDate = this.startDate;
       }
       if (this.isValidDate(this.endDate)) {
-        params.endDate = this.endDate
+        params.endDate = this.endDate;
       }
-      const nextPrices = await redstoneAdapter.getHistoricalPrice(this.symbol, params);
+      const nextPrices = await redstoneAdapter.getHistoricalPrice(
+        this.symbol,
+        params
+      );
       return nextPrices;
     },
 
     priceDecimals() {
-      const min = _.min(this.prices.map(p => p.value));
-      const max = _.max(this.prices.map(p => p.value));
+      const min = _.min(this.prices.map((p) => p.value));
+      const max = _.max(this.prices.map((p) => p.value));
       let delta = Math.abs(max - min);
       if (delta == 0) {
         delta = max;
@@ -219,10 +285,10 @@ export default {
     },
     createDateTimeDateObject(date, time) {
       if (date && time) {
-        const [hours, minutes, seconds] = time.split(':');
+        const [hours, minutes, seconds] = time.split(":");
         return new Date(date.setHours(hours, minutes, seconds));
       }
-      return null
+      return null;
     },
 
     // async isTxConfirmed(txId) {
@@ -249,7 +315,7 @@ export default {
     //   this.lastConfirmedTxTimestamp = lastTimestamp;
     // },
 
-    isCurrencyToken
+    isCurrencyToken,
   },
 
   watch: {
@@ -263,34 +329,34 @@ export default {
 
   computed: {
     pricesDataForTable() {
-      return this.prices.map(p => {
+      return this.prices.map((p) => {
         return {
           value: p.value,
           time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
           timestamp: p.timestamp,
           permawebTx: p.permawebTx,
-          providerId: p.provider
+          providerId: p.provider,
         };
       });
     },
     startDate() {
-      return this.createDateTimeDateObject(this.fromDate, this.fromTime)
+      return this.createDateTimeDateObject(this.fromDate, this.fromTime);
     },
     endDate() {
-      return this.createDateTimeDateObject(this.toDate, this.toTime)
+      return this.createDateTimeDateObject(this.toDate, this.toTime);
     },
     tokenDetails() {
       return {
         ...getDetailsForSymbol(this.symbol),
-        symbol: this.symbol
+        symbol: this.symbol,
       };
     },
   },
-}
+};
 </script>
 
 <style lang="scss">
-@import '~@/styles/app';
+@import "~@/styles/app";
 
 .price,
 .time {
@@ -302,13 +368,13 @@ export default {
 }
 
 a.tx-link,
-.tx-link>.link {
+.tx-link > .link {
   display: block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  color: $gray-600
+  color: $gray-600;
 }
 
 a.tx-link {
@@ -369,11 +435,10 @@ a.tx-link {
   @media (max-width: breakpoint-max(sm)) {
     flex-wrap: wrap;
 
-    >label {
+    > label {
       flex: 0 0 100%;
     }
   }
-
 
   .b-form-btn-label-control.form-control {
     height: 35px;
@@ -396,7 +461,7 @@ a.tx-link {
   .b-form-btn-label-control {
     flex-direction: row-reverse;
 
-    &>button {
+    & > button {
       padding: 0 10px 0 0;
 
       svg {
@@ -405,12 +470,12 @@ a.tx-link {
     }
   }
 
-  .b-form-btn-label-control.form-control>.form-control {
+  .b-form-btn-label-control.form-control > .form-control {
     word-break: normal;
     white-space: nowrap;
   }
 
-  .b-form-btn-label-control.form-control>label.form-control {
+  .b-form-btn-label-control.form-control > label.form-control {
     margin-top: 2px;
     padding-left: 10px;
     font-weight: $font-weight-soft-bold;

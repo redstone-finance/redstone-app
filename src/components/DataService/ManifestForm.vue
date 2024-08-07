@@ -92,7 +92,11 @@
                       >
                         <b-row
                           class="token-details"
-                          @click="clickedTokenIndex == index ? clickedTokenIndex = -1 : clickedTokenIndex = index"
+                          @click="
+                            clickedTokenIndex == index
+                              ? (clickedTokenIndex = -1)
+                              : (clickedTokenIndex = index)
+                          "
                         >
                           <b-col cols="2" class="token-logo">
                             <img v-if="token.logoURI" :src="token.logoURI" />
@@ -111,8 +115,11 @@
                             </div>
                           </b-col>
                           <b-col cols="1">
-                            <div class="remove-token" @click="removeToken(token)">
-                              <i class="fa fa-times"/>
+                            <div
+                              class="remove-token"
+                              @click="removeToken(token)"
+                            >
+                              <i class="fa fa-times" />
                             </div>
                           </b-col>
                         </b-row>
@@ -164,9 +171,7 @@
                   />
                 </b-input-group>
                 <b-input-group>
-                  <label for="locked-hours-input"
-                    >Locked hours:</label
-                  >
+                  <label for="locked-hours-input">Locked hours:</label>
                   <b-form-input
                     v-model="manifest.lockedHours"
                     min="0"
@@ -195,7 +200,7 @@
                       placeholder=""
                     />
                   </b-input-group>
-                  <b-input-group> 
+                  <b-input-group>
                     <label for="interval">Interval:</label>
                     <b-form-input
                       v-model="manifest.manifestData.interval"
@@ -206,7 +211,8 @@
                   </b-input-group>
                   <b-input-group>
                     <label for="maxPriceDeviationPercent"
-                      >Maximum Price Deviation Percent:</label>
+                      >Maximum Price Deviation Percent:</label
+                    >
                     <b-form-input
                       v-model="manifest.manifestData.maxPriceDeviationPercent"
                       type="number"
@@ -233,19 +239,19 @@
                     />
                   </b-input-group>
                   <div>Sources:</div>
-                    <div>
-                      <multiselect
-                        v-model="manifest.manifestData.defaultSource"
-                        @input="onDefaultSourceChange($event)"
-                        :options="availableDefaultSources"
-                        :selectLabel="''"
-                        :deselectLabel="''"
-                        :taggable="true" 
-                        @tag="addSourceTag"
-                        :multiple="true"
-                        :close-on-select="false"
-                      ></multiselect>
-                    </div>
+                  <div>
+                    <multiselect
+                      v-model="manifest.manifestData.defaultSource"
+                      @input="onDefaultSourceChange($event)"
+                      :options="availableDefaultSources"
+                      :selectLabel="''"
+                      :deselectLabel="''"
+                      :taggable="true"
+                      @tag="addSourceTag"
+                      :multiple="true"
+                      :close-on-select="false"
+                    ></multiselect>
+                  </div>
                 </div>
               </div>
             </b-card-body>
@@ -295,7 +301,7 @@
 <script>
 import JsonViewer from "vue-json-viewer";
 import Multiselect from "vue-multiselect";
-import Vue from 'vue';
+import Vue from "vue";
 import tokenDetails from "../../config/tokens.json";
 
 export default {
@@ -321,37 +327,39 @@ export default {
       availableTokens: [],
       clickedTokenIndex: Number,
       availableDefaultSources: [
-        'barchart',
-        'binance',
-        'bitfinex',
-        'bitmart',
-        'coinbase',
-        'coingecko',
-        'ecb',
-        'ftx',
-        'huobi',
-        'kraken',
-        'kyber',
-        'sushiswap',
-        'uniswap',
-        'verto',
-        'yahoo-finance',
-      ]
+        "barchart",
+        "binance",
+        "bitfinex",
+        "bitmart",
+        "coinbase",
+        "coingecko",
+        "ecb",
+        "ftx",
+        "huobi",
+        "kraken",
+        "kyber",
+        "sushiswap",
+        "uniswap",
+        "verto",
+        "yahoo-finance",
+      ],
     };
   },
 
   mounted() {
     this.$bvModal.show("manifest-form-modal");
-    this.availableTokens = Object.entries(tokenDetails).map((element, index) => {
-      return {
-        id: index,
-        symbol: element[0],
-        logoURI: element[1].logoURI,
-        name: element[1].name,
-        source: [],
-        availableSources: element[1].source ? element[1].source :  []
-      };
-    });
+    this.availableTokens = Object.entries(tokenDetails).map(
+      (element, index) => {
+        return {
+          id: index,
+          symbol: element[0],
+          logoURI: element[1].logoURI,
+          name: element[1].name,
+          source: [],
+          availableSources: element[1].source ? element[1].source : [],
+        };
+      }
+    );
     this.initManifest();
   },
 
@@ -360,7 +368,9 @@ export default {
       if (this.initialManifest) {
         this.manifest = {};
         this.manifest.changeMessage = this.initialManifest.changeMessage;
-        this.manifest.lockedHours = this.initialManifest.lockedHours ? this.initialManifest.lockedHours : 0;
+        this.manifest.lockedHours = this.initialManifest.lockedHours
+          ? this.initialManifest.lockedHours
+          : 0;
         if (this.initialManifest.manifestData) {
           this.manifest.manifestData = {};
           this.manifest.manifestData.evmChainId =
@@ -378,33 +388,33 @@ export default {
           Object.entries(this.initialManifest.manifestData.tokens).forEach(
             ([key, token]) => {
               this.manifest.manifestData.tokens[key] = token;
-              if (!this.manifest.manifestData.tokens[key].source) [
-                this.manifest.manifestData.tokens[key].source = []
-              ]
+              if (!this.manifest.manifestData.tokens[key].source)
+                [(this.manifest.manifestData.tokens[key].source = [])];
             }
-          )  
-          this.manifest.manifestData.tokens = JSON.parse(JSON.stringify(this.initialManifest.manifestData.tokens));
+          );
+          this.manifest.manifestData.tokens = JSON.parse(
+            JSON.stringify(this.initialManifest.manifestData.tokens)
+          );
 
-          if (this.initialManifest.manifestData.defaultSource) this.manifest.manifestData.defaultSource = this.initialManifest.manifestData.defaultSource;
+          if (this.initialManifest.manifestData.defaultSource)
+            this.manifest.manifestData.defaultSource =
+              this.initialManifest.manifestData.defaultSource;
 
           this.addedTokens = this.availableTokens
-            .filter(
-              el => {
-                return Object.entries(this.initialManifest.manifestData.tokens).some(
-                  (entry) => {
-                    return entry[0] == el.symbol;
-                  }
-                );
-              }
-            )
-            .map(
-              el => {
-                return {
-                  ...el,
-                  source: this.initialManifest.manifestData.tokens[el.symbol].source
-                }
-              }
-            )
+            .filter((el) => {
+              return Object.entries(
+                this.initialManifest.manifestData.tokens
+              ).some((entry) => {
+                return entry[0] == el.symbol;
+              });
+            })
+            .map((el) => {
+              return {
+                ...el,
+                source:
+                  this.initialManifest.manifestData.tokens[el.symbol].source,
+              };
+            });
         }
       } else {
         this.manifest = {};
@@ -423,25 +433,25 @@ export default {
       const errors = [];
 
       if (!this.manifest.changeMessage) {
-        errors.push('Change message required.');
+        errors.push("Change message required.");
       }
       if (!this.lockedHoursValidation) {
-        errors.push('Wrong locked hours value.');
+        errors.push("Wrong locked hours value.");
       }
       if (!this.manifest.manifestData.interval) {
-        errors.push('Interval required.');
+        errors.push("Interval required.");
       }
       if (!this.manifest.manifestData.maxPriceDeviationPercent) {
-        errors.push('Maximum Price Deviation Percent required.');
+        errors.push("Maximum Price Deviation Percent required.");
       }
       if (!this.manifest.manifestData.sourceTimeout) {
-        errors.push('Source timeout required.');
+        errors.push("Source timeout required.");
       }
 
       if (errors.length == 0) {
         this.$root.$emit("manifestSubmitted", this.manifest);
       } else {
-        alert(errors.join("\r\n"))
+        alert(errors.join("\r\n"));
       }
     },
     close(bvModalEvt) {
@@ -454,13 +464,15 @@ export default {
       this.availableTokens = this.availableTokens.filter((availableToken) => {
         return availableToken.id !== token.id;
       });
-      Vue.set(this.manifest.manifestData.tokens, token.symbol, { source: token.source });
+      Vue.set(this.manifest.manifestData.tokens, token.symbol, {
+        source: token.source,
+      });
     },
     removeToken(token) {
       this.availableTokens.push(token);
-      this.addedTokens = this.addedTokens.filter(addedToken => {
+      this.addedTokens = this.addedTokens.filter((addedToken) => {
         return addedToken.id != token.id;
-      })
+      });
       Vue.delete(this.manifest.manifestData.tokens, token.symbol);
     },
     filterBySearch(array, term) {
@@ -472,15 +484,15 @@ export default {
       });
     },
     onSourceChange(value, token) {
-      Vue.set(this.manifest.manifestData.tokens[token.symbol], 'source', value);
+      Vue.set(this.manifest.manifestData.tokens[token.symbol], "source", value);
     },
     onDefaultSourceChange(value) {
-      Vue.set(this.manifest.manifestData, 'defaultSource', value);
+      Vue.set(this.manifest.manifestData, "defaultSource", value);
     },
     addSourceTag(newTag) {
       this.availableDefaultSources.push(newTag);
       this.manifest.manifestData.defaultSource.push(newTag);
-    }
+    },
   },
 
   components: {
@@ -496,24 +508,22 @@ export default {
       return this.filterBySearch(
         this.availableTokens,
         this.searchAvailableTokens
-      ).filter(
-        function(token) {
-          return !this.addedTokens.some(
-            addedToken => {
-              return addedToken.id == token.id;
-            }
-          )
-        }.bind(this)
       )
-      .slice(0, 20);
+        .filter(
+          function (token) {
+            return !this.addedTokens.some((addedToken) => {
+              return addedToken.id == token.id;
+            });
+          }.bind(this)
+        )
+        .slice(0, 20);
     },
     visibleAddedTokens() {
       return this.filterBySearch(
         this.addedTokens,
         this.searchAddedTokens
-      )
-      .slice(0, 20);
-    }
+      ).slice(0, 20);
+    },
   },
 };
 </script>
@@ -526,12 +536,15 @@ export default {
   padding: 10px 10px 10px 36px !important;
 }
 
-.tokens-section, .tokens-section .row, .tokens-section .col {
+.tokens-section,
+.tokens-section .row,
+.tokens-section .col {
   max-height: inherit;
 }
 
 .tokens-section {
-  h3, .input-group {
+  h3,
+  .input-group {
     margin-left: 20px;
   }
 }
@@ -544,12 +557,13 @@ export default {
   }
 }
 
-.available-tokens-wrapper, .added-tokens-wrapper {
+.available-tokens-wrapper,
+.added-tokens-wrapper {
   max-height: inherit;
   padding-left: 20px;
   padding-top: 20px;
   padding-bottom: 150px;
-  }
+}
 
 .search-input,
 .token-card {
@@ -670,40 +684,41 @@ export default {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollable {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
-.tokens-section:after, .preview-upload:after {
-    pointer-events: none;
-    content: "";
-    width: 100%;
-    height: 80px;
-    display: block;
-    position: absolute;
-    background: -webkit-linear-gradient(
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 1) 100%
-    ); 
-    background-image: -moz-linear-gradient(
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 1) 100%
-    );
-    background-image: -o-linear-gradient(
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 1) 100%
-    );
-    background-image: linear-gradient(
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 1) 100%
-    );
-    background-image: -ms-linear-gradient(
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 1) 100%
-    );
-    bottom: 0;
-    left: 0;
-    z-index: 10;
+.tokens-section:after,
+.preview-upload:after {
+  pointer-events: none;
+  content: "";
+  width: 100%;
+  height: 80px;
+  display: block;
+  position: absolute;
+  background: -webkit-linear-gradient(
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background-image: -moz-linear-gradient(
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background-image: -o-linear-gradient(
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  background-image: -ms-linear-gradient(
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  bottom: 0;
+  left: 0;
+  z-index: 10;
 }
 
 .card-header {
@@ -749,7 +764,6 @@ export default {
   margin-bottom: 10px;
   width: 70%;
 }
-
 </style>
 <style lang="scss">
 @import "~@/styles/app";
@@ -795,16 +809,17 @@ export default {
     }
 
     .custom-control-label {
-      &::before, &::after {
+      &::before,
+      &::after {
         top: 1px;
       }
     }
 
-    .custom-checkbox, .custom-checkbox > label {
+    .custom-checkbox,
+    .custom-checkbox > label {
       cursor: pointer;
     }
   }
 }
 </style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-

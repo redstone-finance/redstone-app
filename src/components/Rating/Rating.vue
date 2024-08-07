@@ -1,26 +1,39 @@
 <template>
   <div class="star-rating">
-    <label class="star-rating__star" v-for="rating in ratings" v-bind:key="rating"
-      :class="{'is-selected': ((value >= rating) && value != null), 'is-disabled': disabled}" 
-      v-on:click="set(rating)" v-on:mouseover="starOver(rating)" v-on:mouseout="starOut">
-      <input class="star-rating star-rating__checkbox" type="radio" :value="rating"
-      v-model="value" :disabled="disabled">★
-      </label>
-    </div>
+    <label
+      class="star-rating__star"
+      v-for="rating in ratings"
+      v-bind:key="rating"
+      :class="{
+        'is-selected': value >= rating && value != null,
+        'is-disabled': disabled,
+      }"
+      v-on:click="set(rating)"
+      v-on:mouseover="starOver(rating)"
+      v-on:mouseout="starOut"
+    >
+      <input
+        class="star-rating star-rating__checkbox"
+        type="radio"
+        :value="rating"
+        v-model="value"
+        :disabled="disabled"
+      />★
+    </label>
+  </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Rating',
+  name: "Rating",
   props: {
     value: { type: Number, default: 0 },
-    disabled: { type: Boolean }
+    disabled: { type: Boolean },
   },
-  data: function() {
+  data: function () {
     return {
       temp_value: null,
-      ratings: [1, 2, 3, 4, 5]
+      ratings: [1, 2, 3, 4, 5],
     };
   },
 
@@ -31,9 +44,8 @@ export default {
     starOver(index) {
       if (!this.disabled) {
         this.temp_value = this.value;
-        return this.value = index;
+        return (this.value = index);
       }
-
     },
 
     /*
@@ -41,7 +53,7 @@ export default {
      */
     starOut() {
       if (!this.disabled) {
-        return this.value = this.temp_value;
+        return (this.value = this.temp_value);
       }
     },
 
@@ -51,10 +63,10 @@ export default {
     set(value) {
       if (!this.disabled) {
         this.temp_value = value;
-        return this.value = value;
+        return (this.value = value);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

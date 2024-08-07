@@ -1,11 +1,11 @@
 export default {
   data: () => {
-      return {
-        visibleTokensSymbols: new Set(),
-        visibleTokens: [],
-        allTokensVisible: false,
-        VISIBLE_CHUNK_SIZE: 30
-      }
+    return {
+      visibleTokensSymbols: new Set(),
+      visibleTokens: [],
+      allTokensVisible: false,
+      VISIBLE_CHUNK_SIZE: 30,
+    };
   },
   created() {
     this.visibleTokens = [];
@@ -29,11 +29,11 @@ export default {
             this.visibleTokensSymbols.add(symbol);
           }
         }
-        
+
         if (tokensLeftToShow > 0) {
           this.allTokensVisible = true;
         }
       }
     },
-  }
+  },
 };

@@ -20,7 +20,8 @@ a,
 .dropdown-item,
 .btn {
   cursor: pointer;
-  transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
+  transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out,
+    border-color 0.1s ease-in-out;
   font-family: $font-family-base;
 }
 
@@ -46,4 +47,3 @@ ol {
   list-style: none;
   padding-left: 0;
 }
-

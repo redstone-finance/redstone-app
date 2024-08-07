@@ -1,31 +1,31 @@
 // Meta
 
-$enable-shadows:            true !default;
+$enable-shadows: true !default;
 
 $glyphicons-halflings-include-bonus: false !default;
 $glyphicons-halflings-class-prefix: glyphicon !default;
 $glyphicons-halflings-font-base-size: 14px !default;
 
-$glyphicons-halflings-font-path: '../fonts/glyphicons' !default;
-$fa-font-path: '../fonts/font-awesome' !default;
+$glyphicons-halflings-font-path: "../fonts/glyphicons" !default;
+$fa-font-path: "../fonts/font-awesome" !default;
 
 /*
  * Typography
  * ======================================================================== */
-$font-size-initial:       14px; // reset default browser value from 16px to 13px
-$font-size-base:          1rem !default;
-$font-size-lg:            1.25rem !default;
-$font-size-sm:            0.875rem !default;
-$font-size-larger:        1.1rem;
-$font-size-mini:          0.9rem;
-$font-size-index:         0.7rem;
+$font-size-initial: 14px; // reset default browser value from 16px to 13px
+$font-size-base: 1rem !default;
+$font-size-lg: 1.25rem !default;
+$font-size-sm: 0.875rem !default;
+$font-size-larger: 1.1rem;
+$font-size-mini: 0.9rem;
+$font-size-index: 0.7rem;
 
-$font-family-base: 'Poppins';
+$font-family-base: "Poppins";
 
 // Color system
 //
 
-$white:    #fff !default;
+$white: #fff !default;
 $gray-100: #fcfcfc !default;
 $gray-150: #ebebeb !default;
 $gray-200: #f7f7f7 !default;
@@ -43,24 +43,24 @@ $gray-750: #6b6b6b !default;
 $gray-800: #5e5e5e !default;
 $gray-850: #505050 !default;
 $gray-900: #424242 !default;
-$black:    #000 !default;
+$black: #000 !default;
 $gray-light: $gray-100 !default;
 
-$blue:        #3E86CA !default;
-$indigo:      #7f3ddb !default;
-$purple:      #9964e3 !default;
-$pink:        #e54e9a !default;
-$red:         #FD5F00 !default;
-$red-redstone:#FD627A !default;
-$error-red:   #c81742 !default;
-$orange:      #ff7d47 !default;
-$yellow:      #FDA700 !default;
-$green:       #68ca66 !default;
-$teal:        #21AE8C !default;
-$cyan:        #1A86D0 !default;
-$default:     #E9ECEF !default;
-$inverse:     #0D2B47 !default;
-$navy:        #233562 !default;
+$blue: #3e86ca !default;
+$indigo: #7f3ddb !default;
+$purple: #9964e3 !default;
+$pink: #e54e9a !default;
+$red: #fd5f00 !default;
+$red-redstone: #fd627a !default;
+$error-red: #c81742 !default;
+$orange: #ff7d47 !default;
+$yellow: #fda700 !default;
+$green: #68ca66 !default;
+$teal: #21ae8c !default;
+$cyan: #1a86d0 !default;
+$default: #e9ecef !default;
+$inverse: #0d2b47 !default;
+$navy: #233562 !default;
 
 $theme-colors: (
   primary: $blue,
@@ -78,7 +78,7 @@ $theme-colors: (
   success-light: #ecfaec,
   info-light: #f2fafa,
   warning-light: #fdf7e6,
-  danger-light: #fff2ef
+  danger-light: #fff2ef,
 );
 
 $link-color: $cyan;
@@ -108,9 +108,9 @@ $content-padding-sm: 15px;
 
 $nav-link-padding: 10px;
 
-$border-radius:          0.5rem !default;
-$border-radius-lg:       0.55rem !default;
-$border-radius-sm:       0.45rem !default;
+$border-radius: 0.5rem !default;
+$border-radius-lg: 0.55rem !default;
+$border-radius-sm: 0.45rem !default;
 
 //== Sidebar
 //
@@ -122,13 +122,13 @@ $sidebar-transition-time: 0.3s !default;
 $sidebar-item-border-color: transparent !default;
 $sidebar-scrollbar-bg: $gray-200;
 
-$breadcrumb-divider: '>';
+$breadcrumb-divider: ">";
 $breadcrumb-padding-y: 0;
 $breadcrumb-bg: transparent;
 
 $widget-bg: #fff;
 $widget-title-color: #444;
-$widget-shadow-designated: -1px 0 8px rgba(0,0,0,.2);
+$widget-shadow-designated: -1px 0 8px rgba(0, 0, 0, 0.2);
 
 $input-btn-line-height: 1.5;
 
@@ -143,7 +143,7 @@ $helper-width: 300px;
 //== Navbar
 //
 
-$navbar-height:  60px !default;
+$navbar-height: 60px !default;
 $navbar-padding-y: 0 !default;
 $navbar-padding-x: 0 !default;
 
@@ -197,8 +197,8 @@ $progress-box-shadow: none;
 $alert-transparent: 0.25;
 
 // Buttons
-$input-btn-padding-y:       0.375rem !default;
-$input-btn-padding-x:       1rem !default;
+$input-btn-padding-y: 0.375rem !default;
+$input-btn-padding-x: 1rem !default;
 
 $btn-default-bg: $addition-bg !default;
 $btn-default-border: $addition-bg !default;
@@ -209,27 +209,27 @@ $table-border-width: 1px;
 $table-accent-bg: $gray-100 !default;
 
 // Pagination
-$pagination-color:                     $gray-700 !default;
-$pagination-bg:                        #fff !default;
-$pagination-border:                    transparent !default;
+$pagination-color: $gray-700 !default;
+$pagination-bg: #fff !default;
+$pagination-border: transparent !default;
 
-$pagination-hover-color:               $gray-700 !default;
-$pagination-hover-bg:                  transparent !default;
-$pagination-hover-border:              transparent !default;
-$pagination-hover-border-color:        transparent !default;
+$pagination-hover-color: $gray-700 !default;
+$pagination-hover-bg: transparent !default;
+$pagination-hover-border: transparent !default;
+$pagination-hover-border-color: transparent !default;
 
-$pagination-active-color:              $gray-700 !default;
-$pagination-active-bg:                 transparent !default;
-$pagination-active-border:             transparent !default;
-$pagination-active-border-color:       transparent !default;
+$pagination-active-color: $gray-700 !default;
+$pagination-active-bg: transparent !default;
+$pagination-active-border: transparent !default;
+$pagination-active-border-color: transparent !default;
 
-$pagination-disabled-color:            $gray-700 !default;
-$pagination-disabled-bg:               #fff !default;
-$pagination-disabled-border:           transparent !default;
+$pagination-disabled-color: $gray-700 !default;
+$pagination-disabled-bg: #fff !default;
+$pagination-disabled-border: transparent !default;
 
 // == Components
-$padding-small-vertical:    0.25rem !default;
-$padding-small-horizontal:  0.75rem !default;
+$padding-small-vertical: 0.25rem !default;
+$padding-small-horizontal: 0.75rem !default;
 
 // Screens
 // -------------------------
