@@ -164,7 +164,6 @@ export default {
         this.$nextTick(() => {
             this.isInitialLoad = false
         })
-        console.log({feeds: this.feeds})
     },
     methods: {
         copyToClipboardHelper,
