@@ -98,13 +98,13 @@
 <script>
 import _ from "lodash";
 import { mapActions, mapGetters } from 'vuex'
-//Helpers
-import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat, timeUntilDate, findNearestCronDate } from '@/core/timeHelpers'
+// Helpers
+import { timeUntilDate, findNearestCronDate } from '@/core/timeHelpers'
 import copyToClipboardHelper from '@/core/copyToClipboard'
 import prefetchImages from "@/core/prefetchImages"
 import truncateString from "@/core/truncate"
 import cronstrue from 'cronstrue'
-//Components
+// Components
 import Loader from '../../../components/Loader/Loader'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
@@ -113,10 +113,8 @@ import ToDateCounter from "./components/ToDateCounter.vue"
 // Definitions
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
-import { sortBy } from "lodash"
-import { transformFeed } from '@/utils/feedsUtils'
-
-
+// Utils
+import { transformFeed } from './feedUtils'
 
 export default {
     components: {
@@ -293,27 +291,6 @@ export default {
             }
             this.handleFilter('crypto', this.selectedCryptos)
         },
-        stripAdditionalFeedInfo(string) {
-            const hasUnderscore = string.indexOf('_') >= 0
-            const hasDash = string.indexOf('-') >= 0
-            if (hasUnderscore) {
-                return string.split('_')[0]
-            } else if (hasDash) {
-                return string.split('-')[0]
-            }
-            return string
-        },
-        findNetworkName(networkId) {
-            return Object.values(networks).find(network => network.chainId === networkId).name
-        },
-        findNetworkImage(networkId) {
-            return Object.values(networks).find(network => network.chainId === networkId).iconUrl
-        },
-        findExplorer(networkId) {
-            const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
-            if(!hasExplorer) console.warn('Missing explorer for chain:', networkId)
-            return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
-        },
         cronObjectStringToHumanReadable(cronString) {
             return JSON.parse(cronString).map(string => cronstrue.toString(string))
         },
@@ -322,27 +299,8 @@ export default {
             const timeUntil = timeUntilDate(nearestDate)
             return timeUntil
         },
-        getFirstPart(string) {
-            const noSlash = string.split('/')[0]
-            const noUnder = noSlash.split('_')[0]
-            const noDash = noUnder.split('-')[0]
-            return noDash
-        },
         getImageUrl(imageName) {
             return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
-        },
-        hasSlash(string) {
-            return string.indexOf('/') >= 0
-        },
-        transformHexString(str) {
-            if (str == null) return 'no data'
-            if (str?.length <= 10) return str
-            return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`
-        },
-        getTokenImage(token) {
-            const idealMatchImg = images.find(image => token === image.token)
-            const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
-            return idealMatchImg || secondMatch || { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
         },
         createNetworkUrlParam(networkName) {
             return networkName.toLowerCase().replace(' ', '-')
@@ -384,58 +342,36 @@ export default {
             'combinedFeedsWithDetailsArray'
         ]),
         filteredNetworks() {
-            {
-                if (this.selectedCryptos.length === 0) {
-                    return Object.values(networks).map(item => item.chainId)
-                }
-
-                const networkSet = new Set()
-                this.displayedTableItems?.forEach(feed => {
-                    if (this.selectedCryptos.some(crypto => feed.feed.indexOf(crypto) >= 0)) {
-                        networkSet.add(feed.network.id)
-                    }
-                })
-
-                return Array.from(networkSet)
+            if (this.selectedCryptos.length === 0) {
+                return Object.values(networks).map(item => item.chainId)
             }
+
+            const networkSet = new Set()
+            this.displayedTableItems?.forEach(feed => {
+                if (this.selectedCryptos.some(crypto => feed.feed.indexOf(crypto) >= 0)) {
+                    networkSet.add(feed.network.id)
+                }
+            })
+
+            return Array.from(networkSet)
         },
         filteredCurrencies() {
-            {
-                if (this.selectedNetworks.length === 0) {
-                    return images.map(image => image.token)
-                }
-
-                const networkSet = new Set()
-                this.displayedTableItems?.forEach(feed => {
-                    if (this.selectedNetworks.some(chainId => feed.network.id === chainId)) {
-                        networkSet.add(feed.crypto_token)
-                    }
-                })
-                return Array.from(networkSet)
+            if (this.selectedNetworks.length === 0) {
+                return images.map(image => image.token)
             }
+
+            const networkSet = new Set()
+            this.displayedTableItems?.forEach(feed => {
+                if (this.selectedNetworks.some(chainId => feed.network.id === chainId)) {
+                    networkSet.add(feed.crypto_token)
+                }
+            })
+            return Array.from(networkSet)
         },
         feeds() {
             if (this.combinedFeedsWithDetailsArray.length === 0) return []
-            return this.combinedFeedsWithDetailsArray.map(item => {
-                return {
-                    feed: this.hasSlash(item.feedId) ? this.stripAdditionalFeedInfo(item.feedId) : this.stripAdditionalFeedInfo(item.feedId) + '/USD',
-                    network: { id: item.networkId, name: this.findNetworkName(item.networkId), image: this.findNetworkImage(item.networkId), },
-                    contract_address: item.contractAddress,
-                    timestamp: { parsed: parseUnixTime(item.timestamp), raw: item.timestamp, date: hexToDate(item.timestamp) },
-                    layer_id: item.feedId,
-                    heartbeat: getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) || JSON.stringify(item.triggers.cron),
-                    deviation: item.triggers.deviationPercentage ? item.triggers.deviationPercentage + '%' : 'n/a',
-                    cron: item.triggers.cron,
-                    token: item.feedId,
-                    relayerId: item.layerId,
-                    feed_address: item.feedAddress,
-                    crypto_token: this.getFirstPart(item.feedId),
-                    token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
-                    loaders: item.loaders,
-                    explorer: this.findExplorer(item.networkId)
-                }
-            })
-        },
+            return this.combinedFeedsWithDetailsArray.map(transformFeed)
+        }
     }
 }
 </script>

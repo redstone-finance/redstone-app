@@ -3,7 +3,7 @@
         <div class="feed-details__infos">
             <div class="applicant-info">
                 <div class="applicant-info__header">
-                    <h3 class="applicant-info__title">{{ feedData.feedId }} / USD</h3>
+                    <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
                     <p class="applicant-info__description">{{feedData}}</p>
                 </div>
                 <div class="applicant-info__content">
@@ -17,7 +17,8 @@
                         <div class="applicant-info__item">
                             <dt class="applicant-info__label">Network</dt>
                             <dd class="applicant-info__value">
-                                <span class="applicant-info__text">Ethereum Mainnet</span>
+                                <img class="feeds__token-image" v-if="feedData" :src="feedData.network.image" :alt="feedData.network.name">
+                                <span class="applicant-info__text">{{ feedData.network.name }}</span>
                             </dd>
                         </div>
                         <div class="applicant-info__item">
@@ -60,7 +61,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import LayerChart from "./components/LayerChart"
-
+import { transformFeed } from './feedUtils';
 
 export default {
     components: {
@@ -108,7 +109,7 @@ export default {
             return this.$route.params.token
         },
         feedData() {
-            return this.combinedFeedsWithDetailsArray.find(feed => feed.routeNetwork === this.network && feed.routeToken === this.token)
+            return transformFeed(this.combinedFeedsWithDetailsArray.find(feed => feed.routeNetwork === this.network && feed.routeToken === this.token))
         },
         ...mapState('feeds', ['relayersDetails', 'relayersSchema']),
         ...mapGetters('feeds', [
