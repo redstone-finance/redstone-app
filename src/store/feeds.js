@@ -46,6 +46,13 @@ export default {
         combinedFeedsWithDetailsArray(state, getters) {
             return Object.keys(state.relayerSchema).flatMap((key) => {
                 const layer = state.relayerSchema[key]
+                const networkMapped = Object.values(networks).some(network => network.chainId === layer.chain.id)
+                
+                if (!networkMapped) {
+                    console.warn(`Warning: Network not mapped for chain ID ${layer.chain.id}`);
+                    return []; 
+                }
+                
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
                     routeNetwork: Object.values(networks).find(network => network.chainId === layer.chain.id).name.toLowerCase().replace(' ', '-'),
                     routeToken: feedId.toLowerCase(),
