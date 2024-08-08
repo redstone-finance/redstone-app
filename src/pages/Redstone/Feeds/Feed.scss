@@ -29,6 +29,7 @@
         font-weight: 600;
         line-height: 1.75;
         color: #111827;
+        padding-left: 15px
     }
 
     &__description {
@@ -52,15 +53,15 @@
     &__item {
         display: flex;
         flex-direction: column;
-        padding: 2rem 1rem;
+        padding: 2rem 15px;
         border-bottom: 1px solid #f3f4f6;
 
-        &:first-child {
-            .applicant-info__value {
-                font-size: 2rem;
-                font-weight: 600;
-            }
-        }
+        // &:first-child {
+        //     .applicant-info__value {
+        //         font-size: 2rem;
+        //         font-weight: 600;
+        //     }
+        // }
     }
 
     &__label {

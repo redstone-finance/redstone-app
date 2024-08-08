@@ -139,6 +139,13 @@
         border-radius: 40px;
         border: 2px solid #ebebeb;
         margin: 10px;
+        &.small{
+            width: 30px;
+            height: 30px;
+            box-shadow: none;
+            border: 2px solid #f4f4f4;
+            margin: 0 10px 0;
+        }
     }
 
     &__contract-address {

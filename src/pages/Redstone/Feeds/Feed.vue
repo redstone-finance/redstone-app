@@ -3,26 +3,33 @@
         <div class="feed-details__infos">
             <div class="applicant-info">
                 <div class="applicant-info__header">
-                    <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
                     <p class="applicant-info__description">
-                        <contract-address v-if="feedData" :item="feedData" :separate-labels="true" />
+
+                        <img class="feeds__token-image small" v-if="feedData" :src="feedData.network.image"
+                            :alt="feedData.network.name">
+                        <span class="applicant-info__text">{{ feedData.network.name }}</span>
                     </p>
+                    <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
                 </div>
                 <div class="applicant-info__content">
                     <dl class="applicant-info__list">
+                        <div class="applicant-info__item">
+                            <dt class="applicant-info__label">Last update</dt>
+                            <dd class="applicant-info__value">
+                                <span class="applicant-info__text">
+                                    <div class="date-subvalue">August 5, 2024</div>
+                                    <div>1 hour ago</div>
+                                </span>
+                            </dd>
+                        </div>
                         <div class="applicant-info__item">
                             <dt class="applicant-info__label">Answer</dt>
                             <dd class="applicant-info__value">
                                 <span class="applicant-info__text">0.0001044191</span>
                             </dd>
                         </div>
-                        <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Network</dt>
-                            <dd class="applicant-info__value">
-                                <img class="feeds__token-image" v-if="feedData" :src="feedData.network.image" :alt="feedData.network.name">
-                                <span class="applicant-info__text">{{ feedData.network.name }}</span>
-                            </dd>
-                        </div>
+
+
                         <div class="applicant-info__item">
                             <dt class="applicant-info__label">Trigger parameters</dt>
                             <dd class="applicant-info__column-value">
@@ -42,12 +49,9 @@
                         </dd>
                 </div>
                 <div class="applicant-info__item">
-                    <dt class="applicant-info__label">Last update</dt>
+                    <dt class="applicant-info__label">Addresses</dt>
                     <dd class="applicant-info__value">
-                        <span class="applicant-info__text">
-                            <div class="date-subvalue">August 5, 2024</div>
-                            <div>1 hour ago</div>
-                        </span>
+                        <contract-address v-if="feedData" :item="feedData" :separate-labels="true" />
                     </dd>
                 </div>
                 </dl>
