@@ -38,25 +38,7 @@
                 {{ item.network.name }}
             </template>
             <template #cell(contract_address)="{ item }">
-                <div v-if="item.contract_address && item.explorer">
-                    Contract address: <a class="feeds__contract-address"
-                        :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
-                        :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
-                        {{ truncateString(item.contract_address) }}
-                    </a>
-                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
-                        title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
-                </div>
-                <div v-if="item.feed_address && item.explorer && item.feed_address != '__NO_FEED__'">
-                    Feed address: <a class="feeds__contract-address"
-                        :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
-                        :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
-                        {{ truncateString(item.feed_address) }}
-                    </a>
-                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.feed_address)"
-                        title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
-                </div>
-
+                <contract-address :item="item" />
             </template>
             <template #cell(feed)="{ item }">
                 <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
@@ -110,6 +92,7 @@ import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
+import ContractAddress from "./components/ContractAddress.vue";
 // Definitions
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
@@ -122,7 +105,8 @@ export default {
         CryptoPicker,
         NetworkPicker,
         CheckboxButton,
-        ToDateCounter
+        ToDateCounter,
+        ContractAddress
     },
     data() {
         return {
