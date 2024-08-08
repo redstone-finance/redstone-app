@@ -4,7 +4,9 @@
             <div class="applicant-info">
                 <div class="applicant-info__header">
                     <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
-                    <p class="applicant-info__description">{{feedData}}</p>
+                    <p class="applicant-info__description">
+                        <contract-address v-if="feedData" :item="feedData" :separate-labels="true" />
+                    </p>
                 </div>
                 <div class="applicant-info__content">
                     <dl class="applicant-info__list">
@@ -61,11 +63,13 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import LayerChart from "./components/LayerChart"
+import ContractAddress from './components/ContractAddress.vue';
 import { transformFeed } from './feedUtils';
 
 export default {
     components: {
-        LayerChart
+        LayerChart,
+        ContractAddress
     },
     data() {
         return {
