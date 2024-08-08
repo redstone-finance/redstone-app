@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ethers } from 'ethers'
-import { isEmpty } from 'lodash'
+import { isEmpty, isObject } from 'lodash'
 import Vue from 'vue'
 import networks from '@/data/networks'
 
@@ -59,7 +59,7 @@ export default {
                     networkId: layer.chain.id,
                     feedId: feedId,
                     contractAddress: layer.adapterContract,
-                    feedAddress: layer.priceFeeds[feedId],
+                    feedAddress: isObject(layer.priceFeeds[feedId]) ? layer.priceFeeds[feedId].priceFeedAddress : layer.priceFeeds[feedId],
                     triggers: layer.updateTriggers,
                     layerId: key,
                     timestamp: state.relayersDetails[key].blockTimestamp,

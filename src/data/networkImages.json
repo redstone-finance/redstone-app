@@ -27,5 +27,7 @@
   "celoBaklavaTestnet": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png",
   "celoMainnet": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png",
   "kava": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/kava.png",
-  "b2": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/b2.png"
+  "b2": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/b2.png",
+  "zkLink": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zkLink.png",
+  "energi": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/energi.png"
 }

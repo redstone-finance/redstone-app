@@ -148,5 +148,10 @@
     "rpcUrl": "https://rpc.zklink.io",
     "chainId": 810180,
     "name": "zkLink"
+  },
+  "energi": {
+    "rpcUrl": "https://nodeapi.energi.network",
+    "chainId": 48900,
+    "name": "Energi"
   }
 }

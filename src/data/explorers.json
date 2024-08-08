@@ -143,5 +143,16 @@
     "explorerUrl": "https://explorer.b2network.io",
     "chainId": 223,
     "name": "B2 Network"
+  },
+  "zkLink": {
+    "explorerUrl": "https://explorer.zklink.io",
+    "chainId": 810180,
+    "name": "zkLink"
+  },
+  "energi": {
+    "explorerUrl": "https://explorer.energi.network",
+    "chainId": 48900,
+    "name": "Energi"
   }
+  
 }

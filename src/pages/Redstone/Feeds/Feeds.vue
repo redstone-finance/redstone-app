@@ -38,7 +38,7 @@
                 {{ item.network.name }}
             </template>
             <template #cell(contract_address)="{ item }">
-                <div>
+                <div v-if="item.contract_address && item.explorer">
                     Contract address: <a class="feeds__contract-address"
                         :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
@@ -47,7 +47,7 @@
                     <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
                         title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
                 </div>
-                <div v-if="item.feed_address != '__NO_FEED__'">
+                <div v-if="item.feed_address && item.explorer && item.feed_address != '__NO_FEED__'">
                     Feed address: <a class="feeds__contract-address"
                         :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
@@ -166,6 +166,7 @@ export default {
         this.$nextTick(() => {
             this.isInitialLoad = false
         })
+        console.log({feeds: this.feeds})
     },
     methods: {
         copyToClipboardHelper,
@@ -311,6 +312,8 @@ export default {
             return networkImages[networkKey]
         },
         findExplorer(networkId) {
+            const hasExplorer = Object.values(explorers).some(explorer => explorer.chainId === networkId)
+            if(!hasExplorer) console.warn('Missing explorer for chain:', networkId)
             return Object.values(explorers).find(explorer => explorer.chainId === networkId)
         },
         cronObjectStringToHumanReadable(cronString) {
@@ -377,7 +380,7 @@ export default {
         paginatedFeeds() {
             const startIndex = (this.currentPage - 1) * this.perPage
             const endIndex = startIndex + this.perPage
-            return this.feeds.slice(startIndex, endIndex)
+            return this.feeds?.slice(startIndex, endIndex)
         },
         ...mapGetters('feeds', [
             'combinedFeedsWithDetailsArray'
