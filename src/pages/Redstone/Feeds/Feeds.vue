@@ -114,6 +114,9 @@ import ToDateCounter from "./components/ToDateCounter.vue"
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
 import { sortBy } from "lodash"
+import { transformFeed } from '@/utils/feedsUtils'
+
+
 
 export default {
     components: {

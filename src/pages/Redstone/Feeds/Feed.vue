@@ -3,8 +3,8 @@
         <div class="feed-details__infos">
             <div class="applicant-info">
                 <div class="applicant-info__header">
-                    <h3 class="applicant-info__title">1INCH / ETH</h3>
-                    <p class="applicant-info__description">1inch</p>
+                    <h3 class="applicant-info__title">{{ feedData.feedId }} / USD</h3>
+                    <p class="applicant-info__description">{{feedData}}</p>
                 </div>
                 <div class="applicant-info__content">
                     <dl class="applicant-info__list">
