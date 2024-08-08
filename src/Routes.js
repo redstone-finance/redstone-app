@@ -61,11 +61,11 @@ const router = new Router({
           name: 'Feeds list',
           component: Feeds,
         },
-        // {
-        //   path: 'feeds/:network/:token',
-        //   name: 'SingleFeed',
-        //   component: Feed,
-        // },
+        {
+          path: 'feeds/:network/:token',
+          name: 'SingleFeed',
+          component: Feed,
+        },
         {
           path: 'data-services',
           name: 'DataServicesPage',
