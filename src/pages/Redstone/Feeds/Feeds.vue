@@ -112,10 +112,8 @@ import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
 // Definitions
-import networkImages from "@/data/networkImages.json"
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
-import explorers from "@/data/explorers.json"
 import { sortBy } from "lodash"
 
 export default {
@@ -160,7 +158,7 @@ export default {
     },
 
     async mounted() {
-        prefetchImages(networkImages)
+        prefetchImages(Object.values(networks).map(network => network.iconUrl))
         await this.init()
         this.initializeFiltersFromRoute()
         this.$nextTick(() => {
@@ -308,13 +306,12 @@ export default {
             return Object.values(networks).find(network => network.chainId === networkId).name
         },
         findNetworkImage(networkId) {
-            const networkKey = Object.keys(networks).find(key => networks[key].chainId === networkId)
-            return networkImages[networkKey]
+            return Object.values(networks).find(network => network.chainId === networkId).iconUrl
         },
         findExplorer(networkId) {
-            const hasExplorer = Object.values(explorers).some(explorer => explorer.chainId === networkId)
+            const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
             if(!hasExplorer) console.warn('Missing explorer for chain:', networkId)
-            return Object.values(explorers).find(explorer => explorer.chainId === networkId)
+            return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
         },
         cronObjectStringToHumanReadable(cronString) {
             return JSON.parse(cronString).map(string => cronstrue.toString(string))

@@ -1,5 +1,5 @@
-export default (images) => {
-    const prefetchPromises = Object.values(images).map(url => {
+export default (imageUrls) => {
+    const prefetchPromises = imageUrls.map(url => {
         return new Promise((resolve, reject) => {
             const img = new Image()
             img.onload = resolve
