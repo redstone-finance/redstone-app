@@ -248,7 +248,7 @@ export default {
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
-            this.unselectInvalidItems()
+            // this.unselectInvalidItems()
         },
         customFilter(row, filters) {
             if (!filters) return true
@@ -263,26 +263,26 @@ export default {
 
             return cryptoMatch && networkMatch
         },
-        unselectInvalidItems() {
-            if (this.isUnselecting) return; // Prevent recursive calls
-            this.isUnselecting = true
+        // unselectInvalidItems() {
+        //     if (this.isUnselecting) return; // Prevent recursive calls
+        //     this.isUnselecting = true
 
-            const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
-                this.filteredCurrencies.some(currency =>
-                    currency.toLowerCase().includes(crypto.toLowerCase())
-                )
-            );
-            const newSelectedNetworks = this.selectedNetworks.filter(network =>
-                this.filteredNetworks.includes(network)
-            );
-            if (!_.isEqual(newSelectedCryptos, this.selectedCryptos)) {
-                this.selectedCryptos = newSelectedCryptos
-            }
-            if (!_.isEqual(newSelectedNetworks, this.selectedNetworks)) {
-                this.selectedNetworks = newSelectedNetworks
-            }
-            this.isUnselecting = false;
-        },
+        //     const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
+        //         this.filteredCurrencies.some(currency =>
+        //             currency.toLowerCase().includes(crypto.toLowerCase())
+        //         )
+        //     );
+        //     const newSelectedNetworks = this.selectedNetworks.filter(network =>
+        //         this.filteredNetworks.includes(network)
+        //     );
+        //     if (!_.isEqual(newSelectedCryptos, this.selectedCryptos)) {
+        //         this.selectedCryptos = newSelectedCryptos
+        //     }
+        //     if (!_.isEqual(newSelectedNetworks, this.selectedNetworks)) {
+        //         this.selectedNetworks = newSelectedNetworks
+        //     }
+        //     this.isUnselecting = false;
+        // },
         handleSingleFilterCheckbox(data) {
             if (!data.isChecked) {
                 this.selectedCryptos.push(data.value)
@@ -383,33 +383,33 @@ export default {
         ]),
         filteredNetworks() {
             {
-                if (this.selectedCryptos.length === 0) {
+                // if (this.selectedCryptos.length === 0) {
                     return Object.values(networks).map(item => item.chainId)
-                }
+                // }
 
-                const networkSet = new Set()
-                this.displayedTableItems?.forEach(feed => {
-                    if (this.selectedCryptos.some(crypto => feed.feed.indexOf(crypto) >= 0)) {
-                        networkSet.add(feed.network.id)
-                    }
-                })
+                // const networkSet = new Set()
+                // this.displayedTableItems?.forEach(feed => {
+                //     if (this.selectedCryptos.some(crypto => feed.feed.indexOf(crypto) >= 0)) {
+                //         networkSet.add(feed.network.id)
+                //     }
+                // })
 
-                return Array.from(networkSet)
+                // return Array.from(networkSet)
             }
         },
         filteredCurrencies() {
             {
-                if (this.selectedNetworks.length === 0) {
+                // if (this.selectedNetworks.length === 0) {
                     return images.map(image => image.token)
-                }
+                // }
 
-                const networkSet = new Set()
-                this.displayedTableItems?.forEach(feed => {
-                    if (this.selectedNetworks.some(chainId => feed.network.id === chainId)) {
-                        networkSet.add(feed.crypto_token)
-                    }
-                })
-                return Array.from(networkSet)
+                // const networkSet = new Set()
+                // this.displayedTableItems?.forEach(feed => {
+                //     if (this.selectedNetworks.some(chainId => feed.network.id === chainId)) {
+                //         networkSet.add(feed.crypto_token)
+                //     }
+                // })
+                // return Array.from(networkSet)
             }
         },
         feeds() {
