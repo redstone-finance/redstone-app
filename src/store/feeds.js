@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ethers } from 'ethers'
-import { isEmpty } from 'lodash'
+import { isEmpty, isObject } from 'lodash'
 import Vue from 'vue'
 import networks from '@/data/networks'
 
@@ -46,13 +46,20 @@ export default {
         combinedFeedsWithDetailsArray(state, getters) {
             return Object.keys(state.relayerSchema).flatMap((key) => {
                 const layer = state.relayerSchema[key]
+                const networkMapped = Object.values(networks).some(network => network.chainId === layer.chain.id)
+                
+                if (!networkMapped) {
+                    console.warn(`Warning: Network not mapped for chain ID ${layer.chain.id}`);
+                    return []; 
+                }
+                
                 return Object.keys(layer.priceFeeds).map((feedId) => ({
                     routeNetwork: Object.values(networks).find(network => network.chainId === layer.chain.id).name.toLowerCase().replace(' ', '-'),
                     routeToken: feedId.toLowerCase(),
                     networkId: layer.chain.id,
                     feedId: feedId,
                     contractAddress: layer.adapterContract,
-                    feedAddress: layer.priceFeeds[feedId],
+                    feedAddress: isObject(layer.priceFeeds[feedId]) ? layer.priceFeeds[feedId].priceFeedAddress : layer.priceFeeds[feedId],
                     triggers: layer.updateTriggers,
                     layerId: key,
                     timestamp: state.relayersDetails[key].blockTimestamp,

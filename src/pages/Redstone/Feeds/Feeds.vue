@@ -38,7 +38,7 @@
                 {{ item.network.name }}
             </template>
             <template #cell(contract_address)="{ item }">
-                <div>
+                <div v-if="item.contract_address && item.explorer">
                     Contract address: <a class="feeds__contract-address"
                         :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
@@ -47,7 +47,7 @@
                     <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
                         title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
                 </div>
-                <div v-if="item.feed_address != '__NO_FEED__'">
+                <div v-if="item.feed_address && item.explorer && item.feed_address != '__NO_FEED__'">
                     Feed address: <a class="feeds__contract-address"
                         :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
@@ -111,10 +111,8 @@ import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
 // Definitions
-import networkImages from "@/data/networkImages.json"
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
-import explorers from "@/data/explorers.json"
 import { sortBy } from "lodash"
 
 export default {
@@ -159,7 +157,7 @@ export default {
     },
 
     async mounted() {
-        prefetchImages(networkImages)
+        prefetchImages(Object.values(networks).map(network => network.iconUrl))
         await this.init()
         this.initializeFiltersFromRoute()
         this.$nextTick(() => {
@@ -306,11 +304,12 @@ export default {
             return Object.values(networks).find(network => network.chainId === networkId).name
         },
         findNetworkImage(networkId) {
-            const networkKey = Object.keys(networks).find(key => networks[key].chainId === networkId)
-            return networkImages[networkKey]
+            return Object.values(networks).find(network => network.chainId === networkId).iconUrl
         },
         findExplorer(networkId) {
-            return Object.values(explorers).find(explorer => explorer.chainId === networkId)
+            const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
+            if(!hasExplorer) console.warn('Missing explorer for chain:', networkId)
+            return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
         },
         cronObjectStringToHumanReadable(cronString) {
             return JSON.parse(cronString).map(string => cronstrue.toString(string))
@@ -376,7 +375,7 @@ export default {
         paginatedFeeds() {
             const startIndex = (this.currentPage - 1) * this.perPage
             const endIndex = startIndex + this.perPage
-            return this.feeds.slice(startIndex, endIndex)
+            return this.feeds?.slice(startIndex, endIndex)
         },
         ...mapGetters('feeds', [
             'combinedFeedsWithDetailsArray'
