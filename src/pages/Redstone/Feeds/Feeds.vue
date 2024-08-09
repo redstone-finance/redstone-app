@@ -104,7 +104,6 @@ import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat, timeUntilDate, fin
 import copyToClipboardHelper from '@/core/copyToClipboard'
 import prefetchImages from "@/core/prefetchImages"
 import truncateString from "@/core/truncate"
-import cronstrue from 'cronstrue'
 //Components
 import Loader from '../../../components/Loader/Loader'
 import CryptoPicker from "./components/CryptoPicker.vue"
@@ -311,9 +310,6 @@ export default {
             const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
             if(!hasExplorer) console.warn('Missing explorer for chain:', networkId)
             return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
-        },
-        cronObjectStringToHumanReadable(cronString) {
-            return JSON.parse(cronString).map(string => cronstrue.toString(string))
         },
         nearestCron(cronString) {
             const nearestDate = findNearestCronDate(JSON.parse(cronString))
