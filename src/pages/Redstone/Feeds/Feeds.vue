@@ -52,17 +52,8 @@
                     :formattedDate="item.timestamp.date" :parsedTimestamp="item.timestamp.parsed" />
             </template>
             <template #cell(heartbeat)="{ item }">
-                <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
-                <span v-else class="feeds__timestamp">
-                    <span v-if="heartbeatIsNumber(item.heartbeat)">
-                        <to-date-counter :duration="item.heartbeat" />
-                    </span>
-                    <div v-else>
-                        <span style="cursor: pointer;" :id="`cron-trigger-${item.layer_id}`">
-                            <to-date-counter class="d-inline" :duration="nearestCron(item.heartbeat)" />
-                        </span>
-                    </div>
-                </span>
+                <HeartbeatTimer :isLoading="item.loaders.blockTimestamp" :heartbeat="item.heartbeat"
+                    :layerId="item.layer_id" :heartbeatInterval="item.heartbeatInterval" />
             </template>
         </b-table>
         <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
@@ -87,12 +78,14 @@ import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
 import ContractAddress from "./components/ContractAddress.vue";
+import TimestampWithLoader from "./components/TimestampWithLoader.vue";
+import HeartbeatTimer from "./components/HeartbeatTimer.vue";
 // Definitions
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
 // Utils
 import { transformFeed } from './feedUtils'
-import TimestampWithLoader from "./components/TimestampWithLoader.vue";
+
 
 export default {
     components: {
@@ -102,7 +95,8 @@ export default {
         CheckboxButton,
         ToDateCounter,
         ContractAddress,
-        TimestampWithLoader
+        TimestampWithLoader,
+        HeartbeatTimer
     },
     data() {
         return {

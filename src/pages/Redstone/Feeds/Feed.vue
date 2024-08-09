@@ -38,7 +38,7 @@
                             <dt class="applicant-info__label">Deviation threshold
                             </dt>
                             <dd class="applicant-info__value">
-                                <span class="applicant-info__text">2</span>
+                                <span class="applicant-info__text">{{ feedData.deviation }}</span>
                             </dd>
                         </div>
                         <div class="applicant-info__item">
