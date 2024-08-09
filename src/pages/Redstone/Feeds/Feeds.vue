@@ -48,14 +48,8 @@
                 </router-link>
             </template>
             <template #cell(timestamp)="{ item }">
-                <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
-                <span v-else-if="item.timestamp.raw" class="feeds__timestamp">
-                    <span class="feeds__timestamp-date">
-                        {{ item.timestamp.date }}
-                    </span>
-                    {{ item.timestamp.parsed }} ago
-                </span>
-                <span v-else class="feeds__no-data">no-data</span>
+                <TimestampWithLoader :isLoading="item.loaders.blockTimestamp" :rawTimestamp="item.timestamp.raw"
+                    :formattedDate="item.timestamp.date" :parsedTimestamp="item.timestamp.parsed" />
             </template>
             <template #cell(heartbeat)="{ item }">
                 <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
@@ -98,6 +92,7 @@ import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
 // Utils
 import { transformFeed } from './feedUtils'
+import TimestampWithLoader from "./components/TimestampWithLoader.vue";
 
 export default {
     components: {
@@ -106,7 +101,8 @@ export default {
         NetworkPicker,
         CheckboxButton,
         ToDateCounter,
-        ContractAddress
+        ContractAddress,
+        TimestampWithLoader
     },
     data() {
         return {
