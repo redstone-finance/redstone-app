@@ -53,7 +53,7 @@
             </template>
             <template #cell(heartbeat)="{ item }">
                 <HeartbeatTimer :isLoading="item.loaders.blockTimestamp" :heartbeat="item.heartbeat"
-                    :layerId="item.layer_id" :heartbeatInterval="item.heartbeatInterval" />
+                    :layerId="item.layer_id" />
             </template>
         </b-table>
         <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
@@ -264,14 +264,6 @@ export default {
                 this.selectedCryptos = this.selectedCryptos.filter(token => token != data.value)
             }
             this.handleFilter('crypto', this.selectedCryptos)
-        },
-        cronObjectStringToHumanReadable(cronString) {
-            return JSON.parse(cronString).map(string => cronstrue.toString(string))
-        },
-        nearestCron(cronString) {
-            const nearestDate = findNearestCronDate(JSON.parse(cronString))
-            const timeUntil = timeUntilDate(nearestDate)
-            return timeUntil
         },
         getImageUrl(imageName) {
             return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
