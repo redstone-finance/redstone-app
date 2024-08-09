@@ -66,11 +66,9 @@
 import _ from "lodash";
 import { mapActions, mapGetters } from 'vuex'
 // Helpers
-import { timeUntilDate, findNearestCronDate } from '@/core/timeHelpers'
 import copyToClipboardHelper from '@/core/copyToClipboard'
 import prefetchImages from "@/core/prefetchImages"
 import truncateString from "@/core/truncate"
-import cronstrue from 'cronstrue'
 // Components
 import Loader from '../../../components/Loader/Loader'
 import CryptoPicker from "./components/CryptoPicker.vue"
@@ -270,9 +268,6 @@ export default {
         },
         createNetworkUrlParam(networkName) {
             return networkName.toLowerCase().replace(' ', '-')
-        },
-        heartbeatIsNumber(heartbeat) {
-            return typeof heartbeat === 'number'
         },
         ...mapActions('feeds', ['init', 'initSingleContract']),
     },

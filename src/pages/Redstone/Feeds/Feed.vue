@@ -44,7 +44,8 @@
                         <div class="applicant-info__item">
                             <dt class="applicant-info__label">Heartbeat</dt>
                             <dd class="applicant-info__value">
-                                <span class="applicant-info__text">22:05:50</span>
+                                <HeartbeatTimer v-if="feedData" :isLoading="feedData.loaders.blockTimestamp" :heartbeat="feedData.heartbeat"
+                                :layerId="feedData.layer_id" />
                             </dd>
                         </div>
                         </dd>
@@ -71,12 +72,14 @@ import LayerChart from "./components/LayerChart"
 import ContractAddress from './components/ContractAddress.vue';
 import { transformFeed } from './feedUtils';
 import TimestampWithLoader from './components/TimestampWithLoader.vue';
+import HeartbeatTimer from './components/HeartbeatTimer.vue'
 
 export default {
     components: {
         LayerChart,
         ContractAddress,
-        TimestampWithLoader
+        TimestampWithLoader,
+        HeartbeatTimer
     },
     data() {
         return {
