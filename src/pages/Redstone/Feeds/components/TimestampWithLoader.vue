@@ -10,8 +10,12 @@
 </template>
 
 <script>
+import Loader from '@/components/Loader/Loader.vue'
 export default {
     name: 'TimestampDisplay',
+    components: {
+        Loader,
+    },
     props: {
         isLoading: {
             type: Boolean,

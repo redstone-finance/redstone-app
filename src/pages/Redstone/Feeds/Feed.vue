@@ -17,8 +17,9 @@
                             <dt class="applicant-info__label">Last update</dt>
                             <dd class="applicant-info__value">
                                 <span class="applicant-info__text">
-                                    <div class="date-subvalue">August 5, 2024</div>
-                                    <div>1 hour ago</div>
+                                    <TimestampWithLoader :isLoading="feedData.loaders.blockTimestamp"
+                                        :rawTimestamp="feedData.timestamp.raw" :formattedDate="feedData.timestamp.date"
+                                        :parsedTimestamp="feedData.timestamp.parsed" />
                                 </span>
                             </dd>
                         </div>
@@ -69,11 +70,13 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import LayerChart from "./components/LayerChart"
 import ContractAddress from './components/ContractAddress.vue';
 import { transformFeed } from './feedUtils';
+import TimestampWithLoader from './components/TimestampWithLoader.vue';
 
 export default {
     components: {
         LayerChart,
-        ContractAddress
+        ContractAddress,
+        TimestampWithLoader
     },
     data() {
         return {
