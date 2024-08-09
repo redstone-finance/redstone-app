@@ -427,7 +427,7 @@ i.fi {
 
 .flaticon-lamp::before { content: '\f1a1'; }
 
-.flaticon-layers::before { content: '\f1a2'; }
+.flaticon-layers::before { content: '\f1a2'; font-size: 24px; }
 
 .flaticon-layers-1::before { content: '\f1a3'; }
 
@@ -438,6 +438,11 @@ i.fi {
 .flaticon-like-2::before { content: '\f1a6'; }
 
 .flaticon-link::before { content: '\f1a7'; }
+
+.router-link-active .flaticon-layers {
+  color: #000 !important;
+}
+
 
 .router-link-active .flaticon-list {
   background-image: url('../../src/assets/icons/text.svg');

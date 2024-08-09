@@ -5,8 +5,11 @@
         <div v-if="provider">
           {{ provider.description }}
         </div>
-        <div v-else class="preloader text-preloader"></div>
-      </div>
+        <div
+          v-else
+          class="preloader text-preloader"
+        ></div>
+      </div> 
       <!-- <div class="provider-www">
         <a v-if="provider" :href="provider.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
         <div
@@ -16,49 +19,51 @@
       </div>    -->
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
         <!-- <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" /> -->
-        <LabelValue label="Nodes" :value="(provider && provider?.nodes?.length) ? provider.nodes.length : '0'"
-          :alignRight="true" />
-        <LabelValue label="Assets" :value="(provider && provider?.assetsCount) ? provider.assetsCount : '0'"
-          :alignRight="true" />
-        <LabelValue label="Interval"
-          :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined"
-          :alignRight="true" />
+        <LabelValue label="Nodes" :value="(provider && provider?.nodes?.length) ? provider.nodes.length : '0'" :alignRight="true"/>
+        <LabelValue label="Assets" :value="(provider && provider?.assetsCount) ? provider.assetsCount : '0'" :alignRight="true"/>
+        <LabelValue label="Interval" :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined" :alignRight="true"/>
         <!-- <LabelValue label="Data points" :value="(provider && provider.dataPoints) ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/> -->
         <!-- <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/> -->
         <!-- <LabelValue label="Disputes" :value="provider ? null : undefined" /> -->
       </div>
-    </div>
+    </div>  
     <hr />
     <div>
       <div class="table-title mt-4 mb-2">
         Provided data:
       </div>
-      <b-table id="assets-table" stacked="md" hover :items="visibleTokens" :fields="fieldsFiltered"
-        v-if="dataServiceId !== 'redstone-custom-urls-demo'">
-        <template #cell(name)="data">
-          <img class="token-logo" :src="data.item.logoURI || logoPlaceholder" />
-          <span class="token-name ml-3">{{ data.item.name }}</span>
-        </template>
-        <template #cell(symbol)="data">
-          <span class="text-truncate d-block" v-b-tooltip.hover :title="data.item.symbol">
-            {{ data.item.symbol }}
-          </span>
-        </template>
-        <template #cell(sources)="data">
-          <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
-            <div class="d-flex source-links">
-              <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol"
-                v-for="source in data.item.source">
-                <img class="source-logo" :src="source.logoURI || logoPlaceholder" v-b-tooltip.hover
-                  :title="source.name" />
-              </a>
-            </div>
+           <b-table
+        id="assets-table"
+        stacked="md"
+        hover
+        :items="visibleTokens"
+        :fields="fieldsFiltered"
+        v-if="dataServiceId !== 'redstone-custom-urls-demo'"
+      >
+      <template #cell(name)="data">
+        <img class="token-logo" :src="data.item.logoURI" />
+        <span class="token-name ml-3">{{ data.item.name }}</span> 
+      </template>
+      <template #cell(symbol)="data">
+        {{ data.item.symbol }}
+      </template>
+      <template #cell(sources)="data">
+        <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
+          <div class="d-flex source-links" >
+            <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
+              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name"/>
+            </a>
           </div>
-        </template>
-      </b-table>
-      <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged">
-        <div v-for="n in 5" :key="n" class="preloader token-preloader"></div>
-      </div>
+        </div>
+      </template>
+    </b-table>
+    <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
+      <div
+        v-for="n in 5"
+        :key="n"
+        class="preloader token-preloader"
+      ></div>
+    </div>  
     </div>
   </div>
 </template>
@@ -81,23 +86,15 @@ export default {
 
   data() {
     return {
-      fields: [{ key: 'name', label: 'Asset' }, 'symbol', 'sources'],
+      fields: [{ key: 'name', label: 'Asset'}, 'symbol', 'sources'],
       firstManifest: null,
       transactionTime: null,
       tokens: null,
-      VISIBLE_CHUNK_SIZE: 10,
-      logoPlaceholder: 'https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png'
+      VISIBLE_CHUNK_SIZE: 10
     }
   },
 
   methods: {
-    removeContentAfterLastDash(str) {
-      const lastDashIndex = str.lastIndexOf('-');
-      if (lastDashIndex === -1) {
-        return str;
-      }
-      return str.substring(0, lastDashIndex);
-    },
     formatSources(source) {
       return source.map(s => _.startCase(s)).join(', ');
     },
@@ -114,10 +111,9 @@ export default {
           name: tokenInfo?.name,
           source: sourceList.map(
             el => {
-              console.log({ el })
               return {
                 name: el,
-                ...sourcesData[this.removeContentAfterLastDash(el)]
+                ...sourcesData[el]
               }
             }
           ),
@@ -130,9 +126,9 @@ export default {
       this.showMoreTokens();
     },
     scrollFunction() {
-      if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-        this.showMoreTokens();
-      }
+        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+          this.showMoreTokens();
+        }
     }
   },
 
@@ -159,7 +155,7 @@ export default {
   watch: {
     currentManifest: {
       immediate: true,
-      handler: function () {
+      handler: function() {
         if (this.currentManifest) {
           this.prepareTokensDataForTable();
         }
@@ -172,70 +168,69 @@ export default {
 <style lang="scss" scoped>
 @import '~@/styles/app';
 
-.provider-details {
-  .token-logo {
-    height: 30px;
-    width: 30px;
+  .provider-details {
+    .token-logo {
+      height: 30px; 
+      width: 30px;
+    }
+
+    .provider-info {
+      margin-bottom: 30px;
+    }
+
+    LabelValue {
+      margin-bottom: 10px;
+    }
+
+    .provider-www, .provider-description {
+      margin-left: 10px;
+    }
+
+    .provider-description {
+      font-weight: $font-weight-normal;
+    }
+
+    .provider-www {
+      font-weight: $font-weight-soft-bold;
+
+      i {
+        transform: translate(3px, 1px);
+      }
+    }
   }
 
-  .provider-info {
-    margin-bottom: 30px;
-  }
-
-  LabelValue {
-    margin-bottom: 10px;
-  }
-
-  .provider-www,
-  .provider-description {
+  .provider-values {
     margin-left: 10px;
+
+    & > div {
+      flex: 0 0 13%;
+    }
+
+    @media (max-width: breakpoint-max(sm)) {
+      flex-wrap: wrap;
+      
+      & > div {
+        flex: 0 0 50%;
+      }
+    }
   }
 
-  .provider-description {
-    font-weight: $font-weight-normal;
-  }
-
-  .provider-www {
+  .token-name {
+    font-size: 14px;
     font-weight: $font-weight-soft-bold;
-
-    i {
-      transform: translate(3px, 1px);
-    }
-  }
-}
-
-.provider-values {
-  margin-left: 10px;
-
-  &>div {
-    flex: 0 0 13%;
+    color: $navy;
   }
 
-  @media (max-width: breakpoint-max(sm)) {
-    flex-wrap: wrap;
-
-    &>div {
-      flex: 0 0 50%;
-    }
+  hr {
+    border-top: 1px solid $gray-300;
   }
-}
 
-.token-name {
-  font-size: 14px;
-  font-weight: $font-weight-soft-bold;
-  color: $navy;
-}
-
-hr {
-  border-top: 1px solid $gray-300;
-}
-
-.table-title {
-  margin-left: 10px;
-  color: $navy;
-  font-size: 20px;
-  font-weight: $font-weight-soft-bold;
-}
+  .table-title {
+    margin-left: 10px;
+    color: $navy;
+    font-size: 20px;
+    font-weight: $font-weight-soft-bold;
+  }
 
 .source-link {
   min-width: 30px;
@@ -281,19 +276,19 @@ hr {
   }
 
   .label {
-    font-weight: $font-weight-soft-bold;
+    font-weight:  $font-weight-soft-bold;
     color: $navy;
   }
 }
 
 .provider-details #assets-table {
-  table-layout: fixed;
+    table-layout: fixed;
 
   th {
     text-transform: none;
     color: $navy;
     font-size: 12px;
-    font-weight: $font-weight-soft-bold;
+    font-weight:  $font-weight-soft-bold;
   }
 
   th:nth-of-type(1) {
@@ -327,12 +322,13 @@ hr {
     transform: translateX(-10px);
     height: 30px;
     width: 30px;
-  }
-
+}
+  
   td:hover {
     .source-links {
       flex-wrap: wrap;
     }
   }
 }
+
 </style>
