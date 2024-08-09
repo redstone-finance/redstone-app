@@ -1,6 +1,6 @@
 {
   "name": "redstone-app",
-  "version": "2.2.0",
+  "version": "2.1.7",
   "private": true,
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
@@ -17,9 +17,13 @@
     "bootstrap-vue": "2.21.2",
     "cache-loader": "^4.1.0",
     "chart.js": "2",
+    "cron-parser": "^4.9.0",
+    "cronstrue": "^2.50.0",
     "css-loader": "^1.0.1",
+    "date-fns": "^3.6.0",
     "dateformat": "^4.5.1",
     "echarts": "^4.9.0",
+    "ethers": "5.4.0",
     "expose-loader": "^0.7.5",
     "font-awesome": "4.7.0",
     "glyphicons-halflings": "^1.9.1",

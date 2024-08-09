@@ -55,7 +55,7 @@
 </template>
 
 <script>
-
+import copyToClipboardHelper from '../../core/copyToClipboard'
 export default {
   name: "Nodes",
 
@@ -67,10 +67,7 @@ export default {
     shortenEvmAddress(evmAddress) {
       return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`
     },
-    async copyToClipboard(event, evmAddress) {
-      event.preventDefault();
-      await navigator.clipboard.writeText(evmAddress);
-    }
+    copyToClipboard: copyToClipboardHelper,
   },
 };
 </script>
