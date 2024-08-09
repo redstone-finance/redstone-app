@@ -1,8 +1,8 @@
 <template>
     <div>
         <div v-if="item.contract_address && item.explorer" :class="{ 'separate-labels': separateLabels }">
-            <div :class="{ 'label': separateLabels }">{{ separateLabels ? 'Contract:' : 'Contract address:' }}</div>
-            <div>
+            <div class="d-inline" :class="{ 'label': separateLabels }">{{ separateLabels ? 'Contract:' : 'Contract address:' }}</div>
+            <div class="d-inline">
                 <a class="feeds__contract-address" :title="`Open address in ${item.explorer.name} explorer`"
                     target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                     {{ truncateString(item.contract_address) }}
@@ -14,8 +14,8 @@
         </div>
         <div v-if="item.feed_address && item.explorer && item.feed_address != '__NO_FEED__'"
             :class="{ 'separate-labels': separateLabels }">
-            <div :class="{ 'label': separateLabels }">{{ separateLabels ? 'Feed:' : 'Feed address:' }}</div>
-            <div>
+            <div class="d-inline" :class="{ 'label': separateLabels }">{{ separateLabels ? 'Feed:' : 'Feed address:' }}</div>
+            <div class="d-inline">
                 <a class="feeds__contract-address" :title="`Open address in ${item.explorer.name} explorer`"
                     target="_blank" :href="`${item.explorer.explorerUrl}/address/${item.feed_address}`">
                     {{ truncateString(item.feed_address) }}
@@ -63,6 +63,7 @@ export default {
     margin-right: 10px;
     color: gray;
     font-weight: bold;
+    display: block;
 
 }
 
