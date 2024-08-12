@@ -261,35 +261,6 @@ export default {
             }
             this.isUnselecting = false;
         },
-        handleSingleFilterCheckbox(data) {
-            if (!data.isChecked) {
-                this.selectedCryptos.push(data.value)
-            } else {
-                this.selectedCryptos = this.selectedCryptos.filter(token => token != data.value)
-            }
-            this.handleFilter('crypto', this.selectedCryptos)
-        },
-        stripAdditionalFeedInfo(string) {
-            const hasUnderscore = string.indexOf('_') >= 0
-            const hasDash = string.indexOf('-') >= 0
-            if (hasUnderscore) {
-                return string.split('_')[0]
-            } else if (hasDash) {
-                return string.split('-')[0]
-            }
-            return string
-        },
-        nearestCron(cronString) {
-            const nearestDate = findNearestCronDate(JSON.parse(cronString))
-            const timeUntil = timeUntilDate(nearestDate)
-            return timeUntil
-        },
-        getFirstPart(string) {
-            const noSlash = string.split('/')[0]
-            const noUnder = noSlash.split('_')[0]
-            const noDash = noUnder.split('-')[0]
-            return noDash
-        },
         getImageUrl(imageName) {
             return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
         },
