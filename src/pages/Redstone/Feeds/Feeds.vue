@@ -252,7 +252,7 @@ export default {
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
-            this.unselectInvalidItems()
+            // this.unselectInvalidItems()
         },
         customFilter(row, filters) {
             if (!filters) return true
