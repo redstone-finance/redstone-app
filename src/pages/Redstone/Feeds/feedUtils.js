@@ -11,13 +11,17 @@ export const findNetworkImage = (networkId) => {
   return Object.values(networks).find(network => network.chainId === networkId)?.iconUrl
 }
 
+export const findNetwork = (networkId) => {
+  return Object.values(networks).find(network => network.chainId === networkId)
+}
+
 export const findExplorer = (networkId) => {
   const network = Object.values(networks).find(network => network.chainId === networkId)
   if (!network) {
     console.warn('Missing explorer for chain:', networkId)
     return null
   }
-  return network.explorerUrl
+  return network
 }
 
 export const getFirstPart = (string) => {
@@ -69,6 +73,6 @@ export const transformFeed = (item) => {
     crypto_token: getFirstPart(item.feedId),
     token_image: getTokenImage(getFirstPart(item.feedId)),
     loaders: item.loaders,
-    explorer: { name: this.findNetworkName(item.networkId), explorerUrl: this.findExplorer(item.networkId) }
+    explorer: { name: findNetworkName(item.networkId), explorerUrl: findExplorer(item.networkId).explorerUrl }
   }
 }

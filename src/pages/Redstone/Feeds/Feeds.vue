@@ -88,7 +88,7 @@ import SelectedFilters from "./components/SelectedFilters.vue"
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
 // Utils
-import { transformFeed } from './feedUtils'
+import { transformFeed, findNetworkImage} from './feedUtils'
 
 
 export default {
@@ -280,20 +280,6 @@ export default {
             }
             return string
         },
-        findNetworkName(networkId) {
-            return Object.values(networks).find(network => network.chainId === networkId).name
-        },
-        findNetworkImage(networkId) {
-            return Object.values(networks).find(network => network.chainId === networkId).iconUrl
-        },
-        findNetwork(networkId) {
-            return Object.values(networks).find(network => network.chainId === networkId)
-        },
-        findExplorer(networkId) {
-            const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
-            if (!hasExplorer) console.warn('Missing explorer for chain:', networkId)
-            return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
-        },
         nearestCron(cronString) {
             const nearestDate = findNearestCronDate(JSON.parse(cronString))
             const timeUntil = timeUntilDate(nearestDate)
@@ -338,8 +324,8 @@ export default {
         displayedSelectedNetworks() {
             return this.selectedNetworks.map(network => ({
                 key: network,
-                name: this.findNetworkImage(network),
-                imageUrl: this.findNetworkImage(network)
+                name: findNetworkImage(network),
+                imageUrl: findNetworkImage(network)
             }))
         },
         displayedSelectedCryptos() {
