@@ -13,14 +13,7 @@ export default {
     props: {
         filters: {
             type: Array,
-            required: true,
-            validator: (value) => {
-                return value.every(filter =>
-                    typeof filter.name === 'string' &&
-                    typeof filter.key === 'string' &&
-                    typeof filter.imageUrl === 'string'
-                );
-            }
+            required: true
         }
     },
     methods: {

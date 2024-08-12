@@ -1,6 +1,6 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown @shown="initializeTempSelection" class="dropdown crypto-dropdown" :text="buttonText" multiple>
       <div class="search-input-container">
         <b-form-input variant="danger" v-model="searchQuery" placeholder="Search..." class="pr-4"></b-form-input>
       </div>
@@ -66,7 +66,7 @@ export default {
     buttonText() {
       const selectedCount = this.value.length
       const optionsCount = this.items.length
-      return selectedCount === 0 ? `All currencies (${optionsCount})` : `Currencies (${selectedCount})`;
+      return selectedCount === 0 ? `All currencies (${optionsCount})` : `Currencies (${selectedCount})`
     },
     filteredCryptoImageData() {
       if (!this.searchQuery) {
@@ -79,7 +79,7 @@ export default {
       );
     },
     hasChanges() {
-      return this.tempSelectedCryptos.length > 0;
+      return this.tempSelectedCryptos.length !== this.value.length;
     }
   },
   created() {

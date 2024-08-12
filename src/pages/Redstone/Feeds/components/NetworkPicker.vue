@@ -1,11 +1,11 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown @shown="initializeTempSelection" class="dropdown crypto-dropdown" :text="buttonText" multiple>
       <div class="search-input-container">
-        <b-form-input variant="danger" v-model="searchQuery" placeholder="Search..." class="pr-4"></b-form-input>
+        <b-form-input variant="danger" v-model="searchQuery" :placeholder="searchPlaceholder" class="pr-4"></b-form-input>
       </div>
       <b-dropdown-form>
-        <b-form-checkbox-group v-model="localSelected" class="crypto-checkbox-group" stacked>
+        <b-form-checkbox-group v-model="tempSelected" class="crypto-checkbox-group" stacked>
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
@@ -18,13 +18,26 @@
         </b-form-checkbox-group>
         <span class="no-results" v-if="filteredItems.length === 0">{{ noResultsText }}</span>
       </b-dropdown-form>
+      <div v-if="hasChanges" class="confirm-button-container">
+        <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
+      </div>
     </b-dropdown>
   </div>
 </template>
 
 <script>
+import { BDropdown, BDropdownForm, BFormCheckboxGroup, BFormCheckbox, BFormInput, BButton } from 'bootstrap-vue'
+
 export default {
   name: 'DropdownCheckboxSearch',
+  components: {
+    BDropdown,
+    BDropdownForm,
+    BFormCheckboxGroup,
+    BFormCheckbox,
+    BFormInput,
+    BButton,
+  },
   props: {
     items: {
       type: Array,
@@ -50,8 +63,11 @@ export default {
   data() {
     return {
       searchQuery: '',
-      localSelected: this.value
+      tempSelected: [],
     };
+  },
+  created(){
+    this.initializeTempSelection()
   },
   computed: {
     filteredItems() {
@@ -60,22 +76,26 @@ export default {
       );
     },
     buttonText() {
-      const selectedCount = this.localSelected.length;
+      const selectedCount = this.value.length;
       const optionsCount = this.items.length;
       return selectedCount === 0 ? `${this.defaultButtonText} (${optionsCount})` : `Networks (${selectedCount})`;
-    }
-  },
-  watch: {
-    value(newValue) {
-      this.localSelected = newValue;
     },
-    localSelected(newValue) {
-      this.$emit('input', newValue);
+    hasChanges() {
+      return this.tempSelected.length !== this.value.length
     }
   },
   methods: {
+    initializeTempSelection() {
+      this.tempSelected = [...this.value];
+    },
     clearSearch() {
       this.searchQuery = '';
+    },
+    confirmChanges() {
+      this.$emit('input', this.tempSelected);
+    },
+    resetChanges() {
+      this.tempSelected = [...this.value];
     }
   }
 };
@@ -97,5 +117,109 @@ export default {
 .network-name {
   font-size: 14px;
   font-weight: 300;
+}
+
+.crypto-dropdown-container {
+  position: relative;
+  z-index: 999;
+}
+
+.dropdown {
+  margin: 0 !important;
+
+  ul {
+    min-width: 250px;
+  }
+
+  button {
+    padding: 10px 18px;
+    font-size: 14px;
+    background: #fff;
+    border: 2px solid #e4e4e4;
+
+    &:hover {
+      background: #fff;
+      color: #1a1414;
+    }
+  }
+}
+
+.crypto-dropdown {
+  width: 100%;
+
+  .b-dropdown-form {
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  ul {
+    width: 100%;
+    left: 0;
+    top: 100% !important;
+    transform: none !important;
+  }
+
+  .crypto-checkbox-list {
+    border-bottom: 1px solid rgb(228, 228, 228);
+    margin: 5px 0;
+    padding: 8px 10px;
+  }
+
+  .no-results {
+    text-align: center;
+    display: block;
+    width: 100%;
+    padding: 15px;
+    color: gray;
+  }
+
+  .confirm-button-container {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 10px;
+    border-top: 1px solid #e4e4e4;
+    text-align: center;
+  }
+
+  .confirm-button {
+    width: 100%;
+    background-color: var(--redstone-red-color);
+    border-color: var(--redstone-red-color);
+
+    &:hover, &:focus {
+      background-color: darken(#FD627A, 10%);
+      border-color: darken(#FD627A, 10%);
+    }
+  }
+}
+
+.search-input-container {
+  position: sticky;
+  top: 0px;
+  background: #fff;
+  z-index: 2;
+  .form-control {
+    border: none;
+    border-bottom: 1px solid rgb(192, 192, 192);
+    border-radius: 0;
+    padding: 20px;
+
+    &:active,&:focus {
+      border-color: var(--redstone-red-color);
+    }
+  }
+}
+
+.dropdown-menu {
+  padding: 0 !important;
+}
+
+.dropdown.show {
+  button {
+    background: var(--redstone-red-color) !important;
+    border: 2px solid darken(#FD627A, $amount: 15) !important;
+  }
 }
 </style>
