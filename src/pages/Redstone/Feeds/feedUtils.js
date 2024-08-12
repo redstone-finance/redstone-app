@@ -50,29 +50,33 @@ export const stripAdditionalFeedInfo = (string) => {
 }
 
 export const transformFeed = (item) => {
-  return {
-    feed: hasSlash(item.feedId) ? stripAdditionalFeedInfo(item.feedId) : stripAdditionalFeedInfo(item.feedId) + '/USD',
-    network: { 
-      id: item.networkId, 
-      name: findNetworkName(item.networkId), 
-      image: findNetworkImage(item.networkId), 
-    },
-    contract_address: item.contractAddress,
-    timestamp: { 
-      parsed: parseUnixTime(item.timestamp), 
-      raw: item.timestamp, 
-      date: hexToDate(item.timestamp) 
-    },
-    layer_id: item.feedId,
-    heartbeat: getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) || JSON.stringify(item.triggers.cron),
-    deviation: item.triggers.deviationPercentage ? item.triggers.deviationPercentage + '%' : 'n/a',
-    cron: item.triggers.cron,
-    token: item.feedId,
-    relayerId: item.layerId,
-    feed_address: item.feedAddress,
-    crypto_token: getFirstPart(item.feedId),
-    token_image: getTokenImage(getFirstPart(item.feedId)),
-    loaders: item.loaders,
-    explorer: { name: findNetworkName(item.networkId), explorerUrl: findExplorer(item.networkId).explorerUrl }
+  if(item?.feedId){
+    return {
+      feed: hasSlash(item.feedId) ? stripAdditionalFeedInfo(item.feedId) : stripAdditionalFeedInfo(item.feedId) + '/USD',
+      network: { 
+        id: item.networkId, 
+        name: findNetworkName(item.networkId), 
+        image: findNetworkImage(item.networkId), 
+      },
+      contract_address: item.contractAddress,
+      timestamp: { 
+        parsed: parseUnixTime(item.timestamp), 
+        raw: item.timestamp, 
+        date: hexToDate(item.timestamp) 
+      },
+      layer_id: item.feedId,
+      heartbeat: getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) || JSON.stringify(item.triggers.cron),
+      deviation: item.triggers.deviationPercentage ? item.triggers.deviationPercentage + '%' : 'n/a',
+      cron: item.triggers.cron,
+      token: item.feedId,
+      relayerId: item.layerId,
+      feed_address: item.feedAddress,
+      crypto_token: getFirstPart(item.feedId),
+      token_image: getTokenImage(getFirstPart(item.feedId)),
+      loaders: item.loaders,
+      explorer: { name: findNetworkName(item.networkId), explorerUrl: findExplorer(item.networkId).explorerUrl }
+    }
+  }else{
+    return false
   }
 }

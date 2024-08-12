@@ -1,7 +1,7 @@
 <template>
     <div class="feed-details">
         <div class="feed-details__infos">
-            <div class="applicant-info">
+            <div class="applicant-info" v-if="feedData">
                 <div class="applicant-info__header">
                     <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
                 </div>
@@ -91,12 +91,19 @@ export default {
     },
 
     async mounted() {
-        this.initSingleContract(this.relayerId).then(async () => {
-
-        })
+        await this.fetchRelayerSchema()
     },
     methods: {
-        ...mapActions('feeds', ['initSingleContract'])
+        ...mapActions('feeds', ['initSingleContract', 'fetchRelayerSchema'])
+    },
+    watch: {
+        feedData() {
+            if (this.feedData.relayerId) {
+                if (this.getSmartContractByLayerId(this.feedData.relayerId) == null) {
+                    this.initSingleContract(this.feedData.relayerId)
+                }
+            }
+        }
     },
     computed: {
         network() {
@@ -110,7 +117,7 @@ export default {
         },
         ...mapState('feeds', ['relayersDetails', 'relayersSchema']),
         ...mapGetters('feeds', [
-            'combinedFeedsWithDetailsArray'
+            'combinedFeedsWithDetailsArray', 'getSmartContractByLayerId'
         ]),
         layer() {
             return this.relayersSchema[this.layerId]

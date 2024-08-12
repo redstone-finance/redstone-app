@@ -37,7 +37,7 @@ export default {
     getters: {
         getSmartContractByLayerId: (state) => (layerId) => {
             const contract = state.smartContracts[layerId]
-            if (contract == null) throw Error('No contract assigned to layer id:', layerId)
+            if (contract == null) console.warn('No contract assigned to layer id:', layerId)
             return contract
         },
         hasMultipleFeeds: (state) => (layerId) => {
@@ -155,7 +155,6 @@ export default {
             }
         },
         async initSingleContract({ state }, layerId) {
-            await this.dispatch('feeds/fetchRelayerSchema')
             await this.dispatch('feeds/createSmartContract', { layerId: layerId, contractAddress: state.relayerSchema[layerId].adapterContract, chainId: state.relayerSchema[layerId].chain.id })
             await this.dispatch('feeds/fetchBlockTimeStamp', layerId)
             await this.dispatch('feeds/fetchFeedIdAndValue', { layerId: layerId, feedId: state.relayersDetails[layerId]?.feedId })
