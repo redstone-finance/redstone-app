@@ -1,16 +1,33 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown @shown="initializeTempSelection" class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown @shown="onDropdownShown" class="dropdown crypto-dropdown" :text="buttonText" multiple>
       <div class="search-input-container">
-        <b-form-input variant="danger" v-model="searchQuery" placeholder="Search..." class="pr-4"></b-form-input>
+        <b-form-input
+          ref="searchInput"
+          variant="danger"
+          v-model="searchQuery"
+          placeholder="Search..."
+          class="pr-4"
+        ></b-form-input>
       </div>
       <b-dropdown-form>
         <b-form-checkbox-group class="crypto-checkbox-group" v-model="tempSelectedCryptos" stacked>
-          <b-form-checkbox class="crypto-checkbox-list" variant="danger" v-for="crypto in filteredCryptoImageData"
-            :key="crypto.token" :value="crypto.token">
+          <b-form-checkbox
+            class="crypto-checkbox-list"
+            variant="danger"
+            v-for="crypto in filteredCryptoImageData"
+            :key="crypto.token"
+            :value="crypto.token"
+          >
             <div class="crypto-name">
-              <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
-                class="mr-1" />
+              <b-img
+                :title="crypto.name"
+                :src="getImageUrl(crypto.imageName)"
+                :alt="crypto.name"
+                width="20"
+                height="20"
+                class="mr-1"
+              />
               <span :title="crypto.name">{{ crypto.token }}</span>
             </div>
           </b-form-checkbox>
@@ -106,6 +123,12 @@ export default {
     },
     resetChanges() {
       this.initializeTempSelection();
+    },
+    onDropdownShown() {
+      this.initializeTempSelection();
+      this.$nextTick(() => {
+        this.$refs.searchInput.focus();
+      });
     }
   }
 }

@@ -1,8 +1,14 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown @shown="initializeTempSelection" class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown @shown="onDropdownShown" class="dropdown crypto-dropdown" :text="buttonText" multiple>
       <div class="search-input-container">
-        <b-form-input variant="danger" v-model="searchQuery" :placeholder="searchPlaceholder" class="pr-4"></b-form-input>
+        <b-form-input
+          ref="searchInput"
+          variant="danger"
+          v-model="searchQuery"
+          :placeholder="searchPlaceholder"
+          class="pr-4"
+        ></b-form-input>
       </div>
       <b-dropdown-form>
         <b-form-checkbox-group v-model="tempSelected" class="crypto-checkbox-group" stacked>
@@ -96,10 +102,17 @@ export default {
     },
     resetChanges() {
       this.tempSelected = [...this.value];
+    },
+    onDropdownShown() {
+      this.initializeTempSelection();
+      this.$nextTick(() => {
+        this.$refs.searchInput.focus();
+      });
     }
   }
 };
 </script>
+
 
 <style lang="scss">
 .remove-query {
