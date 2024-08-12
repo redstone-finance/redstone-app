@@ -10,7 +10,7 @@
                     <div class="feeds__status">
                         <div class="feeds__actions-wrapper-label ml-4  mr-2 text-light fw-normal">Displaying</div>
                         <span class="feeds__status-text mr-2">
-                            <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks
+                            <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks, 
                         </span>
                         <span class="feeds__status-text">
                             <strong>{{ filteredItems.length }}</strong> feeds
