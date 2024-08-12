@@ -10,11 +10,11 @@
                 </div>
                 <div class="feeds__actions-wrapper-item">
                     <div v-if="selectedNetworks.length > 0">
-                        <div style="margin-bottom: -15px; font-size: 10px; color: #aeaeae;">Displayed networks:</div>
+                        <div class="selected-items">Selected networks:</div>
                         <SelectedFilters @remove="removeNetwork" class="mt-2" :filters="displayedSelectedNetworks" />
                     </div>
-                    <div v-if="selectedCryptos.length > 0" class="ml-2">
-                        <div style="margin-bottom: -15px; font-size: 10px; color: #aeaeae;">Displayed cryptos:</div>
+                    <div v-if="selectedCryptos.length > 0" class="ml-4 pl-4 second-filters">
+                        <div class="selected-items">Selected cryptos:</div>
                         <SelectedFilters @remove="removeCrypto" class="mt-2" :filters="displayedSelectedCryptos" />
                     </div>
                 </div>
@@ -252,7 +252,7 @@ export default {
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
-            // this.unselectInvalidItems()
+            this.unselectInvalidItems()
         },
         customFilter(row, filters) {
             if (!filters) return true
