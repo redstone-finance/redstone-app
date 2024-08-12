@@ -13,16 +13,16 @@
 import Chart from 'chart.js'
 
 const crosshairPlugin = {
-  afterDatasetsDraw: function(chart) {
+  afterDatasetsDraw: function (chart) {
     if (chart.tooltip._active && chart.tooltip._active.length) {
       var activePoint = chart.tooltip._active[0],
-          ctx = chart.ctx,
-          x = activePoint.tooltipPosition().x,
-          y = activePoint.tooltipPosition().y,
-          topY = chart.scales['y-axis-0'].top,
-          bottomY = chart.scales['y-axis-0'].bottom,
-          leftX = chart.scales['x-axis-0'].left,
-          rightX = chart.scales['x-axis-0'].right;
+        ctx = chart.ctx,
+        x = activePoint.tooltipPosition().x,
+        y = activePoint.tooltipPosition().y,
+        topY = chart.scales['y-axis-0'].top,
+        bottomY = chart.scales['y-axis-0'].bottom,
+        leftX = chart.scales['x-axis-0'].left,
+        rightX = chart.scales['x-axis-0'].right;
 
       // Set the line color
       ctx.strokeStyle = 'rgba(253, 98, 122, 0.75)'; // Using the specified color with 75% opacity
@@ -97,6 +97,9 @@ export default {
   },
   mounted() {
     this.createChart();
+    setTimeout(() => {
+      this.updateGradient();
+    }, 0);
   },
   methods: {
     createGradient(ctx, chartArea) {
@@ -108,7 +111,7 @@ export default {
     },
     createChart() {
       const ctx = this.$refs.chart.getContext('2d');
-      
+
       this.chart = new Chart(ctx, {
         type: 'line',
         data: this.chartData,
@@ -167,7 +170,7 @@ export default {
               display: true,
               ticks: {
                 beginAtZero: false,
-                callback: function(value, index, values) {
+                callback: function (value, index, values) {
                   return '$' + value.toFixed(2);
                 }
               },
@@ -194,10 +197,12 @@ export default {
       }
     },
     updateGradient() {
-      const chartArea = this.chart.chartArea;
-      const ctx = this.chart.ctx;
-      if (chartArea) {
-        this.chart.data.datasets[0].backgroundColor = this.createGradient(ctx, chartArea);
+      if (this.chart && this.chart.chartArea) {
+        const chartArea = this.chart.chartArea;
+        const ctx = this.chart.ctx;
+        const gradient = this.createGradient(ctx, chartArea);
+        this.chart.data.datasets[0].backgroundColor = gradient;
+        this.chart.update();
       }
     },
     setRange(range) {
@@ -237,11 +242,13 @@ export default {
   height: 550px;
   width: 100%;
 }
+
 .range-buttons {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
 }
+
 .range-buttons button {
   margin-left: 10px;
   padding: 5px 10px;
@@ -250,6 +257,7 @@ export default {
   background-color: #fff;
   cursor: pointer;
 }
+
 .range-buttons button.active {
   background-color: #FD627A;
   color: #fff;
