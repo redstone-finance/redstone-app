@@ -15,14 +15,14 @@
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
-            v-for="item in filteredItems"
+            v-for="item in sortedFilteredItems"
             :key="item.value"
             :value="item.value"
           >
             <span class="network-name">{{ item.label }}</span>
           </b-form-checkbox>
         </b-form-checkbox-group>
-        <span class="no-results" v-if="filteredItems.length === 0">{{ noResultsText }}</span>
+        <span class="no-results" v-if="sortedFilteredItems.length === 0">{{ noResultsText }}</span>
       </b-dropdown-form>
       <div v-if="hasChanges" class="confirm-button-container">
         <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
@@ -81,13 +81,23 @@ export default {
         item.label.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     },
+    sortedFilteredItems() {
+      return [...this.filteredItems].sort((a, b) => {
+        const aSelected = this.value.includes(a.value);
+        const bSelected = this.value.includes(b.value);
+        if (aSelected === bSelected) {
+          return a.label.localeCompare(b.label);
+        }
+        return aSelected ? -1 : 1;
+      });
+    },
     buttonText() {
       const selectedCount = this.value.length;
       const optionsCount = this.items.length;
       return selectedCount === 0 ? `${this.defaultButtonText} (${optionsCount})` : `Networks (${selectedCount})`;
     },
     hasChanges() {
-      return this.tempSelected.length !== this.value.length
+      return !this.arraysEqual(this.tempSelected, this.value);
     }
   },
   methods: {
@@ -108,12 +118,17 @@ export default {
       this.$nextTick(() => {
         this.$refs.searchInput.focus();
       });
+    },
+    arraysEqual(arr1, arr2) {
+      if (arr1.length !== arr2.length) return false;
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+      }
+      return true;
     }
   }
 };
 </script>
-
-
 <style lang="scss">
 .remove-query {
   line-height: 15px;

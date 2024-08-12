@@ -15,7 +15,7 @@
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
-            v-for="crypto in filteredCryptoImageData"
+            v-for="crypto in sortedFilteredCryptoImageData"
             :key="crypto.token"
             :value="crypto.token"
           >
@@ -32,7 +32,7 @@
             </div>
           </b-form-checkbox>
         </b-form-checkbox-group>
-        <span class="no-results" v-if="filteredCryptoImageData.length === 0">No results found</span>
+        <span class="no-results" v-if="sortedFilteredCryptoImageData.length === 0">No results found</span>
       </b-dropdown-form>
       <div v-if="hasChanges" class="confirm-button-container">
         <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
@@ -95,8 +95,18 @@ export default {
         crypto.name.toLowerCase().includes(query)
       );
     },
+    sortedFilteredCryptoImageData() {
+      return [...this.filteredCryptoImageData].sort((a, b) => {
+        const aSelected = this.value.includes(a.token);
+        const bSelected = this.value.includes(b.token);
+        if (aSelected === bSelected) {
+          return a.token.localeCompare(b.token);
+        }
+        return aSelected ? -1 : 1;
+      });
+    },
     hasChanges() {
-      return this.tempSelectedCryptos.length !== this.value.length;
+      return !this.arraysEqual(this.tempSelectedCryptos, this.value);
     }
   },
   created() {
@@ -129,11 +139,17 @@ export default {
       this.$nextTick(() => {
         this.$refs.searchInput.focus();
       });
+    },
+    arraysEqual(arr1, arr2) {
+      if (arr1.length !== arr2.length) return false;
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+      }
+      return true;
     }
   }
 }
 </script>
-
 <style lang="scss">
 .remove-query {
   line-height: 15px;
