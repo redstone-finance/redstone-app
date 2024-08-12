@@ -451,7 +451,7 @@ export default {
                     crypto_token: this.getFirstPart(item.feedId),
                     token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
                     loaders: item.loaders,
-                    explorer: this.findExplorer(item.networkId)
+                    explorer: {name: this.findNetworkName(item.networkId), explorerUrl: this.findExplorer(item.networkId)}
                 }
             })
         },
