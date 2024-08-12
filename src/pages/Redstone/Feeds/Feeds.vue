@@ -9,11 +9,14 @@
                         v-model="selectedCryptos" class="feeds__crypto-picker" />
                 </div>
                 <div class="feeds__actions-wrapper-item">
-                    <CheckboxButton v-for="crypto in mostUsedCryptos" :key="crypto.token"
-                        :disabled="!filteredCurrencies.includes(crypto.token)"
-                        :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
-                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image"
-                        class="feeds__checkbox-button" />
+                    <div v-if="selectedNetworks.length > 0">
+                        <div style="margin-bottom: -15px; font-size: 10px; color: #aeaeae;">Displayed networks:</div>
+                        <SelectedFilters @remove="removeNetwork" class="mt-2" :filters="displayedSelectedNetworks" />
+                    </div>
+                    <div v-if="selectedCryptos.length > 0" class="ml-2">
+                        <div style="margin-bottom: -15px; font-size: 10px; color: #aeaeae;">Displayed cryptos:</div>
+                        <SelectedFilters @remove="removeCrypto" class="mt-2" :filters="displayedSelectedCryptos" />
+                    </div>
                 </div>
             </div>
             <div class="feeds__actions-wrapper-item feeds__actions-wrapper-item--right">
@@ -39,7 +42,7 @@
             </template>
             <template #cell(contract_address)="{ item }">
                 <div v-if="item.contract_address && item.explorer">
-                    Contract address: <a class="feeds__contract-address"
+                    Adapter address: <a class="feeds__contract-address"
                         :title="`Open address in ${item.explorer.name} explorer`" target="_blank"
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                         {{ truncateString(item.contract_address) }}
@@ -110,6 +113,7 @@ import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
+import SelectedFilters from "./components/SelectedFilters.vue"
 // Definitions
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
@@ -121,7 +125,8 @@ export default {
         CryptoPicker,
         NetworkPicker,
         CheckboxButton,
-        ToDateCounter
+        ToDateCounter,
+        SelectedFilters
     },
     data() {
         return {
@@ -308,7 +313,7 @@ export default {
         },
         findExplorer(networkId) {
             const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
-            if(!hasExplorer) console.warn('Missing explorer for chain:', networkId)
+            if (!hasExplorer) console.warn('Missing explorer for chain:', networkId)
             return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
         },
         nearestCron(cronString) {
@@ -344,6 +349,12 @@ export default {
         heartbeatIsNumber(heartbeat) {
             return typeof heartbeat === 'number'
         },
+        removeCrypto(item){
+            this.selectedCryptos = this.selectedCryptos.filter(crypto => crypto != item)
+        },
+        removeNetwork(item){
+            this.selectedNetworks = this.selectedNetworks.filter(network => network != item)
+        },
         ...mapActions('feeds', ['init', 'initSingleContract']),
     },
     watch: {
@@ -352,6 +363,20 @@ export default {
         },
     },
     computed: {
+        displayedSelectedNetworks() {
+            return this.selectedNetworks.map(network => ({
+                key: network,
+                name: this.findNetworkImage(network),
+                imageUrl: this.findNetworkImage(network)
+            }))
+        },
+        displayedSelectedCryptos() {
+            return this.selectedCryptos.map(crypto => ({
+                key: crypto,
+                name: crypto,
+                imageUrl: this.getImageUrl(this.getTokenImage(crypto).imageName)
+            }))
+        },
         cryptoImages() {
             return images.filter(image =>
                 this.filteredCurrencies?.some(currency =>
