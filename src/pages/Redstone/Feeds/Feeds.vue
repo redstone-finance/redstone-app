@@ -3,18 +3,23 @@
         <div class="feeds__actions-wrapper">
             <div>
                 <div class="feeds__actions-wrapper-item">
-                    <NetworkPicker @input="handleFilter('networks', $event)" v-model="selectedNetworks"
-                        :items="networksMap" class="feeds__network-picker" />
-                    <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)"
-                        v-model="selectedCryptos" class="feeds__crypto-picker" />
+                    <NetworkPicker @input="handleFilter('networks', $event)"
+                        v-model="selectedNetworks" :items="networksMap" class="feeds__network-picker" />
+                    <CryptoPicker :items="cryptoImages"
+                        @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"
+                        class="feeds__crypto-picker" />
                 </div>
-                <!-- <div class="feeds__actions-wrapper-item">
-                    <CheckboxButton v-for="crypto in mostUsedCryptos" :key="crypto.token"
-                        :disabled="!filteredCurrencies.includes(crypto.token)"
-                        :isChecked="selectedCryptos.includes(crypto.token)" @change="handleSingleFilterCheckbox"
-                        :name="crypto.name" :token="crypto.token" :imageName="crypto.image"
-                        class="feeds__checkbox-button" />
-                </div> -->
+                <div class="feeds__actions-wrapper-item">
+                    <div v-if="selectedNetworks.length > 0">
+                        <div class="selected-items">Selected networks:</div>
+                        <SelectedFilters @remove="removeNetwork" class="mt-2" :filters="displayedSelectedNetworks" />
+                    </div>
+                    <div class="separator" v-if="selectedCryptos.length > 0 && selectedNetworks.length > 0"></div>
+                    <div v-if="selectedCryptos.length > 0" class="second-filters">
+                        <div class="selected-items">Selected cryptos:</div>
+                        <SelectedFilters @remove="removeCrypto" class="mt-2" :filters="displayedSelectedCryptos" />
+                    </div>
+                </div>
             </div>
             <div class="feeds__actions-wrapper-item feeds__actions-wrapper-item--right">
                 <div class="feeds__status">
@@ -78,6 +83,7 @@ import ToDateCounter from "./components/ToDateCounter.vue"
 import ContractAddress from "./components/ContractAddress.vue";
 import TimestampWithLoader from "./components/TimestampWithLoader.vue";
 import HeartbeatTimer from "./components/HeartbeatTimer.vue";
+import SelectedFilters from "./components/SelectedFilters.vue"
 // Definitions
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
@@ -94,7 +100,8 @@ export default {
         ToDateCounter,
         ContractAddress,
         TimestampWithLoader,
-        HeartbeatTimer
+        HeartbeatTimer,
+        SelectedFilters
     },
     data() {
         return {
@@ -263,11 +270,59 @@ export default {
             }
             this.handleFilter('crypto', this.selectedCryptos)
         },
+        stripAdditionalFeedInfo(string) {
+            const hasUnderscore = string.indexOf('_') >= 0
+            const hasDash = string.indexOf('-') >= 0
+            if (hasUnderscore) {
+                return string.split('_')[0]
+            } else if (hasDash) {
+                return string.split('-')[0]
+            }
+            return string
+        },
+        findNetworkName(networkId) {
+            return Object.values(networks).find(network => network.chainId === networkId).name
+        },
+        findNetworkImage(networkId) {
+            return Object.values(networks).find(network => network.chainId === networkId).iconUrl
+        },
+        findNetwork(networkId) {
+            return Object.values(networks).find(network => network.chainId === networkId)
+        },
+        findExplorer(networkId) {
+            const hasExplorer = Object.values(networks).some(network => network.chainId === networkId)
+            if (!hasExplorer) console.warn('Missing explorer for chain:', networkId)
+            return Object.values(networks).find(network => network.chainId === networkId).explorerUrl
+        },
+        nearestCron(cronString) {
+            const nearestDate = findNearestCronDate(JSON.parse(cronString))
+            const timeUntil = timeUntilDate(nearestDate)
+            return timeUntil
+        },
+        getFirstPart(string) {
+            const noSlash = string.split('/')[0]
+            const noUnder = noSlash.split('_')[0]
+            const noDash = noUnder.split('-')[0]
+            return noDash
+        },
         getImageUrl(imageName) {
             return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
         },
         createNetworkUrlParam(networkName) {
             return networkName.toLowerCase().replace(' ', '-')
+        },
+        removeCrypto(item) {
+            this.selectedCryptos = this.selectedCryptos.filter(crypto => crypto != item)
+            this.handleFilter('cryptos', this.selectedCryptos)
+            this.updateRouteParams()
+        },
+        removeNetwork(item) {
+            this.selectedNetworks = this.selectedNetworks.filter(network => network != item)
+            this.handleFilter('networks', this.selectedNetworks)
+            this.updateRouteParams()
+        },
+        tokenInNetwork(token, networkId) {
+            return this.tokensInNetworks.some(item => item.token === token && item.network === networkId)
         },
         ...mapActions('feeds', ['init', 'initSingleContract']),
     },
@@ -277,11 +332,31 @@ export default {
         },
     },
     computed: {
+        tokensInNetworks() {
+            return this.feeds.map(item => ({ token: item.token, network: item.network.id }))
+        },
+        displayedSelectedNetworks() {
+            return this.selectedNetworks.map(network => ({
+                key: network,
+                name: this.findNetworkImage(network),
+                imageUrl: this.findNetworkImage(network)
+            }))
+        },
+        displayedSelectedCryptos() {
+            return this.selectedCryptos.map(crypto => ({
+                key: crypto,
+                name: crypto,
+                imageUrl: this.getImageUrl(this.getTokenImage(crypto).imageName)
+            }))
+        },
         cryptoImages() {
-            return images.filter(image =>
-                this.filteredCurrencies?.some(currency =>
-                    currency === image.token
+            return images.filter(image => {
+                const networks = this.selectedNetworks.length > 0 ? this.selectedNetworks : this.filteredNetworks
+                return networks?.some(networkId => {
+                    return this.tokenInNetwork(image.token, networkId)
+                }
                 )
+            }
             )
         },
         hasFilters() {

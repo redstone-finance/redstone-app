@@ -18,7 +18,6 @@
     "cache-loader": "^4.1.0",
     "chart.js": "2",
     "cron-parser": "^4.9.0",
-    "cronstrue": "^2.50.0",
     "css-loader": "^1.0.1",
     "date-fns": "^3.6.0",
     "dateformat": "^4.5.1",

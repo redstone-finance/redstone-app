@@ -69,6 +69,6 @@ export const transformFeed = (item) => {
     crypto_token: getFirstPart(item.feedId),
     token_image: getTokenImage(getFirstPart(item.feedId)),
     loaders: item.loaders,
-    explorer: findExplorer(item.networkId)
+    explorer: { name: this.findNetworkName(item.networkId), explorerUrl: this.findExplorer(item.networkId) }
   }
 }

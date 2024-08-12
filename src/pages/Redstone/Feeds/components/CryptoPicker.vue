@@ -1,22 +1,25 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown @shown="initializeTempSelection" class="dropdown crypto-dropdown" :text="buttonText" multiple>
       <div class="search-input-container">
         <b-form-input variant="danger" v-model="searchQuery" placeholder="Search..." class="pr-4"></b-form-input>
       </div>
       <b-dropdown-form>
-        <b-form-checkbox-group class="crypto-checkbox-group" v-model="internalSelectedCryptos" stacked>
+        <b-form-checkbox-group class="crypto-checkbox-group" v-model="tempSelectedCryptos" stacked>
           <b-form-checkbox class="crypto-checkbox-list" variant="danger" v-for="crypto in filteredCryptoImageData"
             :key="crypto.token" :value="crypto.token">
-           <div class="crypto-name">
-            <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
-              class="mr-1" />
-            <span :title="crypto.name">{{ crypto.token }}</span>
-           </div>
+            <div class="crypto-name">
+              <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
+                class="mr-1" />
+              <span :title="crypto.name">{{ crypto.token }}</span>
+            </div>
           </b-form-checkbox>
         </b-form-checkbox-group>
         <span class="no-results" v-if="filteredCryptoImageData.length === 0">No results found</span>
       </b-dropdown-form>
+      <div v-if="hasChanges" class="confirm-button-container">
+        <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
+      </div>
     </b-dropdown>
   </div>
 </template>
@@ -29,6 +32,7 @@ import {
   BFormCheckbox,
   BImg,
   BFormInput,
+  BButton,
 } from 'bootstrap-vue'
 
 export default {
@@ -40,6 +44,7 @@ export default {
     BFormCheckbox,
     BImg,
     BFormInput,
+    BButton,
   },
   props: {
     items: {
@@ -54,21 +59,14 @@ export default {
   data() {
     return {
       searchQuery: '',
+      tempSelectedCryptos: [],
     }
   },
   computed: {
     buttonText() {
       const selectedCount = this.value.length
       const optionsCount = this.items.length
-      return selectedCount === 0 ? `All currencies (${optionsCount})` : `Currencies (${selectedCount})`;
-    },
-    internalSelectedCryptos: {
-      get() {
-        return this.value
-      },
-      set(newValue) {
-        this.$emit('input', newValue)
-      }
+      return selectedCount === 0 ? `All currencies (${optionsCount})` : `Currencies (${selectedCount})`
     },
     filteredCryptoImageData() {
       if (!this.searchQuery) {
@@ -79,18 +77,35 @@ export default {
         crypto.token.toLowerCase().includes(query) ||
         crypto.name.toLowerCase().includes(query)
       );
+    },
+    hasChanges() {
+      return this.tempSelectedCryptos.length !== this.value.length;
     }
   },
+  created() {
+    this.initializeTempSelection();
+  },
   methods: {
+    initializeTempSelection() {
+      this.tempSelectedCryptos = [...this.value];
+    },
     uncheck(token) {
-      const updatedSelection = this.internalSelectedCryptos.filter(crypto => crypto !== token)
-      this.$emit('input', updatedSelection)
+      const index = this.tempSelectedCryptos.indexOf(token);
+      if (index > -1) {
+        this.tempSelectedCryptos.splice(index, 1);
+      }
     },
     getImageUrl(imageName) {
       return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
     },
     getCryptoByToken(token) {
       return this.items.find(crypto => crypto.token === token) || { name: token, imageName: '' }
+    },
+    confirmChanges() {
+      this.$emit('input', this.tempSelectedCryptos);
+    },
+    resetChanges() {
+      this.initializeTempSelection();
     }
   }
 }
@@ -111,18 +126,21 @@ export default {
   top: 0px;
   background: #fff;
   z-index: 2;
+
   .form-control {
     border: none;
     border-bottom: 1px solid rgb(192, 192, 192);
     border-radius: 0;
     padding: 20px;
 
-    &:active,&:focus {
+    &:active,
+    &:focus {
       border-color: var(--redstone-red-color);
     }
   }
 }
-.dropdown-menu{
+
+.dropdown-menu {
   padding: 0 !important;
 }
 
@@ -137,7 +155,6 @@ export default {
     border: 2px solid darken(#FD627A, $amount: 15) !important;
   }
 }
-
 
 .crypto-name {
   font-size: 14px;
@@ -169,12 +186,12 @@ export default {
 
   .b-dropdown-form {
     padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
   }
 
   ul {
     width: 100%;
-    height: 350px;
-    overflow: scroll;
     left: 0;
     top: 100% !important;
     transform: none !important;
@@ -182,19 +199,23 @@ export default {
 
   label {
     margin-left: 20px;
-    &:focus,&:active{
-      &::before{
+
+    &:focus,
+    &:active {
+      &::before {
         border-color: var(--redstone-red-color) !important;
       }
     }
-    &::before, &::after{
+
+    &::before,
+    &::after {
       width: 15px;
       height: 15px;
     }
   }
 
-  input:checked + label{
-    &::before{
+  input:checked+label {
+    &::before {
       background-color: var(--redstone-red-color) !important;
       border-color: var(--redstone-red-color) !important;
     }
@@ -205,12 +226,34 @@ export default {
     margin: 5px 0;
     padding: 8px 10px;
   }
-  .no-results{
+
+  .no-results {
     text-align: center;
     display: block;
     width: 100%;
     padding: 15px;
     color: gray;
+  }
+
+  .confirm-button-container {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 10px;
+    border-top: 1px solid #e4e4e4;
+    text-align: center;
+  }
+
+  .confirm-button {
+    width: 100%;
+    background-color: var(--redstone-red-color);
+    border-color: var(--redstone-red-color);
+
+    &:hover,
+    &:focus {
+      background-color: darken(#FD627A, 10%);
+      border-color: darken(#FD627A, 10%);
+    }
   }
 }
 </style>
