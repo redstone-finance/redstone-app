@@ -1,5 +1,10 @@
 <template>
   <div class="chart-container">
+    <div class="range-buttons">
+      <button @click="setRange('1d')" :class="{ active: currentRange === '1d' }">1 Day</button>
+      <button @click="setRange('1w')" :class="{ active: currentRange === '1w' }">1 Week</button>
+      <button @click="setRange('1m')" :class="{ active: currentRange === '1m' }">1 Month</button>
+    </div>
     <canvas ref="chart"></canvas>
   </div>
 </template>
@@ -42,7 +47,7 @@ const crosshairPlugin = {
 Chart.pluginService.register(crosshairPlugin);
 
 export default {
-  name: 'LayerChart',
+  name: 'BlockchainChart',
   props: {
     data: {
       type: Array,
@@ -51,24 +56,38 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      currentRange: '1m' // Default to 1 month view
     }
   },
   computed: {
-    chartData() {
-      const dateCounts = this.data.reduce((acc, entry) => {
-        const date = entry.timeStamp.split(' ')[0];
-        acc[date] = (acc[date] || 0) + 1;
-        return acc;
-      }, {});
+    filteredData() {
+      const now = new Date();
+      let startDate;
 
+      switch (this.currentRange) {
+        case '1d':
+          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          break;
+        case '1w':
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case '1m':
+        default:
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+      }
+
+      return this.data.filter(entry => new Date(entry.timestamp) >= startDate);
+    },
+    chartData() {
       return {
-        labels: Object.keys(dateCounts),
+        labels: this.filteredData.map(entry => new Date(entry.timestamp)),
         datasets: [
           {
-            label: 'Number of actions',
+            label: 'Price',
             borderColor: '#FD627A',
-            data: Object.values(dateCounts),
+            data: this.filteredData.map(entry => entry.value),
             fill: true,
             lineTension: 0.1
           }
@@ -81,10 +100,10 @@ export default {
   },
   methods: {
     createGradient(ctx, chartArea) {
-      const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-      gradient.addColorStop(0, 'rgba(253, 98, 122, 0.1)');   // Start color (top)
-      gradient.addColorStop(0.8, 'rgba(253, 98, 122, 0)');   // End color (80% from top)
-      gradient.addColorStop(1, 'rgba(253, 98, 122, 0)');     // Ensure it stays transparent to the bottom
+      const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+      gradient.addColorStop(0, 'rgba(253, 98, 122, 0)');     // Fully transparent at the bottom
+      gradient.addColorStop(0.5, 'rgba(253, 98, 122, 0.1)'); // 10% opacity in the middle
+      gradient.addColorStop(1, 'rgba(253, 98, 122, 0.2)');   // 20% opacity at the top
       return gradient;
     },
     createChart() {
@@ -92,21 +111,7 @@ export default {
       
       this.chart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: this.chartData.labels,
-          datasets: [{
-            ...this.chartData.datasets[0],
-            backgroundColor: (context) => {
-              const chart = context.chart;
-              const {ctx, chartArea} = chart;
-              if (!chartArea) {
-                // This case happens on initial chart load
-                return null;
-              }
-              return this.createGradient(ctx, chartArea);
-            }
-          }]
-        },
+        data: this.chartData,
         options: {
           responsive: true,
           maintainAspectRatio: false,
@@ -116,7 +121,15 @@ export default {
           tooltips: {
             mode: 'index',
             intersect: false,
-            position: 'nearest'
+            position: 'nearest',
+            callbacks: {
+              label: (tooltipItem, data) => {
+                const dataIndex = tooltipItem.index;
+                const value = data.datasets[0].data[dataIndex];
+                const block = this.filteredData[dataIndex].block;
+                return `Block: ${block}, Price: $${value.toFixed(2)}`;
+              }
+            }
           },
           hover: {
             mode: 'index',
@@ -124,12 +137,21 @@ export default {
           },
           layout: {
             padding: {
-              bottom: 20 // Add padding to the bottom of the chart
+              bottom: 20
             }
           },
           scales: {
             xAxes: [{
-              type: 'category',
+              type: 'time',
+              time: {
+                unit: this.getTimeUnit(),
+                displayFormats: {
+                  hour: 'HH:mm',
+                  day: 'MMM D',
+                  week: 'MMM D',
+                  month: 'MMM YYYY'
+                }
+              },
               display: true,
               gridLines: {
                 display: false,
@@ -138,31 +160,66 @@ export default {
               },
               ticks: {
                 display: true,
-                padding: 20 // Move labels 20px down
+                padding: 20
               }
             }],
             yAxes: [{
               display: true,
               ticks: {
-                beginAtZero: true
+                beginAtZero: false,
+                callback: function(value, index, values) {
+                  return '$' + value.toFixed(2);
+                }
               },
               gridLines: {
                 display: true
               }
             }]
+          },
+          plugins: {
+            crosshair: true
           }
         }
       });
+
+      // Apply gradient after chart creation
+      this.updateGradient();
+    },
+    updateChart() {
+      if (this.chart) {
+        this.chart.data = this.chartData;
+        this.chart.options.scales.xAxes[0].time.unit = this.getTimeUnit();
+        this.updateGradient();
+        this.chart.update();
+      }
+    },
+    updateGradient() {
+      const chartArea = this.chart.chartArea;
+      const ctx = this.chart.ctx;
+      if (chartArea) {
+        this.chart.data.datasets[0].backgroundColor = this.createGradient(ctx, chartArea);
+      }
+    },
+    setRange(range) {
+      this.currentRange = range;
+      this.updateChart();
+    },
+    getTimeUnit() {
+      switch (this.currentRange) {
+        case '1d':
+          return 'hour';
+        case '1w':
+          return 'day';
+        case '1m':
+        default:
+          return 'week';
+      }
     }
   },
   watch: {
     data: {
       handler() {
-        if (this.chart) {
-          this.chart.data.labels = this.chartData.labels;
-          this.chart.data.datasets[0].data = this.chartData.datasets[0].data;
-          this.chart.update();
-        }
+        this.updateChart();
       },
       deep: true
     }
@@ -177,7 +234,24 @@ export default {
 
 <style scoped>
 .chart-container {
-  height: 100%;
+  height: 550px;
   width: 100%;
+}
+.range-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.range-buttons button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+.range-buttons button.active {
+  background-color: #FD627A;
+  color: #fff;
 }
 </style>

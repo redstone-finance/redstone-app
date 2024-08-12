@@ -31,9 +31,6 @@
                                 </span>
                             </dd>
                         </div>
-
-
-
                         <div class="applicant-info__item">
                             <dt class="applicant-info__label">Trigger parameters</dt>
                             <dd class="applicant-info__column-value">
@@ -76,6 +73,7 @@ import ContractAddress from './components/ContractAddress.vue';
 import { transformFeed } from './feedUtils';
 import TimestampWithLoader from './components/TimestampWithLoader.vue';
 import HeartbeatTimer from './components/HeartbeatTimer.vue'
+import sample from './sample.json'
 
 export default {
     components: {
@@ -88,25 +86,7 @@ export default {
         return {
             chartData: [],
             isLoading: false,
-            sampleData: [{ timeStamp: "2024-08-01 08:15:30", action: "Login" },
-            { timeStamp: "2024-08-01 09:30:45", action: "View Profile" },
-            { timeStamp: "2024-08-01 11:20:15", action: "Update Settings" },
-            { timeStamp: "2024-08-02 10:05:00", action: "Post Comment" },
-            { timeStamp: "2024-08-02 14:45:30", action: "Like Post" },
-            { timeStamp: "2024-08-02 16:30:00", action: "Share Content" },
-            { timeStamp: "2024-08-02 18:20:15", action: "Logout" },
-            { timeStamp: "2024-08-03 09:00:00", action: "Login" },
-            { timeStamp: "2024-08-03 11:30:45", action: "Send Message" },
-            { timeStamp: "2024-08-04 13:15:30", action: "View Profile" },
-            { timeStamp: "2024-08-04 15:45:00", action: "Update Status" },
-            { timeStamp: "2024-08-04 17:30:15", action: "Like Post" },
-            { timeStamp: "2024-08-04 19:00:30", action: "Logout" },
-            { timeStamp: "2024-08-05 08:30:00", action: "Login" },
-            { timeStamp: "2024-08-05 10:15:45", action: "Post Comment" },
-            { timeStamp: "2024-08-05 12:00:30", action: "Share Content" },
-            { timeStamp: "2024-08-05 14:30:15", action: "Send Message" },
-            { timeStamp: "2024-08-05 16:45:00", action: "Update Settings" },
-            { timeStamp: "2024-08-05 18:20:30", action: "Logout" }]
+            sampleData: sample
         };
     },
 
