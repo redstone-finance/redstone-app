@@ -3,11 +3,19 @@
         <div class="feeds__actions-wrapper">
             <div>
                 <div class="feeds__actions-wrapper-item">
-                    <NetworkPicker @input="handleFilter('networks', $event)"
-                        v-model="selectedNetworks" :items="networksMap" class="feeds__network-picker" />
-                    <CryptoPicker :items="cryptoImages"
-                        @input="handleFilter('cryptos', $event)" v-model="selectedCryptos"
-                        class="feeds__crypto-picker" />
+                    <NetworkPicker @input="handleFilter('networks', $event)" :value="selectedNetworks"
+                        :items="networksMap" class="feeds__network-picker" />
+                    <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)"
+                        :value="selectedCryptos" class="feeds__crypto-picker" />
+                    <div class="feeds__status">
+                        <div class="feeds__actions-wrapper-label ml-4  mr-2 text-light fw-normal">Displaying</div>
+                        <span class="feeds__status-text mr-2">
+                            <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks
+                        </span>
+                        <span class="feeds__status-text">
+                            <strong>{{ filteredItems.length }}</strong> feeds
+                        </span>
+                    </div>
                 </div>
                 <div class="feeds__actions-wrapper-item">
                     <div v-if="selectedNetworks.length > 0">
@@ -19,18 +27,7 @@
                         <div class="selected-items">Selected cryptos:</div>
                         <SelectedFilters @remove="removeCrypto" class="mt-2" :filters="displayedSelectedCryptos" />
                     </div>
-                </div>
-            </div>
-            <div class="feeds__actions-wrapper-item feeds__actions-wrapper-item--right">
-                <div class="feeds__status">
                     <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
-                    <div class="feeds__actions-wrapper-label">Displaying</div>
-                    <span class="feeds__status-text">
-                        <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks
-                    </span>
-                    <span class="feeds__status-text">
-                        <strong>{{ filteredItems.length }}</strong> feeds
-                    </span>
                 </div>
             </div>
         </div>
@@ -177,6 +174,7 @@ export default {
         initializeFiltersFromRoute() {
             const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query
             this.selectedCryptos = cryptos ? cryptos.split(',') : []
+            console.log({ cryptos })
             this.selectedNetworks = networks ? networks.split(',').map(Number) : []
             this.currentPage = page ? parseInt(page) : 1
             this.sortBy = sortBy || null
@@ -216,6 +214,7 @@ export default {
         handleFilter(filterType, value) {
             if (filterType === 'cryptos') {
                 this.selectedCryptos = value
+                console.log(this.selectedCryptos)
             } else if (filterType === 'networks') {
                 this.selectedNetworks = value
             }
@@ -254,7 +253,7 @@ export default {
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
-            this.unselectInvalidItems()
+            // this.unselectInvalidItems()
         },
         customFilter(row, filters) {
             if (!filters) return true
