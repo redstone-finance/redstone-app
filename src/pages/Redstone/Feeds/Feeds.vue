@@ -10,7 +10,7 @@
                     <div class="feeds__status">
                         <div class="feeds__actions-wrapper-label ml-4  mr-2 text-light fw-normal">Displaying</div>
                         <span class="feeds__status-text mr-2">
-                            <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks, 
+                            <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks,
                         </span>
                         <span class="feeds__status-text">
                             <strong>{{ filteredItems.length }}</strong> feeds
@@ -101,19 +101,16 @@
 <script>
 import _ from "lodash";
 import { mapActions, mapGetters } from 'vuex'
-//Helpers
 import { hexToDate, parseUnixTime, getTimeUntilNextHeartbeat, timeUntilDate, findNearestCronDate } from '@/core/timeHelpers'
 import copyToClipboardHelper from '@/core/copyToClipboard'
 import prefetchImages from "@/core/prefetchImages"
 import truncateString from "@/core/truncate"
-//Components
 import Loader from '../../../components/Loader/Loader'
 import CryptoPicker from "./components/CryptoPicker.vue"
 import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
 import SelectedFilters from "./components/SelectedFilters.vue"
-// Definitions
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
 import { sortBy } from "lodash"
@@ -141,6 +138,7 @@ export default {
             filteredItems: [],
             isUnselecting: false,
             isInitialLoad: true,
+            scrollPosition: 0,
             mostUsedCryptos: [
                 { name: 'BitCoin', token: 'BTC', image: 'btc.webp' },
                 { name: 'Ethereum', token: 'ETH', image: 'eth.webp' },
@@ -159,7 +157,6 @@ export default {
             ],
         };
     },
-
     async mounted() {
         prefetchImages(Object.values(networks).map(network => network.iconUrl))
         await this.init()
@@ -174,7 +171,6 @@ export default {
         initializeFiltersFromRoute() {
             const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query
             this.selectedCryptos = cryptos ? cryptos.split(',') : []
-            console.log({ cryptos })
             this.selectedNetworks = networks ? networks.split(',').map(Number) : []
             this.currentPage = page ? parseInt(page) : 1
             this.sortBy = sortBy || null
@@ -182,44 +178,47 @@ export default {
             this.applyFilters()
         },
         updateRouteParams() {
-            if (this.isInitialLoad) return
-            const query = { ...this.$route.query }
+            if (this.isInitialLoad) return;
+            this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            const query = { ...this.$route.query };
             if (this.selectedCryptos.length > 0) {
-                query.cryptos = this.selectedCryptos.join(',')
+                query.cryptos = this.selectedCryptos.join(',');
             } else {
-                delete query.cryptos
+                delete query.cryptos;
             }
             if (this.selectedNetworks.length > 0) {
-                query.networks = this.selectedNetworks.join(',')
+                query.networks = this.selectedNetworks.join(',');
             } else {
-                delete query.networks
+                delete query.networks;
             }
-            query.page = this.currentPage.toString()
-
-            // Add sorting parameters
+            query.page = this.currentPage.toString();
             if (this.sortBy) {
-                query.sortBy = this.sortBy
-                query.sortDesc = this.sortDesc.toString()
+                query.sortBy = this.sortBy;
+                query.sortDesc = this.sortDesc.toString();
             } else {
-                delete query.sortBy
-                delete query.sortDesc
+                delete query.sortBy;
+                delete query.sortDesc;
             }
-
-            this.$router.push({ query }).catch(err => {
-                if (err.name !== 'NavigationDuplicated') {
-                    throw err
-                }
-            });
+            this.$router.replace({ query })
+                .then(() => {
+                    this.$nextTick(() => {
+                        window.scrollTo(0, this.scrollPosition);
+                    });
+                })
+                .catch(err => {
+                    if (err.name !== 'NavigationDuplicated') {
+                        throw err;
+                    }
+                });
         },
         handleFilter(filterType, value) {
             if (filterType === 'cryptos') {
                 this.selectedCryptos = value
-                console.log(this.selectedCryptos)
             } else if (filterType === 'networks') {
                 this.selectedNetworks = value
             }
             if (!this.isInitialLoad) {
-                this.currentPage = 1 // Reset to first page when filters change, but not on initial load
+                this.currentPage = 1
             }
             this.applyFilters()
             this.updateRouteParams()
@@ -234,7 +233,9 @@ export default {
                 selectedCryptos: this.selectedCryptos,
                 selectedNetworks: this.selectedNetworks
             };
-            this.$refs.selectableTable.refresh()
+            this.$nextTick(() => {
+                this.$refs.selectableTable.refresh();
+            });
         },
         resetFilters() {
             this.selectedCryptos = []
@@ -253,25 +254,20 @@ export default {
         },
         onFiltered(filteredItems) {
             this.filteredItems = filteredItems
-            // this.unselectInvalidItems()
         },
         customFilter(row, filters) {
             if (!filters) return true
-
             const { selectedCryptos, selectedNetworks } = filters
-
             const cryptoMatch = selectedCryptos.length === 0 || selectedCryptos.some(crypto => {
                 const feedParts = row.feed.split('/')
                 return feedParts[0].toLowerCase() === crypto.toLowerCase();
             });
             const networkMatch = selectedNetworks.length === 0 || selectedNetworks.includes(row.network.id)
-
             return cryptoMatch && networkMatch
         },
         unselectInvalidItems() {
-            if (this.isUnselecting) return; // Prevent recursive calls
+            if (this.isUnselecting) return;
             this.isUnselecting = true
-
             const newSelectedCryptos = this.selectedCryptos.filter(crypto =>
                 this.filteredCurrencies.some(currency =>
                     currency.toLowerCase().includes(crypto.toLowerCase())
@@ -372,6 +368,14 @@ export default {
         feeds() {
             this.filteredItems = []
         },
+        '$route.query': {
+            handler() {
+                this.$nextTick(() => {
+                    window.scrollTo(0, this.scrollPosition);
+                });
+            },
+            deep: true
+        }
     },
     computed: {
         tokensInNetworks() {

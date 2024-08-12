@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
 import Layout from '@/components/Layout/Layout';
 import ErrorPage from '@/pages/Error/Error';
 
@@ -13,6 +12,7 @@ import DataServices from "@/pages/Redstone/DataServices/DataServices";
 import DataService from "@/pages/Redstone/DataService/DataService";
 import Feeds from "@/pages/Redstone/Feeds/Feeds"
 import Feed from "@/pages/Redstone/Feeds/Feed"
+
 // Store
 import store from "./store";
 
@@ -25,7 +25,6 @@ const router = new Router({
       name: 'Error',
       component: ErrorPage,
     },
-
     {
       path: '/app',
       name: 'Layout',
@@ -57,15 +56,10 @@ const router = new Router({
         },
         {
           path: 'feeds',
-          
           name: 'Feeds list',
           component: Feeds,
+          meta: {noScroll: true}
         },
-        // {
-        //   path: 'feeds/:network/:token',
-        //   name: 'SingleFeed',
-        //   component: Feed,
-        // },
         {
           path: 'data-services',
           name: 'DataServicesPage',
@@ -82,8 +76,20 @@ const router = new Router({
       ],
     },
   ],
-  scrollBehavior: () => {
-    document.getElementsByClassName('sing-dashboard')[0].scrollIntoView();
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    }
+    if (to.hash) {
+      return { selector: to.hash };
+    }
+    if (to.matched.some(m => m.meta.noScroll)) {
+      return false;
+    }
+    if (to.name === from.name && to.path === from.path) {
+      return false;
+    }
+    return { x: 0, y: 0 };
   }
 });
 
