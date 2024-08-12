@@ -7,6 +7,11 @@
     padding: 2rem;
     box-shadow: var(--content-shadow);
 
+    &__status{
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+    }
     table {
         border-top: 1px solid rgb(227, 227, 227);
     }
@@ -95,6 +100,7 @@
             display: flex;
             flex-wrap: wrap;
             margin-bottom: 1rem;
+            align-items: center;
 
             @media (max-width: breakpoint-min(md)) {
                 margin: 0;
@@ -114,7 +120,6 @@
         &-label {
             font-size: 10px;
             font-weight: bold;
-            margin-bottom: 0.5rem;
         }
     }
 

@@ -184,6 +184,10 @@ export default {
 .crypto-dropdown {
   width: 100%;
 
+  .custom-control-label{
+    width: calc(100% - 30px) !important;
+  }
+
   .b-dropdown-form {
     padding: 0;
     max-height: 300px;
