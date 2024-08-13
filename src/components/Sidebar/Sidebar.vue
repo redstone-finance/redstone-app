@@ -45,7 +45,12 @@
         </div>
         <div class="links mt-3 mb-3">
           <a href="mailto:hello@redstone.finance">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1000 1000">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 1000 1000"
+            >
               <path
                 d="M 900 163C 934 163 962 191 962 225C 962 225 962 305 962 305C 962 305 579 569 579 569C 545 592 521 600 500 600C 479 600 455 592 421 569C 421 569 38 305 38 305C 38 305 38 225 38 225C 38 191 66 163 100 163C 100 163 900 163 900 163M 379 631C 379 631 379 631 379 631C 420 658 459 675 500 675C 541 675 580 658 621 631C 621 631 621 631 621 631C 621 631 962 396 962 396C 962 396 962 800 962 800C 962 834 934 862 900 862C 900 862 100 862 100 862C 66 862 38 834 38 800C 38 800 38 396 38 396C 38 396 379 631 379 631"
               ></path>
@@ -65,7 +70,12 @@
             </svg>
           </a>
           <a href="https://github.com/redstone-finance" target="_blank">
-            <svg width="20" height="20" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 1024 1024"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <path
                 fill-rule="evenodd"
                 clip-rule="evenodd"
@@ -75,7 +85,12 @@
             </svg>
           </a>
           <a href="https://discord.com/invite/PVxBZKFr46" target="_blank">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1000 1000">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 1000 1000"
+            >
               <path
                 d="M 193 42C 193 42 193 42 193 42C 193 42 807 42 807 42C 859 42 901 84 901 136C 901 136 901 958 901 958C 901 958 802 871 802 871C 802 871 747 820 747 820C 747 820 688 765 688 765C 688 765 712 850 712 850C 712 850 193 850 193 850C 141 850 99 808 99 756C 99 756 99 136 99 136C 99 84 141 42 193 42M 429 255C 429 255 429 255 429 255C 422 255 363 257 301 304C 301 304 235 423 235 571C 235 571 274 637 375 640C 375 640 392 620 406 602C 347 585 326 548 326 548C 326 548 330 551 338 556C 339 556 339 557 340 557C 342 558 343 559 344 560C 356 566 367 571 378 575C 396 582 419 590 445 595C 479 601 520 604 564 595C 585 592 607 585 630 576C 646 570 664 561 683 549C 683 549 660 586 600 603C 614 620 630 640 630 640C 731 637 770 571 770 571C 770 423 704 304 704 304C 638 254 576 255 576 255C 576 255 569 263 569 263C 647 287 683 321 683 321C 636 295 589 282 545 277C 512 273 481 274 453 278C 450 278 448 278 445 279C 429 280 390 286 341 308C 324 315 314 321 314 321C 314 321 352 285 435 261C 435 261 430 255 430 255C 430 255 430 255 429 255M 417 426C 417 426 417 426 417 426C 443 426 464 449 464 477C 464 505 443 528 417 528C 391 528 370 505 370 477C 370 449 391 426 417 426M 584 426C 584 426 584 426 584 426C 610 426 631 449 631 477C 631 505 610 528 584 528C 559 528 538 505 538 477C 538 449 558 426 584 426"
               ></path>
@@ -89,50 +104,50 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex'
-  import NavLink from './NavLink/NavLink'
+import { mapState, mapActions } from "vuex";
+import NavLink from "./NavLink/NavLink";
 
-  export default {
-    name: 'Sidebar',
-    components: { NavLink },
-    data() {
-      return {
-        alerts: [
-          {
-            id: 0,
-            title: 'Sales Report',
-            value: 15,
-            footer: 'Calculating x-axis bias... 65%',
-            color: 'danger',
-          },
-          {
-            id: 1,
-            title: 'Personal Responsibility',
-            value: 20,
-            footer: 'Provide required notes',
-            color: 'primary',
-          },
-        ],
-      }
+export default {
+  name: "Sidebar",
+  components: { NavLink },
+  data() {
+    return {
+      alerts: [
+        {
+          id: 0,
+          title: "Sales Report",
+          value: 15,
+          footer: "Calculating x-axis bias... 65%",
+          color: "danger",
+        },
+        {
+          id: 1,
+          title: "Personal Responsibility",
+          value: 20,
+          footer: "Provide required notes",
+          color: "primary",
+        },
+      ],
+    };
+  },
+  methods: {
+    ...mapActions("layout", ["changeSidebarActive", "switchSidebar"]),
+    setActiveByRoute() {
+      const paths = this.$route.fullPath.split("/");
+      paths.pop();
+      this.changeSidebarActive(paths.join("/"));
     },
-    methods: {
-      ...mapActions('layout', ['changeSidebarActive', 'switchSidebar']),
-      setActiveByRoute() {
-        const paths = this.$route.fullPath.split('/')
-        paths.pop()
-        this.changeSidebarActive(paths.join('/'))
-      },
-    },
-    created() {
-      this.setActiveByRoute()
-    },
-    computed: {
-      ...mapState('layout', {
-        showSidebar: (state) => state.showSidebar,
-        activeItem: (state) => state.sidebarActiveElement,
-      }),
-    },
-  }
+  },
+  created() {
+    this.setActiveByRoute();
+  },
+  computed: {
+    ...mapState("layout", {
+      showSidebar: (state) => state.showSidebar,
+      activeItem: (state) => state.sidebarActiveElement,
+    }),
+  },
+};
 </script>
 
 <!-- Sidebar styles should be scoped -->

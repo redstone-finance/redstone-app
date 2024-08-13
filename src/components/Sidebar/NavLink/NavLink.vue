@@ -1,21 +1,33 @@
 <template>
-  <li v-if="!childrenLinks && isHeader" :class="{ headerLink: true, className }">
+  <li
+    v-if="!childrenLinks && isHeader"
+    :class="{ headerLink: true, className }"
+  >
     <router-link v-if="!link.includes('http')" :to="link" class="sidebar-link">
       <span class="icon">
         <i v-if="iconName" :class="fullIconName"></i>
         <img v-if="imgUrl" :src="imgUrl" />
       </span>
       <span v-if="showHeader">{{ header }}</span>
-      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{ label }}</sup>
+      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{
+        label
+      }}</sup>
       <b-badge v-if="badge" variant="primary" pill>{{ badge }}</b-badge>
     </router-link>
-    <a v-if="link.includes('http')" :href="link" class="sidebar-link" target="_blank">
+    <a
+      v-if="link.includes('http')"
+      :href="link"
+      class="sidebar-link"
+      target="_blank"
+    >
       <span class="icon">
         <i v-if="iconName" :class="fullIconName"></i>
         <img v-if="imgUrl" :src="imgUrl" />
       </span>
       <span v-if="showHeader">{{ header }}</span>
-      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{ label }}</sup>
+      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{
+        label
+      }}</sup>
       <b-badge v-if="badge" variant="primary" pill>{{ badge }}</b-badge>
     </a>
   </li>
@@ -27,7 +39,12 @@
           <img v-if="imgUrl" :src="imgUrl" />
         </span>
         <span v-if="showHeader">{{ header }}</span>
-        <sup v-if="label" :class="'text-' + labelColor" class="ml-1 headerLabel">{{ label }}</sup>
+        <sup
+          v-if="label"
+          :class="'text-' + labelColor"
+          class="ml-1 headerLabel"
+          >{{ label }}</sup
+        >
         <div :class="{ caretWrapper: true, carretActive: isActive }">
           <i class="fa fa-angle-right" />
         </div>
@@ -50,58 +67,64 @@
   <li v-else>
     <router-link :to="index !== 'menu' && link">
       {{ header }}
-      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{ label }}</sup>
+      <sup v-if="label" :class="'text-' + labelColor" class="headerLabel">{{
+        label
+      }}</sup>
     </router-link>
   </li>
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 
-  export default {
-    name: 'NavLink',
-    props: {
-      badge: { type: String, default: '' },
-      header: { type: String, default: '' },
-      iconName: { type: String, default: '' },
-      c: { type: String, default: '' },
-      headerLink: { type: String, default: '' },
-      link: { type: String, default: '' },
-      childrenLinks: { type: Array, default: null },
-      className: { type: String, default: '' },
-      isHeader: { type: Boolean, default: false },
-      deep: { type: Number, default: 0 },
-      activeItem: { type: String, default: '' },
-      label: { type: String },
-      labelColor: { type: String, default: 'warning' },
-      index: { type: String },
-      imgUrl: { type: String },
+export default {
+  name: "NavLink",
+  props: {
+    badge: { type: String, default: "" },
+    header: { type: String, default: "" },
+    iconName: { type: String, default: "" },
+    c: { type: String, default: "" },
+    headerLink: { type: String, default: "" },
+    link: { type: String, default: "" },
+    childrenLinks: { type: Array, default: null },
+    className: { type: String, default: "" },
+    isHeader: { type: Boolean, default: false },
+    deep: { type: Number, default: 0 },
+    activeItem: { type: String, default: "" },
+    label: { type: String },
+    labelColor: { type: String, default: "warning" },
+    index: { type: String },
+    imgUrl: { type: String },
+  },
+  data() {
+    return {
+      headerLinkWasClicked: true,
+    };
+  },
+  methods: {
+    ...mapActions("layout", ["changeSidebarActive"]),
+    togglePanelCollapse(link) {
+      this.changeSidebarActive(link);
+      this.headerLinkWasClicked =
+        !this.headerLinkWasClicked || !this.activeItem.includes(this.index);
     },
-    data() {
-      return {
-        headerLinkWasClicked: true,
-      }
+  },
+  computed: {
+    fullIconName() {
+      return `fi ${this.iconName}`;
     },
-    methods: {
-      ...mapActions('layout', ['changeSidebarActive']),
-      togglePanelCollapse(link) {
-        this.changeSidebarActive(link)
-        this.headerLinkWasClicked =
-          !this.headerLinkWasClicked || !this.activeItem.includes(this.index)
-      },
+    isActive() {
+      return (
+        this.activeItem &&
+        this.activeItem.includes(this.index) &&
+        this.headerLinkWasClicked
+      );
     },
-    computed: {
-      fullIconName() {
-        return `fi ${this.iconName}`
-      },
-      isActive() {
-        return this.activeItem && this.activeItem.includes(this.index) && this.headerLinkWasClicked
-      },
-      ...mapState('layout', {
-        showHeader: (state) => !state.sidebarClose || state.sidebarStatic,
-      }),
-    },
-  }
+    ...mapState("layout", {
+      showHeader: (state) => !state.sidebarClose || state.sidebarStatic,
+    }),
+  },
+};
 </script>
 
 <style src="./NavLink.scss" lang="scss" scoped />

@@ -43,7 +43,9 @@ a:not([href]):not([class]) {
 .form-control {
   font-family: $font-family-base;
   box-shadow: none;
-  transition: border-color ease-in-out 0.15s, background-color ease-in-out 0.15s;
+  transition:
+    border-color ease-in-out 0.15s,
+    background-color ease-in-out 0.15s;
 
   &:focus {
     box-shadow: none;
@@ -315,8 +317,8 @@ small {
 }
 
 .dropdown-toggle::after {
-  font-family: 'Line Awesome Free', sans-serif;
-  content: '\f107';
+  font-family: "Line Awesome Free", sans-serif;
+  content: "\f107";
   border: none;
   width: auto;
   height: auto;
@@ -382,62 +384,62 @@ small {
 }
 
 .alert-success {
-  background: theme-color('success');
+  background: theme-color("success");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('success');
-    background: rgba(theme-color('success'), $alert-transparent);
+    color: theme-color("success");
+    background: rgba(theme-color("success"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('success');
+    color: theme-color("success");
   }
 }
 
 .alert-info {
-  background: theme-color('info');
+  background: theme-color("info");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('info');
-    background: rgba(theme-color('info'), $alert-transparent);
+    color: theme-color("info");
+    background: rgba(theme-color("info"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('info');
+    color: theme-color("info");
   }
 }
 
 .alert-warning {
-  background: theme-color('warning');
+  background: theme-color("warning");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('warning');
-    background: rgba(theme-color('warning'), $alert-transparent);
+    color: theme-color("warning");
+    background: rgba(theme-color("warning"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('warning');
+    color: theme-color("warning");
   }
 }
 
 .alert-danger {
-  background: theme-color('danger');
+  background: theme-color("danger");
   color: $white;
 
   &.alert-transparent {
-    color: theme-color('danger');
-    background: rgba(theme-color('danger'), $alert-transparent);
+    color: theme-color("danger");
+    background: rgba(theme-color("danger"), $alert-transparent);
   }
 
   .btn:not(.btn-default) {
     background: rgba($white, 0.8);
-    color: theme-color('danger');
+    color: theme-color("danger");
   }
 }
 
@@ -467,7 +469,7 @@ small {
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
-  content: '>';
+  content: ">";
   color: $gray-600;
 }
 
@@ -682,7 +684,7 @@ h6,
 
 code {
   font-size: 85%;
-  background-color: theme-color('danger-light');
+  background-color: theme-color("danger-light");
   color: $pink;
   padding: 0;
 }
@@ -760,7 +762,7 @@ pre {
     border-color: darken($purple, 10%);
 
     .remove:before {
-      content: ' ×' !important;
+      content: " ×" !important;
       color: white;
     }
   }
@@ -779,24 +781,24 @@ pre {
     border-radius: $border-radius;
 
     &.default {
-      background: theme-color('default');
+      background: theme-color("default");
       color: $text-color;
     }
 
     &.error {
-      background: theme-color('danger');
+      background: theme-color("danger");
     }
 
     &.success {
-      background: theme-color('success');
+      background: theme-color("success");
     }
 
     &.info {
-      background: theme-color('info');
+      background: theme-color("info");
     }
 
     &.warning {
-      background: theme-color('warning');
+      background: theme-color("warning");
     }
 
     .action {
@@ -888,7 +890,9 @@ pre {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     position: relative;
-    box-shadow: inset 0px -6px 2px -4px $gray-250, 5px -5px 6px -2px $gray-250;
+    box-shadow:
+      inset 0px -6px 2px -4px $gray-250,
+      5px -5px 6px -2px $gray-250;
   }
 
   &.active {
@@ -900,7 +904,7 @@ pre {
 
 .nav-tabs > .nav-item:not(:first-of-type) > .nav-link:not(.active) {
   &:after {
-    content: ' ';
+    content: " ";
     height: 23px;
     border-right: 1px solid $gray-450;
     border-top-width: 0;
@@ -937,7 +941,8 @@ a {
 }
 
 .input-group > input.form-control:not(.no-radius):nth-of-type(1n),
-.input-group:not(.has-validation) > input.form-control:not(.no-radius):nth-of-type(1n) {
+.input-group:not(.has-validation)
+  > input.form-control:not(.no-radius):nth-of-type(1n) {
   border-radius: $border-radius;
 }
 

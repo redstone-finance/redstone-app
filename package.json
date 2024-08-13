@@ -2,6 +2,7 @@
   "name": "redstone-app",
   "version": "2.2.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
@@ -61,9 +62,9 @@
   },
   "devDependencies": {
     "redstone-prettier-config": "^1.0.0",
-    "prettier": "^2.8.8",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^3.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "@babel/core": "^7.24.9",
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/plugin-proposal-private-methods": "^7.18.6",

@@ -1,87 +1,87 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-import Layout from '@/components/Layout/Layout'
-import ErrorPage from '@/pages/Error/Error'
+import Layout from "@/components/Layout/Layout";
+import ErrorPage from "@/pages/Error/Error";
 
 // Redstone
-import Tokens from '@/pages/Redstone/Tokens/Tokens'
-import Token from '@/pages/Redstone/Token/Token'
-import Sources from '@/pages/Redstone/Sources/Sources'
-import Source from '@/pages/Redstone/Source/Source'
-import DataServices from '@/pages/Redstone/DataServices/DataServices'
-import DataService from '@/pages/Redstone/DataService/DataService'
+import Tokens from "@/pages/Redstone/Tokens/Tokens";
+import Token from "@/pages/Redstone/Token/Token";
+import Sources from "@/pages/Redstone/Sources/Sources";
+import Source from "@/pages/Redstone/Source/Source";
+import DataServices from "@/pages/Redstone/DataServices/DataServices";
+import DataService from "@/pages/Redstone/DataService/DataService";
 
 // Store
-import store from './store'
+import store from "./store";
 
-Vue.use(Router)
+Vue.use(Router);
 
 const router = new Router({
   routes: [
     {
-      path: '/error',
-      name: 'Error',
+      path: "/error",
+      name: "Error",
       component: ErrorPage,
     },
 
     {
-      path: '/app',
-      name: 'Layout',
+      path: "/app",
+      name: "Layout",
       component: Layout,
       children: [
         // Redstone
         {
-          path: 'tokens',
-          name: 'TokensPage',
+          path: "tokens",
+          name: "TokensPage",
           component: Tokens,
           meta: {
             showSearchInputInNavbar: true,
           },
         },
         {
-          path: 'token/:symbol',
-          name: 'TokenPage',
+          path: "token/:symbol",
+          name: "TokenPage",
           component: Token,
         },
         {
-          path: 'sources',
-          name: 'SourcesPage',
+          path: "sources",
+          name: "SourcesPage",
           component: Sources,
         },
         {
-          path: 'source/:sourceId',
-          name: 'SourcePage',
+          path: "source/:sourceId",
+          name: "SourcePage",
           component: Source,
         },
         {
-          path: 'data-services',
-          name: 'DataServicesPage',
+          path: "data-services",
+          name: "DataServicesPage",
           component: DataServices,
           meta: {
             showSearchInputInNavbar: true,
           },
         },
         {
-          path: 'data-services/:id',
-          name: 'DataServicePage',
+          path: "data-services/:id",
+          name: "DataServicePage",
           component: DataService,
         },
       ],
     },
   ],
   scrollBehavior: () => {
-    document.getElementsByClassName('sing-dashboard')[0].scrollIntoView()
+    document.getElementsByClassName("sing-dashboard")[0].scrollIntoView();
   },
-})
+});
 
 router.beforeEach((to, from, next) => {
   if (to.meta.showSearchInputInNavbar) {
-    store.dispatch('layout/setSearchInputVisibilityInHeader', true)
+    store.dispatch("layout/setSearchInputVisibilityInHeader", true);
   } else {
-    store.dispatch('layout/setSearchInputVisibilityInHeader', false)
+    store.dispatch("layout/setSearchInputVisibilityInHeader", false);
   }
-  next()
-})
+  next();
+});
 
-export default router
+export default router;

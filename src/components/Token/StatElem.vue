@@ -11,33 +11,33 @@
 </template>
 
 <script>
-  export default {
-    name: 'StatElem',
-    props: {
-      value: String,
-      title: String,
-      isCurrencyToken: Boolean,
-      currency: String,
-      decimals: Number,
-    },
-  }
+export default {
+  name: "StatElem",
+  props: {
+    value: String,
+    title: String,
+    isCurrencyToken: Boolean,
+    currency: String,
+    decimals: Number,
+  },
+};
 </script>
 
 <style scoped lang="scss">
-  @import '~@/styles/app';
+@import "~@/styles/app";
 
-  .stat-elem {
-    color: $gray-750;
-    display: flex;
+.stat-elem {
+  color: $gray-750;
+  display: flex;
 
-    .stat-title {
-      font-size: 14px;
-      font-weight: $font-weight-ultra-thin;
-    }
-
-    .stat-value {
-      font-size: 14px;
-      font-weight: $font-weight-soft-bold;
-    }
+  .stat-title {
+    font-size: 14px;
+    font-weight: $font-weight-ultra-thin;
   }
+
+  .stat-value {
+    font-size: 14px;
+    font-weight: $font-weight-soft-bold;
+  }
+}
 </style>

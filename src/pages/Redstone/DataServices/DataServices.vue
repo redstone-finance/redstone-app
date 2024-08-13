@@ -1,8 +1,16 @@
 <template>
   <div class="providers-wrapper">
     <b-row class="justify-content-center">
-      <b-col cols="12" class="widget-col" v-for="(provider, id) in filteredProviders" :key="id">
-        <div class="widget-wrapper" @click="$router.push('/app/data-services/' + id)">
+      <b-col
+        cols="12"
+        class="widget-col"
+        v-for="(provider, id) in filteredProviders"
+        :key="id"
+      >
+        <div
+          class="widget-wrapper"
+          @click="$router.push('/app/data-services/' + id)"
+        >
           <Widget class="mb-0 provider-card">
             <div class="provider-details">
               <div class="provider-logo">
@@ -60,7 +68,7 @@
                   {{
                     provider?.currentManifest?.interval
                       ? formatInterval(provider.currentManifest.interval)
-                      : '-'
+                      : "-"
                   }}
                 </div>
               </div>
@@ -123,56 +131,58 @@
 </template>
 
 <script>
-  import Rating from '@/components/Rating/Rating'
-  import _ from 'lodash'
-  import { mapState } from 'vuex'
+import Rating from "@/components/Rating/Rating";
+import _ from "lodash";
+import { mapState } from "vuex";
 
-  export default {
-    name: 'DataServices',
+export default {
+  name: "DataServices",
 
-    data() {
-      return {}
-    },
+  data() {
+    return {};
+  },
 
-    created() {},
+  created() {},
 
-    computed: {
-      ...mapState('prefetch', {
-        providers: (state) => {
-          return state.providers
-        },
-      }),
-
-      searchPhrase() {
-        let search = this.$route.query.search
-        return search != null ? search : ''
+  computed: {
+    ...mapState("prefetch", {
+      providers: (state) => {
+        return state.providers;
       },
+    }),
 
-      filteredProviders() {
-        if (this.providers) {
-          let filterProviders = {}
-
-          Object.entries(this.providers).forEach(([key, value]) => {
-            if (value.name.toLowerCase().includes(this.searchPhrase.toLowerCase())) {
-              filterProviders[key] = value
-            }
-          })
-
-          return filterProviders
-        }
-      },
+    searchPhrase() {
+      let search = this.$route.query.search;
+      return search != null ? search : "";
     },
 
-    methods: {
-      styleCategory(text, numberOfCategories, index) {
-        return _.startCase(text) + (index < numberOfCategories - 1 ? ', ' : '')
-      },
-    },
+    filteredProviders() {
+      if (this.providers) {
+        let filterProviders = {};
 
-    components: {
-      Rating,
+        Object.entries(this.providers).forEach(([key, value]) => {
+          if (
+            value.name.toLowerCase().includes(this.searchPhrase.toLowerCase())
+          ) {
+            filterProviders[key] = value;
+          }
+        });
+
+        return filterProviders;
+      }
     },
-  }
+  },
+
+  methods: {
+    styleCategory(text, numberOfCategories, index) {
+      return _.startCase(text) + (index < numberOfCategories - 1 ? ", " : "");
+    },
+  },
+
+  components: {
+    Rating,
+  },
+};
 </script>
 
 <style src="./DataServices.scss" lang="scss" scoped />

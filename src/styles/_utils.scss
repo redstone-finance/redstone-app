@@ -17,14 +17,14 @@ $opacity-variants: (
   80: 0.8,
   90: 0.9,
 );
-@include property-variants('.opacity', 'opacity', $opacity-variants);
+@include property-variants(".opacity", "opacity", $opacity-variants);
 $width-variants: (
   50: 50px,
   100: 100px,
   150: 150px,
   200: 200px,
 );
-@include property-variants('.width', 'width', $width-variants);
+@include property-variants(".width", "width", $width-variants);
 $height-variants: (
   50: 50px,
   100: 100px,
@@ -32,15 +32,15 @@ $height-variants: (
   200: 200px,
   250: 250px,
 );
-@include property-variants('.height', 'height', $height-variants);
-@include property-variants('.max-height', 'max-height', $height-variants);
+@include property-variants(".height", "height", $height-variants);
+@include property-variants(".max-height", "max-height", $height-variants);
 $z-index-variants: (
   more: 1,
   less: -1,
-  '10': 10,
-  '-10': -10,
+  "10": 10,
+  "-10": -10,
 );
-@include property-variants('.z-index', 'z-index', $z-index-variants);
+@include property-variants(".z-index", "z-index", $z-index-variants);
 .fw-semi-bold {
   font-weight: 600;
 }
@@ -91,19 +91,19 @@ $z-index-variants: (
   border: #{$line-height-base/5}em solid transparent;
   // stylelint-disable
   &.circle-o-danger {
-    border-color: theme-color('danger');
+    border-color: theme-color("danger");
   }
   &.circle-o-warning {
-    border-color: theme-color('warning');
+    border-color: theme-color("warning");
   }
   &.circle-o-success {
-    border-color: theme-color('success');
+    border-color: theme-color("success");
   }
   &.circle-o-info {
-    border-color: theme-color('info');
+    border-color: theme-color("info");
   }
   &.circle-o-primary {
-    border-color: theme-color('primary');
+    border-color: theme-color("primary");
   }
   &.circle-o-black {
     border-color: $black;
@@ -129,11 +129,11 @@ $z-index-variants: (
   // stylelint-enable
 }
 
-@include thumb('.thumb-xl', 100px);
-@include thumb('.thumb-lg', 60px);
-@include thumb('.thumb', 48px);
-@include thumb('.thumb-sm', 34px);
-@include thumb('.thumb-xs', 28px);
+@include thumb(".thumb-xl", 100px);
+@include thumb(".thumb-lg", 60px);
+@include thumb(".thumb", 48px);
+@include thumb(".thumb-sm", 34px);
+@include thumb(".thumb-xs", 28px);
 .thumb-xs,
 .thumb-sm,
 .thumb-lg,
@@ -180,7 +180,7 @@ $z-index-variants: (
   }
 }
 
-@include bg-variant('.bg-dark', $text-color);
+@include bg-variant(".bg-dark", $text-color);
 .td-underline {
   text-decoration: underline;
 }
@@ -228,21 +228,21 @@ $z-index-variants: (
 // Text & Background Variations
 // ----------------------------
 //copy bg classes after bootstrap so it's possible to overload other bootstrap classes
-@include bg-variant('.bg-primary', theme-color('primary'));
-@include bg-variant('.bg-success', theme-color('success'));
-@include bg-variant('.bg-info', theme-color('info'));
-@include bg-variant('.bg-warning', theme-color('warning'));
-@include bg-variant('.bg-danger', theme-color('danger'));
-@include bg-variant('.bg-body', $body-bg);
-@include bg-variant('.bg-body-light', $body-bg-light);
-@include bg-variant('.bg-gray', $gray-700);
-@include bg-variant('.bg-gray-transparent', rgba($gray-700, 0.6));
-@include bg-variant('.bg-gray-dark', $gray-800);
-@include bg-variant('.bg-black', $black);
-@include bg-variant('.bg-gray-light', $gray-600);
-@include bg-variant('.bg-gray-lighter', $gray-200);
-@include bg-variant('.bg-transparent', rgba(0, 0, 0, 0));
-@include bg-variant('.bg-white', $white);
+@include bg-variant(".bg-primary", theme-color("primary"));
+@include bg-variant(".bg-success", theme-color("success"));
+@include bg-variant(".bg-info", theme-color("info"));
+@include bg-variant(".bg-warning", theme-color("warning"));
+@include bg-variant(".bg-danger", theme-color("danger"));
+@include bg-variant(".bg-body", $body-bg);
+@include bg-variant(".bg-body-light", $body-bg-light);
+@include bg-variant(".bg-gray", $gray-700);
+@include bg-variant(".bg-gray-transparent", rgba($gray-700, 0.6));
+@include bg-variant(".bg-gray-dark", $gray-800);
+@include bg-variant(".bg-black", $black);
+@include bg-variant(".bg-gray-light", $gray-600);
+@include bg-variant(".bg-gray-lighter", $gray-200);
+@include bg-variant(".bg-transparent", rgba(0, 0, 0, 0));
+@include bg-variant(".bg-white", $white);
 .bg-body,
 .bg-body-light,
 .bg-gray,
@@ -257,20 +257,20 @@ $z-index-variants: (
 }
 
 //override bs .text-* classes so they use $brand-* variables
-@include text-emphasis-variant('.text-primary', theme-color('primary'));
-@include text-emphasis-variant('.text-success', theme-color('success'));
-@include text-emphasis-variant('.text-info', theme-color('info'));
-@include text-emphasis-variant('.text-warning', theme-color('warning'));
-@include text-emphasis-variant('.text-danger', theme-color('danger'));
-@include text-emphasis-variant('.text-link', $link-color);
-@include text-emphasis-variant('.text-white', $white);
-@include text-emphasis-variant('.text-gray', $gray-700);
-@include text-emphasis-variant('.text-gray-dark', $gray-800);
-@include text-emphasis-variant('.text-gray-light', $gray-600);
-@include text-emphasis-variant('.text-semi-muted', $gray-600);
-@include text-emphasis-variant('.text-gray-darker', $gray-900);
-@include text-emphasis-variant('.text-gray-lighter', $gray-200);
-@include text-emphasis-variant('.text-color', $text-color);
+@include text-emphasis-variant(".text-primary", theme-color("primary"));
+@include text-emphasis-variant(".text-success", theme-color("success"));
+@include text-emphasis-variant(".text-info", theme-color("info"));
+@include text-emphasis-variant(".text-warning", theme-color("warning"));
+@include text-emphasis-variant(".text-danger", theme-color("danger"));
+@include text-emphasis-variant(".text-link", $link-color);
+@include text-emphasis-variant(".text-white", $white);
+@include text-emphasis-variant(".text-gray", $gray-700);
+@include text-emphasis-variant(".text-gray-dark", $gray-800);
+@include text-emphasis-variant(".text-gray-light", $gray-600);
+@include text-emphasis-variant(".text-semi-muted", $gray-600);
+@include text-emphasis-variant(".text-gray-darker", $gray-900);
+@include text-emphasis-variant(".text-gray-lighter", $gray-200);
+@include text-emphasis-variant(".text-color", $text-color);
 .text-ellipsis {
   display: block;
   white-space: nowrap;
@@ -340,12 +340,12 @@ $z-index-variants: (
   display: block;
 }
 
-@include keyframes('bg-attention') {
+@include keyframes("bg-attention") {
   0% {
-    background-color: lighten(theme-color('primary'), 63%);
+    background-color: lighten(theme-color("primary"), 63%);
   }
   5% {
-    background-color: lighten(theme-color('primary'), 53%);
+    background-color: lighten(theme-color("primary"), 53%);
   }
   0% {
     background-color: rgba(0, 0, 0, 0);
@@ -499,10 +499,10 @@ $margin-horizontal-variants: (
   xs: 5px,
   0: 0,
 );
-@include property-variants('.mt', 'margin-top', $margin-vertical-variants);
-@include property-variants('.mb', 'margin-bottom', $margin-vertical-variants);
-@include property-variants('.ml', 'margin-left', $margin-horizontal-variants);
-@include property-variants('.mr', 'margin-right', $margin-horizontal-variants);
+@include property-variants(".mt", "margin-top", $margin-vertical-variants);
+@include property-variants(".mb", "margin-bottom", $margin-vertical-variants);
+@include property-variants(".ml", "margin-left", $margin-horizontal-variants);
+@include property-variants(".mr", "margin-right", $margin-horizontal-variants);
 $padding-vertical-variants: (
   xlg: 40px,
   lg: $spacer * 3/2,
@@ -518,10 +518,14 @@ $padding-horizontal-variants: (
   xs: 5px,
   0: 0,
 );
-@include property-variants('.pt', 'padding-top', $padding-vertical-variants);
-@include property-variants('.pb', 'padding-bottom', $padding-vertical-variants);
-@include property-variants('.pl', 'padding-left', $padding-horizontal-variants);
-@include property-variants('.pr', 'padding-right', $padding-horizontal-variants);
+@include property-variants(".pt", "padding-top", $padding-vertical-variants);
+@include property-variants(".pb", "padding-bottom", $padding-vertical-variants);
+@include property-variants(".pl", "padding-left", $padding-horizontal-variants);
+@include property-variants(
+  ".pr",
+  "padding-right",
+  $padding-horizontal-variants
+);
 .mt-negative-lg {
   margin-top: -($spacer * 1.5);
 }
@@ -562,8 +566,8 @@ $padding-horizontal-variants: (
 
 /* .h* + .fw-bold */
 
-$font-sizes: 54px, $h1-font-size, $h2-font-size, $h3-font-size, $h4-font-size, $h5-font-size,
-  $h6-font-size;
+$font-sizes: 54px, $h1-font-size, $h2-font-size, $h3-font-size, $h4-font-size,
+  $h5-font-size, $h6-font-size;
 $i: 0;
 @each $font-size in $font-sizes {
   .value#{$i} {
@@ -616,7 +620,7 @@ $i: 0;
 }
 
 .preloader {
-  content: '';
+  content: "";
   background-color: $gray-150;
 }
 

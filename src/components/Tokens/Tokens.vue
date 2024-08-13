@@ -18,7 +18,9 @@
             @click="
               $router.push(
                 `/app/token/${
-                  token.symbol.includes('/') ? token.symbol.replace('/', '\\') : token.symbol
+                  token.symbol.includes('/')
+                    ? token.symbol.replace('/', '\\')
+                    : token.symbol
                 }`
               )
             "
@@ -26,7 +28,11 @@
             <Widget class="mb-0 token-card">
               <b-row class="token-details">
                 <b-col cols="2" class="token-logo">
-                  <img v-if="token.logoURI" :src="token.logoURI" loading="lazy" />
+                  <img
+                    v-if="token.logoURI"
+                    :src="token.logoURI"
+                    loading="lazy"
+                  />
                   <span class="no-token-emoji" v-else>🤔</span>
                 </b-col>
                 <b-col
@@ -42,7 +48,13 @@
                     {{ token.name }}
                   </div>
                 </b-col>
-                <b-col cols="5" sm="4" md="6" class="h4 token-title pr-0" v-else>
+                <b-col
+                  cols="5"
+                  sm="4"
+                  md="6"
+                  class="h4 token-title pr-0"
+                  v-else
+                >
                   {{ token.symbol }}
                   <br />
                   <div class="token-name">
@@ -57,10 +69,16 @@
                     "
                   >
                     {{
-                      prices[token.symbol] | value({ eNotationForSmallValues: true }) | maxLength(8)
+                      prices[token.symbol]
+                        | value({ eNotationForSmallValues: true })
+                        | maxLength(8)
                     }}
                   </span>
-                  <span v-else-if="prices[token.symbol] || prices[token.symbol] === 0">
+                  <span
+                    v-else-if="
+                      prices[token.symbol] || prices[token.symbol] === 0
+                    "
+                  >
                     {{
                       prices[token.symbol]
                         | price({
@@ -79,7 +97,9 @@
                 </b-col>
               </b-row>
               <b-row class="d-flex justify-content-end see-more-wrapper">
-                <div class="see-more">See more<i class="fa fa-angle-right" /></div>
+                <div class="see-more">
+                  See more<i class="fa fa-angle-right" />
+                </div>
               </b-row>
             </Widget>
           </div>
@@ -102,39 +122,39 @@
 </template>
 
 <script>
-  import Widget from '@/components/Widget/Widget'
-  import { mapState } from 'vuex'
-  import showMoreTokensMixin from '@/mixins/show-more-tokens'
-  import { getCurrency, isCurrencyToken } from '@/tokens'
+import Widget from "@/components/Widget/Widget";
+import { mapState } from "vuex";
+import showMoreTokensMixin from "@/mixins/show-more-tokens";
+import { getCurrency, isCurrencyToken } from "@/tokens";
 
-  export default {
-    name: 'Tokens',
+export default {
+  name: "Tokens",
 
-    mixins: [showMoreTokensMixin],
+  mixins: [showMoreTokensMixin],
 
-    props: {
-      tokens: Array,
+  props: {
+    tokens: Array,
+  },
+
+  methods: {
+    getCurrency,
+    loadMoreSectionVisibilityChanged() {
+      this.showMoreTokens();
     },
 
-    methods: {
-      getCurrency,
-      loadMoreSectionVisibilityChanged() {
-        this.showMoreTokens()
-      },
-
-      isNotCurrencyToken(details) {
-        return !isCurrencyToken(details)
-      },
+    isNotCurrencyToken(details) {
+      return !isCurrencyToken(details);
     },
+  },
 
-    computed: {
-      ...mapState('prices', ['prices']),
-    },
+  computed: {
+    ...mapState("prices", ["prices"]),
+  },
 
-    components: {
-      Widget,
-    },
-  }
+  components: {
+    Widget,
+  },
+};
 </script>
 
 <style lang="scss" src="./Tokens.scss" scoped />

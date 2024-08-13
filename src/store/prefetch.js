@@ -1,5 +1,5 @@
-import { getOracleRegistryState } from 'redstone-sdk'
-import Vue from 'vue'
+import { getOracleRegistryState } from "redstone-sdk";
+import Vue from "vue";
 
 export default {
   namespaced: true,
@@ -8,7 +8,7 @@ export default {
   },
   mutations: {
     setProviders(state, providers) {
-      state.providers = { ...providers }
+      state.providers = { ...providers };
     },
     // setArweave(state, arweave) {
     //     if (!state.arweave) {
@@ -22,7 +22,7 @@ export default {
   getters: {},
   actions: {
     async prefetchAll({ dispatch }) {
-      dispatch('fetchProviders')
+      dispatch("fetchProviders");
       // dispatch('initArweave').then(() => { return dispatch('smartweave') })
     },
     // initArweave({ commit }) {
@@ -45,49 +45,51 @@ export default {
     //     commit("setSmartweave", smartweave);
     // },
     updateProvider({ commit, state }, { id, key, value }) {
-      let providers = state.providers
-      Vue.set(providers[id], key, value)
-      commit('setProviders', providers)
+      let providers = state.providers;
+      Vue.set(providers[id], key, value);
+      commit("setProviders", providers);
     },
     async fetchProviders({ commit, dispatch }) {
-      const contractState = await getOracleRegistryState()
-      const providers = contractState.dataServices
-      delete providers['redstone-custom-urls-demo']
-      commit('setProviders', providers)
+      const contractState = await getOracleRegistryState();
+      const providers = contractState.dataServices;
+      delete providers["redstone-custom-urls-demo"];
+      commit("setProviders", providers);
       for (const [providerId, provider] of Object.entries(providers)) {
-        Vue.set(providers, providerId, provider)
-        commit('setProviders', providers)
-        const manifestName = providerId.split('-')[1]
-        const manifest = require(`redstone-monorepo-github/packages/oracle-node/manifests/data-services/${manifestName}.json`)
-        dispatch('updateProvider', {
+        Vue.set(providers, providerId, provider);
+        commit("setProviders", providers);
+        const manifestName = providerId.split("-")[1];
+        const manifest = require(
+          `redstone-monorepo-github/packages/oracle-node/manifests/data-services/${manifestName}.json`
+        );
+        dispatch("updateProvider", {
           id: providerId,
-          key: 'currentManifest',
+          key: "currentManifest",
           value: manifest,
-        })
+        });
         if (manifest.tokens) {
-          const assetsCount = Object.keys(manifest.tokens).length
-          dispatch('updateProvider', {
+          const assetsCount = Object.keys(manifest.tokens).length;
+          dispatch("updateProvider", {
             id: providerId,
-            key: 'assetsCount',
+            key: "assetsCount",
             value: assetsCount,
-          })
+          });
         } else {
-          dispatch('updateProvider', {
+          dispatch("updateProvider", {
             id: providerId,
-            key: 'assetsCount',
+            key: "assetsCount",
             value: 0,
-          })
+          });
         }
-        const nodes = contractState.nodes
+        const nodes = contractState.nodes;
         const filteredNodes = Object.values(nodes).filter(
           (node) => node.dataServiceId === providerId
-        )
-        dispatch('updateProvider', {
+        );
+        dispatch("updateProvider", {
           id: providerId,
-          key: 'nodes',
+          key: "nodes",
           value: filteredNodes,
-        })
+        });
       }
     },
   },
-}
+};

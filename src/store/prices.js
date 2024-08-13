@@ -9,20 +9,20 @@ export default {
       state.prices = {
         ...state.prices,
         ...pricesToAdd,
-      }
+      };
     },
 
     setPricesLoadingAsCompleted(state) {
-      state.pricesLoadingCompleted = true
+      state.pricesLoadingCompleted = true;
     },
   },
   actions: {
     addPrices({ commit }, pricesToAdd) {
-      commit('addPrices', pricesToAdd)
+      commit("addPrices", pricesToAdd);
     },
 
     setPricesLoadingAsCompleted({ commit }) {
-      commit('setPricesLoadingAsCompleted')
+      commit("setPricesLoadingAsCompleted");
     },
   },
-}
+};

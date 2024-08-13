@@ -1,18 +1,18 @@
-const REDSTONE_CDN = 'https://cdn.redstone.finance'
+const REDSTONE_CDN = "https://cdn.redstone.finance";
 
 export default {
-  kyvePoolId: 'W_njBtwDRyltjVU1RizJtZfF0S_4X3aSrrrA0HUEhUs',
-  arweaveUrl: 'dh48zl0solow5.cloudfront.net',
+  kyvePoolId: "W_njBtwDRyltjVU1RizJtZfF0S_4X3aSrrrA0HUEhUs",
+  arweaveUrl: "dh48zl0solow5.cloudfront.net",
   // arweaveUrl: "arweave.net",
 
-  viewblockTxUrlPrefix: 'https://viewblock.io/arweave/tx/',
+  viewblockTxUrlPrefix: "https://viewblock.io/arweave/tx/",
 
-  viewblockAddressUrlPrefix: 'https://viewblock.io/arweave/address/',
+  viewblockAddressUrlPrefix: "https://viewblock.io/arweave/address/",
 
-  oracleRegistryAddress: 'Ebh7jYjVxzoZpVR4HSjHddZs1t6k2JLskBRbjEfutgM',
+  oracleRegistryAddress: "Ebh7jYjVxzoZpVR4HSjHddZs1t6k2JLskBRbjEfutgM",
 
   images: {
-    'redstone-logo': `${REDSTONE_CDN}/redstone-logo.svg`,
-    'no-logo': `${REDSTONE_CDN}/logo-not-found.png`,
+    "redstone-logo": `${REDSTONE_CDN}/redstone-logo.svg`,
+    "no-logo": `${REDSTONE_CDN}/logo-not-found.png`,
   },
-}
+};
