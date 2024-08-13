@@ -884,11 +884,11 @@
     "url": "https://app.slingshot.finance/",
     "color": "#fd627a"
   },
-   "canto-dex-usdt": {
+  "canto-dex-usdt": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.png",
     "url": "https://app.slingshot.finance/",
     "color": "#fd627a"
-  }, 
+  },
   "canto-dex-wcanto": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.png",
     "url": "https://app.slingshot.finance/",
