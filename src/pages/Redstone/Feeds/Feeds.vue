@@ -46,8 +46,7 @@
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                         {{ truncateString(item.contract_address) }}
                     </a>
-                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.contract_address)"
-                        title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
+                    <CopyToClipboard :value="item.contract_address" :copyHelper="copyToClipboardHelper" />
                 </div>
                 <div v-if="item.feed_address && item.explorer && item.feed_address != '__NO_FEED__'">
                     Feed address: <a class="feeds__contract-address"
@@ -55,8 +54,7 @@
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                         {{ truncateString(item.feed_address) }}
                     </a>
-                    <span v-b-tooltip.hover @click.prevent="copyToClipboardHelper($event, item.feed_address)"
-                        title="Copy to clipboard" class="feeds__copy-icon glyphicon glyphicon-book"></span>
+                    <CopyToClipboard :value="item.contract_address" :copyHelper="copyToClipboardHelper" />
                 </div>
 
             </template>
@@ -111,6 +109,7 @@ import NetworkPicker from "./components/NetworkPicker.vue"
 import CheckboxButton from "./components/CheckboxButton.vue"
 import ToDateCounter from "./components/ToDateCounter.vue"
 import SelectedFilters from "./components/SelectedFilters.vue"
+import CopyToClipboard from "./components/CopyToClipboard.vue";
 import networks from '@/data/networks.json'
 import images from '@/data/logosDefinitions.json'
 import { sortBy } from "lodash"
@@ -122,7 +121,8 @@ export default {
         NetworkPicker,
         CheckboxButton,
         ToDateCounter,
-        SelectedFilters
+        SelectedFilters,
+        CopyToClipboard
     },
     data() {
         return {
