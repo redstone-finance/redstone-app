@@ -1,4 +1,4 @@
-@import "../../styles/app.scss";
+@import '../../styles/app.scss';
 
 .root {
   height: 100%;
@@ -14,9 +14,7 @@
   flex-direction: column;
   left: $sidebar-width-open;
   right: 0;
-  transition:
-    left $sidebar-transition-time ease-in-out,
-    margin-left $sidebar-transition-time ease-in-out;
+  transition: left $sidebar-transition-time ease-in-out, margin-left $sidebar-transition-time ease-in-out;
 
   @media (min-width: breakpoint-min(md)) {
     width: calc(100% - #{$sidebar-width-open});
@@ -74,7 +72,7 @@ div.wrap {
 
 .banner {
   width: 100%;
-  background-color: #fd627a;
+  background-color: #FD627A;
   color: #f2f2f2;
   text-align: center;
   padding: 0.25rem;

@@ -15,14 +15,15 @@ export default {
     setPricesLoadingAsCompleted(state) {
       state.pricesLoadingCompleted = true;
     },
+
   },
   actions: {
     addPrices({ commit }, pricesToAdd) {
-      commit("addPrices", pricesToAdd);
+      commit('addPrices', pricesToAdd);
     },
 
     setPricesLoadingAsCompleted({ commit }) {
-      commit("setPricesLoadingAsCompleted");
+      commit('setPricesLoadingAsCompleted');
     },
   },
 };

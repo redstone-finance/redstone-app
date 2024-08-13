@@ -1,27 +1,26 @@
 body {
-  --logo-color: #8203ff;
-  --body-bg: #f9fbfd;
-  --light-color: #f6f6e9;
-  --redstone-red-color: #fd627a;
-  --redstone-dark-blue-color: #242f51;
-  --redstone-error-red: #ca4e62;
-  --sidebar-bg-color: #f7f7f7;
-  --sidebar-color: #c2c2c2;
-  --sidebar-color-item: #ffffff;
-  --sidebar-action-bg: #ededed;
-  --sidebar-item-active: var(--redstone-dark-blue-color);
-  --sidebar-item-active-bg: #fefefe;
-  --sidebar-badge-bg: #005792;
-  --sidebar-nav-title-color: var(--light-color);
-  --widget-shadow-color: 0, 0, 0;
-  --navbar-bg: #fff;
-  --navbar-shadow: 0 15px 20px -20px rgba(var(--widget-shadow-color), 0.05),
-    0 0 15px rgba(var(--widget-shadow-color), 0.06);
-  --tabs-shadow: 1px 10px 6px 4px #e8e8e8;
-  --content-shadow: 1px 2px 6px 4px #e8e8e8;
-  // dependable variables
-  --sidebar-progress-bg-color: var(--sidebar-action-bg);
-  --sidebar-icon-active: var(--sidebar-bg-color);
-  --sidebar-item-hover-bg-color: var(--sidebar-action-bg);
-  --widget-shadow: 2px 2px 15px 0 rgba(var(--widget-shadow-color), 0.1);
+    --logo-color: #8203FF;
+    --body-bg: #f9fbfd;
+    --light-color: #F6F6E9;
+    --redstone-red-color: #FD627A;
+    --redstone-dark-blue-color: #242F51;
+    --redstone-error-red: #ca4e62;
+    --sidebar-bg-color: #f7f7f7;
+    --sidebar-color: #C2C2C2;
+    --sidebar-color-item: #FFFFFF;
+    --sidebar-action-bg: #ededed;
+    --sidebar-item-active: var(--redstone-dark-blue-color);
+    --sidebar-item-active-bg: #fefefe;
+    --sidebar-badge-bg: #005792;
+    --sidebar-nav-title-color: var(--light-color);
+    --widget-shadow-color: 0, 0, 0;
+    --navbar-bg: #fff;
+    --navbar-shadow: 0 15px 20px -20px rgba(var(--widget-shadow-color), 0.05), 0 0 15px rgba(var(--widget-shadow-color), 0.06);
+    --tabs-shadow: 1px 10px 6px 4px #e8e8e8;
+    --content-shadow: 1px 2px 6px 4px #e8e8e8;
+    // dependable variables
+    --sidebar-progress-bg-color: var(--sidebar-action-bg);
+    --sidebar-icon-active: var(--sidebar-bg-color);
+    --sidebar-item-hover-bg-color: var(--sidebar-action-bg);
+    --widget-shadow: 2px 2px 15px 0 rgba(var(--widget-shadow-color), 0.1);
 }

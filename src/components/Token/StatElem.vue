@@ -1,30 +1,33 @@
 <template>
   <div class="stat-elem">
-    <div class="stat-title">{{ title }}:&nbsp;</div>
+    <div class="stat-title">
+      {{ title }}:&nbsp;
+    </div>
     <div class="stat-value" v-if="!isCurrencyToken">
       {{ value }}
     </div>
     <div class="stat-value" v-else>
-      {{ value | price({ currency: this.currency, decimals: this.decimals }) }}
+      {{ value | price({currency: this.currency, decimals: this.decimals}) }}
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "StatElem",
-    props: {
-      value: String,
-      title: String,
-      isCurrencyToken: Boolean,
-      currency: String,
-      decimals: Number,
-    },
-  };
+export default {
+  name: 'StatElem',
+  props: {
+    value: String,
+    title: String,
+    isCurrencyToken: Boolean,
+    currency: String,
+    decimals: Number
+  },
+
+}
 </script>
 
 <style scoped lang="scss">
-  @import "~@/styles/app";
+@import '~@/styles/app';
 
 .stat-elem {
   color: $gray-750;

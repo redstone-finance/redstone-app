@@ -7,7 +7,7 @@ export default {
     chatNotificationIcon: false,
     chatNotificationPopover: false,
     showSearchInputInHeader: false,
-    searchTerm: "",
+    searchTerm: '',
   },
   mutations: {
     toggleSidebar(state) {
@@ -19,7 +19,7 @@ export default {
       }
     },
     handleSwipe(state, e) {
-      if ("ontouchstart" in window) {
+      if ('ontouchstart' in window) {
         if (e.direction === 4) {
           state.showSidebar = true;
         }
@@ -41,22 +41,22 @@ export default {
   },
   actions: {
     toggleSidebar({ commit }) {
-      commit("toggleSidebar");
+      commit('toggleSidebar');
     },
     switchSidebar({ commit }, value) {
-      commit("switchSidebar", value);
+      commit('switchSidebar', value);
     },
     handleSwipe({ commit }, e) {
-      commit("handleSwipe", e);
+      commit('handleSwipe', e);
     },
     changeSidebarActive({ commit }, index) {
-      commit("changeSidebarActive", index);
+      commit('changeSidebarActive', index);
     },
     setSearchInputVisibilityInHeader({ commit }, visibility) {
-      commit("setSearchInputVisibilityInHeader", visibility);
+      commit('setSearchInputVisibilityInHeader', visibility);
     },
     updateSearchTerm({ commit }, searchTerm) {
-      commit("updateSearchTerm", searchTerm);
+      commit('updateSearchTerm', searchTerm);
     },
   },
 };

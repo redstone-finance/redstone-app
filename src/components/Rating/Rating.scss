@@ -1,34 +1,32 @@
-@import "../../styles/app";
+@import '../../styles/app';
 
 %visually-hidden {
   position: absolute;
   overflow: hidden;
   clip: rect(0 0 0 0);
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
+  height: 1px; width: 1px;
+  margin: -1px; padding: 0; border: 0;
 }
 
 .star-rating {
+
   &__star {
     display: inline-block;
     padding: 3px;
     vertical-align: middle;
     line-height: 1;
     font-size: 1.5em;
-    color: #ababab;
-    transition: color 0.2s ease-out;
+    color: #ABABAB;
+    transition: color .2s ease-out;
 
     &:hover {
       cursor: pointer;
     }
-
+    
     &.is-selected {
-      color: #ffd700;
+      color: #FFD700;
     }
-
+    
     &.is-disabled:hover {
       cursor: default;
     }

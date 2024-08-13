@@ -1,4 +1,4 @@
-@import "../../styles/app";
+@import '../../styles/app';
 .sidebar {
   display: none;
   position: absolute;
@@ -27,7 +27,7 @@
   overflow-x: hidden;
   z-index: 300;
   box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.05);
-
+  
   @include sidebar-scrollbar();
 }
 
@@ -50,6 +50,7 @@
     font-weight: $font-weight-normal;
   }
 }
+
 
 .sidebarClose .logo {
   width: $sidebar-width-closed;
@@ -78,7 +79,7 @@
   font-size: $font-size-mini;
   font-weight: $font-weight-bold;
   transition: opacity $sidebar-transition-time ease-in-out;
-  color: rgba(#5287b9, 0.6);
+  color: rgba(#5287B9, 0.6);
 
   &.first {
     margin-top: 46px;
@@ -89,9 +90,11 @@
   }
 }
 
+
 .sidebarClose .navTitle {
   opacity: 0;
 }
+
 
 .sidebarStatic .navTitle {
   opacity: 1;

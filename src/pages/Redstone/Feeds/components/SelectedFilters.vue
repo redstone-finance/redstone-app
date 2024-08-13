@@ -1,40 +1,31 @@
 <template>
-  <div class="selected-filters">
-    <div
-      v-for="filter in filters"
-      :key="filter.key"
-      class="selected-filters__item"
-      @click="removeFilter(filter)"
-    >
-      <img
-        :src="filter.imageUrl"
-        :title="`Click to remove filter: ${filter.name}`"
-        :alt="filter.name"
-        class="selected-filters__icon"
-      />
+    <div class="selected-filters">
+        <div v-for="filter in filters" :key="filter.key" class="selected-filters__item" @click="removeFilter(filter)">
+            <img :src="filter.imageUrl" :title="`Click to remove filter: ${filter.name}`" :alt="filter.name"
+                class="selected-filters__icon" />
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
-  export default {
-    name: "SelectedFiltersList",
+export default {
+    name: 'SelectedFiltersList',
     props: {
-      filters: {
-        type: Array,
-        required: true,
-      },
+        filters: {
+            type: Array,
+            required: true
+        }
     },
     methods: {
-      removeFilter(filter) {
-        this.$emit("remove", filter.key);
-      },
-    },
-  };
+        removeFilter(filter) {
+            this.$emit('remove', filter.key)
+        }
+    }
+}
 </script>
 
 <style scoped>
-  .selected-filters {
+.selected-filters {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;

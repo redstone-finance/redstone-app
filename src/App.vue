@@ -3,24 +3,25 @@
 </template>
 
 <script>
-  import { mapActions } from "vuex";
 
-  export default {
-    name: "App",
+import { mapActions } from "vuex";
 
-    beforeMount() {
-      // this.initArweave();
-      this.prefetchAll();
-      const currentPath = this.$router.history.current.path;
+export default {
+  name: "App",
 
-      if (currentPath === "/" || currentPath === "/app") {
-        this.$router.push("/app/tokens");
-      }
-    },
-    methods: {
-      ...mapActions("prefetch", ["prefetchAll"]),
-    },
-  };
+  beforeMount() {
+    // this.initArweave();
+    this.prefetchAll();
+    const currentPath = this.$router.history.current.path;
+
+    if (currentPath === "/" || currentPath === "/app") {
+      this.$router.push("/app/tokens");
+    }
+  },
+  methods: {
+    ...mapActions("prefetch", ["prefetchAll"]),
+  }
+};
 </script>
 
 <style src="./styles/theme.scss" lang="scss" />

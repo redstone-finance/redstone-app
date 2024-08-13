@@ -1,4 +1,4 @@
-@import "../../styles/app";
+@import '../../styles/app';
 
 .app-header.navbar {
   height: $navbar-height;
@@ -22,8 +22,7 @@
     padding: 0;
 
     .nav-item {
-      .nav-link,
-      .nav-link > a {
+      .nav-link, .nav-link > a {
         display: flex;
         align-items: center;
         height: 100%;
@@ -61,8 +60,7 @@
   &.header-dark {
     .nav {
       .nav-item {
-        .nav-link,
-        .nav-link > a {
+        .nav-link, .nav-link > a {
           color: $white;
 
           @include hover {
@@ -135,6 +133,7 @@
       transition: background-color ease-in-out 0.15s;
       background-color: $gray-350;
     }
+
   }
 
   .avatar {
@@ -150,7 +149,7 @@
   }
 
   .avatar-badge {
-    background-color: #0d2b47;
+    background-color: #0D2B47;
   }
 
   .navbarBrand {

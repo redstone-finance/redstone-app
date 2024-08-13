@@ -1,9 +1,7 @@
 <template>
   <div class="token-wrapper">
     <div class="token">
-      <div
-        class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0"
-      >
+      <div class="select-provider-wrapper d-flex justify-content-between mt-4 mt-md-0">
         <div v-if="providers.length > 1" class="select-provider">
           <b-form>
             <b-form-group
@@ -21,9 +19,7 @@
           </b-form>
         </div>
         <div class="data-services-wrapper">
-          <a class="data-services" @click="scrollToDataServices"
-            >View data services</a
-          >
+          <a class="data-services" @click="scrollToDataServices">View data services</a>
         </div>
       </div>
 
@@ -51,92 +47,93 @@
 </template>
 
 <script>
-  import redstoneAdapter from "@/redstone-api-adapter";
-  import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
-  import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
-  import _ from "lodash";
-  import { getDetailsForSymbol } from "@/tokens";
+import redstoneAdapter from "@/redstone-api-adapter";
+import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
+import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
+import _ from "lodash";
+import { getDetailsForSymbol } from "@/tokens";
 
-  export default {
-    name: "Token",
 
-    data() {
+export default {
+  name: "Token",
+
+  data() {
+    return {
+      currentPrice: {},
+      oldPrice: {},
+      selectedProvider: this.getInitialProvider(),
+    };
+  },
+
+  created() {
+    this.loadPrices();
+  },
+
+  timers: {
+    loadPrices: { autostart: true, time: 2000, repeat: true },
+  },
+
+  methods: {
+    async loadPrices() {
+      this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
+        provider: this.selectedProvider,
+      });
+    },
+
+    getInitialProvider() {
+      return this.getProviders()[0];
+    },
+
+    getProviders() {
+      const symbol = this.parseSymbol()
+      return getDetailsForSymbol(symbol).providers;
+    },
+
+    scrollToDataServices() {
+      const table = document.getElementById("token-price-table");
+      table.scrollIntoView({ behavior: "smooth" });
+    },
+
+    parseSymbol() {
+    let symbol = this.$route.params.symbol;
+      if (symbol.includes("\\")) {
+        symbol = symbol.replace("\\", "/");
+      }
+      return symbol;
+    }
+  },
+
+  components: {
+    TokenPriceChartContainer,
+    TokenPriceTableContainer,
+  },
+
+  computed: {
+    symbol() {
+      return this.parseSymbol();
+    },
+
+    providers() {
+      return this.getProviders().map((provider) => {
+        return {
+          value: provider,
+          text: _.startCase(provider),
+        };
+      });
+    },
+    tokenDetails() {
       return {
-        currentPrice: {},
-        oldPrice: {},
-        selectedProvider: this.getInitialProvider(),
+        ...getDetailsForSymbol(this.symbol),
+        symbol: this.symbol
       };
     },
-
-    created() {
-      this.loadPrices();
-    },
-
-    timers: {
-      loadPrices: { autostart: true, time: 2000, repeat: true },
-    },
-
-    methods: {
-      async loadPrices() {
-        this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
-          provider: this.selectedProvider,
-        });
-      },
-
-      getInitialProvider() {
-        return this.getProviders()[0];
-      },
-
-      getProviders() {
-        const symbol = this.parseSymbol();
-        return getDetailsForSymbol(symbol).providers;
-      },
-
-      scrollToDataServices() {
-        const table = document.getElementById("token-price-table");
-        table.scrollIntoView({ behavior: "smooth" });
-      },
-
-      parseSymbol() {
-        let symbol = this.$route.params.symbol;
-        if (symbol.includes("\\")) {
-          symbol = symbol.replace("\\", "/");
-        }
-        return symbol;
-      },
-    },
-
-    components: {
-      TokenPriceChartContainer,
-      TokenPriceTableContainer,
-    },
-
-    computed: {
-      symbol() {
-        return this.parseSymbol();
-      },
-
-      providers() {
-        return this.getProviders().map((provider) => {
-          return {
-            value: provider,
-            text: _.startCase(provider),
-          };
-        });
-      },
-      tokenDetails() {
-        return {
-          ...getDetailsForSymbol(this.symbol),
-          symbol: this.symbol,
-        };
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style src="./Token.scss" lang="scss" scoped />
 <style lang="scss">
-  @import "~@/styles/app";
+@import "~@/styles/app";
 
 .select-provider-wrapper {
   height: 24px;
@@ -168,8 +165,7 @@
     background-color: transparent;
     box-shadow: none;
     font-weight: $font-weight-soft-bold;
-    background: transparent url("../../../assets/icons/select-down.svg") right
-      1rem center/16px 16px no-repeat;
+    background: transparent url("../../../assets/icons/select-down.svg") right 1rem center/16px 16px no-repeat;
     border-radius: 7px;
     height: 28px;
     padding: 0 0 0 11px;
@@ -188,4 +184,5 @@
 .token-wrapper {
   scroll-behavior: smooth;
 }
+
 </style>

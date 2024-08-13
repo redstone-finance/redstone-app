@@ -1,58 +1,58 @@
-@import "~@/styles/app";
+@import '~@/styles/app';
 
 .token-card {
-  min-height: 65px;
-  cursor: pointer;
-  transition: all 0.5s ease;
-  padding: 24px 20px 12px 20px;
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  .token-details {
-    display: flex;
-    align-items: center;
-    grid-template-columns: 40px auto 80px;
-
-    .no-token-emoji {
-      font-size: 20px;
+    min-height: 65px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    padding: 24px 20px 12px 20px;  
+    &:hover {
+      transform: scale(1.1);
     }
-
-    .token-logo img {
-      width: 30px;
-      max-width: 30px;
-      max-height: 30px;
-    }
-
-    .token-title {
-      margin-bottom: 0px;
-      font-size: 18px;
-      white-space: nowrap;
-      overflow: hidden;
-
-      .token-name {
-        font-size: 12px;
-        color: gray;
-        overflow: hidden;
+  
+    .token-details {
+      display: flex;
+      align-items: center;
+      grid-template-columns: 40px auto 80px;
+  
+      .no-token-emoji {
+        font-size: 20px;
+      }
+  
+      .token-logo img {
+        width: 30px;
+        max-width: 30px;
+        max-height: 30px;
+      }
+  
+      .token-title {
+        margin-bottom: 0px;
+        font-size: 18px;
         white-space: nowrap;
-        text-overflow: ellipsis;
+        overflow: hidden;
+  
+        .token-name {
+          font-size: 12px; 
+          color: gray;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+  
+      .token-price {
+        overflow: hidden;
+        font-size: 16px;
+        text-align: right;
       }
     }
 
-    .token-price {
-      overflow: hidden;
-      font-size: 16px;
-      text-align: right;
-    }
-  }
-
   .see-more-wrapper {
     height: 12px;
-  }
+  }  
 
   .see-more {
     display: none;
-  }
+  }  
 
   &:hover {
     .see-more {
@@ -68,7 +68,7 @@
         transform: translateY(2px);
       }
     }
-  }
+  }  
 }
 
 .loading-more-container {

@@ -5,8 +5,7 @@
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "format": "prettier --write \"src/**/*.{js,json,css,scss,vue}\" --config .prettierrc.cjs --plugin=prettier-plugin-vue"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@adraffy/ens-normalize": "^1.10.1",
@@ -63,11 +62,6 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "prettier-plugin-vue": "1.1.6",
-    "redstone-prettier-config": "^1.0.0",
-    "prettier": "^3.0.0",
-    "eslint-config-prettier": "^8.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
     "@babel/core": "^7.24.9",
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "@babel/plugin-proposal-private-methods": "^7.18.6",
@@ -84,6 +78,23 @@
     "stylelint-config-standard": "^25.0.0",
     "testweave-sdk": "^0.2.2",
     "vue-template-compiler": "^2.6.12"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {
+      "no-console": "off",
+      "no-unused-vars": "off"
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
   },
   "postcss": {
     "plugins": {
