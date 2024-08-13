@@ -155,7 +155,6 @@
               symbol,
               name: tokenInfo?.name,
               source: sourceList.map((el) => {
-                console.log({ el });
                 return {
                   name: el,
                   ...sourcesData[this.removeContentAfterLastDash(el)],
