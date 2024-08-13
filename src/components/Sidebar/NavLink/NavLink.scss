@@ -9,7 +9,7 @@
   overflow-x: hidden;
 
   @media (min-width: map_get($grid-breakpoints, lg)) and (min-height: $screen-lg-height),
-    (max-width: map_get($grid-breakpoints, md) - 1px) {
+    (max-width: map_get($grid-breakpoints, md)) {
     font-size: 13px;
   }
 
