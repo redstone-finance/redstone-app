@@ -1,6 +1,12 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown ref="dropdown" @shown="onDropdownShown" class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown
+      ref="dropdown"
+      @shown="onDropdownShown"
+      class="dropdown crypto-dropdown"
+      :text="buttonText"
+      multiple
+    >
       <div class="search-input-container">
         <b-form-input
           ref="searchInput"
@@ -11,7 +17,11 @@
         ></b-form-input>
       </div>
       <b-dropdown-form>
-        <b-form-checkbox-group v-model="tempSelected" class="crypto-checkbox-group" stacked>
+        <b-form-checkbox-group
+          v-model="tempSelected"
+          class="crypto-checkbox-group"
+          stacked
+        >
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
@@ -22,123 +32,141 @@
             <span class="network-name">{{ item.label }}</span>
           </b-form-checkbox>
         </b-form-checkbox-group>
-        <span class="no-results" v-if="sortedFilteredItems.length === 0">{{ noResultsText }}</span>
+        <span class="no-results" v-if="sortedFilteredItems.length === 0">{{
+          noResultsText
+        }}</span>
       </b-dropdown-form>
       <div v-if="hasChanges" class="confirm-button-container">
-        <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
+        <b-button
+          @click="confirmChanges"
+          variant="primary"
+          class="confirm-button"
+          >Confirm Changes</b-button
+        >
       </div>
       <div v-else-if="value.length > 0" class="confirm-button-container">
-        <b-button @click="resetChanges" variant="primary" class="reset-button">Reset Changes</b-button>
+        <b-button @click="resetChanges" variant="primary" class="reset-button"
+          >Reset Changes</b-button
+        >
       </div>
     </b-dropdown>
   </div>
 </template>
 
 <script>
-import { BDropdown, BDropdownForm, BFormCheckboxGroup, BFormCheckbox, BFormInput, BButton } from 'bootstrap-vue'
-
-export default {
-  name: 'DropdownCheckboxSearch',
-  components: {
+  import {
     BDropdown,
     BDropdownForm,
     BFormCheckboxGroup,
     BFormCheckbox,
     BFormInput,
     BButton,
-  },
-  props: {
-    items: {
-      type: Array,
-      required: true
+  } from "bootstrap-vue";
+
+  export default {
+    name: "DropdownCheckboxSearch",
+    components: {
+      BDropdown,
+      BDropdownForm,
+      BFormCheckboxGroup,
+      BFormCheckbox,
+      BFormInput,
+      BButton,
     },
-    value: {
-      type: Array,
-      default: () => []
+    props: {
+      items: {
+        type: Array,
+        required: true,
+      },
+      value: {
+        type: Array,
+        default: () => [],
+      },
+      searchPlaceholder: {
+        type: String,
+        default: "Search...",
+      },
+      defaultButtonText: {
+        type: String,
+        default: "All networks",
+      },
+      noResultsText: {
+        type: String,
+        default: "No matching options found",
+      },
     },
-    searchPlaceholder: {
-      type: String,
-      default: 'Search...'
+    data() {
+      return {
+        searchQuery: "",
+        tempSelected: [],
+      };
     },
-    defaultButtonText: {
-      type: String,
-      default: 'All networks'
-    },
-    noResultsText: {
-      type: String,
-      default: 'No matching options found'
-    }
-  },
-  data() {
-    return {
-      searchQuery: '',
-      tempSelected: [],
-    };
-  },
-  created(){
-    this.initializeTempSelection()
-  },
-  computed: {
-    filteredItems() {
-      return this.items.filter(item =>
-        item.label.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    },
-    sortedFilteredItems() {
-      return [...this.filteredItems].sort((a, b) => {
-        const aSelected = this.value.includes(a.value);
-        const bSelected = this.value.includes(b.value);
-        if (aSelected === bSelected) {
-          return a.label.localeCompare(b.label);
-        }
-        return aSelected ? -1 : 1;
-      });
-    },
-    buttonText() {
-      const selectedCount = this.value.length;
-      const optionsCount = this.items.length;
-      return selectedCount === 0 ? `${this.defaultButtonText} (${optionsCount})` : `Networks (${selectedCount})`;
-    },
-    hasChanges() {
-      return !this.arraysEqual(this.tempSelected, this.value);
-    }
-  },
-  methods: {
-    initializeTempSelection() {
-      this.tempSelected = [...this.value];
-    },
-    clearSearch() {
-      this.searchQuery = '';
-    },
-    confirmChanges() {
-      this.$emit('input', this.tempSelected)
-      this.closeDropdown()
-    },
-    resetChanges() {
-      this.$emit('input', [])
-      this.closeDropdown()
-    },
-    closeDropdown() {
-      this.$refs.dropdown.hide();
-    },
-    onDropdownShown() {
+    created() {
       this.initializeTempSelection();
-      this.$nextTick(() => {
-        this.$refs.searchInput.focus();
-      });
     },
-    arraysEqual(arr1, arr2) {
-      if (arr1.length !== arr2.length) return false;
-      for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) return false;
-      }
-      return true;
-    }
-  }
-};
+    computed: {
+      filteredItems() {
+        return this.items.filter((item) =>
+          item.label.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      },
+      sortedFilteredItems() {
+        return [...this.filteredItems].sort((a, b) => {
+          const aSelected = this.value.includes(a.value);
+          const bSelected = this.value.includes(b.value);
+          if (aSelected === bSelected) {
+            return a.label.localeCompare(b.label);
+          }
+          return aSelected ? -1 : 1;
+        });
+      },
+      buttonText() {
+        const selectedCount = this.value.length;
+        const optionsCount = this.items.length;
+        return selectedCount === 0
+          ? `${this.defaultButtonText} (${optionsCount})`
+          : `Networks (${selectedCount})`;
+      },
+      hasChanges() {
+        return !this.arraysEqual(this.tempSelected, this.value);
+      },
+    },
+    methods: {
+      initializeTempSelection() {
+        this.tempSelected = [...this.value];
+      },
+      clearSearch() {
+        this.searchQuery = "";
+      },
+      confirmChanges() {
+        this.$emit("input", this.tempSelected);
+        this.closeDropdown();
+      },
+      resetChanges() {
+        this.$emit("input", []);
+        this.closeDropdown();
+      },
+      closeDropdown() {
+        this.$refs.dropdown.hide();
+      },
+      onDropdownShown() {
+        this.initializeTempSelection();
+        this.$nextTick(() => {
+          this.$refs.searchInput.focus();
+        });
+      },
+      arraysEqual(arr1, arr2) {
+        if (arr1.length !== arr2.length) return false;
+        for (let i = 0; i < arr1.length; i++) {
+          if (arr1[i] !== arr2[i]) return false;
+        }
+        return true;
+      },
+    },
+  };
 </script>
 <style lang="scss">
-.remove-query {
+  .remove-query {
   line-height: 15px;
   position: absolute;
   right: 25px;

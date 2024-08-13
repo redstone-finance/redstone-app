@@ -78,7 +78,7 @@
 
       <template #cell(value)="data">
         <div class="price" v-if="!isCurrencyToken(tokenDetails)">
-          {{ data.item.value }} 
+          {{ data.item.value }}
         </div>
         <div class="price" v-else>
           {{
@@ -93,7 +93,7 @@
 
       <template #cell(time)="data">
         <div class="time">
-          {{ data.item.time }} 
+          {{ data.item.time }}
         </div>
       </template>
 
@@ -534,5 +534,4 @@ a.btn-dispute {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 }
-
 </style>
