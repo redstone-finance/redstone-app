@@ -1,6 +1,6 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown @shown="onDropdownShown" class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown ref="dropdown" @shown="onDropdownShown" class="dropdown crypto-dropdown" :text="buttonText" multiple>
       <div class="search-input-container">
         <b-form-input ref="searchInput" variant="danger" v-model="searchQuery" placeholder="Search..."
           class="pr-4"></b-form-input>
@@ -20,6 +20,9 @@
       </b-dropdown-form>
       <div v-if="hasChanges" class="confirm-button-container">
         <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
+      </div>
+      <div v-else-if="value.length > 0" class="confirm-button-container">
+        <b-button @click="resetChanges" variant="primary" class="reset-button">Reset Changes</b-button>
       </div>
     </b-dropdown>
   </div>
@@ -113,10 +116,15 @@ export default {
       return this.items.find(crypto => crypto.token === token) || { name: token, imageName: '' }
     },
     confirmChanges() {
-      this.$emit('input', this.tempSelectedCryptos);
+      this.$emit('input', this.tempSelectedCryptos)
+      this.closeDropdown()
     },
     resetChanges() {
-      this.initializeTempSelection();
+      this.$emit('input', [])
+      this.closeDropdown()
+    },
+    closeDropdown() {
+      this.$refs.dropdown.hide();
     },
     onDropdownShown() {
       this.initializeTempSelection();
@@ -154,7 +162,8 @@ export default {
     border: none;
     border-bottom: 1px solid rgb(192, 192, 192);
     border-radius: 0;
-    padding: 20px;
+    padding: 25px 20px !important;
+    font-style: italic;
 
     &:active,
     &:focus {
@@ -174,7 +183,7 @@ export default {
 
 .dropdown.show {
   button {
-    background: var(--redstone-red-color) !important;
+    background: var(--redstone-red-color);
     border: 2px solid darken(#FD627A, $amount: 15) !important;
   }
 }
@@ -188,7 +197,7 @@ export default {
   margin: 0 !important;
 
   ul {
-    min-width: 250px;
+    min-width: 300px !important;
   }
 
   button {
@@ -207,8 +216,17 @@ export default {
 .crypto-dropdown {
   width: 100%;
 
-  .custom-control-label {
-    background-color: red !important;
+  .custom-control {
+    margin: 0 !important;
+    line-height: 2rem;
+
+    &:hover {
+      background-color: rgb(243, 243, 243);
+    }
+
+    * {
+      cursor: pointer;
+    }
   }
 
   .custom-control-label {
@@ -229,6 +247,7 @@ export default {
   }
 
   label {
+    padding-left: 10px;
     margin-left: 20px;
 
     &:focus,
@@ -240,8 +259,8 @@ export default {
 
     &::before,
     &::after {
-      width: 15px;
-      height: 15px;
+      width: 20px;
+      height: 20px;
     }
   }
 
@@ -273,6 +292,10 @@ export default {
     padding: 10px;
     border-top: 1px solid #e4e4e4;
     text-align: center;
+
+    button {
+      width: 100%;
+    }
   }
 
   .confirm-button {
@@ -284,7 +307,22 @@ export default {
     &:focus {
       background-color: darken(#FD627A, 10%);
       border-color: darken(#FD627A, 10%);
+      color: #fff;
     }
+  }
+}
+
+.dropdown.show button.reset-button {
+  width: 100%;
+  background: #fff !important;
+  color: var(--redstone-red-color) !important;
+  border-color: var(--redstone-red-color);
+
+  &:hover,
+  &:focus {
+    background-color: darken(#FD627A, 10%);
+    border-color: darken(#FD627A, 10%);
+    color: #fff;
   }
 }
 </style>
