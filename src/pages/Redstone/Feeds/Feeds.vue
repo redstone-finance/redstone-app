@@ -46,7 +46,7 @@
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                         {{ truncateString(item.contract_address) }}
                     </a>
-                    <CopyToClipboard :value="item.contract_address" :copyHelper="copyToClipboardHelper" />
+                    <CopyToClipboard copy-text="Copy adapter address" :value="item.contract_address" />
                 </div>
                 <div v-if="item.feed_address && item.explorer && item.feed_address != '__NO_FEED__'">
                     Feed address: <a class="feeds__contract-address"
@@ -54,7 +54,7 @@
                         :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`">
                         {{ truncateString(item.feed_address) }}
                     </a>
-                    <CopyToClipboard :value="item.contract_address" :copyHelper="copyToClipboardHelper" />
+                    <CopyToClipboard copy-text="Copy feed address" :value="item.feed_address" />
                 </div>
 
             </template>

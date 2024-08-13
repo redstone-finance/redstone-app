@@ -1,8 +1,6 @@
 <template>
-    <span v-b-tooltip.hover :title="tooltipText" class="feeds__copy-icon glyphicon glyphicon-book"
-        @click.prevent="handleCopy">
-        
-        </span>
+    <span v-b-tooltip.hover.html="tooltipHtml" class="feeds__copy-icon"
+        :class="isCopied ? 'fa fa-check text-success' : 'fa fa-copy'" @click.prevent="handleCopy"></span>
 </template>
 
 <script>
@@ -17,7 +15,7 @@ export default {
         },
         copyText: {
             type: String,
-            default: 'Copy to clipboard'
+            default: 'Click to copy'
         },
         copiedText: {
             type: String,
@@ -30,17 +28,34 @@ export default {
     },
     data() {
         return {
-            tooltipText: this.copyText
+            isCopied: false
+        }
+    },
+    computed: {
+        tooltipHtml() {
+            return this.isCopied
+                ? `${this.copiedText} <i class="fa fa-check text-success"></i>`
+                : this.copyText
         }
     },
     methods: {
         async handleCopy(event) {
             await copyToClipboard(event, this.value)
-            this.tooltipText = `${this.copiedText}`
+            this.isCopied = true
             setTimeout(() => {
-                this.tooltipText = this.copyText
+                this.isCopied = false
             }, this.duration)
         }
     }
 }
 </script>
+
+<style scoped>
+.text-success {
+    color: #28a745;
+}
+
+.feeds__copy-icon {
+    cursor: pointer;
+}
+</style>
