@@ -128,7 +128,7 @@
       </template>
       <template #cell(feed)="{ item }">
         <img
-          :src="getImageUrl(item.token_image?.imageName)"
+          :src="item.token_image?.imageName"
           class="feeds__token-image"
           :alt="item.feed"
         />
@@ -436,9 +436,6 @@
         const noDash = noUnder.split("-")[0];
         return noDash;
       },
-      getImageUrl(imageName) {
-        return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`;
-      },
       hasSlash(string) {
         return string.indexOf("/") >= 0;
       },
@@ -519,7 +516,7 @@
         return this.selectedCryptos.map((crypto) => ({
           key: crypto,
           name: crypto,
-          imageUrl: this.getImageUrl(this.getTokenImage(crypto).imageName),
+          imageUrl: this.getTokenImage(crypto).imageName,
         }));
       },
       cryptoImages() {

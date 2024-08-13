@@ -32,7 +32,7 @@
             <div class="crypto-name">
               <b-img
                 :title="crypto.name"
-                :src="getImageUrl(crypto.imageName)"
+                :src="crypto.imageName"
                 :alt="crypto.name"
                 width="20"
                 height="20"
@@ -148,9 +148,6 @@
         if (index > -1) {
           this.tempSelectedCryptos.splice(index, 1);
         }
-      },
-      getImageUrl(imageName) {
-        return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`;
       },
       getCryptoByToken(token) {
         return (

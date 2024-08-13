@@ -1,65 +1,284 @@
 [
-  { "name": "Ageur", "imageName": "ageur.webp", "token": "agEUR" },
-  { "name": "ApxETH", "imageName": "apxeth.webp", "token": "apxETH" },
-  { "name": "Atom", "imageName": "atom.webp", "token": "ATOM" },
-  { "name": "BNB", "imageName": "bnb.webp", "token": "BNB" },
-  { "name": "Brazilian Real", "imageName": "brl.webp", "token": "BRL" },
-  { "name": "BsdETH", "imageName": "bsdeth.webp", "token": "bsdETH" },
-  { "name": "Bitcoin", "imageName": "btc.webp", "token": "BTC" },
-  { "name": "Canto", "imageName": "canto.webp", "token": "CANTO" },
-  { "name": "Celo", "imageName": "celo.webp", "token": "CELO" },
-  { "name": "cNote", "imageName": "cnote.webp", "token": "cNOTE" },
-  { "name": "Curve DAO Token", "imageName": "crv.webp", "token": "CRV" },
-  { "name": "Ethereum", "imageName": "eth.webp", "token": "ETH" },
-  { "name": "ETHx", "imageName": "ethx.webp", "token": "ETHx" },
-  { "name": "Euro", "imageName": "eur.png", "token": "EUR" },
-  { "name": "eUSD", "imageName": "eusd.webp", "token": "eUSD" },
-  { "name": "ezETH", "imageName": "ezeth.webp", "token": "ezETH" },
-  { "name": "Frax", "imageName": "frax.webp", "token": "FRAX" },
-  { "name": "Frax Share", "imageName": "fxs.webp", "token": "FXS" },
-  { "name": "British Pound", "imageName": "gbp.webp", "token": "GBP" },
-  { "name": "Manta", "imageName": "manta.webp", "token": "MANTA" },
-  { "name": "Merlin", "imageName": "merl.webp", "token": "MERL" },
-  { "name": "Mantle", "imageName": "mnt.webp", "token": "MNT" },
-  { "name": "Mode", "imageName": "mode.webp", "token": "MODE" },
+  {
+    "name": "Ageur",
+    "imageName": "ageur.webp",
+    "token": "agEUR",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ageur.webp"
+  },
+  {
+    "name": "ApxETH",
+    "imageName": "apxeth.webp",
+    "token": "apxETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/apxeth.webp"
+  },
+  {
+    "name": "Atom",
+    "imageName": "atom.webp",
+    "token": "ATOM",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/atom.webp"
+  },
+  {
+    "name": "BNB",
+    "imageName": "bnb.webp",
+    "token": "BNB",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.webp"
+  },
+  {
+    "name": "Brazilian Real",
+    "imageName": "brl.webp",
+    "token": "BRL",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/brl.webp"
+  },
+  {
+    "name": "BsdETH",
+    "imageName": "bsdeth.webp",
+    "token": "bsdETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bsdeth.webp"
+  },
+  {
+    "name": "Bitcoin",
+    "imageName": "btc.webp",
+    "token": "BTC",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/btc.webp"
+  },
+  {
+    "name": "Canto",
+    "imageName": "canto.webp",
+    "token": "CANTO",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.webp"
+  },
+  {
+    "name": "Celo",
+    "imageName": "celo.webp",
+    "token": "CELO",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.webp"
+  },
+  {
+    "name": "cNote",
+    "imageName": "cnote.webp",
+    "token": "cNOTE",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/cnote.webp"
+  },
+  {
+    "name": "Curve DAO Token",
+    "imageName": "crv.webp",
+    "token": "CRV",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/crv.webp"
+  },
+  {
+    "name": "Ethereum",
+    "imageName": "eth.webp",
+    "token": "ETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.webp"
+  },
+  {
+    "name": "ETHx",
+    "imageName": "ethx.webp",
+    "token": "ETHx",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ethx.webp"
+  },
+  {
+    "name": "Euro",
+    "imageName": "eur.png",
+    "token": "EUR",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eur.png"
+  },
+  {
+    "name": "eUSD",
+    "imageName": "eusd.webp",
+    "token": "eUSD",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eusd.webp"
+  },
+  {
+    "name": "ezETH",
+    "imageName": "ezeth.webp",
+    "token": "ezETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ezeth.webp"
+  },
+  {
+    "name": "Frax",
+    "imageName": "frax.webp",
+    "token": "FRAX",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/frax.webp"
+  },
+  {
+    "name": "Frax Share",
+    "imageName": "fxs.webp",
+    "token": "FXS",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/fxs.webp"
+  },
+  {
+    "name": "British Pound",
+    "imageName": "gbp.webp",
+    "token": "GBP",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/gbp.webp"
+  },
+  {
+    "name": "Manta",
+    "imageName": "manta.webp",
+    "token": "MANTA",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/manta.webp"
+  },
+  {
+    "name": "Merlin",
+    "imageName": "merl.webp",
+    "token": "MERL",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp"
+  },
+  {
+    "name": "Mantle",
+    "imageName": "mnt.webp",
+    "token": "MNT",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp"
+  },
+  {
+    "name": "Mode",
+    "imageName": "mode.webp",
+    "token": "MODE",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mode.webp"
+  },
   {
     "name": "Origin Sharded Ether",
     "imageName": "oseth.webp",
-    "token": "osETH"
+    "token": "osETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/oseth.webp"
   },
-  { "name": "Premia", "imageName": "premia.webp", "token": "PREMIA" },
-  { "name": "pufETH", "imageName": "pufeth.webp", "token": "pufETH" },
-  { "name": "Rocket Pool ETH", "imageName": "rseth.webp", "token": "rsETH" },
+  {
+    "name": "Premia",
+    "imageName": "premia.webp",
+    "token": "PREMIA",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/premia.webp"
+  },
+  {
+    "name": "pufETH",
+    "imageName": "pufeth.webp",
+    "token": "pufETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/pufeth.webp"
+  },
+  {
+    "name": "Rocket Pool ETH",
+    "imageName": "rseth.webp",
+    "token": "rsETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/rseth.webp"
+  },
   {
     "name": "Rocket Pool Wrapped Staked ETH",
     "imageName": "rsweth.webp",
-    "token": "rswETH"
+    "token": "rswETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/rsweth.webp"
   },
   {
     "name": "Staked Frax Ether",
     "imageName": "sfrxeth.webp",
-    "token": "sfrxETH"
+    "token": "sfrxETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sfrxeth.webp"
   },
-  { "name": "SolvBTC", "imageName": "solvbtc.webp", "token": "SolvBTC_MERLIN" },
-  { "name": "Lido Staked Ether", "imageName": "steth.webp", "token": "stETH" },
-  { "name": "Stone", "imageName": "stone.webp", "token": "STONE" },
-  { "name": "Staked USDe", "imageName": "susde.webp", "token": "sUSDe" },
-  { "name": "Celestia", "imageName": "tia.webp", "token": "TIA" },
-  { "name": "TRON", "imageName": "trx.webp", "token": "TRX" },
-  { "name": "USD+", "imageName": "usd+.webp", "token": "USD+" },
-  { "name": "USD Base", "imageName": "usdb.webp", "token": "USDB" },
-  { "name": "USD Coin", "imageName": "usdc.webp", "token": "USDC" },
-  { "name": "USDe", "imageName": "usde.webp", "token": "USDe" },
-  { "name": "Tether", "imageName": "usdt.webp", "token": "USDT" },
-  { "name": "Wrapped Ether", "imageName": "weeth.webp", "token": "weETH" },
+  {
+    "name": "SolvBTC",
+    "imageName": "solvbtc.webp",
+    "token": "SolvBTC_MERLIN",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/solvbtc.webp"
+  },
+  {
+    "name": "Lido Staked Ether",
+    "imageName": "steth.webp",
+    "token": "stETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/steth.webp"
+  },
+  {
+    "name": "Stone",
+    "imageName": "stone.webp",
+    "token": "STONE",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/stone.webp"
+  },
+  {
+    "name": "Staked USDe",
+    "imageName": "susde.webp",
+    "token": "sUSDe",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/susde.webp"
+  },
+  {
+    "name": "Celestia",
+    "imageName": "tia.webp",
+    "token": "TIA",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/tia.webp"
+  },
+  {
+    "name": "TRON",
+    "imageName": "trx.webp",
+    "token": "TRX",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/trx.webp"
+  },
+  {
+    "name": "USD+",
+    "imageName": "usd+.webp",
+    "token": "USD+",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usd+.webp"
+  },
+  {
+    "name": "USD Base",
+    "imageName": "usdb.webp",
+    "token": "USDB",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdb.webp"
+  },
+  {
+    "name": "USD Coin",
+    "imageName": "usdc.webp",
+    "token": "USDC",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdc.webp"
+  },
+  {
+    "name": "USDe",
+    "imageName": "usde.webp",
+    "token": "USDe",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usde.webp"
+  },
+  {
+    "name": "Tether",
+    "imageName": "usdt.webp",
+    "token": "USDT",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdt.webp"
+  },
+  {
+    "name": "Wrapped Ether",
+    "imageName": "weeth.webp",
+    "token": "weETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/weeth.webp"
+  },
   {
     "name": "Wrapped Staked Ether",
     "imageName": "wsteth.webp",
-    "token": "wstETH"
+    "token": "wstETH",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/wsteth.webp"
   },
-  { "name": "Wrapped USDM", "imageName": "wusdm.webp", "token": "wUSDM" },
-  { "name": "Gold", "imageName": "xaut.webp", "token": "XAU" },
-  { "name": "Tezos", "imageName": "xtz.webp", "token": "XTZ" },
-  { "name": "Venus", "imageName": "xvs.webp", "token": "XVS" },
-  { "name": "ZK", "imageName": "zk.webp", "token": "ZK" }
+  {
+    "name": "Wrapped USDM",
+    "imageName": "wusdm.webp",
+    "token": "wUSDM",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/wusdm.webp"
+  },
+  {
+    "name": "Gold",
+    "imageName": "xaut.webp",
+    "token": "XAU",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xaut.webp"
+  },
+  {
+    "name": "Tezos",
+    "imageName": "xtz.webp",
+    "token": "XTZ",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xtz.webp"
+  },
+  {
+    "name": "Venus",
+    "imageName": "xvs.webp",
+    "token": "XVS",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xvs.webp"
+  },
+  {
+    "name": "ZK",
+    "imageName": "zk.webp",
+    "token": "ZK",
+    "url": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zk.webp"
+  }
 ]
