@@ -28,9 +28,9 @@
 </template>
 
 <script>
-export default {
-  name: "ErrorPage",
-};
+  export default {
+    name: "ErrorPage",
+  };
 </script>
 
 <style src="./Error.scss" lang="scss" scoped />

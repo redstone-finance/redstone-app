@@ -131,58 +131,58 @@
 </template>
 
 <script>
-import Rating from "@/components/Rating/Rating";
-import _ from "lodash";
-import { mapState } from "vuex";
+  import Rating from "@/components/Rating/Rating";
+  import _ from "lodash";
+  import { mapState } from "vuex";
 
-export default {
-  name: "DataServices",
+  export default {
+    name: "DataServices",
 
-  data() {
-    return {};
-  },
+    data() {
+      return {};
+    },
 
-  created() {},
+    created() {},
 
-  computed: {
-    ...mapState("prefetch", {
-      providers: (state) => {
-        return state.providers;
+    computed: {
+      ...mapState("prefetch", {
+        providers: (state) => {
+          return state.providers;
+        },
+      }),
+
+      searchPhrase() {
+        let search = this.$route.query.search;
+        return search != null ? search : "";
       },
-    }),
 
-    searchPhrase() {
-      let search = this.$route.query.search;
-      return search != null ? search : "";
+      filteredProviders() {
+        if (this.providers) {
+          let filterProviders = {};
+
+          Object.entries(this.providers).forEach(([key, value]) => {
+            if (
+              value.name.toLowerCase().includes(this.searchPhrase.toLowerCase())
+            ) {
+              filterProviders[key] = value;
+            }
+          });
+
+          return filterProviders;
+        }
+      },
     },
 
-    filteredProviders() {
-      if (this.providers) {
-        let filterProviders = {};
-
-        Object.entries(this.providers).forEach(([key, value]) => {
-          if (
-            value.name.toLowerCase().includes(this.searchPhrase.toLowerCase())
-          ) {
-            filterProviders[key] = value;
-          }
-        });
-
-        return filterProviders;
-      }
+    methods: {
+      styleCategory(text, numberOfCategories, index) {
+        return _.startCase(text) + (index < numberOfCategories - 1 ? ", " : "");
+      },
     },
-  },
 
-  methods: {
-    styleCategory(text, numberOfCategories, index) {
-      return _.startCase(text) + (index < numberOfCategories - 1 ? ", " : "");
+    components: {
+      Rating,
     },
-  },
-
-  components: {
-    Rating,
-  },
-};
+  };
 </script>
 
 <style src="./DataServices.scss" lang="scss" scoped />

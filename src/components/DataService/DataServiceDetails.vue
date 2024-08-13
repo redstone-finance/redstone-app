@@ -103,116 +103,118 @@
 </template>
 
 <script>
-import LabelValue from "@/components/DataService/LabelValue";
-import sourcesData from "../../config/sources.json";
-import _ from "lodash";
-import showMoreTokensMixin from "@/mixins/show-more-tokens";
-import { getDetailsForSymbol } from "@/tokens";
+  import LabelValue from "@/components/DataService/LabelValue";
+  import sourcesData from "../../config/sources.json";
+  import _ from "lodash";
+  import showMoreTokensMixin from "@/mixins/show-more-tokens";
+  import { getDetailsForSymbol } from "@/tokens";
 
-export default {
-  name: "DataService",
+  export default {
+    name: "DataService",
 
-  props: {
-    provider: {},
-  },
-
-  mixins: [showMoreTokensMixin],
-
-  data() {
-    return {
-      fields: [{ key: "name", label: "Asset" }, "symbol", "sources"],
-      firstManifest: null,
-      transactionTime: null,
-      tokens: null,
-      VISIBLE_CHUNK_SIZE: 10,
-      logoPlaceholder:
-        "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
-    };
-  },
-
-  methods: {
-    removeContentAfterLastDash(str) {
-      const lastDashIndex = str.lastIndexOf("-");
-      if (lastDashIndex === -1) {
-        return str;
-      }
-      return str.substring(0, lastDashIndex);
+    props: {
+      provider: {},
     },
-    formatSources(source) {
-      return source.map((s) => _.startCase(s)).join(", ");
+
+    mixins: [showMoreTokensMixin],
+
+    data() {
+      return {
+        fields: [{ key: "name", label: "Asset" }, "symbol", "sources"],
+        firstManifest: null,
+        transactionTime: null,
+        tokens: null,
+        VISIBLE_CHUNK_SIZE: 10,
+        logoPlaceholder:
+          "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
+      };
     },
-    prepareTokensDataForTable() {
-      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) => {
-        const [symbol, detailsInManifest] = entry;
-        let tokenInfo = getDetailsForSymbol(symbol);
 
-        let sourceList =
-          detailsInManifest.source || this.currentManifest.defaultSource;
+    methods: {
+      removeContentAfterLastDash(str) {
+        const lastDashIndex = str.lastIndexOf("-");
+        if (lastDashIndex === -1) {
+          return str;
+        }
+        return str.substring(0, lastDashIndex);
+      },
+      formatSources(source) {
+        return source.map((s) => _.startCase(s)).join(", ");
+      },
+      prepareTokensDataForTable() {
+        this.tokens = Object.entries(this.currentManifest.tokens).map(
+          (entry) => {
+            const [symbol, detailsInManifest] = entry;
+            let tokenInfo = getDetailsForSymbol(symbol);
 
-        return {
-          logoURI: tokenInfo?.logoURI,
-          symbol,
-          name: tokenInfo?.name,
-          source: sourceList.map((el) => {
-            console.log({ el });
+            let sourceList =
+              detailsInManifest.source || this.currentManifest.defaultSource;
+
             return {
-              name: el,
-              ...sourcesData[this.removeContentAfterLastDash(el)],
+              logoURI: tokenInfo?.logoURI,
+              symbol,
+              name: tokenInfo?.name,
+              source: sourceList.map((el) => {
+                console.log({ el });
+                return {
+                  name: el,
+                  ...sourcesData[this.removeContentAfterLastDash(el)],
+                };
+              }),
             };
-          }),
-        };
-      });
+          }
+        );
 
-      setTimeout(this.showMoreTokens, 0);
-    },
-    loadMoreSectionVisibilityChanged() {
-      this.showMoreTokens();
-    },
-    scrollFunction() {
-      if (
-        window.innerHeight + window.pageYOffset >=
-        document.body.offsetHeight
-      ) {
+        setTimeout(this.showMoreTokens, 0);
+      },
+      loadMoreSectionVisibilityChanged() {
         this.showMoreTokens();
-      }
-    },
-  },
-
-  components: {
-    LabelValue,
-  },
-
-  computed: {
-    currentManifest() {
-      return this.provider?.currentManifest;
-    },
-    dataServiceId() {
-      return this.$route.params.id;
-    },
-    fieldsFiltered() {
-      return this.fields;
-    },
-  },
-
-  created() {
-    document.addEventListener("scroll", this.scrollFunction);
-  },
-
-  watch: {
-    currentManifest: {
-      immediate: true,
-      handler: function () {
-        if (this.currentManifest) {
-          this.prepareTokensDataForTable();
+      },
+      scrollFunction() {
+        if (
+          window.innerHeight + window.pageYOffset >=
+          document.body.offsetHeight
+        ) {
+          this.showMoreTokens();
         }
       },
     },
-  },
-};
+
+    components: {
+      LabelValue,
+    },
+
+    computed: {
+      currentManifest() {
+        return this.provider?.currentManifest;
+      },
+      dataServiceId() {
+        return this.$route.params.id;
+      },
+      fieldsFiltered() {
+        return this.fields;
+      },
+    },
+
+    created() {
+      document.addEventListener("scroll", this.scrollFunction);
+    },
+
+    watch: {
+      currentManifest: {
+        immediate: true,
+        handler: function () {
+          if (this.currentManifest) {
+            this.prepareTokensDataForTable();
+          }
+        },
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/app";
+  @import "~@/styles/app";
 
 .provider-details {
   .token-logo {
@@ -314,7 +316,7 @@ hr {
 </style>
 
 <style lang="scss">
-@import "~@/styles/app";
+  @import "~@/styles/app";
 
 .label-value {
   .value {

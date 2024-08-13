@@ -122,39 +122,39 @@
 </template>
 
 <script>
-import Widget from "@/components/Widget/Widget";
-import { mapState } from "vuex";
-import showMoreTokensMixin from "@/mixins/show-more-tokens";
-import { getCurrency, isCurrencyToken } from "@/tokens";
+  import Widget from "@/components/Widget/Widget";
+  import { mapState } from "vuex";
+  import showMoreTokensMixin from "@/mixins/show-more-tokens";
+  import { getCurrency, isCurrencyToken } from "@/tokens";
 
-export default {
-  name: "Tokens",
+  export default {
+    name: "Tokens",
 
-  mixins: [showMoreTokensMixin],
+    mixins: [showMoreTokensMixin],
 
-  props: {
-    tokens: Array,
-  },
-
-  methods: {
-    getCurrency,
-    loadMoreSectionVisibilityChanged() {
-      this.showMoreTokens();
+    props: {
+      tokens: Array,
     },
 
-    isNotCurrencyToken(details) {
-      return !isCurrencyToken(details);
+    methods: {
+      getCurrency,
+      loadMoreSectionVisibilityChanged() {
+        this.showMoreTokens();
+      },
+
+      isNotCurrencyToken(details) {
+        return !isCurrencyToken(details);
+      },
     },
-  },
 
-  computed: {
-    ...mapState("prices", ["prices"]),
-  },
+    computed: {
+      ...mapState("prices", ["prices"]),
+    },
 
-  components: {
-    Widget,
-  },
-};
+    components: {
+      Widget,
+    },
+  };
 </script>
 
 <style lang="scss" src="./Tokens.scss" scoped />

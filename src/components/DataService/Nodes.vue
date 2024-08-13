@@ -59,27 +59,27 @@
 </template>
 
 <script>
-export default {
-  name: "Nodes",
+  export default {
+    name: "Nodes",
 
-  props: {
-    nodes: [],
-  },
+    props: {
+      nodes: [],
+    },
 
-  methods: {
-    shortenEvmAddress(evmAddress) {
-      return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`;
+    methods: {
+      shortenEvmAddress(evmAddress) {
+        return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`;
+      },
+      async copyToClipboard(event, evmAddress) {
+        event.preventDefault();
+        await navigator.clipboard.writeText(evmAddress);
+      },
     },
-    async copyToClipboard(event, evmAddress) {
-      event.preventDefault();
-      await navigator.clipboard.writeText(evmAddress);
-    },
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/app";
+  @import "~@/styles/app";
 .node-wrapper {
   text-decoration: none;
 }

@@ -17,19 +17,19 @@
 </template>
 
 <script>
-export default {
-  name: "LabelValue",
+  export default {
+    name: "LabelValue",
 
-  props: {
-    label: String,
-    value: String | Number,
-    alignRight: false,
-  },
-};
+    props: {
+      label: String,
+      value: String | Number,
+      alignRight: false,
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/app";
+  @import "~@/styles/app";
 
 label {
   font-size: 12px;
@@ -48,7 +48,7 @@ label {
 </style>
 
 <style lang="scss">
-@import "~@/styles/app";
+  @import "~@/styles/app";
 
 .label-value {
   .vue-loaders {

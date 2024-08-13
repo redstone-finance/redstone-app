@@ -299,237 +299,241 @@
 </template>
 
 <script>
-import JsonViewer from "vue-json-viewer";
-import Multiselect from "vue-multiselect";
-import Vue from "vue";
-import tokenDetails from "../../config/tokens.json";
+  import JsonViewer from "vue-json-viewer";
+  import Multiselect from "vue-multiselect";
+  import Vue from "vue";
+  import tokenDetails from "../../config/tokens.json";
 
-export default {
-  name: "ManifestForm",
+  export default {
+    name: "ManifestForm",
 
-  props: {
-    initialManifest: null,
-  },
+    props: {
+      initialManifest: null,
+    },
 
-  data() {
-    return {
-      manifest: {
-        manifestChangeMessage: null,
-        manifestLockedHours: 0,
-        manifestData: {},
-      },
-      tokenSymbol: null,
-      tokenSource: null,
-      showAdvanced: false,
-      searchAvailableTokens: "",
-      searchAddedTokens: "",
-      addedTokens: [],
-      availableTokens: [],
-      clickedTokenIndex: Number,
-      availableDefaultSources: [
-        "barchart",
-        "binance",
-        "bitfinex",
-        "bitmart",
-        "coinbase",
-        "coingecko",
-        "ecb",
-        "ftx",
-        "huobi",
-        "kraken",
-        "kyber",
-        "sushiswap",
-        "uniswap",
-        "verto",
-        "yahoo-finance",
-      ],
-    };
-  },
+    data() {
+      return {
+        manifest: {
+          manifestChangeMessage: null,
+          manifestLockedHours: 0,
+          manifestData: {},
+        },
+        tokenSymbol: null,
+        tokenSource: null,
+        showAdvanced: false,
+        searchAvailableTokens: "",
+        searchAddedTokens: "",
+        addedTokens: [],
+        availableTokens: [],
+        clickedTokenIndex: Number,
+        availableDefaultSources: [
+          "barchart",
+          "binance",
+          "bitfinex",
+          "bitmart",
+          "coinbase",
+          "coingecko",
+          "ecb",
+          "ftx",
+          "huobi",
+          "kraken",
+          "kyber",
+          "sushiswap",
+          "uniswap",
+          "verto",
+          "yahoo-finance",
+        ],
+      };
+    },
 
-  mounted() {
-    this.$bvModal.show("manifest-form-modal");
-    this.availableTokens = Object.entries(tokenDetails).map(
-      (element, index) => {
-        return {
-          id: index,
-          symbol: element[0],
-          logoURI: element[1].logoURI,
-          name: element[1].name,
-          source: [],
-          availableSources: element[1].source ? element[1].source : [],
-        };
-      }
-    );
-    this.initManifest();
-  },
-
-  methods: {
-    initManifest() {
-      if (this.initialManifest) {
-        this.manifest = {};
-        this.manifest.changeMessage = this.initialManifest.changeMessage;
-        this.manifest.lockedHours = this.initialManifest.lockedHours
-          ? this.initialManifest.lockedHours
-          : 0;
-        if (this.initialManifest.manifestData) {
-          this.manifest.manifestData = {};
-          this.manifest.manifestData.evmChainId =
-            this.initialManifest.manifestData.evmChainId;
-          this.manifest.manifestData.interval =
-            this.initialManifest.manifestData.interval;
-          this.manifest.manifestData.maxPriceDeviationPercent =
-            this.initialManifest.manifestData.maxPriceDeviationPercent;
-          this.manifest.manifestData.priceAggregator =
-            this.initialManifest.manifestData.priceAggregator;
-          this.manifest.manifestData.sourceTimeout =
-            this.initialManifest.manifestData.sourceTimeout;
-
-          this.manifest.manifestData.tokens = {};
-          Object.entries(this.initialManifest.manifestData.tokens).forEach(
-            ([key, token]) => {
-              this.manifest.manifestData.tokens[key] = token;
-              if (!this.manifest.manifestData.tokens[key].source)
-                [(this.manifest.manifestData.tokens[key].source = [])];
-            }
-          );
-          this.manifest.manifestData.tokens = JSON.parse(
-            JSON.stringify(this.initialManifest.manifestData.tokens)
-          );
-
-          if (this.initialManifest.manifestData.defaultSource)
-            this.manifest.manifestData.defaultSource =
-              this.initialManifest.manifestData.defaultSource;
-
-          this.addedTokens = this.availableTokens
-            .filter((el) => {
-              return Object.entries(
-                this.initialManifest.manifestData.tokens
-              ).some((entry) => {
-                return entry[0] == el.symbol;
-              });
-            })
-            .map((el) => {
-              return {
-                ...el,
-                source:
-                  this.initialManifest.manifestData.tokens[el.symbol].source,
-              };
-            });
+    mounted() {
+      this.$bvModal.show("manifest-form-modal");
+      this.availableTokens = Object.entries(tokenDetails).map(
+        (element, index) => {
+          return {
+            id: index,
+            symbol: element[0],
+            logoURI: element[1].logoURI,
+            name: element[1].name,
+            source: [],
+            availableSources: element[1].source ? element[1].source : [],
+          };
         }
-      } else {
-        this.manifest = {};
-        this.manifest.manifestData = {};
-        this.manifest.manifestData.evmChainId = 1;
-        this.manifest.manifestData.interval = 60000;
-        this.manifest.manifestData.maxPriceDeviationPercent = 25;
-        this.manifest.manifestData.priceAggregator = "median";
-        this.manifest.manifestData.sourceTimeout = 50000;
-        this.manifest.manifestData.defaultSource = [];
-      }
+      );
+      this.initManifest();
     },
-    onSubmit(e) {
-      e.preventDefault();
 
-      const errors = [];
+    methods: {
+      initManifest() {
+        if (this.initialManifest) {
+          this.manifest = {};
+          this.manifest.changeMessage = this.initialManifest.changeMessage;
+          this.manifest.lockedHours = this.initialManifest.lockedHours
+            ? this.initialManifest.lockedHours
+            : 0;
+          if (this.initialManifest.manifestData) {
+            this.manifest.manifestData = {};
+            this.manifest.manifestData.evmChainId =
+              this.initialManifest.manifestData.evmChainId;
+            this.manifest.manifestData.interval =
+              this.initialManifest.manifestData.interval;
+            this.manifest.manifestData.maxPriceDeviationPercent =
+              this.initialManifest.manifestData.maxPriceDeviationPercent;
+            this.manifest.manifestData.priceAggregator =
+              this.initialManifest.manifestData.priceAggregator;
+            this.manifest.manifestData.sourceTimeout =
+              this.initialManifest.manifestData.sourceTimeout;
 
-      if (!this.manifest.changeMessage) {
-        errors.push("Change message required.");
-      }
-      if (!this.lockedHoursValidation) {
-        errors.push("Wrong locked hours value.");
-      }
-      if (!this.manifest.manifestData.interval) {
-        errors.push("Interval required.");
-      }
-      if (!this.manifest.manifestData.maxPriceDeviationPercent) {
-        errors.push("Maximum Price Deviation Percent required.");
-      }
-      if (!this.manifest.manifestData.sourceTimeout) {
-        errors.push("Source timeout required.");
-      }
+            this.manifest.manifestData.tokens = {};
+            Object.entries(this.initialManifest.manifestData.tokens).forEach(
+              ([key, token]) => {
+                this.manifest.manifestData.tokens[key] = token;
+                if (!this.manifest.manifestData.tokens[key].source)
+                  [(this.manifest.manifestData.tokens[key].source = [])];
+              }
+            );
+            this.manifest.manifestData.tokens = JSON.parse(
+              JSON.stringify(this.initialManifest.manifestData.tokens)
+            );
 
-      if (errors.length == 0) {
-        this.$root.$emit("manifestSubmitted", this.manifest);
-      } else {
-        alert(errors.join("\r\n"));
-      }
-    },
-    close(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.$root.$emit("manifestFormClosed");
-    },
-    addToken(token) {
-      this.addedTokens.unshift(token);
-      this.clickedTokenIndex = 0;
-      this.availableTokens = this.availableTokens.filter((availableToken) => {
-        return availableToken.id !== token.id;
-      });
-      Vue.set(this.manifest.manifestData.tokens, token.symbol, {
-        source: token.source,
-      });
-    },
-    removeToken(token) {
-      this.availableTokens.push(token);
-      this.addedTokens = this.addedTokens.filter((addedToken) => {
-        return addedToken.id != token.id;
-      });
-      Vue.delete(this.manifest.manifestData.tokens, token.symbol);
-    },
-    filterBySearch(array, term) {
-      return array.filter((element) => {
-        return (
-          element.symbol.toLowerCase().includes(term.toLowerCase()) ||
-          element.name.toLowerCase().includes(term.toLowerCase())
+            if (this.initialManifest.manifestData.defaultSource)
+              this.manifest.manifestData.defaultSource =
+                this.initialManifest.manifestData.defaultSource;
+
+            this.addedTokens = this.availableTokens
+              .filter((el) => {
+                return Object.entries(
+                  this.initialManifest.manifestData.tokens
+                ).some((entry) => {
+                  return entry[0] == el.symbol;
+                });
+              })
+              .map((el) => {
+                return {
+                  ...el,
+                  source:
+                    this.initialManifest.manifestData.tokens[el.symbol].source,
+                };
+              });
+          }
+        } else {
+          this.manifest = {};
+          this.manifest.manifestData = {};
+          this.manifest.manifestData.evmChainId = 1;
+          this.manifest.manifestData.interval = 60000;
+          this.manifest.manifestData.maxPriceDeviationPercent = 25;
+          this.manifest.manifestData.priceAggregator = "median";
+          this.manifest.manifestData.sourceTimeout = 50000;
+          this.manifest.manifestData.defaultSource = [];
+        }
+      },
+      onSubmit(e) {
+        e.preventDefault();
+
+        const errors = [];
+
+        if (!this.manifest.changeMessage) {
+          errors.push("Change message required.");
+        }
+        if (!this.lockedHoursValidation) {
+          errors.push("Wrong locked hours value.");
+        }
+        if (!this.manifest.manifestData.interval) {
+          errors.push("Interval required.");
+        }
+        if (!this.manifest.manifestData.maxPriceDeviationPercent) {
+          errors.push("Maximum Price Deviation Percent required.");
+        }
+        if (!this.manifest.manifestData.sourceTimeout) {
+          errors.push("Source timeout required.");
+        }
+
+        if (errors.length == 0) {
+          this.$root.$emit("manifestSubmitted", this.manifest);
+        } else {
+          alert(errors.join("\r\n"));
+        }
+      },
+      close(bvModalEvt) {
+        bvModalEvt.preventDefault();
+        this.$root.$emit("manifestFormClosed");
+      },
+      addToken(token) {
+        this.addedTokens.unshift(token);
+        this.clickedTokenIndex = 0;
+        this.availableTokens = this.availableTokens.filter((availableToken) => {
+          return availableToken.id !== token.id;
+        });
+        Vue.set(this.manifest.manifestData.tokens, token.symbol, {
+          source: token.source,
+        });
+      },
+      removeToken(token) {
+        this.availableTokens.push(token);
+        this.addedTokens = this.addedTokens.filter((addedToken) => {
+          return addedToken.id != token.id;
+        });
+        Vue.delete(this.manifest.manifestData.tokens, token.symbol);
+      },
+      filterBySearch(array, term) {
+        return array.filter((element) => {
+          return (
+            element.symbol.toLowerCase().includes(term.toLowerCase()) ||
+            element.name.toLowerCase().includes(term.toLowerCase())
+          );
+        });
+      },
+      onSourceChange(value, token) {
+        Vue.set(
+          this.manifest.manifestData.tokens[token.symbol],
+          "source",
+          value
         );
-      });
+      },
+      onDefaultSourceChange(value) {
+        Vue.set(this.manifest.manifestData, "defaultSource", value);
+      },
+      addSourceTag(newTag) {
+        this.availableDefaultSources.push(newTag);
+        this.manifest.manifestData.defaultSource.push(newTag);
+      },
     },
-    onSourceChange(value, token) {
-      Vue.set(this.manifest.manifestData.tokens[token.symbol], "source", value);
-    },
-    onDefaultSourceChange(value) {
-      Vue.set(this.manifest.manifestData, "defaultSource", value);
-    },
-    addSourceTag(newTag) {
-      this.availableDefaultSources.push(newTag);
-      this.manifest.manifestData.defaultSource.push(newTag);
-    },
-  },
 
-  components: {
-    JsonViewer,
-    Multiselect,
-  },
-
-  computed: {
-    lockedHoursValidation() {
-      return parseInt(this.manifest.lockedHours) >= 0;
+    components: {
+      JsonViewer,
+      Multiselect,
     },
-    visibleAvailableTokens() {
-      return this.filterBySearch(
-        this.availableTokens,
-        this.searchAvailableTokens
-      )
-        .filter(
-          function (token) {
-            return !this.addedTokens.some((addedToken) => {
-              return addedToken.id == token.id;
-            });
-          }.bind(this)
+
+    computed: {
+      lockedHoursValidation() {
+        return parseInt(this.manifest.lockedHours) >= 0;
+      },
+      visibleAvailableTokens() {
+        return this.filterBySearch(
+          this.availableTokens,
+          this.searchAvailableTokens
         )
-        .slice(0, 20);
+          .filter(
+            function (token) {
+              return !this.addedTokens.some((addedToken) => {
+                return addedToken.id == token.id;
+              });
+            }.bind(this)
+          )
+          .slice(0, 20);
+      },
+      visibleAddedTokens() {
+        return this.filterBySearch(
+          this.addedTokens,
+          this.searchAddedTokens
+        ).slice(0, 20);
+      },
     },
-    visibleAddedTokens() {
-      return this.filterBySearch(
-        this.addedTokens,
-        this.searchAddedTokens
-      ).slice(0, 20);
-    },
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/app";
+  @import "~@/styles/app";
 @import "bootstrap";
 
 .card-header {
@@ -766,7 +770,7 @@ export default {
 }
 </style>
 <style lang="scss">
-@import "~@/styles/app";
+  @import "~@/styles/app";
 
 #manifest-form-modal {
   .multiselect__select,

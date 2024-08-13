@@ -61,70 +61,72 @@
 </template>
 
 <script>
-import _ from "lodash";
-import { mapState, mapActions } from "vuex";
-import CodeExample from "@/components/Token/CodeExample";
+  import _ from "lodash";
+  import { mapState, mapActions } from "vuex";
+  import CodeExample from "@/components/Token/CodeExample";
 
-export default {
-  name: "Header",
-  data() {
-    return {
-      search: this.$route.query.search,
-    };
-  },
-  computed: {
-    ...mapState("layout", [
-      "sidebarClose",
-      "sidebarStatic",
-      "showSearchInputInHeader",
-    ]),
+  export default {
+    name: "Header",
+    data() {
+      return {
+        search: this.$route.query.search,
+      };
+    },
+    computed: {
+      ...mapState("layout", [
+        "sidebarClose",
+        "sidebarStatic",
+        "showSearchInputInHeader",
+      ]),
 
-    searchTerm: {
-      get() {
-        return this.$store.state.layout.searchTerm;
+      searchTerm: {
+        get() {
+          return this.$store.state.layout.searchTerm;
+        },
+        set(value) {
+          this.updateSearchTerm(value);
+
+          if (value) {
+            this.$router.push({
+              query: {
+                ...this.$route.query,
+                search: value,
+              },
+            });
+          } else {
+            const queryWithoutSearchInput = _.omit(this.$route.query, [
+              "search",
+            ]);
+            this.$router.push({ query: queryWithoutSearchInput });
+          }
+        },
       },
-      set(value) {
-        this.updateSearchTerm(value);
+    },
 
-        if (value) {
-          this.$router.push({
-            query: {
-              ...this.$route.query,
-              search: value,
-            },
-          });
-        } else {
-          const queryWithoutSearchInput = _.omit(this.$route.query, ["search"]);
-          this.$router.push({ query: queryWithoutSearchInput });
-        }
+    created() {
+      this.updateSearchTerm(this.$route.query.search);
+    },
+
+    methods: {
+      ...mapActions("layout", [
+        "toggleSidebar",
+        "switchSidebar",
+        "changeSidebarActive",
+        "updateSearchTerm",
+      ]),
+      toggleSidebarMenu() {
+        this.toggleSidebar();
+      },
+      logout() {
+        window.localStorage.setItem("authenticated", false);
+        this.$router.push("/login");
       },
     },
-  },
 
-  created() {
-    this.updateSearchTerm(this.$route.query.search);
-  },
-
-  methods: {
-    ...mapActions("layout", [
-      "toggleSidebar",
-      "switchSidebar",
-      "changeSidebarActive",
-      "updateSearchTerm",
-    ]),
-    toggleSidebarMenu() {
-      this.toggleSidebar();
+    components: {
+      CodeExample,
     },
-    logout() {
-      window.localStorage.setItem("authenticated", false);
-      this.$router.push("/login");
-    },
-  },
-
-  components: {
-    CodeExample,
-  },
-};
+  };
 </script>
 
 <style src="./Header.scss" lang="scss"></style>

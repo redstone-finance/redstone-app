@@ -45,20 +45,20 @@
 </template>
 
 <script>
-export default {
-  name: "CodeExample",
+  export default {
+    name: "CodeExample",
 
-  computed: {
-    shouldLoadCodeBox() {
-      return process.env.NODE_ENV === "production";
-      // return process.env.NODE_ENV === 'development';
+    computed: {
+      shouldLoadCodeBox() {
+        return process.env.NODE_ENV === "production";
+        // return process.env.NODE_ENV === 'development';
+      },
     },
-  },
-};
+  };
 </script>
 
 <style lang="scss">
-@import "../../styles/app";
+  @import "../../styles/app";
 
 .btn-docs {
   font-size: $font-size-mini;

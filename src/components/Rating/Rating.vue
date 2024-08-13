@@ -24,50 +24,50 @@
 </template>
 
 <script>
-export default {
-  name: "Rating",
-  props: {
-    value: { type: Number, default: 0 },
-    disabled: { type: Boolean },
-  },
-  data: function () {
-    return {
-      temp_value: null,
-      ratings: [1, 2, 3, 4, 5],
-    };
-  },
-
-  methods: {
-    /*
-     * Behaviour of the stars on mouseover.
-     */
-    starOver(index) {
-      if (!this.disabled) {
-        this.temp_value = this.value;
-        return (this.value = index);
-      }
+  export default {
+    name: "Rating",
+    props: {
+      value: { type: Number, default: 0 },
+      disabled: { type: Boolean },
+    },
+    data: function () {
+      return {
+        temp_value: null,
+        ratings: [1, 2, 3, 4, 5],
+      };
     },
 
-    /*
-     * Behaviour of the stars on mouseout.
-     */
-    starOut() {
-      if (!this.disabled) {
-        return (this.value = this.temp_value);
-      }
-    },
+    methods: {
+      /*
+       * Behaviour of the stars on mouseover.
+       */
+      starOver(index) {
+        if (!this.disabled) {
+          this.temp_value = this.value;
+          return (this.value = index);
+        }
+      },
 
-    /*
-     * Set the rating.
-     */
-    set(value) {
-      if (!this.disabled) {
-        this.temp_value = value;
-        return (this.value = value);
-      }
+      /*
+       * Behaviour of the stars on mouseout.
+       */
+      starOut() {
+        if (!this.disabled) {
+          return (this.value = this.temp_value);
+        }
+      },
+
+      /*
+       * Set the rating.
+       */
+      set(value) {
+        if (!this.disabled) {
+          this.temp_value = value;
+          return (this.value = value);
+        }
+      },
     },
-  },
-};
+  };
 </script>
 
 <style src="./Rating.scss" lang="scss" />

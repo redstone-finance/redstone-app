@@ -51,92 +51,92 @@
 </template>
 
 <script>
-import redstoneAdapter from "@/redstone-api-adapter";
-import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
-import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
-import _ from "lodash";
-import { getDetailsForSymbol } from "@/tokens";
+  import redstoneAdapter from "@/redstone-api-adapter";
+  import TokenPriceChartContainer from "@/components/Token/TokenPriceChartContainer";
+  import TokenPriceTableContainer from "@/components/Token/TokenPriceTableContainer";
+  import _ from "lodash";
+  import { getDetailsForSymbol } from "@/tokens";
 
-export default {
-  name: "Token",
+  export default {
+    name: "Token",
 
-  data() {
-    return {
-      currentPrice: {},
-      oldPrice: {},
-      selectedProvider: this.getInitialProvider(),
-    };
-  },
-
-  created() {
-    this.loadPrices();
-  },
-
-  timers: {
-    loadPrices: { autostart: true, time: 2000, repeat: true },
-  },
-
-  methods: {
-    async loadPrices() {
-      this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
-        provider: this.selectedProvider,
-      });
-    },
-
-    getInitialProvider() {
-      return this.getProviders()[0];
-    },
-
-    getProviders() {
-      const symbol = this.parseSymbol();
-      return getDetailsForSymbol(symbol).providers;
-    },
-
-    scrollToDataServices() {
-      const table = document.getElementById("token-price-table");
-      table.scrollIntoView({ behavior: "smooth" });
-    },
-
-    parseSymbol() {
-      let symbol = this.$route.params.symbol;
-      if (symbol.includes("\\")) {
-        symbol = symbol.replace("\\", "/");
-      }
-      return symbol;
-    },
-  },
-
-  components: {
-    TokenPriceChartContainer,
-    TokenPriceTableContainer,
-  },
-
-  computed: {
-    symbol() {
-      return this.parseSymbol();
-    },
-
-    providers() {
-      return this.getProviders().map((provider) => {
-        return {
-          value: provider,
-          text: _.startCase(provider),
-        };
-      });
-    },
-    tokenDetails() {
+    data() {
       return {
-        ...getDetailsForSymbol(this.symbol),
-        symbol: this.symbol,
+        currentPrice: {},
+        oldPrice: {},
+        selectedProvider: this.getInitialProvider(),
       };
     },
-  },
-};
+
+    created() {
+      this.loadPrices();
+    },
+
+    timers: {
+      loadPrices: { autostart: true, time: 2000, repeat: true },
+    },
+
+    methods: {
+      async loadPrices() {
+        this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
+          provider: this.selectedProvider,
+        });
+      },
+
+      getInitialProvider() {
+        return this.getProviders()[0];
+      },
+
+      getProviders() {
+        const symbol = this.parseSymbol();
+        return getDetailsForSymbol(symbol).providers;
+      },
+
+      scrollToDataServices() {
+        const table = document.getElementById("token-price-table");
+        table.scrollIntoView({ behavior: "smooth" });
+      },
+
+      parseSymbol() {
+        let symbol = this.$route.params.symbol;
+        if (symbol.includes("\\")) {
+          symbol = symbol.replace("\\", "/");
+        }
+        return symbol;
+      },
+    },
+
+    components: {
+      TokenPriceChartContainer,
+      TokenPriceTableContainer,
+    },
+
+    computed: {
+      symbol() {
+        return this.parseSymbol();
+      },
+
+      providers() {
+        return this.getProviders().map((provider) => {
+          return {
+            value: provider,
+            text: _.startCase(provider),
+          };
+        });
+      },
+      tokenDetails() {
+        return {
+          ...getDetailsForSymbol(this.symbol),
+          symbol: this.symbol,
+        };
+      },
+    },
+  };
 </script>
 
 <style src="./Token.scss" lang="scss" scoped />
 <style lang="scss">
-@import "~@/styles/app";
+  @import "~@/styles/app";
 
 .select-provider-wrapper {
   height: 24px;
