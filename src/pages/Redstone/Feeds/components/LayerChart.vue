@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Chart from 'chart.js'
+import Chart from "chart.js";
 
 const crosshairPlugin = {
   afterDatasetsDraw: function (chart) {
@@ -25,7 +25,7 @@ const crosshairPlugin = {
         rightX = chart.scales['x-axis-0'].right;
 
       // Set the line color
-      ctx.strokeStyle = 'rgba(253, 98, 122, 0.75)'; // Using the specified color with 75% opacity
+      ctx.strokeStyle = "rgba(253, 98, 122, 0.75)"; // Using the specified color with 75% opacity
 
       // draw vertical line
       ctx.beginPath();
@@ -58,7 +58,7 @@ export default {
     return {
       chart: null,
       currentRange: '1m' // Default to 1 month view
-    }
+    };
   },
   computed: {
     filteredData() {
@@ -97,9 +97,9 @@ export default {
   },
   mounted() {
     this.createChart();
-    setTimeout(() => {
+    this.$nextTick(() => {
       this.updateGradient();
-    }, 0);
+    });
   },
   methods: {
     createGradient(ctx, chartArea) {
@@ -129,8 +129,8 @@ export default {
               label: (tooltipItem, data) => {
                 const dataIndex = tooltipItem.index;
                 const value = data.datasets[0].data[dataIndex];
-                const block = this.filteredData[dataIndex].block;
-                return `Block: ${block}, Price: $${value.toFixed(2)}`;
+                const timestamp = this.filteredData[dataIndex].timestamp;
+                return `Time: ${new Date(timestamp).toLocaleString()}, Price: $${value.toFixed(2)}`;
               }
             }
           },
@@ -185,7 +185,6 @@ export default {
         }
       });
 
-      // Apply gradient after chart creation
       this.updateGradient();
     },
     updateChart() {

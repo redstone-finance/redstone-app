@@ -1,5 +1,4 @@
-@import '../../../styles/app';
-
+@import "../../../styles/app";
 
 .sidebar-link {
   height: 59px;
@@ -9,8 +8,8 @@
   width: 100%;
   overflow-x: hidden;
 
-  @media (min-width: map_get($grid-breakpoints, lg))
-  and (min-height: $screen-lg-height), (max-width: map_get($grid-breakpoints, md) - 1px) {
+  @media (min-width: map_get($grid-breakpoints, lg)) and (min-height: $screen-lg-height),
+    (max-width: map_get($grid-breakpoints, md)) {
     font-size: 13px;
   }
 
@@ -35,7 +34,6 @@
     border-top: 1px solid $sidebar-item-border-color;
     font-size: 14px;
     font-weight: $font-weight-normal;
-
 
     &:hover {
       background-color: var(--sidebar-item-hover-bg-color);
@@ -73,7 +71,8 @@
     padding: 7px;
     background: var(--sidebar-badge-bg);
 
-    @media (min-width: map_get($grid-breakpoints, lg)) and (min-height: $screen-lg-height), (max-width: map_get($grid-breakpoints, md) - 1px) {
+    @media (min-width: map_get($grid-breakpoints, lg)) and (min-height: $screen-lg-height),
+      (max-width: map_get($grid-breakpoints, md)) {
       margin-top: 16px;
     }
   }

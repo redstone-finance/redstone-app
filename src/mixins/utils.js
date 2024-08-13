@@ -1,7 +1,6 @@
 export default {
   data() {
-    return {
-    }
+    return {};
   },
   methods: {
     formatInterval(interval) {
@@ -21,13 +20,13 @@ export default {
       const miliseconds = interval;
 
       let result = "";
-      if (days > 0) result += days + (days == 1 ? " day" : " days")
-      if (hours > 0) result +=  " " + hours + " h";
-      if (minutes > 0) result +=  " " + minutes + " min";
+      if (days > 0) result += days + (days == 1 ? " day" : " days");
+      if (hours > 0) result += " " + hours + " h";
+      if (minutes > 0) result += " " + minutes + " min";
       if (seconds > 0) result += " " + seconds + " s";
       if (miliseconds > 0) result += " " + miliseconds + " ms";
 
       return result;
-    }
-  }
+    },
+  },
 };

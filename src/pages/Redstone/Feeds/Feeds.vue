@@ -1,67 +1,104 @@
 <template>
-    <div class="feeds">
-        <div class="feeds__actions-wrapper">
-            <div>
-                <div class="feeds__actions-wrapper-item">
-                    <NetworkPicker @input="handleFilter('networks', $event)" :value="selectedNetworks"
-                        :items="networksMap" class="feeds__network-picker" />
-                    <CryptoPicker :items="cryptoImages" @input="handleFilter('cryptos', $event)"
-                        :value="selectedCryptos" class="feeds__crypto-picker" />
-                    <div class="feeds__status">
-                        <div class="feeds__actions-wrapper-label ml-4  mr-2 text-light fw-normal">Displaying</div>
-                        <span class="feeds__status-text mr-2">
-                            <strong>{{ selectedNetworks.length || networksMap.length }}</strong> networks, 
-                        </span>
-                        <span class="feeds__status-text">
-                            <strong>{{ filteredItems.length }}</strong> feeds
-                        </span>
-                    </div>
-                </div>
-                <div class="feeds__actions-wrapper-item">
-                    <div v-if="selectedNetworks.length > 0">
-                        <div class="selected-items">Selected networks:</div>
-                        <SelectedFilters @remove="removeNetwork" class="mt-2" :filters="displayedSelectedNetworks" />
-                    </div>
-                    <div class="separator" v-if="selectedCryptos.length > 0 && selectedNetworks.length > 0"></div>
-                    <div v-if="selectedCryptos.length > 0" class="second-filters">
-                        <div class="selected-items">Selected cryptos:</div>
-                        <SelectedFilters @remove="removeCrypto" class="mt-2" :filters="displayedSelectedCryptos" />
-                    </div>
-                    <div v-if="hasFilters" class="clear-filters" @click="resetFilters">Clear all</div>
-                </div>
+  <div class="feeds">
+    <div class="feeds__actions-wrapper">
+      <div>
+        <div class="feeds__actions-wrapper-item">
+          <NetworkPicker
+            @input="handleFilter('networks', $event)"
+            :value="selectedNetworks"
+            :items="networksMap"
+            class="feeds__network-picker"
+          />
+          <CryptoPicker
+            :items="cryptoImages"
+            @input="handleFilter('cryptos', $event)"
+            :value="selectedCryptos"
+            class="feeds__crypto-picker"
+          />
+          <div class="feeds__status">
+            <div
+              class="feeds__actions-wrapper-label ml-4 mr-2 text-light fw-normal"
+            >
+              Displaying
             </div>
+            <span class="feeds__status-text mr-2">
+              <strong>{{
+                selectedNetworks.length || networksMap.length
+              }}</strong>
+              networks,
+            </span>
+            <span class="feeds__status-text">
+              <strong>{{ filteredItems.length }}</strong> feeds
+            </span>
+          </div>
         </div>
-        <b-table v-if="displayedTableItems" id="feeds-table" v-model="displayedTableItems" key="table" stacked="md"
-            ref="selectableTable" :sortBy="sortBy" :sortDesc="sortDesc" @filtered="onFiltered" :filter="filters"
-            sort-icon-left hover :items="feeds" :per-page="perPage" @sort-changed="handleSort"
-            :current-page="currentPage" :filter-function="customFilter" :fields="fields" class="feeds__table">
-            <template #cell(network)="{ item }">
-                <img class="feeds__token-image" :src="item.network.image" :alt="item.network.name">
-                {{ item.network.name }}
-            </template>
-            <template #cell(contract_address)="{ item }">
-                <contract-address :item="item" />
-            </template>
-            <template #cell(feed)="{ item }">
-                <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
-                <router-link class="feeds__feed-link"
-                    :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
-                    <span>{{ item.feed }}</span>
-                </router-link>
-            </template>
-            <template #cell(timestamp)="{ item }">
-                <TimestampWithLoader :isLoading="item.loaders.blockTimestamp" :rawTimestamp="item.timestamp.raw"
-                    :formattedDate="item.timestamp.date" :parsedTimestamp="item.timestamp.parsed" />
-            </template>
-            <template #cell(heartbeat)="{ item }">
-                <HeartbeatTimer :isLoading="item.loaders.blockTimestamp" :heartbeat="item.heartbeat"
-                    :layerId="item.layer_id" />
-            </template>
-        </b-table>
-        <b-pagination prev-text="Previous page" next-text="Next page" limit="1" @change="onPageChange"
-            v-model="currentPage" :total-rows="totalRows" :per-page="perPage" align="fill"
-            class="my-3 custom-pagination"></b-pagination>
+      </div>
+      <b-table 
+        v-if="displayedTableItems" 
+        id="feeds-table" 
+        v-model="displayedTableItems" 
+        key="table" 
+        stacked="md"
+        ref="selectableTable" 
+        :sortBy="sortBy" 
+        :sortDesc="sortDesc" 
+        @filtered="onFiltered" 
+        :filter="filters"
+        sort-icon-left 
+        hover 
+        :items="feeds" 
+        :per-page="perPage" 
+        @sort-changed="handleSort"
+        :current-page="currentPage" 
+        :filter-function="customFilter" 
+        :fields="fields" 
+        class="feeds__table"
+      >
+        <template #cell(network)="{ item }">
+          <img class="feeds__token-image" :src="item.network.image" :alt="item.network.name">
+          {{ item.network.name }}
+        </template>
+        <template #cell(contract_address)="{ item }">
+          <contract-address :item="item" />
+        </template>
+        <template #cell(feed)="{ item }">
+          <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
+          <router-link 
+            class="feeds__feed-link"
+            :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }"
+          >
+            <span>{{ item.feed }}</span>
+          </router-link>
+        </template>
+        <template #cell(timestamp)="{ item }">
+          <TimestampWithLoader 
+            :isLoading="item.loaders.blockTimestamp" 
+            :rawTimestamp="item.timestamp.raw"
+            :formattedDate="item.timestamp.date" 
+            :parsedTimestamp="item.timestamp.parsed" 
+          />
+        </template>
+        <template #cell(heartbeat)="{ item }">
+          <HeartbeatTimer 
+            :isLoading="item.loaders.blockTimestamp" 
+            :heartbeat="item.heartbeat"
+            :layerId="item.layer_id" 
+          />
+        </template>
+      </b-table>
+      <b-pagination 
+        prev-text="Previous page" 
+        next-text="Next page" 
+        limit="1" 
+        @change="onPageChange"
+        v-model="currentPage" 
+        :total-rows="totalRows" 
+        :per-page="perPage" 
+        align="fill"
+        class="my-3 custom-pagination"
+      ></b-pagination>
     </div>
+  </div>
 </template>
 
 <script>
@@ -88,7 +125,7 @@ import images from '@/data/logosDefinitions.json'
 import { transformFeed, findNetworkImage} from './feedUtils'
 
 
-export default {
+  export default {
     components: {
         Loader,
         CryptoPicker,
@@ -101,102 +138,100 @@ export default {
         SelectedFilters
     },
     data() {
-        return {
-            displayedTableItems: [],
-            filters: null,
-            selectedChain: null,
-            selectedCryptos: [],
-            selectedNetworks: [],
-            perPage: 8,
-            sortBy: null,
-            sortDesc: false,
-            currentPage: 1,
-            filteredItems: [],
-            isUnselecting: false,
-            isInitialLoad: true,
-            mostUsedCryptos: [
-                { name: 'BitCoin', token: 'BTC', image: 'btc.webp' },
-                { name: 'Ethereum', token: 'ETH', image: 'eth.webp' },
-            ],
-            fields: [
-                { key: 'feed', label: 'Feed', sortable: true },
-                { key: 'network', label: 'Network', sortable: true },
-                { key: 'contract_address', label: 'Addresses' },
-                { key: 'heartbeat', label: 'Heartbeat' },
-                { key: 'deviation', label: 'Deviation threshold ' },
-                {
-                    key: 'timestamp', label: 'Last update', sortable: true,
-                    sortByFormatted: true,
-                    formatter: (value, key, item) => item.timestamp.raw
-                },
-            ],
-        };
+      return {
+        displayedTableItems: [],
+        filters: null,
+        selectedChain: null,
+        selectedCryptos: [],
+        selectedNetworks: [],
+        perPage: 8,
+        sortBy: null,
+        sortDesc: false,
+        currentPage: 1,
+        filteredItems: [],
+        isUnselecting: false,
+        isInitialLoad: true,
+        scrollPosition: 0,
+        mostUsedCryptos: [
+          { name: "BitCoin", token: "BTC", image: "btc.webp" },
+          { name: "Ethereum", token: "ETH", image: "eth.webp" },
+        ],
+        fields: [
+          { key: "feed", label: "Feed", sortable: true },
+          { key: "network", label: "Network", sortable: true },
+          { key: "contract_address", label: "Addresses" },
+          { key: "heartbeat", label: "Heartbeat" },
+          { key: "deviation", label: "Deviation threshold " },
+          {
+            key: "timestamp",
+            label: "Last update",
+            sortable: true,
+            sortByFormatted: true,
+            formatter: (value, key, item) => item.timestamp.raw,
+          },
+        ],
+      };
     },
-
     async mounted() {
-        prefetchImages(Object.values(networks).map(network => network.iconUrl))
-        await this.init()
-        this.initializeFiltersFromRoute()
-        this.$nextTick(() => {
-            this.isInitialLoad = false
-        })
+      prefetchImages(Object.values(networks).map((network) => network.iconUrl));
+      await this.init();
+      this.initializeFiltersFromRoute();
+      this.$nextTick(() => {
+        this.isInitialLoad = false;
+      });
     },
     methods: {
-        copyToClipboardHelper,
-        truncateString,
-        initializeFiltersFromRoute() {
-            const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query
-            this.selectedCryptos = cryptos ? cryptos.split(',') : []
-            console.log({ cryptos })
-            this.selectedNetworks = networks ? networks.split(',').map(Number) : []
-            this.currentPage = page ? parseInt(page) : 1
-            this.sortBy = sortBy || null
-            this.sortDesc = sortDesc === 'true'
-            this.applyFilters()
-        },
-        updateRouteParams() {
-            if (this.isInitialLoad) return
-            const query = { ...this.$route.query }
-            if (this.selectedCryptos.length > 0) {
-                query.cryptos = this.selectedCryptos.join(',')
-            } else {
-                delete query.cryptos
-            }
-            if (this.selectedNetworks.length > 0) {
-                query.networks = this.selectedNetworks.join(',')
-            } else {
-                delete query.networks
-            }
-            query.page = this.currentPage.toString()
-
-            // Add sorting parameters
-            if (this.sortBy) {
-                query.sortBy = this.sortBy
-                query.sortDesc = this.sortDesc.toString()
-            } else {
-                delete query.sortBy
-                delete query.sortDesc
-            }
-
-            this.$router.push({ query }).catch(err => {
-                if (err.name !== 'NavigationDuplicated') {
-                    throw err
-                }
+      copyToClipboardHelper,
+      truncateString,
+      initializeFiltersFromRoute() {
+        const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query;
+        this.selectedCryptos = cryptos ? cryptos.split(",") : [];
+        this.selectedNetworks = networks ? networks.split(",").map(Number) : [];
+        this.currentPage = page ? parseInt(page) : 1;
+        this.sortBy = sortBy || null;
+        this.sortDesc = sortDesc === "true";
+        this.applyFilters();
+      },
+      updateRouteParams() {
+        if (this.isInitialLoad) return;
+        this.scrollPosition =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const query = { ...this.$route.query };
+        if (this.selectedCryptos.length > 0) {
+          query.cryptos = this.selectedCryptos.join(",");
+        } else {
+          delete query.cryptos;
+        }
+        if (this.selectedNetworks.length > 0) {
+          query.networks = this.selectedNetworks.join(",");
+        } else {
+          delete query.networks;
+        }
+        query.page = this.currentPage.toString();
+        if (this.sortBy) {
+          query.sortBy = this.sortBy;
+          query.sortDesc = this.sortDesc.toString();
+        } else {
+          delete query.sortBy;
+          delete query.sortDesc;
+        }
+        this.$router
+          .replace({ query })
+          .then(() => {
+            this.$nextTick(() => {
+              window.scrollTo(0, this.scrollPosition);
             });
-        },
-        handleFilter(filterType, value) {
-            if (filterType === 'cryptos') {
-                this.selectedCryptos = value
-                console.log(this.selectedCryptos)
-            } else if (filterType === 'networks') {
-                this.selectedNetworks = value
+          })
+          .catch((err) => {
+            if (err.name !== "NavigationDuplicated") {
+              throw err;
             }
             if (!this.isInitialLoad) {
                 this.currentPage = 1 // Reset to first page when filters change, but not on initial load
             }
             this.applyFilters()
             this.updateRouteParams()
-        },
+			})},
         handleSort(ctx) {
             this.sortBy = ctx.sortBy
             this.sortDesc = ctx.sortDesc
@@ -283,9 +318,17 @@ export default {
         ...mapActions('feeds', ['init', 'initSingleContract']),
     },
     watch: {
-        feeds() {
-            this.filteredItems = []
+      feeds() {
+        this.filteredItems = [];
+      },
+      "$route.query": {
+        handler() {
+          this.$nextTick(() => {
+            window.scrollTo(0, this.scrollPosition);
+          });
         },
+        deep: true,
+      },
     },
     computed: {
         tokensInNetworks() {

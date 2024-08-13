@@ -1,4 +1,4 @@
-@import '~@/styles/app';
+@import "~@/styles/app";
 
 .sources-wrapper {
   background-color: $gray-100;
@@ -11,7 +11,7 @@
       text-transform: none;
       color: $navy;
       font-size: 12px;
-      font-weight:  $font-weight-soft-bold;
+      font-weight: $font-weight-soft-bold;
     }
 
     th:nth-of-type(1) {
@@ -27,7 +27,7 @@
       width: 30px;
     }
 
-    .source-name  {
+    .source-name {
       text-transform: capitalize;
     }
   }

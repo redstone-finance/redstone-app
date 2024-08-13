@@ -1,4 +1,4 @@
-@import '../../styles/app';
+@import "../../styles/app";
 
 .title {
   margin-top: 0;
@@ -20,30 +20,30 @@
     min-height: 150px;
   }
 
-  [control='collapse'] {
+  [control="collapse"] {
     display: unset;
   }
 
-  [control='expand'] {
+  [control="expand"] {
     display: none;
   }
 
-  [control='fullscreen'] {
+  [control="fullscreen"] {
     display: unset;
   }
 
-  [control='restore'] {
+  [control="restore"] {
     display: none;
   }
 
   &.collapsed {
     min-height: unset;
 
-    [control='collapse'] {
+    [control="collapse"] {
       display: none;
     }
 
-    [control='expand'] {
+    [control="expand"] {
       display: unset;
     }
   }
@@ -57,11 +57,11 @@
     margin: 0;
     z-index: 10000;
 
-    [control='fullscreen'] {
+    [control="fullscreen"] {
       display: none;
     }
 
-    [control='restore'] {
+    [control="restore"] {
       display: unset;
     }
   }
@@ -99,7 +99,8 @@
     }
 
     .widget-body.p-0 {
-      margin: $widget-padding-vertical (-$widget-padding-horizontal) (-$widget-padding-vertical);
+      margin: $widget-padding-vertical (-$widget-padding-horizontal)
+        (-$widget-padding-vertical);
 
       + footer {
         margin-top: $widget-padding-vertical;
@@ -220,7 +221,7 @@
   }
 
   .widget-padding-lg {
-    padding: $widget-padding-vertical*2 $widget-padding-horizontal*2;
+    padding: $widget-padding-vertical * 2 $widget-padding-horizontal * 2;
   }
 
   .widget-body-container {

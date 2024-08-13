@@ -1,69 +1,83 @@
 <template>
-    <div class="feed-details">
-        <div class="feed-details__infos">
-            <div class="applicant-info" v-if="feedData">
-                <div class="applicant-info__header">
-                    <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
-                </div>
-                <div class="applicant-info__content">
-                    <dl class="applicant-info__list">
-                        <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Answer</dt>
-                            <dd class="applicant-info__value">
-                                <span class="applicant-info__text">0.0001044191</span>
-                            </dd>
-                        </div>
-                        <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Network</dt>
-                            <dd class="applicant-info__value">
-                                <img class="feeds__token-image small" v-if="feedData" :src="feedData.network.image"
-                                    :alt="feedData.network.name">
-                                <span class="applicant-info__text">{{ feedData.network.name }}</span>
-                            </dd>
-                        </div>
-                        <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Last update</dt>
-                            <dd class="applicant-info__value">
-                                <span class="applicant-info__text">
-                                    <TimestampWithLoader :isLoading="feedData.loaders.blockTimestamp"
-                                        :rawTimestamp="feedData.timestamp.raw" :formattedDate="feedData.timestamp.date"
-                                        :parsedTimestamp="feedData.timestamp.parsed" />
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Trigger parameters</dt>
-                            <dd class="applicant-info__column-value">
-                                <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Deviation threshold
-                            </dt>
-                            <dd class="applicant-info__value">
-                                <span class="applicant-info__text">{{ feedData.deviation }}</span>
-                            </dd>
-                        </div>
-                        <div class="applicant-info__item">
-                            <dt class="applicant-info__label">Heartbeat</dt>
-                            <dd class="applicant-info__value">
-                                <HeartbeatTimer v-if="feedData" :isLoading="feedData.loaders.blockTimestamp"
-                                    :heartbeat="feedData.heartbeat" :layerId="feedData.layer_id" />
-                            </dd>
-                        </div>
-                        </dd>
-                </div>
-                </dl>
-            </div>
+  <div class="feed-details">
+    <div class="feed-details__infos">
+      <div class="applicant-info" v-if="feedData">
+        <div class="applicant-info__header">
+          <h3 class="applicant-info__title">{{ feedData.feed }}</h3>
         </div>
+        <div class="applicant-info__content">
+          <dl class="applicant-info__list">
+            <div class="applicant-info__item">
+              <dt class="applicant-info__label">Answer</dt>
+              <dd class="applicant-info__value">
+                <span class="applicant-info__text">0.0001044191</span>
+              </dd>
+            </div>
+            <div class="applicant-info__item">
+              <dt class="applicant-info__label">Network</dt>
+              <dd class="applicant-info__value">
+                <img class="feeds__token-image small" v-if="feedData" :src="feedData.network.image" :alt="feedData.network.name">
+                <span class="applicant-info__text">{{ feedData.network.name }}</span>
+              </dd>
+            </div>
+            <div class="applicant-info__item">
+              <dt class="applicant-info__label">Last update</dt>
+              <dd class="applicant-info__value">
+                <span class="applicant-info__text">
+                  <TimestampWithLoader 
+                    :isLoading="feedData.loaders.blockTimestamp"
+                    :rawTimestamp="feedData.timestamp.raw" 
+                    :formattedDate="feedData.timestamp.date"
+                    :parsedTimestamp="feedData.timestamp.parsed" 
+                  />
+                </span>
+              </dd>
+            </div>
+            <div class="applicant-info__item">
+              <dt class="applicant-info__label">Trigger parameters</dt>
+              <dd class="applicant-info__column-value">
+                <div class="applicant-info__item">
+                  <dt class="applicant-info__label">Deviation threshold</dt>
+                  <dd class="applicant-info__value">
+                    <span class="applicant-info__text">{{ feedData.deviation }}</span>
+                  </dd>
+                </div>
+                <div class="applicant-info__item">
+                  <dt class="applicant-info__label">Heartbeat</dt>
+                  <dd class="applicant-info__value">
+                    <HeartbeatTimer 
+                      v-if="feedData" 
+                      :isLoading="feedData.loaders.blockTimestamp"
+                      :heartbeat="feedData.heartbeat" 
+                      :layerId="feedData.layer_id" 
+                    />
+                  </dd>
+                </div>
+              </dd>
+            </div>
+            <div class="applicant-info__item">
+              <dt class="applicant-info__label">Last update</dt>
+              <dd class="applicant-info__value">
+                <span class="applicant-info__text">
+                  <div class="date-subvalue">August 5, 2024</div>
+                  <div>1 hour ago</div>
+                </span>
+              </dd>
+            </div>
+            <div class="applicant-info__item">
+              <dt class="applicant-info__label">Addresses</dt>
+              <dd class="applicant-info__value">
+                <contract-address v-if="feedData" :item="feedData" :separate-labels="true" />
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
     </div>
     <div class="feed-chart">
-        <layer-chart :data="sampleData" />
+      <layer-chart :data="sampleData" />
     </div>
-    <div class="applicant-info__item">
-        <dt class="applicant-info__label">Addresses</dt>
-        <dd class="applicant-info__value">
-            <contract-address v-if="feedData" :item="feedData" :separate-labels="true" />
-        </dd>
-    </div>
-    </div>
+  </div>
 </template>
 
 <script>

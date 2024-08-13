@@ -1,287 +1,277 @@
-@import '~@/styles/app';
+@import "~@/styles/app";
 
 .feeds {
-    font-size: 14px;
-    background-color: $gray-100;
-    border-radius: 10px;
-    padding: 2rem;
+  font-size: 14px;
+  background-color: $gray-100;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: var(--content-shadow);
+
+  &__status {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+  }
+  table {
+    border-top: 1px solid rgb(227, 227, 227);
+  }
+
+  thead {
+    tr {
+      background: #f4f4f4;
+    }
+
+    th {
+      background-position: 30px !important;
+      padding: 30px 30px !important;
+      text-align: center;
+      border: 1px solid rgb(227, 227, 227) !important;
+    }
+  }
+
+  tbody tr {
+    &:hover {
+      background: #fff !important;
+    }
+
+    &:nth-child(even) {
+      background: #f4f4f4 !important;
+    }
+
+    padding: 10px !important;
+
+    td {
+      text-align: center;
+      border-top: 1px solid rgb(227, 227, 227);
+      border-bottom: 1px solid rgb(227, 227, 227);
+
+      &:nth-child(2) {
+        text-align: left;
+      }
+
+      @media (min-width: breakpoint-min(sm)) {
+        &:first-child {
+          border-left: 1px solid rgb(227, 227, 227);
+        }
+
+        &:last-child {
+          border-right: 1px solid rgb(227, 227, 227);
+        }
+      }
+    }
+  }
+
+  &__network-picker {
+    margin-right: 10px;
+
+    @media (max-width: breakpoint-min(md)) {
+      width: 100%;
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+  }
+
+  &__crypto-picker {
+    @media (max-width: breakpoint-min(md)) {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+
+  .crypto-checkbox {
+    @media (max-width: breakpoint-min(md)) {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  }
+
+  &__actions-wrapper {
+    z-index: 2;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    &-item {
+      margin-right: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      align-items: center;
+
+      @media (max-width: breakpoint-min(md)) {
+        margin: 0;
+      }
+
+      &--right {
+        margin-left: auto;
+
+        @media (max-width: breakpoint-min(md)) {
+          margin-left: unset;
+          width: 100%;
+          margin-top: 10px;
+        }
+      }
+    }
+
+    &-label {
+      font-size: 10px;
+      font-weight: bold;
+    }
+  }
+
+  &__status-text {
+    font-size: 12px;
+    display: block;
+
+    strong {
+      font-weight: bold;
+    }
+  }
+
+  &__table {
+    font-size: 12px;
+  }
+
+  &__token-image {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
     box-shadow: var(--content-shadow);
+    border-radius: 40px;
+    border: 2px solid #ebebeb;
+    margin: 10px;
+  }
 
-    &__status{
-        display: flex;
-        flex-flow: row;
-        align-items: center;
+  &__contract-address {
+    color: var(--redstone-red-color);
+  }
+
+  &__copy-icon {
+    margin-left: 10px;
+    position: relative;
+    display: block;
+    top: -1px !important;
+    color: #989898;
+    cursor: pointer;
+  }
+
+  &__feed-link {
+    color: var(--redstone-red-color) !important;
+  }
+
+  &__timestamp {
+    &-date {
+      display: block;
+      font-size: 10px;
+      color: gray;
     }
-    table {
-        border-top: 1px solid rgb(227, 227, 227);
-    }
-
-    thead {
-        tr {
-            background: #f4f4f4;
-        }
-
-        th {
-            background-position: 30px !important;
-            padding: 30px 30px !important;
-            text-align: center;
-            border: 1px solid rgb(227, 227, 227) !important;
-        }
-    }
-
-    tbody tr {
-        &:hover {
-            background: #fff !important;
-        }
-
-        &:nth-child(even) {
-            background: #f4f4f4 !important;
-        }
-
-        padding: 10px !important;
-
-        td {
-            text-align: center;
-            border-top: 1px solid rgb(227, 227, 227);
-            border-bottom: 1px solid rgb(227, 227, 227);
-
-            &:nth-child(2) {
-                text-align: left;
-            }
-
-            @media (min-width: breakpoint-min(sm)) {
-                &:first-child {
-                    border-left: 1px solid rgb(227, 227, 227);
-                }
-
-                &:last-child {
-                    border-right: 1px solid rgb(227, 227, 227);
-                }
-            }
-
-        }
-    }
-
-    &__network-picker {
-        margin-right: 10px;
-
-        @media (max-width: breakpoint-min(md)) {
-            width: 100%;
-            margin-bottom: 10px;
-            margin-right: 0;
-        }
-    }
-
-    &__crypto-picker {
-        @media (max-width: breakpoint-min(md)) {
-            width: 100%;
-            margin-bottom: 10px;
-
-        }
-    }
-
-    .crypto-checkbox {
-        @media (max-width: breakpoint-min(md)) {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-    }
-
-    &__actions-wrapper {
-        z-index: 2;
-        padding: 15px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-
-        &-item {
-            margin-right: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-            align-items: center;
-
-            @media (max-width: breakpoint-min(md)) {
-                margin: 0;
-            }
-
-            &--right {
-                margin-left: auto;
-
-                @media (max-width: breakpoint-min(md)) {
-                    margin-left: unset;
-                    width: 100%;
-                    margin-top: 10px;
-                }
-            }
-        }
-
-        &-label {
-            font-size: 10px;
-            font-weight: bold;
-        }
-    }
-
-    &__status-text {
-        font-size: 12px;
-        display: block;
-
-        strong {
-            font-weight: bold;
-        }
-    }
-
-    &__table {
-        font-size: 12px;
-    }
-
-    &__token-image {
-        width: 40px;
-        height: 40px;
-        padding: 5px;
-        box-shadow: var(--content-shadow);
-        border-radius: 40px;
-        border: 2px solid #ebebeb;
-        margin: 10px;
-        &.small{
-            width: 30px;
-            height: 30px;
-            box-shadow: none;
-            border: 2px solid #f4f4f4;
-            margin: 0 10px 0 0;
-        }
-    }
-
-    &__contract-address {
-        color: var(--redstone-red-color);
-    }
-
-    &__copy-icon {
-        margin-left: 10px;
-        position: relative;
-        display: block;
-        top: -1px !important;
-        color: #989898;
-        cursor: pointer;
-    }
-
-    &__feed-link {
-        color: var(--redstone-red-color) !important;
-    }
-
-    &__timestamp {
-        &-date {
-            display: block;
-            font-size: 10px;
-            color: gray;
-        }
-    }
+  }
 }
 
 .clear-filters {
-    margin-right: 20px;
-    color: var(--redstone-red-color);
-    font-weight: 500;
-    text-decoration: underline;
-    cursor: pointer;
+  margin-right: 20px;
+  color: var(--redstone-red-color);
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .custom-pagination {
-    li {
-        width: 200px !important;
+  li {
+    width: 200px !important;
 
-        &:nth-child(4) {
-            flex: unset !important;
-            margin-left: auto;
-        }
-
-        &:nth-child(2) {
-            flex: unset !important;
-            margin-right: auto;
-        }
-
-        &:first-child,
-        &:last-child {
-            display: none !important;
-        }
+    &:nth-child(4) {
+      flex: unset !important;
+      margin-left: auto;
     }
 
-    button {
-        padding: 15px 20px;
-        border: 2px solid rgb(212, 212, 212) !important;
-        box-shadow: var(--tabs-shadow);
-
-        &:active {
-            border: 2px solid var(--redstone-red-color) !important;
-            color: var(--redstone-red-color);
-            box-shadow: var(--tabs-shadow);
-        }
+    &:nth-child(2) {
+      flex: unset !important;
+      margin-right: auto;
     }
 
-    .page-item {
-
-        &.disabled,
-        &.active {
-            display: none !important;
-        }
+    &:first-child,
+    &:last-child {
+      display: none !important;
     }
+  }
+
+  button {
+    padding: 15px 20px;
+    border: 2px solid rgb(212, 212, 212) !important;
+    box-shadow: var(--tabs-shadow);
+
+    &:active {
+      border: 2px solid var(--redstone-red-color) !important;
+      color: var(--redstone-red-color);
+      box-shadow: var(--tabs-shadow);
+    }
+  }
+
+  .page-item {
+    &.disabled,
+    &.active {
+      display: none !important;
+    }
+  }
 }
 
 .cron-schedule {
-    border: 1px solid #d8d8d8;
-    border-radius: 5px;
-    background: rgb(227, 227, 227);
-    box-shadow: var(--content-shadow);
-    padding-top: 5px;
-    text-align: center;
-    font-weight: 600;
-    overflow: hidden;
-    font-size: 10px !important;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+  background: rgb(227, 227, 227);
+  box-shadow: var(--content-shadow);
+  padding-top: 5px;
+  text-align: center;
+  font-weight: 600;
+  overflow: hidden;
+  font-size: 10px !important;
 
-    ol {
-        font-weight: 400;
-        margin-top: 5px;
-        background: #fff;
-        margin-bottom: 0;
+  ol {
+    font-weight: 400;
+    margin-top: 5px;
+    background: #fff;
+    margin-bottom: 0;
 
-        li {
-            padding: 2px 10px;
-            font-size: 10px;
-        }
-
-        li:nth-child(even) {
-            background: #f4f4f4;
-        }
+    li {
+      padding: 2px 10px;
+      font-size: 10px;
     }
+
+    li:nth-child(even) {
+      background: #f4f4f4;
+    }
+  }
 }
 
 .no-padding-tooltip {
-    .arrow::before {
-        border-top-color: rgb(205, 205, 205) !important;
-    }
+  .arrow::before {
+    border-top-color: rgb(205, 205, 205) !important;
+  }
 
-    .tooltip-inner {
-        background: transparent !important;
-        padding-bottom: 0px !important;
-    }
+  .tooltip-inner {
+    background: transparent !important;
+    padding-bottom: 0px !important;
+  }
 }
 
 .entity-icon {
-    font-size: 8px;
-    position: relative;
-    top: -1px;
+  font-size: 8px;
+  position: relative;
+  top: -1px;
 }
 
 .selected-items {
-    margin-bottom: -15px;
-    font-size: 10px;
-    color: #aeaeae;
+  margin-bottom: -15px;
+  font-size: 10px;
+  color: #aeaeae;
 }
 
-.separator{
-    width: 1px;
-    background: #ececec;
-    height: 50px;
-    margin: 0 10px;
+.separator {
+  width: 1px;
+  background: #ececec;
+  height: 50px;
+  margin: 0 10px;
 }

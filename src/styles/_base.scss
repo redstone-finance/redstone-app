@@ -1,15 +1,12 @@
 body:after {
-  content:
-    url(../../src/assets/icons/arrow-down.svg)
-    url(../../src/assets/icons/close.svg)
-    url(../../src/assets/icons/layout.svg)
+  content: url(../../src/assets/icons/arrow-down.svg)
+    url(../../src/assets/icons/close.svg) url(../../src/assets/icons/layout.svg)
     url(../../src/assets/icons/layout-blue.svg)
     url(../../src/assets/icons/bell.svg)
     url(../../src/assets/icons/bell-blue.svg)
     url(../../src/assets/icons/home.svg)
     url(../../src/assets/icons/home-blue.svg)
-    url(../../src/assets/icons/menu.svg)
-    url(../../src/assets/icons/flip.svg)
+    url(../../src/assets/icons/menu.svg) url(../../src/assets/icons/flip.svg)
     url(../../src/assets/icons/text.svg)
     url(../../src/assets/icons/text-blue.svg)
     url(../../src/assets/icons/cube.svg)
@@ -221,7 +218,7 @@ table > thead > tr > th {
     + li {
       &::before {
         color: #999;
-        content: '\25cf';
+        content: "\25cf";
         padding: 0 8px;
       }
     }
@@ -292,14 +289,14 @@ table > thead > tr > th {
 }
 
 .alert.sidebarAlert button.close {
-  color: #5CB0FF;
+  color: #5cb0ff;
   font-size: 20px;
 }
 
 #use-push-button {
   @media (min-width: 640px) {
-    margin-right: 4px
-  };
+    margin-right: 4px;
+  }
   @media (max-width: 640px) {
     margin-top: 2px;
     margin-bottom: 2px;
@@ -316,5 +313,5 @@ table > thead > tr > th {
 }
 
 #use-buttons {
-    z-index: 100;
+  z-index: 100;
 }
