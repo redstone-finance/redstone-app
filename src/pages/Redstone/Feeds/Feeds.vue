@@ -89,7 +89,7 @@
       <b-pagination 
         prev-text="Previous page" 
         next-text="Next page" 
-        limit="1" 
+        limit="1"
         @change="onPageChange"
         v-model="currentPage" 
         :total-rows="totalRows" 
