@@ -59,21 +59,21 @@
 </template>
 
 <script>
-import copyToClipboardHelper from '../../core/copyToClipboard'
-export default {
-  name: "Nodes",
+  import copyToClipboardHelper from "../../core/copyToClipboard";
+  export default {
+    name: "Nodes",
 
-  props: {
-    nodes: []
-  },
-
-  methods: {
-    shortenEvmAddress(evmAddress) {
-      return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`
+    props: {
+      nodes: [],
     },
-    copyToClipboard: copyToClipboardHelper,
-  },
-};
+
+    methods: {
+      shortenEvmAddress(evmAddress) {
+        return `${evmAddress.slice(0, 6)}...${evmAddress.slice(-4)}`;
+      },
+      copyToClipboard: copyToClipboardHelper,
+    },
+  };
 </script>
 
 <style lang="scss" scoped>

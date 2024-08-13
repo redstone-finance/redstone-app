@@ -749,7 +749,7 @@
 }
 </style>
 <style lang="scss" scoped>
-.custom-control-input:checked ~ .custom-control-label {
+  .custom-control-input:checked ~ .custom-control-label {
   &::before {
     color: currentColor !important;
     border-color: currentColor !important;

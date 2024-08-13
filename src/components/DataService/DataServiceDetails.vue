@@ -5,11 +5,8 @@
         <div v-if="provider">
           {{ provider.description }}
         </div>
-        <div
-          v-else
-          class="preloader text-preloader"
-        ></div>
-      </div> 
+        <div v-else class="preloader text-preloader"></div>
+      </div>
       <!-- <div class="provider-www">
         <a v-if="provider" :href="provider.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
         <div
@@ -19,20 +16,38 @@
       </div>    -->
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
         <!-- <LabelValue label="Active from" :value="provider ? $options.filters.date(provider.activeFrom) : undefined" /> -->
-        <LabelValue label="Nodes" :value="(provider && provider?.nodes?.length) ? provider.nodes.length : '0'" :alignRight="true"/>
-        <LabelValue label="Assets" :value="(provider && provider?.assetsCount) ? provider.assetsCount : '0'" :alignRight="true"/>
-        <LabelValue label="Interval" :value="(provider && provider.currentManifest) ? formatInterval(provider.currentManifest.interval) : undefined" :alignRight="true"/>
+        <LabelValue
+          label="Nodes"
+          :value="
+            provider && provider?.nodes?.length ? provider.nodes.length : '0'
+          "
+          :alignRight="true"
+        />
+        <LabelValue
+          label="Assets"
+          :value="
+            provider && provider?.assetsCount ? provider.assetsCount : '0'
+          "
+          :alignRight="true"
+        />
+        <LabelValue
+          label="Interval"
+          :value="
+            provider && provider.currentManifest
+              ? formatInterval(provider.currentManifest.interval)
+              : undefined
+          "
+          :alignRight="true"
+        />
         <!-- <LabelValue label="Data points" :value="(provider && provider.dataPoints) ? provider.dataPoints.toLocaleString('en-US') : undefined" :alignRight="true"/> -->
         <!-- <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/> -->
         <!-- <LabelValue label="Disputes" :value="provider ? null : undefined" /> -->
       </div>
-    </div>  
+    </div>
     <hr />
     <div>
-      <div class="table-title mt-4 mb-2">
-        Provided data:
-      </div>
-           <b-table
+      <div class="table-title mt-4 mb-2">Provided data:</div>
+      <b-table
         id="assets-table"
         stacked="md"
         hover
@@ -40,30 +55,43 @@
         :fields="fieldsFiltered"
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
-      <template #cell(name)="data">
-        <img class="token-logo" :src="data.item.logoURI" />
-        <span class="token-name ml-3">{{ data.item.name }}</span> 
-      </template>
-      <template #cell(symbol)="data">
-        {{ data.item.symbol }}
-      </template>
-      <template #cell(sources)="data">
-        <div class="d-flex source-links-wrapper" :ref="'symbols_' + data.item.symbol">
-          <div class="d-flex source-links" >
-            <a class="source-link mb-2 mb-md-0" target="_blank" :href="source.url" v-bind:key="source.symbol" v-for="source in data.item.source">
-              <img class="source-logo" :src="source.logoURI" v-b-tooltip.hover :title="source.name"/>
-            </a>
+        <template #cell(name)="data">
+          <img class="token-logo" :src="data.item.logoURI" />
+          <span class="token-name ml-3">{{ data.item.name }}</span>
+        </template>
+        <template #cell(symbol)="data">
+          {{ data.item.symbol }}
+        </template>
+        <template #cell(sources)="data">
+          <div
+            class="d-flex source-links-wrapper"
+            :ref="'symbols_' + data.item.symbol"
+          >
+            <div class="d-flex source-links">
+              <a
+                class="source-link mb-2 mb-md-0"
+                target="_blank"
+                :href="source.url"
+                v-bind:key="source.symbol"
+                v-for="source in data.item.source"
+              >
+                <img
+                  class="source-logo"
+                  :src="source.logoURI"
+                  v-b-tooltip.hover
+                  :title="source.name"
+                />
+              </a>
+            </div>
           </div>
-        </div>
-      </template>
-    </b-table>
-    <div v-if="!allTokensVisible" v-observe-visibility="loadMoreSectionVisibilityChanged" >
+        </template>
+      </b-table>
       <div
-        v-for="n in 5"
-        :key="n"
-        class="preloader token-preloader"
-      ></div>
-    </div>  
+        v-if="!allTokensVisible"
+        v-observe-visibility="loadMoreSectionVisibilityChanged"
+      >
+        <div v-for="n in 5" :key="n" class="preloader token-preloader"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -397,5 +425,4 @@
     }
   }
 }
-
 </style>

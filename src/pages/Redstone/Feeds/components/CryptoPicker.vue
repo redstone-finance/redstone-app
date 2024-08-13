@@ -1,47 +1,72 @@
 <template>
   <div class="crypto-dropdown-container">
-    <b-dropdown ref="dropdown" @shown="onDropdownShown" class="dropdown crypto-dropdown" :text="buttonText" multiple>
+    <b-dropdown
+      ref="dropdown"
+      @shown="onDropdownShown"
+      class="dropdown crypto-dropdown"
+      :text="buttonText"
+      multiple
+    >
       <div class="search-input-container">
-        <b-form-input ref="searchInput" variant="danger" v-model="searchQuery" placeholder="Search..."
-          class="pr-4"></b-form-input>
+        <b-form-input
+          ref="searchInput"
+          variant="danger"
+          v-model="searchQuery"
+          placeholder="Search..."
+          class="pr-4"
+        ></b-form-input>
       </div>
       <b-dropdown-form>
-        <b-form-checkbox-group class="crypto-checkbox-group" v-model="tempSelectedCryptos" stacked>
-          <b-form-checkbox class="crypto-checkbox-list" variant="danger" v-for="crypto in sortedFilteredCryptoImageData"
-            :key="crypto.token" :value="crypto.token">
+        <b-form-checkbox-group
+          class="crypto-checkbox-group"
+          v-model="tempSelectedCryptos"
+          stacked
+        >
+          <b-form-checkbox
+            class="crypto-checkbox-list"
+            variant="danger"
+            v-for="crypto in sortedFilteredCryptoImageData"
+            :key="crypto.token"
+            :value="crypto.token"
+          >
             <div class="crypto-name">
-              <b-img :title="crypto.name" :src="getImageUrl(crypto.imageName)" :alt="crypto.name" width="20" height="20"
-                class="mr-1" />
+              <b-img
+                :title="crypto.name"
+                :src="getImageUrl(crypto.imageName)"
+                :alt="crypto.name"
+                width="20"
+                height="20"
+                class="mr-1"
+              />
               <span :title="crypto.name">{{ crypto.token }}</span>
             </div>
           </b-form-checkbox>
         </b-form-checkbox-group>
-        <span class="no-results" v-if="sortedFilteredCryptoImageData.length === 0">No results found</span>
+        <span
+          class="no-results"
+          v-if="sortedFilteredCryptoImageData.length === 0"
+          >No results found</span
+        >
       </b-dropdown-form>
       <div v-if="hasChanges" class="confirm-button-container">
-        <b-button @click="confirmChanges" variant="primary" class="confirm-button">Confirm Changes</b-button>
+        <b-button
+          @click="confirmChanges"
+          variant="primary"
+          class="confirm-button"
+          >Confirm Changes</b-button
+        >
       </div>
       <div v-else-if="value.length > 0" class="confirm-button-container">
-        <b-button @click="resetChanges" variant="primary" class="reset-button">Reset Changes</b-button>
+        <b-button @click="resetChanges" variant="primary" class="reset-button"
+          >Reset Changes</b-button
+        >
       </div>
     </b-dropdown>
   </div>
 </template>
 
 <script>
-import {
-  BDropdown,
-  BDropdownForm,
-  BFormCheckboxGroup,
-  BFormCheckbox,
-  BImg,
-  BFormInput,
-  BButton,
-} from 'bootstrap-vue'
-
-export default {
-  name: 'CryptoMultiselectDropdown',
-  components: {
+  import {
     BDropdown,
     BDropdownForm,
     BFormCheckboxGroup,
@@ -49,101 +74,121 @@ export default {
     BImg,
     BFormInput,
     BButton,
-  },
-  props: {
-    items: {
-      type: Array,
-      default: () => []
+  } from "bootstrap-vue";
+
+  export default {
+    name: "CryptoMultiselectDropdown",
+    components: {
+      BDropdown,
+      BDropdownForm,
+      BFormCheckboxGroup,
+      BFormCheckbox,
+      BImg,
+      BFormInput,
+      BButton,
     },
-    value: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data() {
-    return {
-      searchQuery: '',
-      tempSelectedCryptos: [],
-    }
-  },
-  computed: {
-    buttonText() {
-      const selectedCount = this.value.length
-      const optionsCount = this.items.length
-      return selectedCount === 0 ? `All currencies (${optionsCount})` : `Currencies (${selectedCount})`
+    props: {
+      items: {
+        type: Array,
+        default: () => [],
+      },
+      value: {
+        type: Array,
+        default: () => [],
+      },
     },
-    filteredCryptoImageData() {
-      if (!this.searchQuery) {
-        return this.items;
-      }
-      const query = this.searchQuery.toLowerCase();
-      return this.items.filter(crypto =>
-        crypto.token.toLowerCase().includes(query) ||
-        crypto.name.toLowerCase().includes(query)
-      );
+    data() {
+      return {
+        searchQuery: "",
+        tempSelectedCryptos: [],
+      };
     },
-    sortedFilteredCryptoImageData() {
-      return [...this.filteredCryptoImageData].sort((a, b) => {
-        const aSelected = this.value.includes(a.token);
-        const bSelected = this.value.includes(b.token);
-        if (aSelected === bSelected) {
-          return a.token.localeCompare(b.token);
+    computed: {
+      buttonText() {
+        const selectedCount = this.value.length;
+        const optionsCount = this.items.length;
+        return selectedCount === 0
+          ? `All currencies (${optionsCount})`
+          : `Currencies (${selectedCount})`;
+      },
+      filteredCryptoImageData() {
+        if (!this.searchQuery) {
+          return this.items;
         }
-        return aSelected ? -1 : 1;
-      });
+        const query = this.searchQuery.toLowerCase();
+        return this.items.filter(
+          (crypto) =>
+            crypto.token.toLowerCase().includes(query) ||
+            crypto.name.toLowerCase().includes(query)
+        );
+      },
+      sortedFilteredCryptoImageData() {
+        return [...this.filteredCryptoImageData].sort((a, b) => {
+          const aSelected = this.value.includes(a.token);
+          const bSelected = this.value.includes(b.token);
+          if (aSelected === bSelected) {
+            return a.token.localeCompare(b.token);
+          }
+          return aSelected ? -1 : 1;
+        });
+      },
+      hasChanges() {
+        return !this.arraysEqual(this.tempSelectedCryptos, this.value);
+      },
     },
-    hasChanges() {
-      return !this.arraysEqual(this.tempSelectedCryptos, this.value);
-    }
-  },
-  created() {
-    this.initializeTempSelection();
-  },
-  methods: {
-    initializeTempSelection() {
-      this.tempSelectedCryptos = [...this.value];
-    },
-    uncheck(token) {
-      const index = this.tempSelectedCryptos.indexOf(token);
-      if (index > -1) {
-        this.tempSelectedCryptos.splice(index, 1);
-      }
-    },
-    getImageUrl(imageName) {
-      return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`
-    },
-    getCryptoByToken(token) {
-      return this.items.find(crypto => crypto.token === token) || { name: token, imageName: '' }
-    },
-    confirmChanges() {
-      this.$emit('input', this.tempSelectedCryptos)
-      this.closeDropdown()
-    },
-    resetChanges() {
-      this.$emit('input', [])
-      this.closeDropdown()
-    },
-    closeDropdown() {
-      this.$refs.dropdown.hide();
-    },
-    onDropdownShown() {
+    created() {
       this.initializeTempSelection();
-      this.$nextTick(() => {
-        this.$refs.searchInput.focus();
-      });
     },
-    arraysEqual(arr1, arr2) {
-      if (arr1.length !== arr2.length) return false;
-      for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) return false;
-      }
-      return true;
-    }
-  }
-}
+    methods: {
+      initializeTempSelection() {
+        this.tempSelectedCryptos = [...this.value];
+      },
+      uncheck(token) {
+        const index = this.tempSelectedCryptos.indexOf(token);
+        if (index > -1) {
+          this.tempSelectedCryptos.splice(index, 1);
+        }
+      },
+      getImageUrl(imageName) {
+        return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`;
+      },
+      getCryptoByToken(token) {
+        return (
+          this.items.find((crypto) => crypto.token === token) || {
+            name: token,
+            imageName: "",
+          }
+        );
+      },
+      confirmChanges() {
+        this.$emit("input", this.tempSelectedCryptos);
+        this.closeDropdown();
+      },
+      resetChanges() {
+        this.$emit("input", []);
+        this.closeDropdown();
+      },
+      closeDropdown() {
+        this.$refs.dropdown.hide();
+      },
+      onDropdownShown() {
+        this.initializeTempSelection();
+        this.$nextTick(() => {
+          this.$refs.searchInput.focus();
+        });
+      },
+      arraysEqual(arr1, arr2) {
+        if (arr1.length !== arr2.length) return false;
+        for (let i = 0; i < arr1.length; i++) {
+          if (arr1[i] !== arr2[i]) return false;
+        }
+        return true;
+      },
+    },
+  };
 </script>
 <style lang="scss">
-.remove-query {
+  .remove-query {
   line-height: 15px;
 
   &:hover {

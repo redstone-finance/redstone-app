@@ -38,14 +38,13 @@
         />
 
         <NavLink
-            :activeItem="activeItem"
-            header="Onchain feeds"
-            link="/app/feeds"
-            iconName="flaticon-layers"
-            index="feeds"
-            isHeader
+          :activeItem="activeItem"
+          header="Onchain feeds"
+          link="/app/feeds"
+          iconName="flaticon-layers"
+          index="feeds"
+          isHeader
         />
-
       </ul>
 
       <footer class="contentFooter">

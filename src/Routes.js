@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Layout from '@/components/Layout/Layout';
-import ErrorPage from '@/pages/Error/Error';
+import Vue from "vue";
+import Router from "vue-router";
+import Layout from "@/components/Layout/Layout";
+import ErrorPage from "@/pages/Error/Error";
 
 // Redstone
 import Tokens from "@/pages/Redstone/Tokens/Tokens";
@@ -10,8 +10,8 @@ import Sources from "@/pages/Redstone/Sources/Sources";
 import Source from "@/pages/Redstone/Source/Source";
 import DataServices from "@/pages/Redstone/DataServices/DataServices";
 import DataService from "@/pages/Redstone/DataService/DataService";
-import Feeds from "@/pages/Redstone/Feeds/Feeds"
-import Feed from "@/pages/Redstone/Feeds/Feed"
+import Feeds from "@/pages/Redstone/Feeds/Feeds";
+import Feed from "@/pages/Redstone/Feeds/Feed";
 
 // Store
 import store from "./store";
@@ -55,14 +55,14 @@ const router = new Router({
           component: Source,
         },
         {
-          path: 'feeds',
-          name: 'Feeds list',
+          path: "feeds",
+          name: "Feeds list",
           component: Feeds,
-          meta: {noScroll: true}
+          meta: { noScroll: true },
         },
         {
-          path: 'data-services',
-          name: 'DataServicesPage',
+          path: "data-services",
+          name: "DataServicesPage",
           component: DataServices,
           meta: {
             showSearchInputInNavbar: true,
@@ -83,14 +83,14 @@ const router = new Router({
     if (to.hash) {
       return { selector: to.hash };
     }
-    if (to.matched.some(m => m.meta.noScroll)) {
+    if (to.matched.some((m) => m.meta.noScroll)) {
       return false;
     }
     if (to.name === from.name && to.path === from.path) {
       return false;
     }
     return { x: 0, y: 0 };
-  }
+  },
 });
 
 router.beforeEach((to, from, next) => {

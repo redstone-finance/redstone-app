@@ -6,18 +6,26 @@
         <b-col xs="12" md="6">
           <b-form inline>
             <div class="datepicker-container">
-              <label class="mt-2 mt-md-0" for="from-datepicker">Show services from: </label>
-              <b-datepicker 
-                id="from-datepicker" 
+              <label class="mt-2 mt-md-0" for="from-datepicker"
+                >Show services from:
+              </label>
+              <b-datepicker
+                id="from-datepicker"
                 v-model="fromDate"
                 :value-as-date="true"
                 locale="en-GB"
-                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+                :date-format-options="{
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                }"
+              >
               </b-datepicker>
-              <b-form-timepicker 
-                v-model="fromTime" 
+              <b-form-timepicker
+                v-model="fromTime"
                 locale="en"
-                no-close-button></b-form-timepicker>
+                no-close-button
+              ></b-form-timepicker>
             </div>
           </b-form>
         </b-col>
@@ -25,17 +33,23 @@
           <b-form inline>
             <div class="datepicker-container">
               <label class="mt-2 mt-md-0" for="to-datepicker">to:</label>
-              <b-datepicker 
-                id="to-datepicker" 
+              <b-datepicker
+                id="to-datepicker"
                 v-model="toDate"
                 :value-as-date="true"
                 locale="en-GB"
-                :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+                :date-format-options="{
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                }"
+              >
               </b-datepicker>
-              <b-form-timepicker 
-                v-model="toTime" 
+              <b-form-timepicker
+                v-model="toTime"
                 locale="en"
-                no-close-button></b-form-timepicker>
+                no-close-button
+              ></b-form-timepicker>
             </div>
           </b-form>
         </b-col>
@@ -61,22 +75,29 @@
 
       <template #cell(value)="data">
         <div class="price" v-if="!isCurrencyToken(tokenDetails)">
-          {{ data.item.value }} 
+          {{ data.item.value }}
         </div>
         <div class="price" v-else>
-          {{ data.item.value | price({currency: getCurrency(tokenDetails), decimals: priceDecimals()}) }}
+          {{
+            data.item.value
+              | price({
+                currency: getCurrency(tokenDetails),
+                decimals: priceDecimals(),
+              })
+          }}
         </div>
       </template>
 
       <template #cell(time)="data">
         <div class="time">
-          {{ data.item.time }} 
+          {{ data.item.time }}
         </div>
       </template>
 
       <template #cell(providerId)="data">
         <div
-          class="tx-link d-flex flex-column flex-md-row align-items-md-center">
+          class="tx-link d-flex flex-column flex-md-row align-items-md-center"
+        >
           <div class="link align-center mt-2 mt-md-0">
             {{ data.item.providerId }}
           </div>
@@ -85,7 +106,9 @@
 
       <template #cell(dispute)="data">
         <b-btn
-          @click="showNotification('The disputing feature is still under development')"
+          @click="
+            showNotification('The disputing feature is still under development')
+          "
           target="_blank"
           variant="dispute"
           :disabled="false"
@@ -111,186 +134,22 @@
 </template>
 
 <script>
-import redstoneAdapter from "@/redstone-api-adapter";
-import dateFormat from 'dateformat';
-import utils from '@/utils';
-import {DEFAULT_PROVIDER, getCurrency, getDetailsForSymbol, isCurrencyToken} from "@/tokens";
-import constants from "@/constants";
-import _ from "lodash";
+  import redstoneAdapter from "@/redstone-api-adapter";
+  import dateFormat from 'dateformat';
+  import utils from '@/utils';
+  import {DEFAULT_PROVIDER, getCurrency, getDetailsForSymbol, isCurrencyToken} from "@/tokens";
+  import constants from "@/constants";
+  import _ from "lodash";
 
-export default {
-  name: 'TokenPriceTableContainer',
+  export default {
+    name: 'TokenPriceTableContainer',
 
-  props: {
-    symbol: String,
-    provider: String
-  },
-
-  data() {
-    return {
-      prices: [],
-      offset: 0,
-      loading: false,
-      loadingMore: false,
-      limit: 20,
-      currentPage: 1,
-      perPage: 10,
-      fromTime: (new Date()).toLocaleTimeString(),
-      toTime: (new Date()).toLocaleTimeString(),
-      fromDate: new Date(Date.now() - 24 * 3600 * 1000),
-      toDate: new Date(),
-      lastConfirmedTxTimestamp: 0,
-
-      fields: ['value', 'time', 'providerId', 'dispute'],
-    };
-  },
-
-  async created() {
-    await this.loadPrices();
-    // await this.updateLastConfirmedTxTimestamp();
-  },
-
-  // timers: {
-  //   updateLastConfirmedTxTimestamp: {
-  //     autostart: true,
-  //     time: 10000,
-  //     repeat: true,
-  //   },
-  // },
-
-  methods: {
-    getCurrency,
-    DEFAULT_PROVIDER() {
-      return DEFAULT_PROVIDER
-    },
-    showNotification(msg) {
-      this.$toasted.show(msg, {type: 'info'});
+    props: {
+      symbol: String,
+      provider: String
     },
 
-    getViewblockTxLink: utils.getViewblockTxLink,
-    getViewblockAddressLink: utils.getViewblockAddressLink,
-
-    isTxPendingForPrice(price) {
-      return price.timestamp > this.lastConfirmedTxTimestamp;
-    },
-
-    loadMoreButtonVisibilityChanged(visible) {
-      if (visible) {
-        this.loadMore();
-      }
-    },
-
-    async loadPrices() {
-      try {
-        this.loading = true;
-        this.offset = 0;
-        this.prices = await this.getPrices();
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async loadMore() {
-      try {
-        this.loadingMore = true;
-        this.offset += this.limit;
-        const morePrices = await this.getPrices();
-        for (const price of morePrices) {
-          this.prices.push(price);
-        }
-      } finally {
-        this.loadingMore = false;
-      }
-    },
-
-    async getPrices() {
-      const nextPrices = await redstoneAdapter.getHistoricalPrice(this.symbol, {
-        provider: this.provider,
-        limit: this.limit,
-        startDate: this.startDate,
-        offset: this.offset,
-        endDate: this.endDate,
-      });
-      return nextPrices;
-    },
-
-    priceDecimals() {
-      const min = _.min(this.prices.map(p=>p.value));
-      const max = _.max(this.prices.map(p=>p.value));
-      let delta = Math.abs(max - min);
-      if(delta == 0) {
-        delta = max;
-      }
-      if(delta == 0) {
-        return 2;
-      }
-
-      return Math.max(-Math.floor(Math.log10(Math.abs(delta))), 2);
-    },
-
-    // async isTxConfirmed(txId) {
-    //   const arweave = this.$store.state.prefetch.arweave;
-    //   if (arweave) {
-    //     const response = await arweave.transactions.getStatus(txId);
-    //     const result = response && response.confirmed;
-    //     return result;
-    //   } else {
-    //     return false;
-    //   }
-    // },
-
-    // async updateLastConfirmedTxTimestamp() {
-    //   let lastTimestamp = 0, index = 0;
-    //   while (lastTimestamp === 0 && index < this.prices.length) {
-    //     const price = this.prices[index];
-    //     const isConfirmed = await this.isTxConfirmed(price.permawebTx);
-    //     if (isConfirmed) {
-    //       lastTimestamp = price.timestamp;
-    //     }
-    //     index++;
-    //   }
-    //   this.lastConfirmedTxTimestamp = lastTimestamp;
-    // },
-
-    isCurrencyToken
-  },
-
-  watch: {
-    fromDate() {
-      this.loadPrices();
-    },
-    toDate() {
-      this.loadPrices();
-    },
-    fromTime() {
-      this.loadPrices();
-    },
-    toTime() {
-      this.loadPrices();
-    },
-  },
-
-  computed: {
-    pricesDataForTable() {
-      return this.prices.map(p => {
-        return {
-          value: p.value,
-          time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
-          timestamp: p.timestamp,
-          permawebTx: p.permawebTx,
-          providerId: p.provider,
-        };
-      });
-    },
-    startDate() {
-      const [hours, minutes, seconds] = this.fromTime.split(':');
-      return new Date(this.fromDate.setHours(hours, minutes, seconds));
-    },
-    endDate() {
-      const [hours, minutes, seconds] = this.toTime.split(':');
-      return new Date(this.toDate.setHours(hours, minutes, seconds));
-    },
-    tokenDetails() {
+    data() {
       return {
         prices: [],
         offset: 0,
@@ -299,13 +158,13 @@ export default {
         limit: 20,
         currentPage: 1,
         perPage: 10,
-        fromTime: this.getCurrentTime(1),
-        toTime: this.getCurrentTime(),
+        fromTime: (new Date()).toLocaleTimeString(),
+        toTime: (new Date()).toLocaleTimeString(),
         fromDate: new Date(Date.now() - 24 * 3600 * 1000),
         toDate: new Date(),
         lastConfirmedTxTimestamp: 0,
 
-        fields: ["value", "time", "providerId", "dispute"],
+        fields: ['value', 'time', 'providerId', 'dispute'],
       };
     },
 
@@ -323,27 +182,12 @@ export default {
     // },
 
     methods: {
-      getCurrentTime(hoursAgo = 0) {
-        const now = new Date();
-        now.setHours(now.getHours() - hoursAgo);
-
-        let hours = now.getHours();
-        let minutes = now.getMinutes();
-        let seconds = now.getSeconds();
-
-        // Add leading zeros
-        hours = hours.toString().padStart(2, "0");
-        minutes = minutes.toString().padStart(2, "0");
-        seconds = seconds.toString().padStart(2, "0");
-
-        return `${hours}:${minutes}:${seconds}`;
-      },
       getCurrency,
       DEFAULT_PROVIDER() {
-        return DEFAULT_PROVIDER;
+        return DEFAULT_PROVIDER
       },
       showNotification(msg) {
-        this.$toasted.show(msg, { type: "info" });
+        this.$toasted.show(msg, {type: 'info'});
       },
 
       getViewblockTxLink: utils.getViewblockTxLink,
@@ -381,48 +225,30 @@ export default {
           this.loadingMore = false;
         }
       },
-      isValidDate(date) {
-        return date instanceof Date && !isNaN(date);
-      },
 
       async getPrices() {
-        const params = {
+        const nextPrices = await redstoneAdapter.getHistoricalPrice(this.symbol, {
           provider: this.provider,
           limit: this.limit,
+          startDate: this.startDate,
           offset: this.offset,
-        };
-        if (this.isValidDate(this.startDate)) {
-          params.startDate = this.startDate;
-        }
-        if (this.isValidDate(this.endDate)) {
-          params.endDate = this.endDate;
-        }
-        const nextPrices = await redstoneAdapter.getHistoricalPrice(
-          this.symbol,
-          params
-        );
+          endDate: this.endDate,
+        });
         return nextPrices;
       },
 
       priceDecimals() {
-        const min = _.min(this.prices.map((p) => p.value));
-        const max = _.max(this.prices.map((p) => p.value));
+        const min = _.min(this.prices.map(p=>p.value));
+        const max = _.max(this.prices.map(p=>p.value));
         let delta = Math.abs(max - min);
-        if (delta == 0) {
+        if(delta == 0) {
           delta = max;
         }
-        if (delta == 0) {
+        if(delta == 0) {
           return 2;
         }
 
         return Math.max(-Math.floor(Math.log10(Math.abs(delta))), 2);
-      },
-      createDateTimeDateObject(date, time) {
-        if (date && time) {
-          const [hours, minutes, seconds] = time.split(":");
-          return new Date(date.setHours(hours, minutes, seconds));
-        }
-        return null;
       },
 
       // async isTxConfirmed(txId) {
@@ -449,21 +275,27 @@ export default {
       //   this.lastConfirmedTxTimestamp = lastTimestamp;
       // },
 
-      isCurrencyToken,
+      isCurrencyToken
     },
 
     watch: {
-      startDate() {
+      fromDate() {
         this.loadPrices();
       },
-      endDate() {
+      toDate() {
+        this.loadPrices();
+      },
+      fromTime() {
+        this.loadPrices();
+      },
+      toTime() {
         this.loadPrices();
       },
     },
 
     computed: {
       pricesDataForTable() {
-        return this.prices.map((p) => {
+        return this.prices.map(p => {
           return {
             value: p.value,
             time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
@@ -474,19 +306,210 @@ export default {
         });
       },
       startDate() {
-        return this.createDateTimeDateObject(this.fromDate, this.fromTime);
+        const [hours, minutes, seconds] = this.fromTime.split(':');
+        return new Date(this.fromDate.setHours(hours, minutes, seconds));
       },
       endDate() {
-        return this.createDateTimeDateObject(this.toDate, this.toTime);
+        const [hours, minutes, seconds] = this.toTime.split(':');
+        return new Date(this.toDate.setHours(hours, minutes, seconds));
       },
       tokenDetails() {
         return {
-          ...getDetailsForSymbol(this.symbol),
-          symbol: this.symbol,
+          prices: [],
+          offset: 0,
+          loading: false,
+          loadingMore: false,
+          limit: 20,
+          currentPage: 1,
+          perPage: 10,
+          fromTime: this.getCurrentTime(1),
+          toTime: this.getCurrentTime(),
+          fromDate: new Date(Date.now() - 24 * 3600 * 1000),
+          toDate: new Date(),
+          lastConfirmedTxTimestamp: 0,
+
+          fields: ["value", "time", "providerId", "dispute"],
         };
       },
-    },
-  };
+
+      async created() {
+        await this.loadPrices();
+        // await this.updateLastConfirmedTxTimestamp();
+      },
+
+      // timers: {
+      //   updateLastConfirmedTxTimestamp: {
+      //     autostart: true,
+      //     time: 10000,
+      //     repeat: true,
+      //   },
+      // },
+
+      methods: {
+        getCurrentTime(hoursAgo = 0) {
+          const now = new Date();
+          now.setHours(now.getHours() - hoursAgo);
+
+          let hours = now.getHours();
+          let minutes = now.getMinutes();
+          let seconds = now.getSeconds();
+
+          // Add leading zeros
+          hours = hours.toString().padStart(2, "0");
+          minutes = minutes.toString().padStart(2, "0");
+          seconds = seconds.toString().padStart(2, "0");
+
+          return `${hours}:${minutes}:${seconds}`;
+        },
+        getCurrency,
+        DEFAULT_PROVIDER() {
+          return DEFAULT_PROVIDER;
+        },
+        showNotification(msg) {
+          this.$toasted.show(msg, { type: "info" });
+        },
+
+        getViewblockTxLink: utils.getViewblockTxLink,
+        getViewblockAddressLink: utils.getViewblockAddressLink,
+
+        isTxPendingForPrice(price) {
+          return price.timestamp > this.lastConfirmedTxTimestamp;
+        },
+
+        loadMoreButtonVisibilityChanged(visible) {
+          if (visible) {
+            this.loadMore();
+          }
+        },
+
+        async loadPrices() {
+          try {
+            this.loading = true;
+            this.offset = 0;
+            this.prices = await this.getPrices();
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        async loadMore() {
+          try {
+            this.loadingMore = true;
+            this.offset += this.limit;
+            const morePrices = await this.getPrices();
+            for (const price of morePrices) {
+              this.prices.push(price);
+            }
+          } finally {
+            this.loadingMore = false;
+          }
+        },
+        isValidDate(date) {
+          return date instanceof Date && !isNaN(date);
+        },
+
+        async getPrices() {
+          const params = {
+            provider: this.provider,
+            limit: this.limit,
+            offset: this.offset,
+          };
+          if (this.isValidDate(this.startDate)) {
+            params.startDate = this.startDate;
+          }
+          if (this.isValidDate(this.endDate)) {
+            params.endDate = this.endDate;
+          }
+          const nextPrices = await redstoneAdapter.getHistoricalPrice(
+            this.symbol,
+            params
+          );
+          return nextPrices;
+        },
+
+        priceDecimals() {
+          const min = _.min(this.prices.map((p) => p.value));
+          const max = _.max(this.prices.map((p) => p.value));
+          let delta = Math.abs(max - min);
+          if (delta == 0) {
+            delta = max;
+          }
+          if (delta == 0) {
+            return 2;
+          }
+
+          return Math.max(-Math.floor(Math.log10(Math.abs(delta))), 2);
+        },
+        createDateTimeDateObject(date, time) {
+          if (date && time) {
+            const [hours, minutes, seconds] = time.split(":");
+            return new Date(date.setHours(hours, minutes, seconds));
+          }
+          return null;
+        },
+
+        // async isTxConfirmed(txId) {
+        //   const arweave = this.$store.state.prefetch.arweave;
+        //   if (arweave) {
+        //     const response = await arweave.transactions.getStatus(txId);
+        //     const result = response && response.confirmed;
+        //     return result;
+        //   } else {
+        //     return false;
+        //   }
+        // },
+
+        // async updateLastConfirmedTxTimestamp() {
+        //   let lastTimestamp = 0, index = 0;
+        //   while (lastTimestamp === 0 && index < this.prices.length) {
+        //     const price = this.prices[index];
+        //     const isConfirmed = await this.isTxConfirmed(price.permawebTx);
+        //     if (isConfirmed) {
+        //       lastTimestamp = price.timestamp;
+        //     }
+        //     index++;
+        //   }
+        //   this.lastConfirmedTxTimestamp = lastTimestamp;
+        // },
+
+        isCurrencyToken,
+      },
+
+      watch: {
+        startDate() {
+          this.loadPrices();
+        },
+        endDate() {
+          this.loadPrices();
+        },
+      },
+
+      computed: {
+        pricesDataForTable() {
+          return this.prices.map((p) => {
+            return {
+              value: p.value,
+              time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
+              timestamp: p.timestamp,
+              permawebTx: p.permawebTx,
+              providerId: p.provider,
+            };
+          });
+        },
+        startDate() {
+          return this.createDateTimeDateObject(this.fromDate, this.fromTime);
+        },
+        endDate() {
+          return this.createDateTimeDateObject(this.toDate, this.toTime);
+        },
+        tokenDetails() {
+          return {
+            ...getDetailsForSymbol(this.symbol),
+            symbol: this.symbol,
+          };
+        },
+      },
+    };
 </script>
 
 <style lang="scss">
@@ -667,5 +690,4 @@ a.btn-dispute {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 }
-
 </style>
