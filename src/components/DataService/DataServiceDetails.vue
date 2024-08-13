@@ -5,11 +5,8 @@
         <div v-if="provider">
           {{ provider.description }}
         </div>
-        <div
-          v-else
-          class="preloader text-preloader"
-        ></div>
-      </div> 
+        <div v-else class="preloader text-preloader"></div>
+      </div>
       <!-- <div class="provider-www">
         <a v-if="provider" :href="provider.url" target="_blank">Go to providers website <i class="fa fa-external-link" /></a>
         <div
@@ -46,7 +43,7 @@
         <!-- <LabelValue label="Stake" :value="(provider && provider.stakedTokens) ? provider.stakedTokens.toLocaleString('en-US') : (provider ? null : undefined)" :alignRight="true"/> -->
         <!-- <LabelValue label="Disputes" :value="provider ? null : undefined" /> -->
       </div>
-    </div>  
+    </div>
     <hr />
     <div>
       <div class="table-title mt-4 mb-2">Provided data:</div>
@@ -219,55 +216,30 @@
 <style lang="scss" scoped>
   @import "~@/styles/app";
 
-  .provider-details {
-    .token-logo {
-      height: 30px; 
-      width: 30px;
-    }
-
-    .provider-info {
-      margin-bottom: 30px;
-    }
-
-    LabelValue {
-      margin-bottom: 10px;
-    }
-
-    .provider-www, .provider-description {
-      margin-left: 10px;
-    }
-
-    .provider-description {
-      font-weight: $font-weight-normal;
-    }
-
-    .provider-www {
-      font-weight: $font-weight-soft-bold;
-
-      i {
-        transform: translate(3px, 1px);
-      }
-    }
+.provider-details {
+  .token-logo {
+    height: 30px;
+    width: 30px;
   }
 
-  .provider-values {
+  .provider-info {
+    margin-bottom: 30px;
+  }
+
+  LabelValue {
+    margin-bottom: 10px;
+  }
+
+  .provider-www,
+  .provider-description {
     margin-left: 10px;
-
-    & > div {
-      flex: 0 0 13%;
-    }
-
-    @media (max-width: breakpoint-max(sm)) {
-      flex-wrap: wrap;
-      
-      & > div {
-        flex: 0 0 50%;
-      }
-    }
   }
 
-  .token-name {
-    font-size: 14px;
+  .provider-description {
+    font-weight: $font-weight-normal;
+  }
+
+  .provider-www {
     font-weight: $font-weight-soft-bold;
 
     i {
@@ -290,13 +262,24 @@
       flex: 0 0 50%;
     }
   }
+}
 
-  .table-title {
-    margin-left: 10px;
-    color: $navy;
-    font-size: 20px;
-    font-weight: $font-weight-soft-bold;
-  }
+.token-name {
+  font-size: 14px;
+  font-weight: $font-weight-soft-bold;
+  color: $navy;
+}
+
+hr {
+  border-top: 1px solid $gray-300;
+}
+
+.table-title {
+  margin-left: 10px;
+  color: $navy;
+  font-size: 20px;
+  font-weight: $font-weight-soft-bold;
+}
 
 .source-link {
   min-width: 30px;
@@ -342,19 +325,19 @@
   }
 
   .label {
-    font-weight:  $font-weight-soft-bold;
+    font-weight: $font-weight-soft-bold;
     color: $navy;
   }
 }
 
 .provider-details #assets-table {
-    table-layout: fixed;
+  table-layout: fixed;
 
   th {
     text-transform: none;
     color: $navy;
     font-size: 12px;
-    font-weight:  $font-weight-soft-bold;
+    font-weight: $font-weight-soft-bold;
   }
 
   th:nth-of-type(1) {
@@ -388,13 +371,12 @@
     transform: translateX(-10px);
     height: 30px;
     width: 30px;
-}
-  
+  }
+
   td:hover {
     .source-links {
       flex-wrap: wrap;
     }
   }
 }
-
 </style>
