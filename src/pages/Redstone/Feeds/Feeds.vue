@@ -263,6 +263,18 @@ import { transformFeed, findNetworkImage} from './feedUtils'
             this.filteredItems = filteredItems
             // this.unselectInvalidItems()
         },
+        handleFilter(filterType, value) {
+        if (filterType === "cryptos") {
+          this.selectedCryptos = value;
+        } else if (filterType === "networks") {
+          this.selectedNetworks = value;
+        }
+        if (!this.isInitialLoad) {
+          this.currentPage = 1;
+        }
+        this.applyFilters();
+        this.updateRouteParams();
+      },
         customFilter(row, filters) {
             if (!filters) return true
 
