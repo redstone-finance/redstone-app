@@ -215,5 +215,12 @@
     "chainId": 48900,
     "name": "Energi",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/energi.webp"
+  },
+  "scroll": {
+    "rpcUrl": "https://rpc.scroll.io",
+    "explorerUrl": "https://scrollscan.com",
+    "chainId": 534352,
+    "name": "Scroll",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png"
   }
 }
