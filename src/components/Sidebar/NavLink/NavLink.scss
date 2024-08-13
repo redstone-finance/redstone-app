@@ -72,7 +72,7 @@
     background: var(--sidebar-badge-bg);
 
     @media (min-width: map_get($grid-breakpoints, lg)) and (min-height: $screen-lg-height),
-      (max-width: map_get($grid-breakpoints, md) - 1px) {
+      (max-width: map_get($grid-breakpoints, md)) {
       margin-top: 16px;
     }
   }
