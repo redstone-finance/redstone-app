@@ -1,9 +1,9 @@
 <script>
-  import { Bar } from 'vue-chartjs'
+  import { Bar } from "vue-chartjs";
 
   export default {
     extends: Bar,
-    props: ['stats', 'color', 'title'],
+    props: ["stats", "color", "title"],
 
     computed: {
       dataPoints() {
@@ -16,11 +16,11 @@
 
       values() {
         return Object.values(this.dataPoints);
-      }
+      },
     },
 
     watch: {
-      "stats": function() {
+      stats: function () {
         const chartData = {
           labels: this.labels,
           datasets: [
@@ -34,16 +34,16 @@
         this.renderChart(chartData, {
           scales: {
             y: {
-              beginAtZero: true
-            }
+              beginAtZero: true,
+            },
           },
           legend: {
-            display: false
+            display: false,
           },
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
         });
-      }
-    }
+      },
+    },
   };
 </script>

@@ -1,8 +1,6 @@
 <template>
   <div class="price-table">
-    <div class="table-title">
-      Data services
-    </div>
+    <div class="table-title">Data services</div>
     <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
         <b-col xs="12" md="6">
@@ -55,7 +53,10 @@
       :fields="fields"
     >
       <template #table-busy>
-        <vue-loaders-ball-beat color="var(--redstone-red-color)" scale="1"></vue-loaders-ball-beat>
+        <vue-loaders-ball-beat
+          color="var(--redstone-red-color)"
+          scale="1"
+        ></vue-loaders-ball-beat>
       </template>
 
       <template #cell(value)="data">
@@ -99,7 +100,6 @@
       class="load-more-link-container"
       v-observe-visibility="loadMoreButtonVisibilityChanged"
     >
-
       <div class="loading-more-container" v-if="loadingMore">
         <vue-loaders-ball-beat
           color="#3e86ca"
@@ -292,16 +292,205 @@ export default {
     },
     tokenDetails() {
       return {
-        ...getDetailsForSymbol(this.symbol),
-        symbol: this.symbol
+        prices: [],
+        offset: 0,
+        loading: false,
+        loadingMore: false,
+        limit: 20,
+        currentPage: 1,
+        perPage: 10,
+        fromTime: this.getCurrentTime(1),
+        toTime: this.getCurrentTime(),
+        fromDate: new Date(Date.now() - 24 * 3600 * 1000),
+        toDate: new Date(),
+        lastConfirmedTxTimestamp: 0,
+
+        fields: ["value", "time", "providerId", "dispute"],
       };
     },
-  },
-}
+
+    async created() {
+      await this.loadPrices();
+      // await this.updateLastConfirmedTxTimestamp();
+    },
+
+    // timers: {
+    //   updateLastConfirmedTxTimestamp: {
+    //     autostart: true,
+    //     time: 10000,
+    //     repeat: true,
+    //   },
+    // },
+
+    methods: {
+      getCurrentTime(hoursAgo = 0) {
+        const now = new Date();
+        now.setHours(now.getHours() - hoursAgo);
+
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+
+        // Add leading zeros
+        hours = hours.toString().padStart(2, "0");
+        minutes = minutes.toString().padStart(2, "0");
+        seconds = seconds.toString().padStart(2, "0");
+
+        return `${hours}:${minutes}:${seconds}`;
+      },
+      getCurrency,
+      DEFAULT_PROVIDER() {
+        return DEFAULT_PROVIDER;
+      },
+      showNotification(msg) {
+        this.$toasted.show(msg, { type: "info" });
+      },
+
+      getViewblockTxLink: utils.getViewblockTxLink,
+      getViewblockAddressLink: utils.getViewblockAddressLink,
+
+      isTxPendingForPrice(price) {
+        return price.timestamp > this.lastConfirmedTxTimestamp;
+      },
+
+      loadMoreButtonVisibilityChanged(visible) {
+        if (visible) {
+          this.loadMore();
+        }
+      },
+
+      async loadPrices() {
+        try {
+          this.loading = true;
+          this.offset = 0;
+          this.prices = await this.getPrices();
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      async loadMore() {
+        try {
+          this.loadingMore = true;
+          this.offset += this.limit;
+          const morePrices = await this.getPrices();
+          for (const price of morePrices) {
+            this.prices.push(price);
+          }
+        } finally {
+          this.loadingMore = false;
+        }
+      },
+      isValidDate(date) {
+        return date instanceof Date && !isNaN(date);
+      },
+
+      async getPrices() {
+        const params = {
+          provider: this.provider,
+          limit: this.limit,
+          offset: this.offset,
+        };
+        if (this.isValidDate(this.startDate)) {
+          params.startDate = this.startDate;
+        }
+        if (this.isValidDate(this.endDate)) {
+          params.endDate = this.endDate;
+        }
+        const nextPrices = await redstoneAdapter.getHistoricalPrice(
+          this.symbol,
+          params
+        );
+        return nextPrices;
+      },
+
+      priceDecimals() {
+        const min = _.min(this.prices.map((p) => p.value));
+        const max = _.max(this.prices.map((p) => p.value));
+        let delta = Math.abs(max - min);
+        if (delta == 0) {
+          delta = max;
+        }
+        if (delta == 0) {
+          return 2;
+        }
+
+        return Math.max(-Math.floor(Math.log10(Math.abs(delta))), 2);
+      },
+      createDateTimeDateObject(date, time) {
+        if (date && time) {
+          const [hours, minutes, seconds] = time.split(":");
+          return new Date(date.setHours(hours, minutes, seconds));
+        }
+        return null;
+      },
+
+      // async isTxConfirmed(txId) {
+      //   const arweave = this.$store.state.prefetch.arweave;
+      //   if (arweave) {
+      //     const response = await arweave.transactions.getStatus(txId);
+      //     const result = response && response.confirmed;
+      //     return result;
+      //   } else {
+      //     return false;
+      //   }
+      // },
+
+      // async updateLastConfirmedTxTimestamp() {
+      //   let lastTimestamp = 0, index = 0;
+      //   while (lastTimestamp === 0 && index < this.prices.length) {
+      //     const price = this.prices[index];
+      //     const isConfirmed = await this.isTxConfirmed(price.permawebTx);
+      //     if (isConfirmed) {
+      //       lastTimestamp = price.timestamp;
+      //     }
+      //     index++;
+      //   }
+      //   this.lastConfirmedTxTimestamp = lastTimestamp;
+      // },
+
+      isCurrencyToken,
+    },
+
+    watch: {
+      startDate() {
+        this.loadPrices();
+      },
+      endDate() {
+        this.loadPrices();
+      },
+    },
+
+    computed: {
+      pricesDataForTable() {
+        return this.prices.map((p) => {
+          return {
+            value: p.value,
+            time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
+            timestamp: p.timestamp,
+            permawebTx: p.permawebTx,
+            providerId: p.provider,
+          };
+        });
+      },
+      startDate() {
+        return this.createDateTimeDateObject(this.fromDate, this.fromTime);
+      },
+      endDate() {
+        return this.createDateTimeDateObject(this.toDate, this.toTime);
+      },
+      tokenDetails() {
+        return {
+          ...getDetailsForSymbol(this.symbol),
+          symbol: this.symbol,
+        };
+      },
+    },
+  };
 </script>
 
 <style lang="scss">
-@import '~@/styles/app';
+  @import "~@/styles/app";
 
 .price, .time {
   color: $gray-750;
@@ -317,7 +506,7 @@ a.tx-link, .tx-link > .link {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  color: $gray-600
+  color: $gray-600;
 }
 
 a.tx-link {
@@ -382,7 +571,6 @@ a.tx-link {
       flex: 0 0 100%;
     }
   }
-
 
   .b-form-btn-label-control.form-control {
     height: 35px;

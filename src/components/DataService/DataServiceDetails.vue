@@ -69,14 +69,14 @@
 </template>
 
 <script>
-import LabelValue from '@/components/DataService/LabelValue';
-import sourcesData from "../../config/sources.json";
-import _ from 'lodash';
-import showMoreTokensMixin from '@/mixins/show-more-tokens';
-import { getDetailsForSymbol } from "@/tokens";
+  import LabelValue from "@/components/DataService/LabelValue";
+  import sourcesData from "../../config/sources.json";
+  import _ from "lodash";
+  import showMoreTokensMixin from "@/mixins/show-more-tokens";
+  import { getDetailsForSymbol } from "@/tokens";
 
-export default {
-  name: "DataService",
+  export default {
+    name: "DataService",
 
   props: {
     provider: {}
@@ -98,10 +98,6 @@ export default {
     formatSources(source) {
       return source.map(s => _.startCase(s)).join(', ');
     },
-    prepareTokensDataForTable() {
-      this.tokens = Object.entries(this.currentManifest.tokens).map((entry) => {
-        const [symbol, detailsInManifest] = entry;
-        let tokenInfo = getDetailsForSymbol(symbol);
 
         let sourceList = detailsInManifest.source || this.currentManifest.defaultSource;
 
@@ -159,14 +155,85 @@ export default {
         if (this.currentManifest) {
           this.prepareTokensDataForTable();
         }
-      }
-    }
-  }
-}
+        return str.substring(0, lastDashIndex);
+      },
+      formatSources(source) {
+        return source.map((s) => _.startCase(s)).join(", ");
+      },
+      prepareTokensDataForTable() {
+        this.tokens = Object.entries(this.currentManifest.tokens).map(
+          (entry) => {
+            const [symbol, detailsInManifest] = entry;
+            let tokenInfo = getDetailsForSymbol(symbol);
+
+            let sourceList =
+              detailsInManifest.source || this.currentManifest.defaultSource;
+
+            return {
+              logoURI: tokenInfo?.logoURI,
+              symbol,
+              name: tokenInfo?.name,
+              source: sourceList.map((el) => {
+                console.log({ el });
+                return {
+                  name: el,
+                  ...sourcesData[this.removeContentAfterLastDash(el)],
+                };
+              }),
+            };
+          }
+        );
+
+        setTimeout(this.showMoreTokens, 0);
+      },
+      loadMoreSectionVisibilityChanged() {
+        this.showMoreTokens();
+      },
+      scrollFunction() {
+        if (
+          window.innerHeight + window.pageYOffset >=
+          document.body.offsetHeight
+        ) {
+          this.showMoreTokens();
+        }
+      },
+    },
+
+    components: {
+      LabelValue,
+    },
+
+    computed: {
+      currentManifest() {
+        return this.provider?.currentManifest;
+      },
+      dataServiceId() {
+        return this.$route.params.id;
+      },
+      fieldsFiltered() {
+        return this.fields;
+      },
+    },
+
+    created() {
+      document.addEventListener("scroll", this.scrollFunction);
+    },
+
+    watch: {
+      currentManifest: {
+        immediate: true,
+        handler: function () {
+          if (this.currentManifest) {
+            this.prepareTokensDataForTable();
+          }
+        },
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
-@import '~@/styles/app';
+  @import "~@/styles/app";
 
   .provider-details {
     .token-logo {
@@ -267,7 +334,7 @@ export default {
 </style>
 
 <style lang="scss">
-@import '~@/styles/app';
+  @import "~@/styles/app";
 
 .label-value {
   .value {

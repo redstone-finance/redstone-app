@@ -12,10 +12,10 @@ export default {
       danger: "#FD5F00",
       inverse: "#0D2B47",
       textColor: "#495057",
-      gray: "#D7DFE6"
+      gray: "#D7DFE6",
     },
     chartColors: {
-      axisColor: '#8EA1AB'
-    }
-  }
+      axisColor: "#8EA1AB",
+    },
+  },
 };

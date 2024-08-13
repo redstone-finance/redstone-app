@@ -21,37 +21,37 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
-      path: '/error',
-      name: 'Error',
+      path: "/error",
+      name: "Error",
       component: ErrorPage,
     },
     {
-      path: '/app',
-      name: 'Layout',
+      path: "/app",
+      name: "Layout",
       component: Layout,
       children: [
         // Redstone
         {
-          path: 'tokens',
-          name: 'TokensPage',
+          path: "tokens",
+          name: "TokensPage",
           component: Tokens,
           meta: {
             showSearchInputInNavbar: true,
           },
         },
         {
-          path: 'token/:symbol',
-          name: 'TokenPage',
+          path: "token/:symbol",
+          name: "TokenPage",
           component: Token,
         },
         {
-          path: 'sources',
-          name: 'SourcesPage',
+          path: "sources",
+          name: "SourcesPage",
           component: Sources,
         },
         {
-          path: 'source/:sourceId',
-          name: 'SourcePage',
+          path: "source/:sourceId",
+          name: "SourcePage",
           component: Source,
         },
         {
@@ -69,8 +69,8 @@ const router = new Router({
           },
         },
         {
-          path: 'data-services/:id',
-          name: 'DataServicePage',
+          path: "data-services/:id",
+          name: "DataServicePage",
           component: DataService,
         },
       ],
