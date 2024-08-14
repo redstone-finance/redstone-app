@@ -242,7 +242,10 @@
             label: "Last update",
             sortable: true,
             sortByFormatted: true,
-            formatter: (value, key, item) => item.timestamp.raw,
+            formatter: (value, key, item) => {
+              const numericTimestamp = parseInt(item.timestamp.raw, 16);
+              return numericTimestamp;
+            }
           },
         ],
       };
