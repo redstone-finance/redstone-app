@@ -226,7 +226,9 @@
   }
 
   .page-item {
-    &.disabled,
+    &.disabled{
+      display: none;
+    }
     &.active {
       button{
         border: none !important;
