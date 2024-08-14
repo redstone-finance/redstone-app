@@ -233,5 +233,10 @@
     "name": "ZK",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zk.webp",
     "token": "ZK"
+  },
+  {
+    "name": "SEI",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png",
+    "token": "SEI"
   }
 ]
