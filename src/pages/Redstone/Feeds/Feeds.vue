@@ -19,29 +19,65 @@
             <div
               class="feeds__actions-wrapper-label ml-4 mr-4 fw-normal feed-counter"
             >
-            <span class="feeds__status-text">Found feeds: <strong>{{ filteredItems.length }}</strong></span>
+              <span class="feeds__status-text"
+                >Found feeds: <strong>{{ filteredItems.length }}</strong></span
+              >
+            </div>
+            <div class="feeds__actions-wrapper-label mr-4 text-light fw-normal">
+              <span class="feeds__status-text"
+                >Selected networks:
+                <strong>{{
+                  selectedNetworks.length || networksMap.length
+                }}</strong></span
+              >
+              <span class="feeds__status-text"
+                >Selected currencies:
+                <strong>{{
+                  selectedCryptos.length || cryptoImages.length
+                }}</strong></span
+              >
             </div>
             <div
               class="feeds__actions-wrapper-label mr-4 text-light fw-normal"
-            >
-              <span class="feeds__status-text">Selected networks: <strong>{{ selectedNetworks.length || networksMap.length }}</strong></span>
-              <span class="feeds__status-text">Selected currencies: <strong>{{ selectedCryptos.length || cryptoImages.length }}</strong></span>
-            </div>
-            <div
-              class="feeds__actions-wrapper-label mr-4 text-light fw-normal"
-            > 
-            </div>
+            ></div>
           </div>
-          <div class="feeds__actions-wrapper-label text-light fw-normal" style="margin-left: auto">
-              <span class="feeds__status-text">
-                Per page:
-                <select v-model="perPage" @change="onPerPageChange" class="feeds__per-page-select">
-                  <option v-for="option in perPageOptions" :key="option" :value="option">
-                    {{ option }}
-                  </option>
-                </select>
-              </span>
-            </div>
+          <div
+            class="feeds__actions-wrapper-label text-light fw-normal"
+            style="margin-left: auto"
+          >
+            <span class="feeds__status-text mb-2">
+              Feeds per page:
+              <select
+                v-model="perPage"
+                @change="onPerPageChange"
+                class="feeds__select"
+              >
+                <option
+                  v-for="option in perPageOptions"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+            </span>
+            <span class="feeds__status-text" style="text-align: right;">
+              Current page:
+              <select
+                v-model="selectedPage"
+                @change="onSelectedPageChange"
+                class="feeds__select"
+              >
+                <option
+                  v-for="page in availablePages"
+                  :key="page"
+                  :value="page"
+                >
+                  {{ page }}
+                </option>
+              </select>
+            </span>
+          </div>
         </div>
         <div class="feeds__actions-wrapper-item">
           <div v-if="selectedNetworks.length > 0">
@@ -66,8 +102,8 @@
           </div>
         </div>
         <div v-if="hasFilters" class="clear-filters" @click="resetFilters">
-            Clear all
-          </div>
+          Clear all
+        </div>
       </div>
     </div>
     <b-table
@@ -244,21 +280,21 @@
           { name: "Ethereum", token: "ETH", image: "eth.webp" },
         ],
         fields: [
-          { 
+          {
             key: "feed",
             label: "Feed",
             sortable: true,
-            formatter: (value, key, item) => item.feed
+            formatter: (value, key, item) => item.feed,
           },
-          { 
+          {
             key: "network",
             label: "Network",
-            sortable: true, 
+            sortable: true,
             sortByFormatted: true,
-            formatter: (value, key, item) => item.network.name
+            formatter: (value, key, item) => item.network.name,
           },
-          { key: "contract_address", label: "Addresses", sortable: false},
-          { key: "heartbeat", label: "Heartbeat", sortable: false},
+          { key: "contract_address", label: "Addresses", sortable: false },
+          { key: "heartbeat", label: "Heartbeat", sortable: false },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
           {
             key: "timestamp",
@@ -268,7 +304,7 @@
             formatter: (value, key, item) => {
               const numericTimestamp = parseInt(item.timestamp.raw, 16);
               return numericTimestamp;
-            }
+            },
           },
         ],
       };
@@ -289,8 +325,13 @@
         this.$refs.selectableTable.refresh();
         this.updateRouteParams();
       },
+      onSelectedPageChange() {
+        this.currentPage = this.selectedPage;
+        this.updateRouteParams();
+      },
       initializeFiltersFromRoute() {
-        const { cryptos, networks, page, sortBy, sortDesc, perPage } = this.$route.query;
+        const { cryptos, networks, page, sortBy, sortDesc, perPage } =
+          this.$route.query;
         this.selectedCryptos = cryptos ? cryptos.split(",") : [];
         this.selectedNetworks = networks ? networks.split(",").map(Number) : [];
         this.currentPage = page ? parseInt(page) : 1;
@@ -301,7 +342,8 @@
       },
       updateRouteParams() {
         if (this.isInitialLoad) return;
-        this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        this.scrollPosition =
+          window.pageYOffset || document.documentElement.scrollTop;
         const query = { ...this.$route.query };
         if (this.selectedCryptos.length > 0) {
           query.cryptos = this.selectedCryptos.join(",");
@@ -322,7 +364,8 @@
           delete query.sortDesc;
         }
         query.perPage = this.perPage.toString();
-      
+        query.page = this.currentPage.toString();
+
         this.$router
           .replace({ query })
           .then(() => {
@@ -331,7 +374,7 @@
             });
           })
           .catch((err) => {
-            if (err.name !== 'NavigationDuplicated') {
+            if (err.name !== "NavigationDuplicated") {
               throw err;
             }
           });
@@ -519,6 +562,9 @@
       ...mapActions("feeds", ["init", "initSingleContract"]),
     },
     watch: {
+      currentPage(newPage) {
+        this.selectedPage = newPage;
+      },
       feeds() {
         this.filteredItems = [];
       },
@@ -532,6 +578,12 @@
       },
     },
     computed: {
+      totalPages() {
+        return Math.ceil(this.totalRows / this.perPage);
+      },
+      availablePages() {
+        return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      },
       tokensInNetworks() {
         return this.feeds.map((item) => ({
           token: item.token,
