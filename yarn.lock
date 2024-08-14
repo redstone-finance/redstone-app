@@ -2126,6 +2126,11 @@
     consola "^2.15.0"
     node-fetch "^2.6.7"
 
+"@pkgr/core@^0.1.0":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@pkgr/core/-/core-0.1.1.tgz#1ec17e2edbec25c8306d424ecfbf13c7de1aaa31"
+  integrity sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==
+
 "@soda/friendly-errors-webpack-plugin@^1.7.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@soda/friendly-errors-webpack-plugin/-/friendly-errors-webpack-plugin-1.8.1.tgz#4d4fbb1108993aaa362116247c3d18188a2c6c85"
@@ -10718,7 +10723,7 @@ redstone-prettier-config@^1.0.0:
   resolved "https://registry.yarnpkg.com/redstone-prettier-config/-/redstone-prettier-config-1.0.0.tgz#154b28bf79f41826a4b47421db653d867aa3c241"
   integrity sha512-39BBmwrw+5L4MgV1TLGAlIwmRFvAzZ4iq8xshHdBhiiAgl0J6PeIYrkUkU5l6nMIilua4zkWoEz+58enT0pbhw==
 
-redstone-protocol@*:
+redstone-protocol@*, redstone-protocol@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/redstone-protocol/-/redstone-protocol-1.0.5.tgz#c8555e9a9e3ee49d11b6586bf7090e59404e3395"
   integrity sha512-62qHSb9jF5875a/gc8MbDcHH1n4dZsBXxlIxpk3vx/MeykAMB6nLd1174Qukvupkr69cneeRQiVqqALkQpmRlg==
