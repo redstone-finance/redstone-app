@@ -238,5 +238,10 @@
     "name": "SEI",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png",
     "token": "SEI"
+  },
+  {
+    "name": "C3M",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
+    "token": "C3M"
   }
 ]
