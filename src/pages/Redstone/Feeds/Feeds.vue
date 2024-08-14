@@ -118,6 +118,7 @@
       @filtered="onFiltered"
       :filter="filters"
       sort-icon-left
+      sticky-header="500px"
       hover
       :items="feeds"
       :per-page="perPage"
@@ -273,6 +274,7 @@
         filteredItems: [],
         isUnselecting: false,
         isInitialLoad: true,
+        selectedPage: 1,
         scrollPosition: 0,
         perPageOptions: [8, 16, 32, 64],
         mostUsedCryptos: [
