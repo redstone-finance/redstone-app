@@ -41,12 +41,12 @@
           @click="confirmChanges"
           variant="primary"
           class="confirm-button"
-          >Confirm Changes</b-button
-        >
+          > <i class="fa fa-icon fa-sliders mr-2"></i>Filter ({{ tempSelected.length }})
+        </b-button>
       </div>
       <div v-else-if="value.length > 0" class="confirm-button-container">
         <b-button @click="resetChanges" variant="primary" class="reset-button"
-          >Reset Changes</b-button
+          >Reset ({{ tempSelected.length }})</b-button
         >
       </div>
     </b-dropdown>
