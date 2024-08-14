@@ -53,10 +53,10 @@
               :filters="displayedSelectedCryptos"
             />
           </div>
-          <div v-if="hasFilters" class="clear-filters" @click="resetFilters">
+        </div>
+        <div v-if="hasFilters" class="clear-filters" @click="resetFilters">
             Clear all
           </div>
-        </div>
       </div>
     </div>
     <b-table
@@ -245,9 +245,9 @@
             sortByFormatted: true,
             formatter: (value, key, item) => item.network.name
           },
-          { key: "contract_address", label: "Addresses" },
-          { key: "heartbeat", label: "Heartbeat" },
-          { key: "deviation", label: "Deviation threshold " },
+          { key: "contract_address", label: "Addresses", sortable: false},
+          { key: "heartbeat", label: "Heartbeat", sortable: false},
+          { key: "deviation", label: "Deviation threshold ", sortable: false },
           {
             key: "timestamp",
             label: "Last update",

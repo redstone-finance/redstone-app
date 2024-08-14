@@ -44,7 +44,9 @@
       text-align: center;
       border-top: 1px solid rgb(227, 227, 227);
       border-bottom: 1px solid rgb(227, 227, 227);
-
+      &:first-child{
+        text-align: left;
+      }
       &:nth-child(2) {
         text-align: left;
       }
@@ -266,7 +268,7 @@
 }
 
 .selected-items {
-  margin-bottom: -15px;
+  margin-top: 10px;
   font-size: 10px;
   color: #aeaeae;
 }
