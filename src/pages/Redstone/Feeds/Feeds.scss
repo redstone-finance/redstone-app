@@ -123,11 +123,11 @@
     }
     &-label.feed-counter{
       padding: 10px 18px;
-      background: var(--redstone-red-color);
-      border: 1px solid darken(#FD627A, $amount: 15) !important;
+      // background: var(--redstone-red-color);
+      // border: 1px solid darken(#FD627A, $amount: 15) !important;
       border-radius: 6px;
       span, strong{
-        color: #fff;
+        color: rgb(87, 87, 87);
         font-size: 14px !important;
       }
     }
