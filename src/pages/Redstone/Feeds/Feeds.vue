@@ -1,7 +1,7 @@
 <template>
   <div class="feeds">
     <div class="feeds__actions-wrapper">
-      <div>
+      <div style="width: 100%">
         <div class="feeds__actions-wrapper-item">
           <NetworkPicker
             @input="handleFilter('networks', $event)"
@@ -30,10 +30,18 @@
             <div
               class="feeds__actions-wrapper-label mr-4 text-light fw-normal"
             > 
-              <span class="feeds__status-text">Current page: <strong>{{ currentPage }}</strong></span>
-              <span class="feeds__status-text">Feeds per page: <strong>{{ perPage }}</strong></span>
             </div>
           </div>
+          <div class="feeds__actions-wrapper-label text-light fw-normal" style="margin-left: auto">
+              <span class="feeds__status-text">
+                Per page:
+                <select v-model="perPage" @change="onPerPageChange" class="feeds__per-page-select">
+                  <option v-for="option in perPageOptions" :key="option" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
+              </span>
+            </div>
         </div>
         <div class="feeds__actions-wrapper-item">
           <div v-if="selectedNetworks.length > 0">
@@ -230,6 +238,7 @@
         isUnselecting: false,
         isInitialLoad: true,
         scrollPosition: 0,
+        perPageOptions: [8, 16, 32, 64],
         mostUsedCryptos: [
           { name: "BitCoin", token: "BTC", image: "btc.webp" },
           { name: "Ethereum", token: "ETH", image: "eth.webp" },
@@ -275,19 +284,24 @@
     methods: {
       copyToClipboardHelper,
       truncateString,
+      onPerPageChange() {
+        this.currentPage = 1;
+        this.$refs.selectableTable.refresh();
+        this.updateRouteParams();
+      },
       initializeFiltersFromRoute() {
-        const { cryptos, networks, page, sortBy, sortDesc } = this.$route.query;
+        const { cryptos, networks, page, sortBy, sortDesc, perPage } = this.$route.query;
         this.selectedCryptos = cryptos ? cryptos.split(",") : [];
         this.selectedNetworks = networks ? networks.split(",").map(Number) : [];
         this.currentPage = page ? parseInt(page) : 1;
         this.sortBy = sortBy || null;
         this.sortDesc = sortDesc === "true";
+        this.perPage = perPage ? parseInt(perPage) : 8;
         this.applyFilters();
       },
       updateRouteParams() {
         if (this.isInitialLoad) return;
-        this.scrollPosition =
-          window.pageYOffset || document.documentElement.scrollTop;
+        this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
         const query = { ...this.$route.query };
         if (this.selectedCryptos.length > 0) {
           query.cryptos = this.selectedCryptos.join(",");
@@ -307,6 +321,8 @@
           delete query.sortBy;
           delete query.sortDesc;
         }
+        query.perPage = this.perPage.toString();
+      
         this.$router
           .replace({ query })
           .then(() => {
@@ -315,7 +331,7 @@
             });
           })
           .catch((err) => {
-            if (err.name !== "NavigationDuplicated") {
+            if (err.name !== 'NavigationDuplicated') {
               throw err;
             }
           });

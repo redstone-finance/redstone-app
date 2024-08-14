@@ -96,7 +96,7 @@
     align-items: center;
 
     &-item {
-      margin-right: 1rem;
+      width: 100%;
       display: flex;
       flex-wrap: wrap;
       margin-bottom: 1rem;
@@ -227,16 +227,35 @@
 
   .page-item {
     &.disabled{
-      display: none;
+      visibility: hidden;
     }
     &.active {
+      width: 40px !important;
+      display: inline-block !important;
+      margin-left: calc(50% - 100px);
+      transform: translateX(-50%);
       button{
-        border: none !important;
+        text-align: center !important;
+        // border: 0 !important;
+        box-shadow: var(--tabs-shadow) !important;
+        background-color: #fff;
+        font-weight: bold !important;
+        color: rgb(61, 61, 61);
         box-shadow: none;
         pointer-events: none;
       }
     }
   }
+}
+
+.feeds__per-page-select {
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  color: #495057;
+  font-size: 1rem;
+  padding: 0.375rem 0.75rem;
+  margin-left: 0.5rem;
 }
 
 .cron-schedule {
