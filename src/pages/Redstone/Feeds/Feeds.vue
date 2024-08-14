@@ -17,19 +17,22 @@
           />
           <div class="feeds__status">
             <div
-              class="feeds__actions-wrapper-label ml-4 mr-2 text-light fw-normal"
+              class="feeds__actions-wrapper-label ml-4 mr-4 fw-normal"
             >
-              Displaying
+            <span class="feeds__status-text" style="font-size: 16px;">Found feeds: <strong>{{ filteredItems.length }}</strong></span>
             </div>
-            <span class="feeds__status-text mr-2">
-              <strong>{{
-                selectedNetworks.length || networksMap.length
-              }}</strong>
-              networks,
-            </span>
-            <span class="feeds__status-text">
-              <strong>{{ filteredItems.length }}</strong> feeds
-            </span>
+            <div
+              class="feeds__actions-wrapper-label mr-4 text-light fw-normal"
+            >
+              <span class="feeds__status-text">Selected networks: <strong>{{ selectedNetworks.length || networksMap.length }}</strong></span>
+              <span class="feeds__status-text">Selected currencies: <strong>{{ selectedCryptos.length || cryptoImages.length }}</strong></span>
+            </div>
+            <div
+              class="feeds__actions-wrapper-label mr-4 text-light fw-normal"
+            > 
+              <span class="feeds__status-text">Current page: <strong>{{ currentPage }}</strong></span>
+              <span class="feeds__status-text">Feeds per page: <strong>{{ perPage }}</strong></span>
+            </div>
           </div>
         </div>
         <div class="feeds__actions-wrapper-item">
