@@ -55,22 +55,17 @@ function timeSince(date) {
   }
   return `${seconds} seconds`;
 }
-
 export function getTimeUntilNextHeartbeat(
   lastHeartbeatItem,
   heartbeatInterval
 ) {
   const lastHeartbeatTimestamp = lastHeartbeatItem * 1000;
-  const nextHeartbeatTimestamp = lastHeartbeatTimestamp + heartbeatInterval;
-  let timeUntilNextHeartbeat = nextHeartbeatTimestamp - Date.now();
-
-  if (timeUntilNextHeartbeat < 0) {
-    const missedHeartbeats =
-      Math.floor(Math.abs(timeUntilNextHeartbeat) / heartbeatInterval) + 1;
-    timeUntilNextHeartbeat =
-      missedHeartbeats * heartbeatInterval + timeUntilNextHeartbeat;
+  const now = Date.now();
+  const timeSinceLastHeartbeat = now - lastHeartbeatTimestamp;
+  if (timeSinceLastHeartbeat >= heartbeatInterval) {
+    return 0;
   }
-
+  const timeUntilNextHeartbeat = heartbeatInterval - timeSinceLastHeartbeat;
   return timeUntilNextHeartbeat;
 }
 

@@ -504,10 +504,21 @@
         ).explorerUrl;
       },
       nearestCron(cronString) {
-        const nearestDate = findNearestCronDate(JSON.parse(cronString));
+      if (cronString == null) {
+        console.warn('Cron string is undefined or null');
+        return 0; 
+      }
+
+      try {
+        const parsedCron = JSON.parse(cronString);
+        const nearestDate = findNearestCronDate(parsedCron);
         const timeUntil = timeUntilDate(nearestDate);
         return timeUntil;
-      },
+      } catch (error) {
+        console.error('Error parsing cron string:', error);
+        return 'Invalid cron'; // or some error indicator
+      }
+    },
       getFirstPart(string) {
         const noSlash = string.split("/")[0];
         const noUnder = noSlash.split("_")[0];
