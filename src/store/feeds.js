@@ -42,6 +42,7 @@ export default {
       state.smartContracts[layerId] = contract;
     },
     assignRelayerDetails(state, { key, layerId, data }) {
+      // console.log({key, layerId, data})
       if (state.relayersDetails[layerId]) {
         state.relayersDetails[layerId][key] = data;
       }
@@ -76,33 +77,30 @@ export default {
           return [];
         }
 
-        return Object.keys(layer.priceFeeds).map((feedId) => ({
-          routeNetwork: Object.values(networks)
-            .find((network) => network.chainId === layer.chain.id)
-            .name.toLowerCase()
-            .replace(" ", "-"),
-          routeToken: feedId.toLowerCase(),
-          networkId: layer.chain.id,
-          feedId: feedId,
-          contractAddress: layer.adapterContract,
-          feedAddress: isObject(layer.priceFeeds[feedId])
-            ? layer.priceFeeds[feedId].priceFeedAddress
-            : layer.priceFeeds[feedId],
-          triggers: layer.updateTriggers,
-          layerId: key,
-          foo: state.relayersDetails[
-            `${key}_${layer.priceFeeds[feedId].priceFeedAddress}`
-          ],
-          timestamp:
-            state.relayersDetails[key]?.blockTimestamp ||
-            state.relayersDetails[
-              `${key}_${layer.priceFeeds[feedId].priceFeedAddress}`
-                ?.blockTimestamp
-            ],
-          loaders:
-            state.relayersDetails[key]?.loaders ||
-            state.relayersDetails[`${key}_${feedId}`]?.loaders,
-        }));
+        return Object.keys(layer.priceFeeds).map((feedId) => {
+        const keyTimestamp = state.relayersDetails[key]?.blockTimestamp
+          const keyFeedTimestamp =
+            state.relayersDetails[`${key}_${feedId}`]?.blockTimestamp
+          return {
+            routeNetwork: Object.values(networks)
+              .find((network) => network.chainId === layer.chain.id)
+              .name.toLowerCase()
+              .replace(" ", "-"),
+            routeToken: feedId.toLowerCase(),
+            networkId: layer.chain.id,
+            feedId: feedId,
+            contractAddress: layer.adapterContract,
+            feedAddress: isObject(layer.priceFeeds[feedId])
+              ? layer.priceFeeds[feedId].priceFeedAddress
+              : layer.priceFeeds[feedId],
+            triggers: layer.updateTriggers,
+            layerId: key,
+            timestamp: keyTimestamp || keyFeedTimestamp || null,
+            loaders:
+              state.relayersDetails[key]?.loaders ||
+              state.relayersDetails[`${key}_${feedId}`]?.loaders,
+          };
+        });
       });
     },
   },
@@ -173,7 +171,7 @@ export default {
           commit("assignRelayerDetails", {
             key: "blockTimestamp",
             layerId: `${layerId}_${feedId}`,
-            data: timestamp._hex,
+            data: timestamp?._hex,
           });
         })
         .catch((error) => {
@@ -311,6 +309,11 @@ export default {
         ) {
           Object.keys(state.relayerSchema[key]?.priceFeeds).forEach(
             async (feedId) => {
+              if (
+                state.relayersDetails[`${key}_${feedId}`].loaders
+                  .blockTimestamp === false
+              )
+                return;
               await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
                 layerId: key,
                 feedId,
