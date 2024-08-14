@@ -228,7 +228,11 @@
   .page-item {
     &.disabled,
     &.active {
-      display: none !important;
+      button{
+        border: none !important;
+        box-shadow: none;
+        pointer-events: none;
+      }
     }
   }
 }
