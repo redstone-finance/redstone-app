@@ -13,6 +13,13 @@ const CONTRACTS_ABI_DEFINITION = [
   "function getDataFeedId() view returns (bytes32)",
   "function getDataFeedIds() view returns (bytes32[])",
 ];
+const CONTRACTS_ABI_DEFINITION_MULTIFEED = [
+  "function getBlockTimestampFromLatestUpdate(bytes32 dataFeedId) view returns (uint256)",
+  "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
+  "function getValuesForDataFeeds(bytes32[] requestedDataFeedIds) view returns (uint256[])",
+  "function getDataFeedId() view returns (bytes32)",
+  "function getDataFeedIds() view returns (bytes32[])",
+];
 
 export default {
   namespaced: true,
@@ -73,8 +80,9 @@ export default {
             : layer.priceFeeds[feedId],
           triggers: layer.updateTriggers,
           layerId: key,
-          timestamp: state.relayersDetails[key].blockTimestamp,
-          loaders: state.relayersDetails[key].loaders,
+          foo: state.relayersDetails[`${key}_${layer.priceFeeds[feedId].priceFeedAddress}`],
+          timestamp: state.relayersDetails[key]?.blockTimestamp ||  state.relayersDetails[`${key}_${layer.priceFeeds[feedId].priceFeedAddress}`?.blockTimestamp],
+          loaders: state.relayersDetails[key]?.loaders || state.relayersDetails[`${key}_${layer.priceFeeds[feedId].priceFeedAddress}`]?.loaders,
         }));
       });
     },
@@ -82,7 +90,7 @@ export default {
   actions: {
     createSmartContract(
       { commit, state },
-      { layerId, contractAddress, chainId }
+      { layerId, contractAddress, chainId, contractType }
     ) {
       const contractNetwork = Object.values(networks).find(
         (network) => network.chainId === chainId
@@ -90,9 +98,11 @@ export default {
       const provider = new ethers.providers.JsonRpcProvider(
         contractNetwork.rpcUrl
       );
+      console.log(contractType)
+      const abi = contractType === 'multi-feed' ? CONTRACTS_ABI_DEFINITION_MULTIFEED : CONTRACTS_ABI_DEFINITION
       const contract = new ethers.Contract(
         contractAddress,
-        CONTRACTS_ABI_DEFINITION,
+        abi,
         provider
       );
       commit("assignCreatedSmartContract", { contract, layerId });
@@ -135,6 +145,28 @@ export default {
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
             layerId,
+            loaderId: "blockTimestamp",
+          });
+        });
+    },
+    async fetchBlockTimeStampMultifeed({ commit, state }, {layerId, feedId}) {
+
+      this.getters["feeds/getSmartContractByLayerId"](layerId)
+        .getBlockTimestampFromLatestUpdate(feedId)
+        .then((timestamp) => {
+          console.log({timestamp,  layerId:`${layerId}_${feedId}`})
+          commit("assignRelayerDetails", {
+            key: "blockTimestamp",
+            layerId:`${layerId}_${feedId}`,
+            data: timestamp._hex,
+          });
+        })
+        .catch((error) => {
+          console.log('timestamp error', layerId, error)
+        })
+        .finally(() => {
+          this.dispatch("feeds/disableLoader", {
+            layerId: `${layerId}_${feedId}`,
             loaderId: "blockTimestamp",
           });
         });
@@ -190,16 +222,31 @@ export default {
     initializeLayerDetails({ state }) {
       Object.keys(state.relayerSchema).forEach((layerId) => {
         // Using Vue.set to make values reactive
-        Vue.set(state.relayersDetails, layerId, {
-          feedId: null,
-          blockTimestamp: null,
-          dataFeed: null,
-          loaders: {
-            feedId: true,
-            feedDataValue: true,
-            blockTimestamp: true,
-          },
-        });
+        if(state.relayerSchema[layerId].adapterContractType !== 'multi-feed'){
+          Vue.set(state.relayersDetails, layerId, {
+            feedId: null,
+            blockTimestamp: null,
+            dataFeed: null,
+            loaders: {
+              feedId: true,
+              feedDataValue: true,
+              blockTimestamp: true,
+            },
+          });
+        }else{
+          Object.values(state.relayerSchema[layerId].priceFeeds).forEach(address => {
+            Vue.set(state.relayersDetails, `${layerId}_${address.priceFeedAddress}`, {
+              feedId: null,
+              blockTimestamp: null,
+              dataFeed: null,
+              loaders: {
+                feedId: true,
+                feedDataValue: true,
+                blockTimestamp: true,
+              },
+          })
+          })
+        }
       });
     },
     async fetchRelayerSchema({ commit, state }) {
@@ -209,14 +256,20 @@ export default {
         this.dispatch("feeds/initializeLayerDetails");
       }
     },
-    async initSingleContract({ state }, layerId) {
+    async initSingleContract({ state }, layerId, feedId) {
       await this.dispatch("feeds/fetchRelayerSchema");
       await this.dispatch("feeds/createSmartContract", {
         layerId: layerId,
         contractAddress: state.relayerSchema[layerId].adapterContract,
         chainId: state.relayerSchema[layerId].chain.id,
+        contractType: state.relayerSchema[layerId].adapterContractType
       });
-      await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
+      if(state.relayerSchema[layerId].adapterContractType === 'multi-feed'){
+        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {layerId, feedId});
+      }else{
+        await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
+      }
+     
       await this.dispatch("feeds/fetchFeedIdAndValue", {
         layerId: layerId,
         feedId: state.relayersDetails[layerId]?.feedId,
@@ -230,8 +283,17 @@ export default {
           layerId: key,
           contractAddress: state.relayerSchema[key].adapterContract,
           chainId: state.relayerSchema[key].chain.id,
+          contractType: state.relayerSchema[key].adapterContractType
         });
-        await this.dispatch("feeds/fetchBlockTimeStamp", key);
+        if(state.relayerSchema[key].adapterContractType === 'multi-feed'){
+          Object.values(state.relayerSchema[key].priceFeeds).forEach(async address => {
+            if(address.priceFeedAddress){
+              await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {layerId: key, feedId: address.priceFeedAddress});
+            }
+          })
+        }else{
+          await this.dispatch("feeds/fetchBlockTimeStamp", key);
+        }
         await this.dispatch("feeds/fetchFeedIdAndValue", {
           layerId: key,
           feedId: state.relayersDetails[key]?.feedId,

@@ -236,12 +236,11 @@
       transform: translateX(-50%);
       button{
         text-align: center !important;
-        // border: 0 !important;
-        box-shadow: var(--tabs-shadow) !important;
+        border: 0 !important;
+        font-weight: 500;
         background-color: #fff;
-        font-weight: bold !important;
-        color: rgb(61, 61, 61);
         box-shadow: none;
+        color: rgb(126, 126, 126);
         pointer-events: none;
       }
     }

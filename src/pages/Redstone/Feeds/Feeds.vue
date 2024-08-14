@@ -16,14 +16,7 @@
             class="feeds__crypto-picker"
           />
           <div class="feeds__status">
-            <div
-              class="feeds__actions-wrapper-label ml-4 mr-4 fw-normal feed-counter"
-            >
-              <span class="feeds__status-text"
-                >Found feeds: <strong>{{ filteredItems.length }}</strong></span
-              >
-            </div>
-            <div class="feeds__actions-wrapper-label mr-4 text-light fw-normal">
+            <div class="feeds__actions-wrapper-label mr-4 ml-4 text-light fw-normal">
               <span class="feeds__status-text"
                 >Selected networks:
                 <strong>{{
@@ -61,7 +54,7 @@
                 </option>
               </select>
             </span>
-            <span class="feeds__status-text" style="text-align: right;">
+            <span class="feeds__status-text" style="text-align: right">
               Current page:
               <select
                 v-model="selectedPage"
@@ -186,17 +179,17 @@
         <span>{{ item.feed }}</span>
       </template>
       <template #cell(timestamp)="{ item }">
-        <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
+        <Loader v-if="item.loaders?.blockTimestamp" class="feeds__loader" />
         <span v-else-if="item.timestamp.raw" class="feeds__timestamp">
           <span class="feeds__timestamp-date">
             {{ item.timestamp.date }}
-          </span>
+        </span>
           {{ item.timestamp.parsed }} ago
         </span>
         <span v-else class="feeds__no-data">no-data</span>
       </template>
       <template #cell(heartbeat)="{ item }">
-        <Loader v-if="item.loaders.blockTimestamp" class="feeds__loader" />
+        <Loader v-if="item.loaders?.blockTimestamp" class="feeds__loader" />
         <span v-else class="feeds__timestamp">
           <span v-if="heartbeatIsNumber(item.heartbeat)">
             <to-date-counter :duration="item.heartbeat" />
@@ -222,7 +215,14 @@
       :per-page="perPage"
       align="fill"
       class="my-3 custom-pagination"
-    ></b-pagination>
+    >
+      <template #page="{ page }">
+        <span v-if="page === currentPage" class="entry-info">
+          Showing {{ firstEntry }} to {{ lastEntry }} of {{ totalRows }} entries
+        </span>
+        <span v-else>{{ page }}</span>
+      </template>
+    </b-pagination>
   </div>
 </template>
 
@@ -629,6 +629,12 @@
           ? this.filteredItems.length
           : this.feeds.length;
       },
+      firstEntry() {
+        return (this.currentPage - 1) * this.perPage + 1;
+      },
+      lastEntry() {
+        return Math.min(this.currentPage * this.perPage, this.totalRows);
+      },
       networksMap() {
         const map = Object.values(networks).map((network) => ({
           label: network.name,
@@ -715,6 +721,7 @@
             crypto_token: this.getFirstPart(item.feedId),
             token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
             loaders: item.loaders,
+            foo: item.foo,
             explorer: {
               name: this.findNetworkName(item.networkId),
               explorerUrl: this.findExplorer(item.networkId),
