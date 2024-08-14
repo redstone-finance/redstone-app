@@ -17,9 +17,9 @@
           />
           <div class="feeds__status">
             <div
-              class="feeds__actions-wrapper-label ml-4 mr-4 fw-normal"
+              class="feeds__actions-wrapper-label ml-4 mr-4 fw-normal feed-counter"
             >
-            <span class="feeds__status-text" style="font-size: 16px;">Found feeds: <strong>{{ filteredItems.length }}</strong></span>
+            <span class="feeds__status-text">Found feeds: <strong>{{ filteredItems.length }}</strong></span>
             </div>
             <div
               class="feeds__actions-wrapper-label mr-4 text-light fw-normal"
