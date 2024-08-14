@@ -90,7 +90,7 @@
       </template>
       <template #cell(contract_address)="{ item }">
         <div v-if="item.contract_address && item.explorer">
-          Adapter address:
+          Adapter:
           <a
             class="feeds__contract-address"
             :title="`Open address in ${item.explorer.name} explorer`"
@@ -111,7 +111,7 @@
             item.feed_address != '__NO_FEED__'
           "
         >
-          Feed address:
+          Feed:
           <a
             class="feeds__contract-address"
             :title="`Open address in ${item.explorer.name} explorer`"
@@ -232,8 +232,19 @@
           { name: "Ethereum", token: "ETH", image: "eth.webp" },
         ],
         fields: [
-          { key: "feed", label: "Feed", sortable: true },
-          { key: "network", label: "Network", sortable: true },
+          { 
+            key: "feed",
+            label: "Feed",
+            sortable: true,
+            formatter: (value, key, item) => item.feed
+          },
+          { 
+            key: "network",
+            label: "Network",
+            sortable: true, 
+            sortByFormatted: true,
+            formatter: (value, key, item) => item.network.name
+          },
           { key: "contract_address", label: "Addresses" },
           { key: "heartbeat", label: "Heartbeat" },
           { key: "deviation", label: "Deviation threshold " },
