@@ -1,10 +1,5 @@
 <template>
   <div class="chart-container">
-    <div class="range-buttons">
-      <button @click="setRange('1d')" :class="{ active: currentRange === '1d' }">1 Day</button>
-      <button @click="setRange('1w')" :class="{ active: currentRange === '1w' }">1 Week</button>
-      <button @click="setRange('1m')" :class="{ active: currentRange === '1m' }">1 Month</button>
-    </div>
     <canvas ref="chart"></canvas>
   </div>
 </template>
@@ -44,49 +39,32 @@ const crosshairPlugin = {
 Chart.pluginService.register(crosshairPlugin);
 
 export default {
-  name: 'BlockchainChart',
+  name: 'LayerChart',
   props: {
     data: {
-      type: Object,
+      type: Array,
+      required: true
+    },
+    range: {
+      type: String,
       required: true
     }
   },
   data() {
     return {
       chart: null,
-      currentRange: '1m'
     };
   },
   computed: {
-    filteredData() {
-      const now = Date.now();
-      let startDate;
-
-      switch (this.currentRange) {
-        case '1d':
-          startDate = now - 24 * 60 * 60 * 1000;
-          break;
-        case '1w':
-          startDate = now - 7 * 24 * 60 * 60 * 1000;
-          break;
-        case '1m':
-        default:
-          startDate = now - 30 * 24 * 60 * 60 * 1000;
-          break;
-      }
-
-      return this.data.onChainUpdates
-        .filter(entry => entry.timestamp >= startDate)
-        .sort((a, b) => a.timestamp - b.timestamp);
-    },
     chartData() {
+      const sortedData = [...this.data].sort((a, b) => a.timestamp - b.timestamp);
       return {
-        labels: this.filteredData.map(entry => new Date(entry.timestamp)),
+        labels: sortedData.map(entry => new Date(parseInt(entry.timestamp))),
         datasets: [
           {
             label: 'Price',
             borderColor: '#FD627A',
-            data: this.filteredData.map(entry => parseFloat(entry.value)),
+            data: sortedData.map(entry => parseFloat(entry.value)),
             fill: true,
             lineTension: 0.1
           }
@@ -128,8 +106,13 @@ export default {
               label: (tooltipItem, data) => {
                 const dataIndex = tooltipItem.index;
                 const value = data.datasets[0].data[dataIndex];
-                const timestamp = this.filteredData[dataIndex].timestamp;
-                return `Time: ${new Date(timestamp).toLocaleString()}, Price: $${value.toFixed(2)}`;
+                const timestamp = this.data[dataIndex].timestamp;
+                const sender = this.data[dataIndex].sender;
+                return [
+                  `Time: ${new Date(parseInt(timestamp)).toLocaleString()}`,
+                  `Price: $${value.toFixed(2)}`,
+                  `Sender: ${sender.substr(0, 6)}...${sender.substr(-4)}`
+                ];
               }
             }
           },
@@ -203,12 +186,8 @@ export default {
         this.chart.update();
       }
     },
-    setRange(range) {
-      this.currentRange = range;
-      this.updateChart();
-    },
     getTimeUnit() {
-      switch (this.currentRange) {
+      switch (this.range) {
         case '1d':
           return 'hour';
         case '1w':
@@ -225,6 +204,9 @@ export default {
         this.updateChart();
       },
       deep: true
+    },
+    range() {
+      this.updateChart();
     }
   },
   beforeDestroy() {
@@ -239,25 +221,5 @@ export default {
 .chart-container {
   height: 550px;
   width: 100%;
-}
-
-.range-buttons {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
-
-.range-buttons button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.range-buttons button.active {
-  background-color: #FD627A;
-  color: #fff;
 }
 </style>

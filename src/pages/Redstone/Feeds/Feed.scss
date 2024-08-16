@@ -158,3 +158,23 @@
   height: auto;
   padding: 30px 15px;
 }
+
+.range-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .range-buttons button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .range-buttons button.active {
+    background-color: #FD627A;
+    color: #fff;
+  }

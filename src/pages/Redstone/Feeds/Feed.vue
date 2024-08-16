@@ -69,7 +69,27 @@
       </div>
     </div>
     <div class="feed-chart">
-      <layer-chart v-if="chartData" :data="chartData" />
+      <div class="range-buttons">
+        <button
+          @click="setRange('1d')"
+          :class="{ active: currentRange === '1d' }"
+        >
+          1 Day
+        </button>
+        <button
+          @click="setRange('1w')"
+          :class="{ active: currentRange === '1w' }"
+        >
+          1 Week
+        </button>
+        <button
+          @click="setRange('1m')"
+          :class="{ active: currentRange === '1m' }"
+        >
+          1 Month
+        </button>
+      </div>
+      <layer-chart v-if="chartData" :data="chartData" :range="currentRange" />
     </div>
     <div class="applicant-info__item">
       <dt class="applicant-info__label">Addresses</dt>
@@ -91,7 +111,6 @@
   import { transformFeed } from "./feedUtils";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import HeartbeatTimer from "./components/HeartbeatTimer.vue";
-  import sample from "./sample.json";
   import axios from "axios";
 
   export default {
@@ -104,20 +123,33 @@
     data() {
       return {
         isLoading: false,
-        chartData: false,
+        chartData: null,
+        currentRange: "1m",
       };
     },
 
     async mounted() {
       await this.fetchRelayerSchema();
-      const { data } = await axios.get(
-        "https://api.redstone.finance/on-chain-updates?dataFeedId=ETH&adapterName=bnbMultiFeed&daysRange=30"
-      );
-      console.log({data})
-      this.chartData = data
+      await this.fetchChartData();
     },
     methods: {
       ...mapActions("feeds", ["initSingleContract", "fetchRelayerSchema"]),
+      async fetchChartData() {
+        this.isLoading = true;
+        try {
+          const { data } = await axios.get(this.chartEndpoint);
+          console.log({ data });
+          this.chartData = data.onChainUpdates
+        } catch (error) {
+          console.error("Error fetching chart data:", error);
+        } finally {
+          this.isLoading = false;
+        }
+      },
+      setRange(range) {
+        this.currentRange = range;
+        this.fetchChartData();
+      },
     },
     watch: {
       feedData() {
@@ -143,6 +175,14 @@
               feed.routeToken === this.token
           )
         );
+      },
+      chartEndpoint() {
+        const baseUrl = "https://api.redstone.finance/on-chain-updates";
+        const dataFeedId = this.feedData.token || "ETH";
+        const adapterName = this.feedData.relayerId
+        const daysRange =
+          this.currentRange === "1d" ? 1 : this.currentRange === "1w" ? 7 : 30;
+        return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
       },
       ...mapState("feeds", ["relayersDetails", "relayersSchema"]),
       ...mapGetters("feeds", [
