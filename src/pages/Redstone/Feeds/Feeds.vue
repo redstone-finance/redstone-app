@@ -251,6 +251,7 @@
   import networks from "@/data/networks.json";
   import images from "@/data/logosDefinitions.json";
   import { sortBy } from "lodash";
+  import { over } from "lodash";
 
   export default {
     components: {
@@ -506,21 +507,21 @@
         ).explorerUrl;
       },
       nearestCron(cronString) {
-      if (cronString == null) {
-        console.warn('Cron string is undefined or null');
-        return 0;
-      }
+        if (cronString == null) {
+          console.warn("Cron string is undefined or null");
+          return 0;
+        }
 
-      try {
-        const parsedCron = JSON.parse(cronString);
-        const nearestDate = findNearestCronDate(parsedCron);
-        const timeUntil = timeUntilDate(nearestDate);
-        return timeUntil;
-      } catch (error) {
-        console.error('Error parsing cron string:', error);
-        return 'Invalid cron'; // or some error indicator
-      }
-    },
+        try {
+          const parsedCron = JSON.parse(cronString);
+          const nearestDate = findNearestCronDate(parsedCron);
+          const timeUntil = timeUntilDate(nearestDate);
+          return timeUntil;
+        } catch (error) {
+          console.error("Error parsing cron string:", error);
+          return "Invalid cron"; // or some error indicator
+        }
+      },
       getFirstPart(string) {
         const noSlash = string.split("/")[0];
         const noUnder = noSlash.split("_")[0];
@@ -574,10 +575,30 @@
           (item) => item.token === token && item.network === networkId
         );
       },
-      resolveDeviationPercentage(item){
-        return item.triggers.deviationPercentage
-              ? item.triggers.deviationPercentage + "%"
-              : "n/a"
+      resolveDeviationPercentage(item) {
+        const triggerOverride = item.overrides.filter(
+          (override) => override.value !== undefined
+        );
+        const deviationPercentage =
+          triggerOverride.length > 0
+            ? triggerOverride[0]?.value ||
+              triggerOverride[0].value.deviationPercentage
+            : item.triggers.deviationPercentage;
+        return deviationPercentage ? deviationPercentage + "%" : "n/a";
+      },
+      resolveTimeSinceLastUpdateInMilliseconds(item) {
+        const triggerOverride = item.overrides.filter(
+          (override) => override.value !== undefined
+        );
+        const timeSinceLastUpdateInMilliseconds =
+          triggerOverride.length > 0 &&
+          triggerOverride[0]?.type === "full" &&
+          triggerOverride[0]?.value?.timeSinceLastUpdateInMilliseconds !==
+            undefined
+            ? triggerOverride[0].value.timeSinceLastUpdateInMilliseconds
+            : item.triggers.timeSinceLastUpdateInMilliseconds;
+
+        return timeSinceLastUpdateInMilliseconds;
       },
       ...mapActions("feeds", ["init", "initSingleContract"]),
     },
@@ -727,7 +748,7 @@
             heartbeat:
               getTimeUntilNextHeartbeat(
                 item?.timestamp,
-                item.triggers.timeSinceLastUpdateInMilliseconds
+                this.resolveTimeSinceLastUpdateInMilliseconds(item)
               ) || JSON.stringify(item.triggers.cron),
             deviation: this.resolveDeviationPercentage(item),
             cron: item.triggers.cron,

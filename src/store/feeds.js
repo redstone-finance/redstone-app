@@ -78,9 +78,9 @@ export default {
         }
 
         return Object.keys(layer.priceFeeds).map((feedId) => {
-        const keyTimestamp = state.relayersDetails[key]?.blockTimestamp
+          const keyTimestamp = state.relayersDetails[key]?.blockTimestamp;
           const keyFeedTimestamp =
-            state.relayersDetails[`${key}_${feedId}`]?.blockTimestamp
+            state.relayersDetails[`${key}_${feedId}`]?.blockTimestamp;
           return {
             routeNetwork: Object.values(networks)
               .find((network) => network.chainId === layer.chain.id)
@@ -89,6 +89,17 @@ export default {
             routeToken: feedId.toLowerCase(),
             networkId: layer.chain.id,
             feedId: feedId,
+            overrides: [
+              {
+                type: "deviation",
+                value:
+                  layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
+              },
+              {
+                type: "full",
+                value: layer.priceFeeds[feedId]?.updateTriggersOverrides,
+              },
+            ],
             contractAddress: layer.adapterContract,
             feedAddress: isObject(layer.priceFeeds[feedId])
               ? layer.priceFeeds[feedId].priceFeedAddress
