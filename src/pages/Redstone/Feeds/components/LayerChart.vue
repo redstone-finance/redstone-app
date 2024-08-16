@@ -24,10 +24,8 @@ const crosshairPlugin = {
         leftX = chart.scales['x-axis-0'].left,
         rightX = chart.scales['x-axis-0'].right;
 
-      // Set the line color
-      ctx.strokeStyle = "rgba(253, 98, 122, 0.75)"; // Using the specified color with 75% opacity
+      ctx.strokeStyle = "rgba(253, 98, 122, 0.75)";
 
-      // draw vertical line
       ctx.beginPath();
       ctx.moveTo(x, topY);
       ctx.lineTo(x, bottomY);
@@ -35,7 +33,6 @@ const crosshairPlugin = {
       ctx.setLineDash([6, 6]);
       ctx.stroke();
 
-      // draw horizontal line
       ctx.beginPath();
       ctx.moveTo(leftX, y);
       ctx.lineTo(rightX, y);
@@ -50,35 +47,37 @@ export default {
   name: 'BlockchainChart',
   props: {
     data: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
   data() {
     return {
       chart: null,
-      currentRange: '1m' // Default to 1 month view
+      currentRange: '1m'
     };
   },
   computed: {
     filteredData() {
-      const now = new Date();
+      const now = Date.now();
       let startDate;
 
       switch (this.currentRange) {
         case '1d':
-          startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          startDate = now - 24 * 60 * 60 * 1000;
           break;
         case '1w':
-          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          startDate = now - 7 * 24 * 60 * 60 * 1000;
           break;
         case '1m':
         default:
-          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          startDate = now - 30 * 24 * 60 * 60 * 1000;
           break;
       }
 
-      return this.data.filter(entry => new Date(entry.timestamp) >= startDate);
+      return this.data.onChainUpdates
+        .filter(entry => entry.timestamp >= startDate)
+        .sort((a, b) => a.timestamp - b.timestamp);
     },
     chartData() {
       return {
@@ -87,7 +86,7 @@ export default {
           {
             label: 'Price',
             borderColor: '#FD627A',
-            data: this.filteredData.map(entry => entry.value),
+            data: this.filteredData.map(entry => parseFloat(entry.value)),
             fill: true,
             lineTension: 0.1
           }
@@ -104,9 +103,9 @@ export default {
   methods: {
     createGradient(ctx, chartArea) {
       const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-      gradient.addColorStop(0, 'rgba(253, 98, 122, 0)');     // Fully transparent at the bottom
-      gradient.addColorStop(0.5, 'rgba(253, 98, 122, 0.1)'); // 10% opacity in the middle
-      gradient.addColorStop(1, 'rgba(253, 98, 122, 0.2)');   // 20% opacity at the top
+      gradient.addColorStop(0, 'rgba(253, 98, 122, 0)');
+      gradient.addColorStop(0.5, 'rgba(253, 98, 122, 0.1)');
+      gradient.addColorStop(1, 'rgba(253, 98, 122, 0.2)');
       return gradient;
     },
     createChart() {
