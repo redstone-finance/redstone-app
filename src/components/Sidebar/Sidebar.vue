@@ -39,7 +39,7 @@
 
         <NavLink
           :activeItem="activeItem"
-          header="Onchain feeds"
+          header="On-chain feeds"
           link="/app/feeds"
           iconName="flaticon-layers"
           index="feeds"
