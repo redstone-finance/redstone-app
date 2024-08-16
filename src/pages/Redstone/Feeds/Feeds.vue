@@ -16,7 +16,9 @@
             class="feeds__crypto-picker"
           />
           <div class="feeds__status">
-            <div class="feeds__actions-wrapper-label mr-4 ml-4 text-light fw-normal">
+            <div
+              class="feeds__actions-wrapper-label mr-4 ml-4 text-light fw-normal"
+            >
               <span class="feeds__status-text"
                 >Selected networks:
                 <strong>{{
@@ -183,7 +185,7 @@
         <span v-else-if="item.timestamp.raw" class="feeds__timestamp">
           <span class="feeds__timestamp-date">
             {{ item.timestamp.date }}
-        </span>
+          </span>
           {{ item.timestamp.parsed }} ago
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -506,7 +508,7 @@
       nearestCron(cronString) {
       if (cronString == null) {
         console.warn('Cron string is undefined or null');
-        return 0; 
+        return 0;
       }
 
       try {
@@ -571,6 +573,11 @@
         return this.tokensInNetworks.some(
           (item) => item.token === token && item.network === networkId
         );
+      },
+      resolveDeviationPercentage(item){
+        return item.triggers.deviationPercentage
+              ? item.triggers.deviationPercentage + "%"
+              : "n/a"
       },
       ...mapActions("feeds", ["init", "initSingleContract"]),
     },
@@ -722,9 +729,7 @@
                 item?.timestamp,
                 item.triggers.timeSinceLastUpdateInMilliseconds
               ) || JSON.stringify(item.triggers.cron),
-            deviation: item.triggers.deviationPercentage
-              ? item.triggers.deviationPercentage + "%"
-              : "n/a",
+            deviation: this.resolveDeviationPercentage(item),
             cron: item.triggers.cron,
             token: item.feedId,
             relayerId: item.layerId,
