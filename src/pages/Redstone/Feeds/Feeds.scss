@@ -44,7 +44,7 @@
       text-align: center;
       border-top: 1px solid rgb(227, 227, 227);
       border-bottom: 1px solid rgb(227, 227, 227);
-      &:first-child{
+      &:first-child {
         text-align: left;
       }
       &:nth-child(2) {
@@ -121,12 +121,13 @@
       font-size: 10px;
       font-weight: bold;
     }
-    &-label.feed-counter{
+    &-label.feed-counter {
       padding: 10px 18px;
       // background: var(--redstone-red-color);
       // border: 1px solid darken(#FD627A, $amount: 15) !important;
       border-radius: 6px;
-      span, strong{
+      span,
+      strong {
         color: rgb(87, 87, 87);
         font-size: 14px !important;
       }
@@ -139,7 +140,7 @@
 
     strong {
       font-weight: bold;
-      color: var(--redstone-red-color)
+      color: var(--redstone-red-color);
     }
   }
 
@@ -226,7 +227,7 @@
   }
 
   .page-item {
-    &.disabled{
+    &.disabled {
       visibility: hidden;
     }
     &.active {
@@ -234,7 +235,7 @@
       display: inline-block !important;
       margin-left: calc(50% - 100px);
       transform: translateX(-50%);
-      button{
+      button {
         text-align: center !important;
         border: 0 !important;
         font-weight: 500;
@@ -325,8 +326,7 @@
   margin-left: 0.5rem;
 }
 @media (max-width: breakpoint-min(md)) {
-.feeds__table {
-  
+  .feeds__table {
     border: 0;
 
     thead {
@@ -339,8 +339,8 @@
         margin-bottom: 1rem;
         display: block;
         border-radius: 5px;
-        &:nth-child(even){
-          background-color: #fff !important
+        &:nth-child(even) {
+          background-color: #fff !important;
         }
         // border-bottom: 1px solid #ced4da;
 
@@ -350,7 +350,7 @@
           padding: 15px 0 !important;
           position: relative;
           border: 0 !important;
-          div{
+          div {
             width: 100% !important;
           }
           &::before {
@@ -362,8 +362,13 @@
       }
     }
   }
-.table.b-table > tbody > tr > [data-label]::before {
-  content: attr(data-label);
-}
+  .table.b-table > tbody > tr > [data-label]::before {
+    content: attr(data-label);
+  }
 }
 
+.bi-info-circle {
+  font-size: 0.8em;
+  vertical-align: super;
+  cursor: help;
+}

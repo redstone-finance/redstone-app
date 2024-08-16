@@ -123,6 +123,30 @@
       :fields="fields"
       class="feeds__table"
     >
+      <template #head(deviation)="data">
+        {{ data.label }}
+        <i
+          class="fa fa-info-circle"
+          v-b-tooltip.hover
+          title="The system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
+        ></i>
+      </template>
+      <template #head(timestamp)="data">
+        {{ data.label }}
+        <i
+          class="fa fa-info-circle"
+          v-b-tooltip.hover
+          title="Time since last on-chain price update. Indicates data freshness and helps track update frequency."
+        ></i>
+      </template>
+      <template #head(heartbeat)="data">
+        {{ data.label }}
+        <i
+          class="fa fa-info-circle"
+          v-b-tooltip.hover
+          title="An automatic timing system forces an on-chain price update when it counts down to 00:00. This acts as a safety net, ensuring updates happen even if price changes stay within the allowed range during the entire heartbeat period."
+        ></i>
+      </template>
       <template #cell(network)="{ item }">
         <img
           class="feeds__token-image"
