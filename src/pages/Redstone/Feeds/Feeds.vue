@@ -26,7 +26,7 @@
                 }}</strong></span
               >
               <span class="feeds__status-text"
-                >Selected currencies:
+                >Selected feeds:
                 <strong>{{
                   selectedCryptos.length || cryptoImages.length
                 }}</strong></span

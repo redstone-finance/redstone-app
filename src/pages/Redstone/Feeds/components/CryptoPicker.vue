@@ -109,8 +109,8 @@
         const selectedCount = this.value.length;
         const optionsCount = this.items.length;
         return selectedCount === 0
-          ? `All currencies (${optionsCount})`
-          : `Currencies (${selectedCount})`;
+          ? `All feeds (${optionsCount})`
+          : `Feeds (${selectedCount})`;
       },
       filteredCryptoImageData() {
         if (!this.searchQuery) {
