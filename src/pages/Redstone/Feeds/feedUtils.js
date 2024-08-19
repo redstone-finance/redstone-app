@@ -1,72 +1,98 @@
-
-import networks from '@/data/networks.json'
-import images from '@/data/logosDefinitions.json'
-import { parseUnixTime, hexToDate, getTimeUntilNextHeartbeat } from '@/core/timeHelpers'
+import networks from "@/data/networks.json";
+import images from "@/data/logosDefinitions.json";
+import {
+  parseUnixTime,
+  hexToDate,
+  getTimeUntilNextHeartbeat,
+} from "@/core/timeHelpers";
 
 export const findNetworkName = (networkId) => {
-  return Object.values(networks).find(network => network.chainId === networkId)?.name
-}
+  return Object.values(networks).find(
+    (network) => network.chainId === networkId
+  )?.name;
+};
 
 export const findNetworkImage = (networkId) => {
-  return Object.values(networks).find(network => network.chainId === networkId)?.iconUrl
-}
+  return Object.values(networks).find(
+    (network) => network.chainId === networkId
+  )?.iconUrl;
+};
 
 export const findNetwork = (networkId) => {
-  return Object.values(networks).find(network => network.chainId === networkId)
-}
+  return Object.values(networks).find(
+    (network) => network.chainId === networkId
+  );
+};
 
 export const findExplorer = (networkId) => {
-  const network = Object.values(networks).find(network => network.chainId === networkId)
+  const network = Object.values(networks).find(
+    (network) => network.chainId === networkId
+  );
   if (!network) {
-    console.warn('Missing explorer for chain:', networkId)
-    return null
+    console.warn("Missing explorer for chain:", networkId);
+    return null;
   }
-  return network
-}
+  return network;
+};
 
 export const getFirstPart = (string) => {
-  return string.split('/')[0].split('_')[0].split('-')[0]
-}
+  return string.split("/")[0].split("_")[0].split("-")[0];
+};
 
 export const getTokenImage = (token) => {
-  const idealMatchImg = images.find(image => token === image.token)
-  const secondMatch = images.find(image => token.indexOf(image.token) >= 0)
-  return idealMatchImg || secondMatch || { name: "placeholder", imageName: "placeholder.png", token: "placeholder" }
-}
+  const idealMatchImg = images.find((image) => token === image.token);
+  const secondMatch = images.find((image) => token.indexOf(image.token) >= 0);
+  return (
+    idealMatchImg ||
+    secondMatch || {
+      name: "placeholder",
+      imageName: "placeholder.png",
+      token: "placeholder",
+    }
+  );
+};
 
 export const hasSlash = (string) => {
-  return string.indexOf('/') >= 0
-}
+  return string.indexOf("/") >= 0;
+};
 
 export const stripAdditionalFeedInfo = (string) => {
-  const hasUnderscore = string.indexOf('_') >= 0
-  const hasDash = string.indexOf('-') >= 0
+  const hasUnderscore = string.indexOf("_") >= 0;
+  const hasDash = string.indexOf("-") >= 0;
   if (hasUnderscore) {
-    return string.split('_')[0]
+    return string.split("_")[0];
   } else if (hasDash) {
-    return string.split('-')[0]
+    return string.split("-")[0];
   }
-  return string
-}
+  return string;
+};
 
 export const transformFeed = (item) => {
-  if(item?.feedId){
+  if (item?.feedId) {
     return {
-      feed: hasSlash(item.feedId) ? stripAdditionalFeedInfo(item.feedId) : stripAdditionalFeedInfo(item.feedId) + '/USD',
-      network: { 
-        id: item.networkId, 
-        name: findNetworkName(item.networkId), 
-        image: findNetworkImage(item.networkId), 
+      feed: hasSlash(item.feedId)
+        ? stripAdditionalFeedInfo(item.feedId)
+        : stripAdditionalFeedInfo(item.feedId) + "/USD",
+      network: {
+        id: item.networkId,
+        name: findNetworkName(item.networkId),
+        image: findNetworkImage(item.networkId),
       },
       contract_address: item.contractAddress,
-      timestamp: { 
-        parsed: parseUnixTime(item.timestamp), 
-        raw: item.timestamp, 
-        date: hexToDate(item.timestamp) 
+      timestamp: {
+        parsed: parseUnixTime(item.timestamp),
+        raw: item.timestamp,
+        date: hexToDate(item.timestamp),
       },
       layer_id: item.feedId,
-      heartbeat: getTimeUntilNextHeartbeat(item?.timestamp, item.triggers.timeSinceLastUpdateInMilliseconds) || JSON.stringify(item.triggers.cron),
-      deviation: item.triggers.deviationPercentage ? item.triggers.deviationPercentage + '%' : 'n/a',
+      heartbeat:
+        getTimeUntilNextHeartbeat(
+          item?.timestamp,
+          item.triggers.timeSinceLastUpdateInMilliseconds
+        ) || JSON.stringify(item.triggers.cron),
+      deviation: item.triggers.deviationPercentage
+        ? item.triggers.deviationPercentage + "%"
+        : "n/a",
       cron: item.triggers.cron,
       token: item.feedId,
       relayerId: item.layerId,
@@ -74,9 +100,13 @@ export const transformFeed = (item) => {
       crypto_token: getFirstPart(item.feedId),
       token_image: getTokenImage(getFirstPart(item.feedId)),
       loaders: item.loaders,
-      explorer: { name: findNetworkName(item.networkId), explorerUrl: findExplorer(item.networkId).explorerUrl }
-    }
-  }else{
-    return false
+      explorer: {
+        name: findNetworkName(item.networkId),
+        explorerUrl: findExplorer(item.networkId).explorerUrl,
+      },
+      value: item.value,
+    };
+  } else {
+    return false;
   }
-}
+};

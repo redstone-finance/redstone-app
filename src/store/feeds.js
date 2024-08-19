@@ -63,7 +63,8 @@ export default {
                     triggers: layer.updateTriggers,
                     layerId: key,
                     timestamp: state.relayersDetails[key].blockTimestamp,
-                    loaders: state.relayersDetails[key].loaders
+                    loaders: state.relayersDetails[key].loaders,
+                    value: state.relayersDetails[key].dataFeed
                 }));
             });
         }
@@ -104,21 +105,20 @@ export default {
             const api = this.getters['feeds/getSmartContractByLayerId'](layerId)
             try {
                 var value = await api.getValueForDataFeed(feedId)
+                console.log({value})
             } catch (error) {
                 // console.log({ error, layerId }, 'single')
             }
             if (isEmpty(value)) {
                 try {
                     const values = await api.getValuesForDataFeeds(feedId)
-                    commit('assignRelayerDetails', { key: 'dataFeed', layerId, data: values.arguments })
+                    commit('assignRelayerDetails', { key: 'dataFeed', layerId, data: values })
                     this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
                 } catch (error) {
                     // console.log({ error, layerId }, 'multiple')
                 }
-
-
             } else {
-                commit('assignRelayerDetails', { key: 'dataFeed', layerId, data: value.arguments })
+                commit('assignRelayerDetails', { key: 'dataFeed', layerId, data: value })
                 this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })
             }
             this.dispatch('feeds/disableLoader', { layerId, loaderId: 'feedDataValue' })

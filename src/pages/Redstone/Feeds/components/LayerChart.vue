@@ -361,8 +361,8 @@ export default {
 </script>
 <style scoped>
   .chart-container {
-    height: 100%;
-    max-height: calc(100vh - 300px);
+    margin-left: auto;
+    height: 500px;
     width: 100%;
     position: relative;
     &:active {

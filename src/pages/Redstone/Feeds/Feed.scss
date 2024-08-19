@@ -1,6 +1,6 @@
 .feed-details {
   background: #fff;
-  // padding: 15px;
+  padding: 15px 0;
   border-radius: 15px;
   max-height: 100vh;
   display: flex;
@@ -155,7 +155,7 @@
 }
 
 .feed-chart {
-  width: 70%;
+  width: 100%;
   height: auto;
   padding: 30px 15px;
 }
@@ -178,4 +178,68 @@
 .range-buttons button.active {
   background-color: #fd627a;
   color: #fff;
+}
+
+// General styles for the container
+.stats-grid {
+width: 100%;
+  border-bottom: 1px solid hsl(220, 14%, 96%);;
+  display: grid;
+  border-radius: 15px;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+// Styles for each stat item
+.stat-item {
+  background-color: white;
+  padding: 2.5rem 1rem; // py-10 px-4
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+
+  @media (min-width: 640px) {
+    padding: 2.5rem 1.5rem; // sm:px-6
+  }
+
+  @media (min-width: 1280px) {
+    padding: 2.5rem 2rem; // xl:px-8
+  }
+}
+
+// Title styling
+.stat-title {
+  font-size: 0.875rem; // text-sm
+  font-weight: 500; // font-medium
+  line-height: 1.5rem; // leading-6
+  color: #6b7280; // text-gray-500
+}
+
+// Percentage change styling
+.stat-change {
+  font-size: 0.75rem; // text-xs
+  font-weight: 500; // font-medium
+  color: #374151; // text-gray-700
+}
+
+// Negative percentage change
+.stat-change--negative {
+  color: #e11d48; // text-rose-600
+}
+
+// Value styling
+.stat-value {
+  width: 100%;
+  font-size: 1.875rem; // text-3xl
+  font-weight: 500; // font-medium
+  line-height: 2.5rem; // leading-10
+  color: #111827; // text-gray-900
 }
