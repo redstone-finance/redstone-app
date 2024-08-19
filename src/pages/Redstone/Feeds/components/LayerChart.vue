@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container">
     <canvas ref="chart"></canvas>
-    <button @click="resetZoom" class="reset-zoom-btn">Reset Zoom</button>
+    <button @click="resetAndRecenter" class="reset-zoom-btn">Reset Zoom</button>
   </div>
 </template>
 
@@ -258,9 +258,25 @@ export default {
         };
       }
     },
-    resetZoom() {
+    resetAndRecenter() {
       if (this.chart) {
         this.chart.resetZoom();
+        
+        // Recenter the chart
+        const chartData = this.chartData;
+        if (chartData.labels.length > 0) {
+          const minDate = chartData.labels[0];
+          const maxDate = chartData.labels[chartData.labels.length - 1];
+          const minValue = Math.min(...chartData.datasets[0].data);
+          const maxValue = Math.max(...chartData.datasets[0].data);
+
+          this.chart.options.scales.xAxes[0].ticks.min = minDate;
+          this.chart.options.scales.xAxes[0].ticks.max = maxDate;
+          this.chart.options.scales.yAxes[0].ticks.min = minValue * 0.9;
+          this.chart.options.scales.yAxes[0].ticks.max = maxValue * 1.1;
+
+          this.chart.update();
+        }
       }
     }
   },
@@ -272,7 +288,8 @@ export default {
       deep: true
     },
     range() {
-      this.updateChart();
+      this.updateChart()
+      setTimeout(this.resetAndRecenter, 500)
     }
   },
   beforeDestroy() {
