@@ -1,11 +1,15 @@
 <template>
   <div class="chart-container">
     <canvas ref="chart"></canvas>
+    <button @click="resetZoom" class="reset-zoom-btn">Reset Zoom</button>
   </div>
 </template>
 
 <script>
 import Chart from "chart.js";
+import ChartZoom from "chartjs-plugin-zoom";
+
+Chart.plugins.register(ChartZoom);
 
 const crosshairPlugin = {
   afterDatasetsDraw: function (chart) {
@@ -162,18 +166,50 @@ export default {
             }]
           },
           plugins: {
-            crosshair: true
+            crosshair: true,
+            zoom: {
+              pan: {
+                enabled: true,
+                mode: 'xy',
+                rangeMin: {
+                  x: null,
+                  y: null
+                },
+                rangeMax: {
+                  x: null,
+                  y: null
+                }
+              },
+              zoom: {
+                enabled: true,
+                drag: false,
+                mode: 'xy',
+                rangeMin: {
+                  x: null,
+                  y: null
+                },
+                rangeMax: {
+                  x: null,
+                  y: null
+                },
+                speed: 0.1,
+                threshold: 2,
+                sensitivity: 3
+              }
+            }
           }
         }
       });
 
       this.updateGradient();
+      this.updateZoomLimits();
     },
     updateChart() {
       if (this.chart) {
         this.chart.data = this.chartData;
         this.chart.options.scales.xAxes[0].time.unit = this.getTimeUnit();
         this.updateGradient();
+        this.updateZoomLimits();
         this.chart.update();
       }
     },
@@ -195,6 +231,36 @@ export default {
         case '1m':
         default:
           return 'week';
+      }
+    },
+    updateZoomLimits() {
+      if (this.chart && this.chartData.labels.length > 0) {
+        const minDate = this.chartData.labels[0];
+        const maxDate = this.chartData.labels[this.chartData.labels.length - 1];
+        const minValue = Math.min(...this.chartData.datasets[0].data);
+        const maxValue = Math.max(...this.chartData.datasets[0].data);
+
+        this.chart.options.plugins.zoom.pan.rangeMin = {
+          x: minDate,
+          y: minValue * 0.9
+        };
+        this.chart.options.plugins.zoom.pan.rangeMax = {
+          x: maxDate,
+          y: maxValue * 1.1
+        };
+        this.chart.options.plugins.zoom.zoom.rangeMin = {
+          x: minDate,
+          y: minValue * 0.9
+        };
+        this.chart.options.plugins.zoom.zoom.rangeMax = {
+          x: maxDate,
+          y: maxValue * 1.1
+        };
+      }
+    },
+    resetZoom() {
+      if (this.chart) {
+        this.chart.resetZoom();
       }
     }
   },
@@ -221,5 +287,20 @@ export default {
 .chart-container {
   height: 550px;
   width: 100%;
+  position: relative;
+}
+.reset-zoom-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: #FD627A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.reset-zoom-btn:hover {
+  background-color: #e5556d;
 }
 </style>
