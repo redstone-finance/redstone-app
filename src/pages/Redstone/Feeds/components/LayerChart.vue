@@ -8,6 +8,7 @@
 <script>
 import Chart from "chart.js";
 import ChartZoom from "chartjs-plugin-zoom";
+import { format, isSameDay, parseISO } from "date-fns";
 
 Chart.plugins.register(ChartZoom);
 
@@ -81,8 +82,8 @@ export default {
             data: sortedData.map(entry => parseFloat(entry.value)),
             fill: true,
             lineTension: 0.1,
-            pointRadius: 0, // Hide all points
-            pointHoverRadius: 0, // Hide hover effect
+            pointRadius: 0,
+            pointHoverRadius: 0,
           }
         ]
       };
@@ -129,7 +130,7 @@ export default {
               const timestamp = this.data[dataIndex].timestamp;
               const sender = this.data[dataIndex].sender;
               return [
-                `Time: ${new Date(parseInt(timestamp)).toLocaleString()}`,
+                `Time: ${format(new Date(parseInt(timestamp)), 'PPpp')}`,
                 `Price: $${value.toFixed(2)}`,
                 `Sender: ${sender.substr(0, 6)}...${sender.substr(-4)}`
               ];
@@ -142,7 +143,7 @@ export default {
         },
         elements: {
           line: {
-            borderWidth: 1 // Set line width to 1 pixel
+            borderWidth: 1
           }
         },
         scales: {
@@ -151,20 +152,31 @@ export default {
             time: { 
               unit: this.getTimeUnit(),
               displayFormats: {
+                millisecond: 'HH:mm:ss.SSS',
+                second: 'HH:mm:ss',
+                minute: 'HH:mm',
                 hour: 'HH:mm',
-                day: 'MMM D',
-                week: 'MMM D',
-                month: 'MMM YYYY'
-              }
+                day: 'MMM d',
+                week: 'MMM d',
+                month: 'MMM yyyy'
+              },
+              tooltipFormat: 'PPpp'
             },
             ticks: { 
               source: 'data',
               autoSkip: true,
-              maxTicksLimit: 10
+              maxTicksLimit: 10,
+              callback: (value, index, values) => {
+                const date = new Date(value);
+                if (index === 0 || !isSameDay(date, new Date(values[index - 1]))) {
+                  return format(date, 'MMM d, HH:mm');
+                }
+                return format(date, 'HH:mm');
+              }
             },
             gridLines: {
-              display: false, // Hide vertical grid lines
-              drawBorder: false, // Hide axis line
+              display: false,
+              drawBorder: false,
             }
           }],
           yAxes: [{
@@ -173,9 +185,9 @@ export default {
               callback: value => '$' + value.toFixed(2)
             },
             gridLines: {
-              color: 'rgba(0, 0, 0, 0.1)', // Light gray color for horizontal lines
-              zeroLineColor: 'rgba(0, 0, 0, 0.25)', // Slightly darker color for the zero line
-              drawBorder: false // Don't draw the y-axis line
+              color: 'rgba(0, 0, 0, 0.1)',
+              zeroLineColor: 'rgba(0, 0, 0, 0.25)',
+              drawBorder: false
             }
           }]
         },
@@ -223,9 +235,9 @@ export default {
         xScale.min = new Date(xScale.min.getTime() - (xScale.max.getTime() - dataRange.max.getTime()));
       }
 
-      // Maintain y-axis offset
       const visibleData = this.getVisibleData(chart);
       this.updateYAxisRange(yScale, visibleData);
+      this.updateTimeUnit(chart);
 
       chart.update({ duration: 0 });
     },
@@ -234,6 +246,7 @@ export default {
       const yScale = chart.scales['y-axis-0'];
       const visibleData = this.getVisibleData(chart);
       this.updateYAxisRange(yScale, visibleData);
+      this.updateTimeUnit(chart);
       chart.update({ duration: 0 });
     },
     updateAxisDisplay(chart) {
@@ -260,11 +273,26 @@ export default {
       const minValue = Math.max(0, Math.min(...data));
       const maxValue = Math.max(...data);
       const valueRange = maxValue - minValue;
-      const topPadding = valueRange * 0.4; // 40% padding on top
-      const bottomPadding = valueRange * 0.1; // 10% padding on bottom
+      const topPadding = valueRange * 0.4;
+      const bottomPadding = valueRange * 0.1;
 
       yScale.options.ticks.min = minValue - bottomPadding;
       yScale.options.ticks.max = maxValue + topPadding;
+    },
+    updateTimeUnit(chart) {
+      const xAxis = chart.scales['x-axis-0'];
+      const range = xAxis.max - xAxis.min;
+      const rangeInDays = range / (1000 * 60 * 60 * 24);
+
+      if (rangeInDays <= 1) {
+        xAxis.options.time.unit = 'hour';
+      } else if (rangeInDays <= 7) {
+        xAxis.options.time.unit = 'day';
+      } else if (rangeInDays <= 30) {
+        xAxis.options.time.unit = 'week';
+      } else {
+        xAxis.options.time.unit = 'month';
+      }
     },
     setInitialZoom() {
       if (this.chart && this.chartData.labels.length > 0) {
@@ -272,20 +300,17 @@ export default {
         const yScale = this.chart.scales['y-axis-0'];
         const dataRange = this.getDataRange();
 
-        // Set x-axis range
         xScale.options.ticks.min = dataRange.min;
         xScale.options.ticks.max = dataRange.max;
 
-        // Set zoom/pan limits
         this.chart.options.plugins.zoom.pan.rangeMin.x = dataRange.min;
         this.chart.options.plugins.zoom.pan.rangeMax.x = dataRange.max;
         this.chart.options.plugins.zoom.zoom.rangeMin.x = dataRange.min;
         this.chart.options.plugins.zoom.zoom.rangeMax.x = dataRange.max;
 
-        // Set y-axis range with top offset
         this.updateYAxisRange(yScale, this.chartData.datasets[0].data);
-
         this.updateAxisDisplay(this.chart);
+        this.updateTimeUnit(this.chart);
         this.chart.update();
       }
     },
