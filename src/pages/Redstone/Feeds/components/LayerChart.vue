@@ -1,14 +1,21 @@
 <template>
   <div class="chart-container">
+    <div class="chart-controls">
+      <select v-model="selectedRange" @change="onRangeChange" class="range-dropdown">
+        <option value="1d">1 Day</option>
+        <option value="1w">1 Week</option>
+        <option value="1m">1 Month</option>
+      </select>
+      <button class="reset-zoom-btn" @click="resetZoom">Reset Zoom</button>
+    </div>
     <canvas ref="chart"></canvas>
-    <button class="reset-zoom-btn" @click="resetZoom">Reset Zoom</button>
   </div>
 </template>
 
 <script>
 import Chart from "chart.js";
 import ChartZoom from "chartjs-plugin-zoom";
-import { format, isSameDay, parseISO } from "date-fns";
+import { format, isSameDay, parseISO, subDays, subMonths, isValid, startOfDay, differenceInDays, differenceInHours } from "date-fns";
 
 Chart.plugins.register(ChartZoom);
 
@@ -24,7 +31,6 @@ const crosshairPlugin = {
         leftX = chart.scales['x-axis-0'].left,
         rightX = chart.scales['x-axis-0'].right;
 
-      // Draw crosshair
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(x, topY);
@@ -40,7 +46,6 @@ const crosshairPlugin = {
       ctx.stroke();
       ctx.restore();
 
-      // Draw point
       ctx.save();
       ctx.beginPath();
       ctx.arc(x, y, 6, 0, 2 * Math.PI);
@@ -68,18 +73,25 @@ export default {
   data() {
     return {
       chart: null,
+      selectedRange: this.range,
     };
   },
   computed: {
     chartData() {
-      const sortedData = [...this.data].sort((a, b) => a.timestamp - b.timestamp);
+      const sortedData = [...this.data]
+        .sort((a, b) => a.timestamp - b.timestamp)
+        .filter(entry => {
+          const date = new Date(parseInt(entry.timestamp));
+          return isValid(date) && !isNaN(parseFloat(entry.value));
+        });
+      const filteredData = this.filterDataByRange(sortedData);
       return {
-        labels: sortedData.map(entry => new Date(parseInt(entry.timestamp))),
+        labels: filteredData.map(entry => new Date(parseInt(entry.timestamp))),
         datasets: [
           {
             label: 'Price',
             borderColor: '#FD627A',
-            data: sortedData.map(entry => parseFloat(entry.value)),
+            data: filteredData.map(entry => parseFloat(entry.value)),
             fill: true,
             lineTension: 0.1,
             pointRadius: 0,
@@ -93,6 +105,27 @@ export default {
     this.createChart();
   },
   methods: {
+    filterDataByRange(data) {
+      const now = new Date();
+      let startDate;
+      switch (this.selectedRange) {
+        case '1d':
+          startDate = subDays(startOfDay(now), 1);
+          break;
+        case '1w':
+          startDate = subDays(startOfDay(now), 7);
+          break;
+        case '1m':
+          startDate = subMonths(startOfDay(now), 1);
+          break;
+        default:
+          return data;
+      }
+      return data.filter(entry => {
+        const entryDate = new Date(parseInt(entry.timestamp));
+        return entryDate >= startDate && entryDate <= now;
+      });
+    },
     createGradient(ctx, chartArea) {
       const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
       gradient.addColorStop(0, 'rgba(253, 98, 122, 0)');
@@ -127,12 +160,12 @@ export default {
             label: (tooltipItem, data) => {
               const dataIndex = tooltipItem.index;
               const value = data.datasets[0].data[dataIndex];
-              const timestamp = this.data[dataIndex].timestamp;
-              const sender = this.data[dataIndex].sender;
+              const timestamp = this.chartData.labels[dataIndex];
+              const sender = this.data.find(d => d && d.timestamp && parseInt(d.timestamp) === timestamp.getTime())?.sender;
               return [
-                `Time: ${format(new Date(parseInt(timestamp)), 'PPpp')}`,
-                `Price: $${value}`,
-                `Sender: ${sender.substr(0, 6)}...${sender.substr(-4)}`
+                `Time: ${this.formatDate(timestamp)}`,
+                `Price: $${value.toFixed(5)}`,
+                `Sender: ${sender ? sender.substr(0, 6) + '...' + sender.substr(-4) : 'N/A'}`
               ];
             }
           }
@@ -167,11 +200,7 @@ export default {
               autoSkip: true,
               maxTicksLimit: 10,
               callback: (value, index, values) => {
-                const date = new Date(value);
-                if (index === 0 || !isSameDay(date, new Date(values[index - 1]))) {
-                  return format(date, 'MMM d, HH:mm');
-                }
-                return format(date, 'HH:mm');
+                return this.formatAxisLabel(value, index, values);
               }
             },
             gridLines: {
@@ -220,6 +249,37 @@ export default {
           }
         }
       };
+    },
+    formatDate(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (!isValid(date)) return '';
+      return format(date, 'PPpp');
+    },
+    formatAxisLabel(value, index, values) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (!isValid(date)) return '';
+
+      const prevValue = index > 0 ? values[index - 1] : null;
+      const prevDate = prevValue ? new Date(prevValue) : null;
+
+      if (this.selectedRange === '1d') {
+        return format(date, 'HH:mm');
+      } else if (this.selectedRange === '1w') {
+        if (index === 0 || (prevDate && !isSameDay(date, prevDate))) {
+          return format(date, 'MMM d');
+        }
+        return format(date, 'HH:mm');
+      } else if (this.selectedRange === '1m') {
+        if (index === 0 || (prevDate && differenceInDays(date, prevDate) >= 1)) {
+          return format(date, 'MMM d');
+        }
+        return '';
+      }
+
+      // Default format for other cases
+      return format(date, 'MMM d, HH:mm');
     },
     handlePan({ chart }) {
       this.updateAxisDisplay(chart);
@@ -273,22 +333,22 @@ export default {
       const minValue = Math.max(0, Math.min(...data));
       const maxValue = Math.max(...data);
       const valueRange = maxValue - minValue;
-      const topPadding = valueRange * 0.4;
+      const topPadding = valueRange * 0.1;
       const bottomPadding = valueRange * 0.1;
 
-      yScale.options.ticks.min = minValue - bottomPadding;
+      yScale.options.ticks.min = Math.max(0, minValue - bottomPadding);
       yScale.options.ticks.max = maxValue + topPadding;
     },
     updateTimeUnit(chart) {
       const xAxis = chart.scales['x-axis-0'];
       const range = xAxis.max - xAxis.min;
-      const rangeInDays = range / (1000 * 60 * 60 * 24);
+      const rangeInHours = range / (1000 * 60 * 60);
 
-      if (rangeInDays <= 1) {
+      if (rangeInHours <= 24) {
         xAxis.options.time.unit = 'hour';
-      } else if (rangeInDays <= 7) {
+      } else if (rangeInHours <= 24 * 7) {
         xAxis.options.time.unit = 'day';
-      } else if (rangeInDays <= 30) {
+      } else if (rangeInHours <= 24 * 30) {
         xAxis.options.time.unit = 'week';
       } else {
         xAxis.options.time.unit = 'month';
@@ -330,10 +390,11 @@ export default {
       }
     },
     getTimeUnit() {
-      switch (this.range) {
+      switch (this.selectedRange) {
         case '1d': return 'hour';
         case '1w': return 'day';
-        case '1m': default: return 'week';
+        case '1m': return 'day';
+        default: return 'week';
       }
     },
     updateChart() {
@@ -343,6 +404,10 @@ export default {
         this.resetZoom();
         this.updateGradient();
       }
+    },
+    onRangeChange() {
+      this.$emit('range-change', this.selectedRange);
+      this.updateChart();
     }
   },
   watch: {
@@ -350,7 +415,12 @@ export default {
       handler: 'updateChart', 
       deep: true 
     },
-    range: 'updateChart'
+    range: {
+      handler(newRange) {
+        this.selectedRange = newRange;
+        this.updateChart();
+      }
+    }
   },
   beforeDestroy() {
     if (this.chart) {
@@ -365,14 +435,26 @@ export default {
     height: 500px;
     width: 100%;
     position: relative;
-    &:active {
-      cursor: grabbing;
-    }
   }
-  .reset-zoom-btn {
+  .chart-container:active {
+    cursor: grabbing;
+  }
+  .chart-controls {
     position: absolute;
     top: 10px;
     right: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  .range-dropdown {
+    padding: 5px 10px;
+    background-color: white;
+    border: 1px solid #fd627a;
+    border-radius: 4px;
+    color: #fd627a;
+    cursor: pointer;
+  }
+  .reset-zoom-btn {
     padding: 5px 10px;
     background-color: #fd627a;
     color: white;
