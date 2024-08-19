@@ -131,7 +131,7 @@ export default {
               const sender = this.data[dataIndex].sender;
               return [
                 `Time: ${format(new Date(parseInt(timestamp)), 'PPpp')}`,
-                `Price: $${value.toFixed(2)}`,
+                `Price: $${value}`,
                 `Sender: ${sender.substr(0, 6)}...${sender.substr(-4)}`
               ];
             }
@@ -182,7 +182,7 @@ export default {
           yAxes: [{
             ticks: {
               beginAtZero: false,
-              callback: value => '$' + value.toFixed(2)
+              callback: value => '$' + value.toFixed(5)
             },
             gridLines: {
               color: 'rgba(0, 0, 0, 0.1)',
