@@ -124,7 +124,7 @@
       return {
         isLoading: false,
         chartData: null,
-        currentRange: "1m",
+        currentRange: "1w",
       };
     },
 

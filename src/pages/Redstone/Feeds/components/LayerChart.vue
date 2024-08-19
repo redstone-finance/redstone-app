@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container">
     <canvas ref="chart"></canvas>
-    <button @click="resetAndRecenter" class="reset-zoom-btn">Reset Zoom</button>
+    <button @click="resetZoom">Reset Zoom</button>
   </div>
 </template>
 
@@ -40,7 +40,7 @@ const crosshairPlugin = {
   }
 };
 
-Chart.pluginService.register(crosshairPlugin);
+Chart.plugins.register(crosshairPlugin);
 
 export default {
   name: 'LayerChart',
@@ -78,9 +78,6 @@ export default {
   },
   mounted() {
     this.createChart();
-    this.$nextTick(() => {
-      this.updateGradient();
-    });
   },
   methods: {
     createGradient(ctx, chartArea) {
@@ -92,124 +89,141 @@ export default {
     },
     createChart() {
       const ctx = this.$refs.chart.getContext('2d');
+      const data = this.chartData;
 
       this.chart = new Chart(ctx, {
         type: 'line',
-        data: this.chartData,
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          legend: {
-            display: false
-          },
-          tooltips: {
-            mode: 'index',
-            intersect: false,
-            position: 'nearest',
-            callbacks: {
-              label: (tooltipItem, data) => {
-                const dataIndex = tooltipItem.index;
-                const value = data.datasets[0].data[dataIndex];
-                const timestamp = this.data[dataIndex].timestamp;
-                const sender = this.data[dataIndex].sender;
-                return [
-                  `Time: ${new Date(parseInt(timestamp)).toLocaleString()}`,
-                  `Price: $${value.toFixed(2)}`,
-                  `Sender: ${sender.substr(0, 6)}...${sender.substr(-4)}`
-                ];
-              }
+        data: data,
+        options: this.getChartOptions()
+      });
+
+      this.$nextTick(() => {
+        this.updateGradient();
+        this.setInitialZoom();
+      });
+    },
+    getChartOptions() {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: { display: false },
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: (tooltipItem, data) => {
+              const dataIndex = tooltipItem.index;
+              const value = data.datasets[0].data[dataIndex];
+              const timestamp = this.data[dataIndex].timestamp;
+              const sender = this.data[dataIndex].sender;
+              return [
+                `Time: ${new Date(parseInt(timestamp)).toLocaleString()}`,
+                `Price: $${value.toFixed(2)}`,
+                `Sender: ${sender.substr(0, 6)}...${sender.substr(-4)}`
+              ];
             }
-          },
-          hover: {
-            mode: 'index',
-            intersect: false
-          },
-          layout: {
-            padding: {
-              bottom: 20
+          }
+        },
+        scales: {
+          xAxes: [{
+            type: 'time',
+            time: { 
+              unit: this.getTimeUnit(),
+              displayFormats: {
+                hour: 'HH:mm',
+                day: 'MMM D',
+                week: 'MMM D',
+                month: 'MMM YYYY'
+              }
+            },
+            ticks: { 
+              source: 'data',
+              autoSkip: true,
+              maxTicksLimit: 10
             }
-          },
-          scales: {
-            xAxes: [{
-              type: 'time',
-              time: {
-                unit: this.getTimeUnit(),
-                displayFormats: {
-                  hour: 'HH:mm',
-                  day: 'MMM D',
-                  week: 'MMM D',
-                  month: 'MMM YYYY'
-                }
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: false,
+              callback: value => '$' + value.toFixed(2)
+            }
+          }]
+        },
+        plugins: {
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: 'x',
+              onPan: this.handlePan,
+              rangeMin: {
+                x: null
               },
-              display: true,
-              gridLines: {
-                display: false,
-                drawBorder: true,
-                drawOnChartArea: false
-              },
-              ticks: {
-                display: true,
-                padding: 20
+              rangeMax: {
+                x: null
               }
-            }],
-            yAxes: [{
-              display: true,
-              ticks: {
-                beginAtZero: false,
-                callback: function (value, index, values) {
-                  return '$' + value.toFixed(2);
-                }
-              },
-              gridLines: {
-                display: true
-              }
-            }]
-          },
-          plugins: {
-            crosshair: true,
+            },
             zoom: {
-              pan: {
-                enabled: true,
-                mode: 'xy',
-                rangeMin: {
-                  x: null,
-                  y: null
-                },
-                rangeMax: {
-                  x: null,
-                  y: null
-                }
+              enabled: true,
+              mode: 'x',
+              sensitivity: 3,
+              speed: 0.1,
+              rangeMin: {
+                x: null
               },
-              zoom: {
-                enabled: true,
-                drag: false,
-                mode: 'xy',
-                rangeMin: {
-                  x: null,
-                  y: null
-                },
-                rangeMax: {
-                  x: null,
-                  y: null
-                },
-                speed: 0.1,
-                threshold: 2,
-                sensitivity: 3
+              rangeMax: {
+                x: null
               }
             }
           }
         }
-      });
-
-      this.updateGradient();
-      this.updateZoomLimits();
+      };
     },
-    updateChart() {
-      if (this.chart) {
-        this.chart.data = this.chartData;
-        this.chart.options.scales.xAxes[0].time.unit = this.getTimeUnit();
-        this.updateGradient();
-        this.updateZoomLimits();
+    handlePan({ chart }) {
+      const xScale = chart.scales['x-axis-0'];
+      const dataRange = this.getDataRange();
+
+      if (xScale.min < dataRange.min) {
+        xScale.min = dataRange.min;
+        xScale.max = new Date(xScale.max.getTime() + (dataRange.min.getTime() - xScale.min.getTime()));
+      } else if (xScale.max > dataRange.max) {
+        xScale.max = dataRange.max;
+        xScale.min = new Date(xScale.min.getTime() - (xScale.max.getTime() - dataRange.max.getTime()));
+      }
+
+      chart.update({ duration: 0 });
+    },
+    getDataRange() {
+      const labels = this.chartData.labels;
+      return {
+        min: labels[0],
+        max: labels[labels.length - 1]
+      };
+    },
+    setInitialZoom() {
+      if (this.chart && this.chartData.labels.length > 0) {
+        const xScale = this.chart.scales['x-axis-0'];
+        const yScale = this.chart.scales['y-axis-0'];
+        const dataRange = this.getDataRange();
+
+        // Set x-axis range
+        xScale.options.ticks.min = dataRange.min;
+        xScale.options.ticks.max = dataRange.max;
+
+        // Set zoom/pan limits
+        this.chart.options.plugins.zoom.pan.rangeMin.x = dataRange.min;
+        this.chart.options.plugins.zoom.pan.rangeMax.x = dataRange.max;
+        this.chart.options.plugins.zoom.zoom.rangeMin.x = dataRange.min;
+        this.chart.options.plugins.zoom.zoom.rangeMax.x = dataRange.max;
+
+        // Set y-axis range
+        const allData = this.chartData.datasets[0].data;
+        const minValue = Math.max(0, Math.min(...allData));
+        const maxValue = Math.max(...allData);
+        const padding = (maxValue - minValue) * 0.1;
+
+        yScale.options.ticks.min = minValue;
+        yScale.options.ticks.max = maxValue + padding;
+
         this.chart.update();
       }
     },
@@ -222,75 +236,34 @@ export default {
         this.chart.update();
       }
     },
-    getTimeUnit() {
-      switch (this.range) {
-        case '1d':
-          return 'hour';
-        case '1w':
-          return 'day';
-        case '1m':
-        default:
-          return 'week';
-      }
-    },
-    updateZoomLimits() {
-      if (this.chart && this.chartData.labels.length > 0) {
-        const minDate = this.chartData.labels[0];
-        const maxDate = this.chartData.labels[this.chartData.labels.length - 1];
-        const minValue = Math.min(...this.chartData.datasets[0].data);
-        const maxValue = Math.max(...this.chartData.datasets[0].data);
-
-        this.chart.options.plugins.zoom.pan.rangeMin = {
-          x: minDate,
-          y: minValue * 0.9
-        };
-        this.chart.options.plugins.zoom.pan.rangeMax = {
-          x: maxDate,
-          y: maxValue * 1.1
-        };
-        this.chart.options.plugins.zoom.zoom.rangeMin = {
-          x: minDate,
-          y: minValue * 0.9
-        };
-        this.chart.options.plugins.zoom.zoom.rangeMax = {
-          x: maxDate,
-          y: maxValue * 1.1
-        };
-      }
-    },
-    resetAndRecenter() {
+    resetZoom() {
       if (this.chart) {
         this.chart.resetZoom();
-        
-        // Recenter the chart
-        const chartData = this.chartData;
-        if (chartData.labels.length > 0) {
-          const minDate = chartData.labels[0];
-          const maxDate = chartData.labels[chartData.labels.length - 1];
-          const minValue = Math.min(...chartData.datasets[0].data);
-          const maxValue = Math.max(...chartData.datasets[0].data);
-
-          this.chart.options.scales.xAxes[0].ticks.min = minDate;
-          this.chart.options.scales.xAxes[0].ticks.max = maxDate;
-          this.chart.options.scales.yAxes[0].ticks.min = minValue * 0.9;
-          this.chart.options.scales.yAxes[0].ticks.max = maxValue * 1.1;
-
-          this.chart.update();
-        }
+        this.setInitialZoom();
+      }
+    },
+    getTimeUnit() {
+      switch (this.range) {
+        case '1d': return 'hour';
+        case '1w': return 'day';
+        case '1m': default: return 'week';
+      }
+    },
+    updateChart() {
+      if (this.chart) {
+        this.chart.data = this.chartData;
+        this.chart.options = this.getChartOptions();
+        this.resetZoom();
+        this.updateGradient();
       }
     }
   },
   watch: {
-    data: {
-      handler() {
-        this.updateChart();
-      },
-      deep: true
+    data: { 
+      handler: 'updateChart', 
+      deep: true 
     },
-    range() {
-      this.updateChart()
-      setTimeout(this.resetAndRecenter, 500)
-    }
+    range: 'updateChart'
   },
   beforeDestroy() {
     if (this.chart) {
@@ -299,25 +272,29 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-.chart-container {
-  height: 550px;
-  width: 100%;
-  position: relative;
-}
-.reset-zoom-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  background-color: #FD627A;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.reset-zoom-btn:hover {
-  background-color: #e5556d;
-}
+  .chart-container {
+    height: 100%;
+    max-height: calc(100vh - 300px);
+    width: 100%;
+    position: relative;
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
+  }
+  .reset-zoom-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #fd627a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .reset-zoom-btn:hover {
+    background-color: #e5556d;
+  }
 </style>
