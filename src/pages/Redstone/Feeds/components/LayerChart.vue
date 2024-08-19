@@ -1,7 +1,7 @@
 <template>
   <div class="chart-container">
     <canvas ref="chart"></canvas>
-    <button @click="resetZoom">Reset Zoom</button>
+    <button class="reset-zoom-btn" @click="resetZoom">Reset Zoom</button>
   </div>
 </template>
 
@@ -23,12 +23,13 @@ const crosshairPlugin = {
         leftX = chart.scales['x-axis-0'].left,
         rightX = chart.scales['x-axis-0'].right;
 
-      ctx.strokeStyle = "rgba(253, 98, 122, 0.75)";
-
+      // Draw crosshair
+      ctx.save();
       ctx.beginPath();
       ctx.moveTo(x, topY);
       ctx.lineTo(x, bottomY);
       ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(253, 98, 122, 0.75)";
       ctx.setLineDash([6, 6]);
       ctx.stroke();
 
@@ -36,6 +37,15 @@ const crosshairPlugin = {
       ctx.moveTo(leftX, y);
       ctx.lineTo(rightX, y);
       ctx.stroke();
+      ctx.restore();
+
+      // Draw point
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, 2 * Math.PI);
+      ctx.fillStyle = "rgba(253, 98, 122, 1)";
+      ctx.fill();
+      ctx.restore();
     }
   }
 };
@@ -70,7 +80,9 @@ export default {
             borderColor: '#FD627A',
             data: sortedData.map(entry => parseFloat(entry.value)),
             fill: true,
-            lineTension: 0.1
+            lineTension: 0.1,
+            pointRadius: 0, // Hide all points
+            pointHoverRadius: 0, // Hide hover effect
           }
         ]
       };
@@ -124,6 +136,15 @@ export default {
             }
           }
         },
+        hover: {
+          mode: 'index',
+          intersect: false,
+        },
+        elements: {
+          line: {
+            borderWidth: 1 // Set line width to 1 pixel
+          }
+        },
         scales: {
           xAxes: [{
             type: 'time',
@@ -140,12 +161,21 @@ export default {
               source: 'data',
               autoSkip: true,
               maxTicksLimit: 10
+            },
+            gridLines: {
+              display: false, // Hide vertical grid lines
+              drawBorder: false, // Hide axis line
             }
           }],
           yAxes: [{
             ticks: {
               beginAtZero: false,
               callback: value => '$' + value.toFixed(2)
+            },
+            gridLines: {
+              color: 'rgba(0, 0, 0, 0.1)', // Light gray color for horizontal lines
+              zeroLineColor: 'rgba(0, 0, 0, 0.25)', // Slightly darker color for the zero line
+              drawBorder: false // Don't draw the y-axis line
             }
           }]
         },
@@ -172,14 +202,17 @@ export default {
               },
               rangeMax: {
                 x: null
-              }
+              },
+              onZoom: this.handleZoom
             }
           }
         }
       };
     },
     handlePan({ chart }) {
+      this.updateAxisDisplay(chart);
       const xScale = chart.scales['x-axis-0'];
+      const yScale = chart.scales['y-axis-0'];
       const dataRange = this.getDataRange();
 
       if (xScale.min < dataRange.min) {
@@ -190,7 +223,23 @@ export default {
         xScale.min = new Date(xScale.min.getTime() - (xScale.max.getTime() - dataRange.max.getTime()));
       }
 
+      // Maintain y-axis offset
+      const visibleData = this.getVisibleData(chart);
+      this.updateYAxisRange(yScale, visibleData);
+
       chart.update({ duration: 0 });
+    },
+    handleZoom({ chart }) {
+      this.updateAxisDisplay(chart);
+      const yScale = chart.scales['y-axis-0'];
+      const visibleData = this.getVisibleData(chart);
+      this.updateYAxisRange(yScale, visibleData);
+      chart.update({ duration: 0 });
+    },
+    updateAxisDisplay(chart) {
+      const xAxis = chart.scales['x-axis-0'];
+      xAxis.options.gridLines.display = false;
+      xAxis.options.gridLines.drawBorder = false;
     },
     getDataRange() {
       const labels = this.chartData.labels;
@@ -198,6 +247,24 @@ export default {
         min: labels[0],
         max: labels[labels.length - 1]
       };
+    },
+    getVisibleData(chart) {
+      const xScale = chart.scales['x-axis-0'];
+      const dataset = chart.data.datasets[0];
+      return dataset.data.filter((_, index) => {
+        const dataPoint = chart.data.labels[index];
+        return dataPoint >= xScale.min && dataPoint <= xScale.max;
+      });
+    },
+    updateYAxisRange(yScale, data) {
+      const minValue = Math.max(0, Math.min(...data));
+      const maxValue = Math.max(...data);
+      const valueRange = maxValue - minValue;
+      const topPadding = valueRange * 0.4; // 40% padding on top
+      const bottomPadding = valueRange * 0.1; // 10% padding on bottom
+
+      yScale.options.ticks.min = minValue - bottomPadding;
+      yScale.options.ticks.max = maxValue + topPadding;
     },
     setInitialZoom() {
       if (this.chart && this.chartData.labels.length > 0) {
@@ -215,15 +282,10 @@ export default {
         this.chart.options.plugins.zoom.zoom.rangeMin.x = dataRange.min;
         this.chart.options.plugins.zoom.zoom.rangeMax.x = dataRange.max;
 
-        // Set y-axis range
-        const allData = this.chartData.datasets[0].data;
-        const minValue = Math.max(0, Math.min(...allData));
-        const maxValue = Math.max(...allData);
-        const padding = (maxValue - minValue) * 0.1;
+        // Set y-axis range with top offset
+        this.updateYAxisRange(yScale, this.chartData.datasets[0].data);
 
-        yScale.options.ticks.min = minValue;
-        yScale.options.ticks.max = maxValue + padding;
-
+        this.updateAxisDisplay(this.chart);
         this.chart.update();
       }
     },
@@ -278,7 +340,6 @@ export default {
     max-height: calc(100vh - 300px);
     width: 100%;
     position: relative;
-    cursor: grab;
     &:active {
       cursor: grabbing;
     }
