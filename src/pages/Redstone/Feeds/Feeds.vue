@@ -650,7 +650,7 @@
       displayedSelectedNetworks() {
         return this.selectedNetworks.map((network) => ({
           key: network,
-          name: this.findNetworkImage(network),
+          name: this.findNetworkName(network),
           imageUrl: this.findNetworkImage(network),
         }));
       },
