@@ -32,7 +32,7 @@
     "explorerUrl": "https://basescan.org",
     "chainId": 8453,
     "name": "Base",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/base.png"
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/base.svg"
   },
   "zksync": {
     "rpcUrl": "https://mainnet.era.zksync.io",
@@ -46,14 +46,14 @@
     "explorerUrl": "https://scrollscan.com",
     "chainId": 534352,
     "name": "Scroll",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png"
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/scroll.png"
   },
   "linea": {
     "rpcUrl": "https://rpc.linea.build",
     "explorerUrl": "https://lineascan.build",
     "chainId": 59144,
     "name": "Linea",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png"
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/linea.png"
   },
   "mantle": {
     "rpcUrl": "https://rpc.mantle.xyz",

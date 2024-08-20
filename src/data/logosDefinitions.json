@@ -120,6 +120,21 @@
     "token": "FXS"
   },
   {
+    "name": "LayerBank",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/lab.webp",
+    "token": "LAB"
+  },
+  {
+    "name": "Arbitrum",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/arbitrum.png",
+    "token": "ARB"
+  },
+  {
+    "name": "Savings Dai",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sdai.png",
+    "token": "sDAI"
+  },
+  {
     "name": "Lido Staked Ether",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/steth.webp",
     "token": "stETH"
