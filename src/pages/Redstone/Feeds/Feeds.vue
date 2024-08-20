@@ -167,7 +167,7 @@
             class="feeds__contract-address"
             :title="`Open address in ${item.explorer.name} explorer`"
             target="_blank"
-            :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
+            :href="`${item.explorer.explorerUrl}/address/${item.feed_address}`"
           >
             {{ truncateString(item.feed_address) }}
           </a>
