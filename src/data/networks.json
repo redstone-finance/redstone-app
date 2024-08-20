@@ -171,8 +171,8 @@
     "rpcUrl": "https://nodeapi.energi.network",
     "explorerUrl": "https://explorer.energi.network",
     "chainId": 48900,
-    "name": "Energi",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/energi.webp"
+    "name": "Zircuit",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zircuit.jpeg"
   },
   "sepolia": {
     "rpcUrl": "https://rpc.sepolia.org",
