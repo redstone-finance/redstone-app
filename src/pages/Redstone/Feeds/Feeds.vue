@@ -26,7 +26,7 @@
                 }}</strong></span
               >
               <span class="feeds__status-text"
-                >Selected feeds tokens:
+                >Selected tokens:
                 <strong>{{
                   selectedCryptos.length || cryptoImages.length
                 }}</strong></span
@@ -372,7 +372,7 @@
         this.currentPage = page ? parseInt(page) : 1;
         this.sortBy = sortBy || "popularity";
         this.sortDesc = sortDesc === "true";
-        this.perPage = perPage ? parseInt(perPage) : 8;
+        this.perPage = perPage ? parseInt(perPage) : 32;
         this.applyFilters();
       },
       updateRouteParams() {
