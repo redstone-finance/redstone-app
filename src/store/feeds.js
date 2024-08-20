@@ -107,6 +107,7 @@ export default {
             triggers: layer.updateTriggers,
             layerId: key,
             timestamp: keyTimestamp || keyFeedTimestamp || null,
+            value: state.relayersDetails[key]?.dataFeed,
             loaders:
               state.relayersDetails[key]?.loaders ||
               state.relayersDetails[`${key}_${feedId}`]?.loaders,
@@ -199,7 +200,8 @@ export default {
       if (feedId == null) return;
       const api = this.getters["feeds/getSmartContractByLayerId"](layerId);
       try {
-        var value = await api.getValueForDataFeed(feedId);
+        var value = await api.getValueForDataFeed(stringToBytes32(feedId));
+        console.log({value})
       } catch (error) {
         // console.log({ error, layerId }, 'single')
       }
@@ -209,7 +211,7 @@ export default {
           commit("assignRelayerDetails", {
             key: "dataFeed",
             layerId,
-            data: values.arguments,
+            data: values[0]._hex,
           });
           this.dispatch("feeds/disableLoader", {
             layerId,
@@ -219,10 +221,11 @@ export default {
           // console.log({ error, layerId }, 'multiple')
         }
       } else {
+        console.log('assign', value._hex, layerId)
         commit("assignRelayerDetails", {
           key: "dataFeed",
           layerId,
-          data: value.arguments,
+          data: value._hex,
         });
         this.dispatch("feeds/disableLoader", {
           layerId,
@@ -234,12 +237,12 @@ export default {
         loaderId: "feedDataValue",
       });
     },
-    async fetchFeedIdAndValue({ state }, { layerId }) {
-      this.dispatch("feeds/fetchDataFeedId", layerId).then(() => {
-        const feedId = state.relayersDetails[layerId]?.feedId;
-        this.dispatch("feeds/fetchValueForDataFeed", { layerId, feedId });
-      });
-    },
+    // async fetchFeedIdAndValue({ state }, { layerId }) {
+    //   this.dispatch("feeds/fetchDataFeedId", layerId).then(() => {
+    //     const feedId = state.relayersDetails[layerId]?.feedId;
+    //     this.dispatch("feeds/fetchValueForDataFeed", { layerId, feedId });
+    //   });
+    // },
     disableLoader({ commit }, { layerId, loaderId }) {
       commit("disableLoaderMutation", { layerId, loaderId });
     },
@@ -299,9 +302,9 @@ export default {
         await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
       }
 
-      await this.dispatch("feeds/fetchFeedIdAndValue", {
+      await this.dispatch("feeds/fetchValueForDataFeed", {
         layerId: layerId,
-        feedId: state.relayersDetails[layerId]?.feedId,
+        feedId: feedId,
       });
     },
     async init({ state }) {
@@ -334,10 +337,30 @@ export default {
         } else {
           await this.dispatch("feeds/fetchBlockTimeStamp", key);
         }
-        await this.dispatch("feeds/fetchFeedIdAndValue", {
-          layerId: key,
-          feedId: state.relayersDetails[key]?.feedId,
-        });
+        if (
+          !!state.relayerSchema[key]?.priceFeeds &&
+          state.relayerSchema[key]?.adapterContractType === "multi-feed"
+        ) {
+          // Object.keys(state.relayerSchema[key]?.priceFeeds).forEach(
+          //   async (feedId) => {
+          //     if (
+          //       state.relayersDetails[`${key}_${feedId}`].loaders
+          //         .blockTimestamp === false
+          //     )
+          //       return;
+          //     await this.dispatch("feeds/fetchValueForDataFeed", {
+          //       layerId: key,
+          //       feedId,
+          //     });
+          //   }
+          // );
+        } else {
+          await this.dispatch("feeds/fetchValueForDataFeed", {
+            layerId: key,
+            feedId: Object.keys(state.relayerSchema[key].priceFeeds)[0],
+          });
+        }
+       
       });
     },
   },

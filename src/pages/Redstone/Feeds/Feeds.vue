@@ -202,13 +202,12 @@
                 </router-link> -->
         <span>{{ item.feed }}</span>
       </template>
-      <template #cell(timestamp)="{ item }">
-        <Loader v-if="item.loaders?.blockTimestamp" class="feeds__loader" />
-        <span v-else-if="item.timestamp.raw" class="feeds__timestamp">
-          <span class="feeds__timestamp-date">
-            {{ item.timestamp.date }}
+      <template #cell(answer)="{ item }">
+        <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
+        <span v-else-if="item.value">
+          <span>
+            {{ parseToUsd(item.value) }}
           </span>
-          {{ item.timestamp.parsed }} ago
         </span>
         <span v-else class="feeds__no-data">no-data</span>
       </template>
@@ -338,6 +337,7 @@
             sortByFormatted: true,
             formatter: (value, key, item) => item.network.name,
           },
+          { key: "answer", label: "Answer", sortable: false },
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
@@ -561,6 +561,12 @@
       hasSlash(string) {
         return string.indexOf("/") >= 0;
       },
+      parseToUsd(hexValue) {
+        hexValue = hexValue.replace(/^0x/, "");
+        const decimalValue = parseInt(hexValue, 16);
+        const usdValue = decimalValue / Math.pow(10, 18);
+        return `$${usdValue.toFixed(18).replace(/\.?0+$/, "")}`;
+      },
       transformHexString(str) {
         if (str == null) return "no data";
         if (str?.length <= 10) return str;
@@ -620,7 +626,6 @@
         return processedData;
       },
       tokenInNetwork(token, networkId) {
-        console.log(this.tokensInNetworks);
         return this.processTokenData(this.tokensInNetworks).some(
           (item) => item.token === token && item.network === networkId
         );
@@ -788,6 +793,7 @@
         if (this.combinedFeedsWithDetailsArray.length === 0) return [];
         return this.combinedFeedsWithDetailsArray.map((item) => {
           return {
+            value: item.value,
             feed: this.hasSlash(item.feedId)
               ? this.stripAdditionalFeedInfo(item.feedId)
               : this.stripAdditionalFeedInfo(item.feedId) + "/USD",
