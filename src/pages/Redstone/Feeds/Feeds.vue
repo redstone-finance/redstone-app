@@ -205,9 +205,9 @@
       <template #cell(answer)="{ item }">
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.value">
-          <span>
+          <strong style="font-weight: 500;">
             {{ parseToUsd(item.value) }}
-          </span>
+          </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
       </template>
@@ -562,9 +562,15 @@
         return string.indexOf("/") >= 0;
       },
       parseToUsd(hexValue) {
-        let decimalValue = parseInt(hexValue, 16);
-        let price = decimalValue / 100000000;
-        return `$ ${price}`;
+        hexValue = hexValue.replace(/^0x/, "");
+        const decimalValue = parseInt(hexValue, 16);
+        const usdValue = decimalValue / Math.pow(10, 8);
+        return usdValue.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 18, // Adjust this value based on your precision needs
+        });
       },
       transformHexString(str) {
         if (str == null) return "no data";
@@ -792,6 +798,9 @@
       feeds() {
         if (this.combinedFeedsWithDetailsArray.length === 0) return [];
         return this.combinedFeedsWithDetailsArray.map((item) => {
+          // if(item.feedAddress === "__NO_FEED__" || item.feedAddress == ""){
+          //   return undefined
+          // }
           return {
             value: item.value,
             feed: this.hasSlash(item.feedId)
@@ -828,7 +837,7 @@
               explorerUrl: this.findExplorer(item.networkId),
             },
           };
-        });
+        })
       },
     },
   };

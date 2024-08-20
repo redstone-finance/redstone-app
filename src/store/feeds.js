@@ -223,7 +223,6 @@ export default {
       const api = this.getters["feeds/getSmartContractByLayerId"](layerId);
       try {
         var value = await api.getValueForDataFeed(stringToBytes32(feedId));
-        console.log({ value });
       } catch (error) {
         // console.log({ error, layerId }, 'single')
       }
@@ -243,7 +242,6 @@ export default {
           // console.log({ error, layerId }, 'multiple')
         }
       } else {
-        console.log("assign", value._hex, layerId);
         commit("assignRelayerDetails", {
           key: "dataFeed",
           layerId,
@@ -370,6 +368,7 @@ export default {
                   .feedDataValue === false
               )
                 return;
+                console.log({feedId, key})
               await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
                 layerId: key,
                 feedId,
@@ -377,6 +376,7 @@ export default {
             }
           );
         } else {
+          console.log(Object.keys(state.relayerSchema[key].priceFeeds)[0], key)
           await this.dispatch("feeds/fetchValueForDataFeed", {
             layerId: key,
             feedId: Object.keys(state.relayerSchema[key].priceFeeds)[0],
