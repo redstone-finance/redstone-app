@@ -26,7 +26,7 @@
                 }}</strong></span
               >
               <span class="feeds__status-text"
-                >Selected feeds:
+                >Selected feeds tokens:
                 <strong>{{
                   selectedCryptos.length || cryptoImages.length
                 }}</strong></span
@@ -274,8 +274,6 @@
   import CopyToClipboard from "./components/CopyToClipboard.vue";
   import networks from "@/data/networks.json";
   import images from "@/data/logosDefinitions.json";
-  import { sortBy } from "lodash";
-  import { over } from "lodash";
 
   export default {
     components: {
@@ -295,7 +293,7 @@
         selectedCryptos: [],
         selectedNetworks: [],
         perPage: 8,
-        sortBy: null,
+        sortBy: "popularity",
         sortDesc: false,
         currentPage: 1,
         filteredItems: [],
@@ -314,6 +312,12 @@
             label: "Feed",
             sortable: true,
             formatter: (value, key, item) => item.feed,
+          },
+          {
+            key: "popularity",
+            label: "Popularity",
+            sortable: true,
+            class: 'd-none',
           },
           {
             key: "network",
@@ -364,7 +368,7 @@
         this.selectedCryptos = cryptos ? cryptos.split(",") : [];
         this.selectedNetworks = networks ? networks.split(",").map(Number) : [];
         this.currentPage = page ? parseInt(page) : 1;
-        this.sortBy = sortBy || null;
+        this.sortBy = sortBy || 'popularity';
         this.sortDesc = sortDesc === "true";
         this.perPage = perPage ? parseInt(perPage) : 8;
         this.applyFilters();
@@ -440,7 +444,7 @@
         this.filters = null;
         this.currentFilter = null;
         this.currentPage = 1;
-        this.sortBy = null;
+        this.sortBy = 'popularity';
         this.sortDesc = false;
         this.$refs.selectableTable.refresh();
         this.updateRouteParams();
@@ -750,6 +754,12 @@
           return Array.from(networkSet);
         }
       },
+      networkOrder() {
+        return Object.values(networks)
+      },
+      cryptoOrder() {
+        return Object.values(images)
+      },
       feeds() {
         if (this.combinedFeedsWithDetailsArray.length === 0) return [];
         return this.combinedFeedsWithDetailsArray.map((item) => {
@@ -782,7 +792,7 @@
             crypto_token: this.getFirstPart(item.feedId),
             token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
             loaders: item.loaders,
-            foo: item.foo,
+            popularity: `${this.networkOrder.findIndex(network => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex(crypto => this.getFirstPart(item.feedId) === crypto.token)}`,
             explorer: {
               name: this.findNetworkName(item.networkId),
               explorerUrl: this.findExplorer(item.networkId),
