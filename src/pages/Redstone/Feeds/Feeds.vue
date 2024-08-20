@@ -329,16 +329,6 @@
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
-          {
-            key: "timestamp",
-            label: "Last update",
-            sortable: true,
-            sortByFormatted: true,
-            formatter: (value, key, item) => {
-              const numericTimestamp = parseInt(item.timestamp.raw, 16);
-              return numericTimestamp;
-            },
-          },
         ],
       };
     },
