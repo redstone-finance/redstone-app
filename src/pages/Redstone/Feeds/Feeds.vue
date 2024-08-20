@@ -292,7 +292,7 @@
         selectedChain: null,
         selectedCryptos: [],
         selectedNetworks: [],
-        perPage: 8,
+        perPage: 32,
         sortBy: "popularity",
         sortDesc: false,
         currentPage: 1,
