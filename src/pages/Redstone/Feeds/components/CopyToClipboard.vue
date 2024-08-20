@@ -38,7 +38,7 @@
     computed: {
       tooltipHtml() {
         return this.isCopied
-          ? `${this.copiedText} <i class="fa fa-check text-success"></i>`
+          ? `${this.copiedText}`
           : this.copyText;
       },
     },

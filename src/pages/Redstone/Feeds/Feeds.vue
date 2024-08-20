@@ -156,21 +156,6 @@
         {{ item.network.name }}
       </template>
       <template #cell(contract_address)="{ item }">
-        <div v-if="item.contract_address && item.explorer">
-          Adapter:
-          <a
-            class="feeds__contract-address"
-            :title="`Open address in ${item.explorer.name} explorer`"
-            target="_blank"
-            :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
-          >
-            {{ truncateString(item.contract_address) }}
-          </a>
-          <CopyToClipboard
-            copy-text="Copy adapter address"
-            :value="item.contract_address"
-          />
-        </div>
         <div
           v-if="
             item.feed_address &&
@@ -178,7 +163,6 @@
             item.feed_address != '__NO_FEED__'
           "
         >
-          Feed:
           <a
             class="feeds__contract-address"
             :title="`Open address in ${item.explorer.name} explorer`"
@@ -190,6 +174,20 @@
           <CopyToClipboard
             copy-text="Copy feed address"
             :value="item.feed_address"
+          />
+        </div>
+        <div v-else-if="item.contract_address && item.explorer">
+          <a
+            class="feeds__contract-address"
+            :title="`Open address in ${item.explorer.name} explorer`"
+            target="_blank"
+            :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
+          >
+            {{ truncateString(item.contract_address) }}
+          </a>
+          <CopyToClipboard
+            copy-text="Copy adapter address"
+            :value="item.contract_address"
           />
         </div>
       </template>
@@ -317,7 +315,7 @@
             key: "popularity",
             label: "Popularity",
             sortable: true,
-            class: 'd-none',
+            class: "d-none",
           },
           {
             key: "network",
@@ -358,7 +356,7 @@
         this.selectedCryptos = cryptos ? cryptos.split(",") : [];
         this.selectedNetworks = networks ? networks.split(",").map(Number) : [];
         this.currentPage = page ? parseInt(page) : 1;
-        this.sortBy = sortBy || 'popularity';
+        this.sortBy = sortBy || "popularity";
         this.sortDesc = sortDesc === "true";
         this.perPage = perPage ? parseInt(perPage) : 8;
         this.applyFilters();
@@ -434,7 +432,7 @@
         this.filters = null;
         this.currentFilter = null;
         this.currentPage = 1;
-        this.sortBy = 'popularity';
+        this.sortBy = "popularity";
         this.sortDesc = false;
         this.$refs.selectableTable.refresh();
         this.updateRouteParams();
@@ -745,10 +743,10 @@
         }
       },
       networkOrder() {
-        return Object.values(networks)
+        return Object.values(networks);
       },
       cryptoOrder() {
-        return Object.values(images)
+        return Object.values(images);
       },
       feeds() {
         if (this.combinedFeedsWithDetailsArray.length === 0) return [];
@@ -782,7 +780,7 @@
             crypto_token: this.getFirstPart(item.feedId),
             token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
             loaders: item.loaders,
-            popularity: `${this.networkOrder.findIndex(network => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex(crypto => this.getFirstPart(item.feedId) === crypto.token)}`,
+            popularity: `${this.networkOrder.findIndex((network) => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex((crypto) => this.getFirstPart(item.feedId) === crypto.token)}`,
             explorer: {
               name: this.findNetworkName(item.networkId),
               explorerUrl: this.findExplorer(item.networkId),
