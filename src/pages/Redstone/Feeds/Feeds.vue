@@ -265,7 +265,7 @@
 
 <script>
   import _ from "lodash";
-  import { mapActions, mapGetters } from "vuex";
+  import { mapActions, mapGetters, mapState } from "vuex";
   import {
     hexToDate,
     parseUnixTime,
@@ -562,10 +562,9 @@
         return string.indexOf("/") >= 0;
       },
       parseToUsd(hexValue) {
-        hexValue = hexValue.replace(/^0x/, "");
-        const decimalValue = parseInt(hexValue, 16);
-        const usdValue = decimalValue / Math.pow(10, 18);
-        return `$${usdValue.toFixed(18).replace(/\.?0+$/, "")}`;
+        let decimalValue = parseInt(hexValue, 16);
+        let price = decimalValue / 100000000;
+        return `$ ${price}`;
       },
       transformHexString(str) {
         if (str == null) return "no data";
@@ -743,6 +742,7 @@
         const endIndex = startIndex + this.perPage;
         return this.feeds?.slice(startIndex, endIndex);
       },
+      ...mapState("feeds", ["relayersDetails"]),
       ...mapGetters("feeds", ["combinedFeedsWithDetailsArray"]),
       filteredNetworks() {
         {
