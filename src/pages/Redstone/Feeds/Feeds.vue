@@ -600,8 +600,28 @@
         this.handleFilter("networks", this.selectedNetworks);
         this.updateRouteParams();
       },
+      processTokenData(data) {
+        const tokenMap = new Map();
+        data.forEach(({ token, network }) => {
+          const tokens = token.includes("/") ? token.split("/") : [token];
+          tokens.forEach((t) => {
+            if (!tokenMap.has(network)) {
+              tokenMap.set(network, new Set());
+            }
+            tokenMap.get(network).add(t);
+          });
+        });
+        const processedData = [];
+        for (const [network, tokens] of tokenMap.entries()) {
+          tokens.forEach((token) => {
+            processedData.push({ token, network });
+          });
+        }
+        return processedData;
+      },
       tokenInNetwork(token, networkId) {
-        return this.tokensInNetworks.some(
+        console.log(this.tokensInNetworks);
+        return this.processTokenData(this.tokensInNetworks).some(
           (item) => item.token === token && item.network === networkId
         );
       },
