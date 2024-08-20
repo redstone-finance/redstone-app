@@ -242,7 +242,21 @@
     >
       <template #page="{ page }">
         <span v-if="page === currentPage" class="entry-info">
-          Showing {{ firstEntry }} to {{ lastEntry }} of {{ totalRows }} entries
+          <span v-if="totalRows > 0">
+            Showing {{ firstEntry }} to {{ lastEntry }} of
+            {{ totalRows }} entries
+          </span>
+          <span v-else
+            >No entries found -
+            <span
+              style="pointer-events: all"
+              v-if="hasFilters"
+              class="clear-filters"
+              @click="resetFilters"
+            >
+              Clear filters
+            </span></span
+          >
         </span>
         <span v-else>{{ page }}</span>
       </template>
@@ -680,11 +694,13 @@
         );
       },
       totalRows() {
-        return this.filteredItems.length > 0
+        return this.displayedSelectedNetworks.length > 0 ||
+          this.displayedSelectedCryptos.length > 0
           ? this.filteredItems.length
           : this.feeds.length;
       },
       firstEntry() {
+        if (this.totalRows == 0) return 0;
         return (this.currentPage - 1) * this.perPage + 1;
       },
       lastEntry() {
