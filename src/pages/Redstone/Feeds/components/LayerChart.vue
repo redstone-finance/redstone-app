@@ -18,15 +18,11 @@
 <script>
 import Chart from "chart.js";
 import {
-  format,
-  isSameDay,
-  parseISO,
-  subDays,
-  subMonths,
   isValid,
   startOfDay,
-  differenceInDays,
-  differenceInHours,
+  subDays,
+  subMonths,
+  parseISO,
 } from "date-fns";
 
 const crosshairPlugin = {
@@ -89,11 +85,16 @@ export default {
   computed: {
     chartData() {
       const sortedData = [...this.data]
-        .sort((a, b) => a.timestamp - b.timestamp)
         .filter((entry) => {
-          const date = new Date(entry.timestamp);
-          return isValid(date) && !isNaN(parseFloat(entry.value));
+          const timestamp = this.parseTimestamp(entry.timestamp);
+          return isValid(timestamp) && !isNaN(parseFloat(entry.value));
+        })
+        .sort((a, b) => {
+          const dateA = this.parseTimestamp(a.timestamp);
+          const dateB = this.parseTimestamp(b.timestamp);
+          return dateA.getTime() - dateB.getTime();
         });
+      
       const filteredData = this.filterDataByRange(sortedData);
 
       return {
@@ -102,7 +103,10 @@ export default {
           {
             label: "Price",
             borderColor: "#FD627A",
-            data: filteredData.map((entry) => parseFloat(entry.value)),
+            data: filteredData.map((entry) => ({
+              x: new Date(entry.timestamp),
+              y: parseFloat(entry.value)
+            })),
             fill: true,
             lineTension: 0.1,
             pointRadius: 0,
@@ -116,24 +120,32 @@ export default {
     this.createChart();
   },
   methods: {
+    parseTimestamp(timestamp) {
+      if (typeof timestamp === 'number') {
+        return new Date(timestamp);
+      } else if (typeof timestamp === 'string') {
+        return parseISO(timestamp);
+      }
+      return new Date(NaN); // Invalid date
+    },
     filterDataByRange(data) {
       const now = new Date();
       let startDate;
       switch (this.selectedRange) {
         case "1d":
-          startDate = subDays(startOfDay(now), 1);
+          startDate = subDays(now, 1);
           break;
         case "1w":
-          startDate = subDays(startOfDay(now), 7);
+          startDate = subDays(now, 7);
           break;
         case "1m":
-          startDate = subMonths(startOfDay(now), 1);
+          startDate = subMonths(now, 1);
           break;
         default:
           return data;
       }
       return data.filter((entry) => {
-        const entryDate = new Date(parseInt(entry.timestamp));
+        const entryDate = this.parseTimestamp(entry.timestamp);
         return entryDate >= startDate && entryDate <= now;
       });
     },
@@ -173,20 +185,8 @@ export default {
           intersect: false,
           callbacks: {
             label: (tooltipItem, data) => {
-              const dataIndex = tooltipItem.index;
-              const value = data.datasets[0].data[dataIndex];
-              const timestamp = this.chartData.labels[dataIndex];
-              const sender = this.data.find(
-                (d) =>
-                  d &&
-                  d.timestamp &&
-                  parseInt(d.timestamp) === timestamp.getTime()
-              )?.sender;
-              return [
-                `Time: ${this.formatDate(timestamp)}`,
-                `Price: $${value.toFixed(5)}`,
-                `Sender: ${sender ? sender.substr(0, 6) + "..." + sender.substr(-4) : "N/A"}`,
-              ];
+              const value = tooltipItem.yLabel;
+              return `Price: $${value.toFixed(5)}`;
             },
           },
         },
@@ -206,23 +206,10 @@ export default {
               time: {
                 unit: this.getTimeUnit(),
                 displayFormats: {
-                  millisecond: "HH:mm:ss.SSS",
-                  second: "HH:mm:ss",
-                  minute: "HH:mm",
-                  hour: "MMM d",
-                  day: "MMM d",
-                  week: "MMM d",
-                  month: "MMM yyyy",
-                },
-                tooltipFormat: "PPpp",
-              },
-              ticks: {
-                source: "data",
-                autoSkip: true,
-                maxTicksLimit: this.getMaxTicksLimit(),
-                callback: (value, index, values) => {
-                  const date = new Date(value);
-                  return format(date, "MMM d");
+                  hour: "HH:mm",
+                  day: "MMM D",
+                  week: "MMM D",
+                  month: "MMM YYYY",
                 },
               },
               gridLines: {
@@ -232,14 +219,15 @@ export default {
               },
             },
           ],
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
         },
       };
-    },
-    formatDate(value) {
-      if (!value) return "";
-      const date = new Date(value);
-      if (!isValid(date)) return "";
-      return format(date, "PPpp");
     },
     updateGradient() {
       if (this.chart && this.chart.chartArea) {
@@ -260,18 +248,6 @@ export default {
           return "day";
         default:
           return "day";
-      }
-    },
-    getMaxTicksLimit() {
-      switch (this.selectedRange) {
-        case "1d":
-          return 24;
-        case "1w":
-          return 7;
-        case "1m":
-          return 15;
-        default:
-          return 10;
       }
     },
     updateChart() {
