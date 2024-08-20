@@ -168,8 +168,8 @@
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zklink.webp"
   },
   "energi": {
-    "rpcUrl": "https://nodeapi.energi.network",
-    "explorerUrl": "https://explorer.energi.network",
+    "rpcUrl": "https://zircuit-mainnet.drpc.org",
+    "explorerUrl": "https://explorer.zircuit.com",
     "chainId": 48900,
     "name": "Zircuit",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zircuit.jpeg"
