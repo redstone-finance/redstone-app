@@ -25,7 +25,7 @@
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
-            v-for="crypto in sortedFilteredCryptoImageData"
+            v-for="crypto in filteredCryptoImageData"
             :key="crypto.token"
             :value="crypto.token"
           >
@@ -44,7 +44,7 @@
         </b-form-checkbox-group>
         <span
           class="no-results"
-          v-if="sortedFilteredCryptoImageData.length === 0"
+          v-if="filteredCryptoImageData.length === 0"
           >No results found</span
         >
       </b-dropdown-form>
@@ -124,16 +124,6 @@
             crypto.token.toLowerCase().includes(query) ||
             crypto.name.toLowerCase().includes(query)
         );
-      },
-      sortedFilteredCryptoImageData() {
-        return [...this.filteredCryptoImageData].sort((a, b) => {
-          const aSelected = this.value.includes(a.token);
-          const bSelected = this.value.includes(b.token);
-          if (aSelected === bSelected) {
-            return a.token.localeCompare(b.token);
-          }
-          return aSelected ? -1 : 1;
-        });
       },
       hasChanges() {
         return !this.arraysEqual(this.tempSelectedCryptos, this.value);

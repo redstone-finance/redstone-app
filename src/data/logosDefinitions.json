@@ -1,5 +1,55 @@
 [
   {
+    "name": "Bitcoin",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/btc.webp",
+    "token": "BTC"
+  },
+  {
+    "name": "Ethereum",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.webp",
+    "token": "ETH"
+  },
+  {
+    "name": "BNB",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.webp",
+    "token": "BNB"
+  },
+  {
+    "name": "Tether",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdt.webp",
+    "token": "USDT"
+  },
+  {
+    "name": "USD Coin",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdc.webp",
+    "token": "USDC"
+  },
+  {
+    "name": "Frax",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/frax.webp",
+    "token": "FRAX"
+  },
+  {
+    "name": "Euro",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eur.png",
+    "token": "EUR"
+  },
+  {
+    "name": "British Pound",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/gbp.webp",
+    "token": "GBP"
+  },
+  {
+    "name": "Brazilian Real",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/brl.webp",
+    "token": "BRL"
+  },
+  {
+    "name": "Gold",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xaut.webp",
+    "token": "XAU"
+  },
+  {
     "name": "Ageur",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ageur.webp",
     "token": "agEUR"
@@ -15,24 +65,14 @@
     "token": "ATOM"
   },
   {
-    "name": "BNB",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.webp",
-    "token": "BNB"
-  },
-  {
-    "name": "Brazilian Real",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/brl.webp",
-    "token": "BRL"
-  },
-  {
     "name": "BsdETH",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bsdeth.webp",
     "token": "bsdETH"
   },
   {
-    "name": "Bitcoin",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/btc.webp",
-    "token": "BTC"
+    "name": "C3M",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
+    "token": "C3M"
   },
   {
     "name": "Canto",
@@ -45,6 +85,11 @@
     "token": "CELO"
   },
   {
+    "name": "Celestia",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/tia.webp",
+    "token": "TIA"
+  },
+  {
     "name": "cNote",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/cnote.webp",
     "token": "cNOTE"
@@ -55,19 +100,9 @@
     "token": "CRV"
   },
   {
-    "name": "Ethereum",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.webp",
-    "token": "ETH"
-  },
-  {
     "name": "ETHx",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ethx.webp",
     "token": "ETHx"
-  },
-  {
-    "name": "Euro",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eur.png",
-    "token": "EUR"
   },
   {
     "name": "eUSD",
@@ -80,19 +115,14 @@
     "token": "ezETH"
   },
   {
-    "name": "Frax",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/frax.webp",
-    "token": "FRAX"
-  },
-  {
     "name": "Frax Share",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/fxs.webp",
     "token": "FXS"
   },
   {
-    "name": "British Pound",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/gbp.webp",
-    "token": "GBP"
+    "name": "Lido Staked Ether",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/steth.webp",
+    "token": "stETH"
   },
   {
     "name": "Manta",
@@ -100,14 +130,14 @@
     "token": "MANTA"
   },
   {
-    "name": "Merlin",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp",
-    "token": "MERL"
-  },
-  {
     "name": "Mantle",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp",
     "token": "MNT"
+  },
+  {
+    "name": "Merlin",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp",
+    "token": "MERL"
   },
   {
     "name": "Mode",
@@ -140,9 +170,9 @@
     "token": "rswETH"
   },
   {
-    "name": "Staked Frax Ether",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sfrxeth.webp",
-    "token": "sfrxETH"
+    "name": "SEI",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png",
+    "token": "SEI"
   },
   {
     "name": "SolvBTC",
@@ -150,14 +180,9 @@
     "token": "SolvBTC_MERLIN"
   },
   {
-    "name": "Lido Staked Ether",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/steth.webp",
-    "token": "stETH"
-  },
-  {
-    "name": "Stone",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/stone.webp",
-    "token": "STONE"
+    "name": "Staked Frax Ether",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sfrxeth.webp",
+    "token": "sfrxETH"
   },
   {
     "name": "Staked USDe",
@@ -165,9 +190,9 @@
     "token": "sUSDe"
   },
   {
-    "name": "Celestia",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/tia.webp",
-    "token": "TIA"
+    "name": "Stone",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/stone.webp",
+    "token": "STONE"
   },
   {
     "name": "TRON",
@@ -185,19 +210,14 @@
     "token": "USDB"
   },
   {
-    "name": "USD Coin",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdc.webp",
-    "token": "USDC"
-  },
-  {
     "name": "USDe",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usde.webp",
     "token": "USDe"
   },
   {
-    "name": "Tether",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdt.webp",
-    "token": "USDT"
+    "name": "Venus",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xvs.webp",
+    "token": "XVS"
   },
   {
     "name": "Wrapped Ether",
@@ -215,33 +235,13 @@
     "token": "wUSDM"
   },
   {
-    "name": "Gold",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xaut.webp",
-    "token": "XAU"
-  },
-  {
     "name": "Tezos",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xtz.webp",
     "token": "XTZ"
   },
   {
-    "name": "Venus",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/xvs.webp",
-    "token": "XVS"
-  },
-  {
     "name": "ZK",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zk.webp",
     "token": "ZK"
-  },
-  {
-    "name": "SEI",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png",
-    "token": "SEI"
-  },
-  {
-    "name": "C3M",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
-    "token": "C3M"
   }
 ]
