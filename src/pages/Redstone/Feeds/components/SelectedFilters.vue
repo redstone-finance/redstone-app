@@ -19,24 +19,24 @@
 </template>
 
 <script>
-export default {
-  name: "SelectedFiltersList",
-  props: {
-    filters: {
-      type: Array,
-      required: true,
+  export default {
+    name: "SelectedFiltersList",
+    props: {
+      filters: {
+        type: Array,
+        required: true,
+      },
     },
-  },
-  methods: {
-    removeFilter(filter) {
-      this.$emit("remove", filter.key);
+    methods: {
+      removeFilter(filter) {
+        this.$emit("remove", filter.key);
+      },
     },
-  },
-};
+  };
 </script>
 
 <style scoped>
-.selected-filters-container {
+  .selected-filters-container {
   width: 100%;
 }
 

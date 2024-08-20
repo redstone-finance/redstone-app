@@ -9,7 +9,7 @@ import {
 import { parseExpression } from "cron-parser";
 
 export const hexToDate = (timestamp) => {
-  if(timestamp === 0) return false
+  if (timestamp === 0) return false;
   const timeInSeconds = parseInt(timestamp, 16);
   const timeInMilliseconds = timeInSeconds * 1000;
   const options = {

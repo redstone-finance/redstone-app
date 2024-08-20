@@ -25,14 +25,14 @@
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
-            v-for="item in sortedFilteredItems"
+            v-for="item in filteredItems"
             :key="item.value"
             :value="item.value"
           >
             <span class="network-name">{{ item.label }}</span>
           </b-form-checkbox>
         </b-form-checkbox-group>
-        <span class="no-results" v-if="sortedFilteredItems.length === 0">{{
+        <span class="no-results" v-if="filteredItems.length === 0">{{
           noResultsText
         }}</span>
       </b-dropdown-form>
@@ -41,7 +41,10 @@
           @click="confirmChanges"
           variant="primary"
           class="confirm-button"
-          > <i class="fa fa-icon fa-sliders mr-2"></i>Filter ({{ tempSelected.length }})
+        >
+          <i class="fa fa-icon fa-sliders mr-2"></i>Filter ({{
+            tempSelected.length
+          }})
         </b-button>
       </div>
       <div v-else-if="value.length > 0" class="confirm-button-container">
@@ -109,16 +112,6 @@
         return this.items.filter((item) =>
           item.label.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
-      },
-      sortedFilteredItems() {
-        return [...this.filteredItems].sort((a, b) => {
-          const aSelected = this.value.includes(a.value);
-          const bSelected = this.value.includes(b.value);
-          if (aSelected === bSelected) {
-            return a.label.localeCompare(b.label);
-          }
-          return aSelected ? -1 : 1;
-        });
       },
       buttonText() {
         const selectedCount = this.value.length;

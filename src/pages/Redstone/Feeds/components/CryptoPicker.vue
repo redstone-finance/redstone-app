@@ -53,9 +53,11 @@
           @click="confirmChanges"
           variant="primary"
           class="confirm-button"
-          >
-          <i class="fa fa-icon fa-sliders mr-2"></i>Filter ({{ tempSelectedCryptos.length }})
-          </b-button>
+        >
+          <i class="fa fa-icon fa-sliders mr-2"></i>Filter ({{
+            tempSelectedCryptos.length
+          }})
+        </b-button>
       </div>
       <div v-else-if="value.length > 0" class="confirm-button-container">
         <b-button @click="resetChanges" variant="primary" class="reset-button"
