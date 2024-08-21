@@ -110,6 +110,11 @@
     "token": "eUSD"
   },
   {
+    "name": "USD3",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usd3.webp",
+    "token": "USD3"
+  },
+  {
     "name": "ezETH",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ezeth.webp",
     "token": "ezETH"
