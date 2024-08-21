@@ -205,7 +205,7 @@
       <template #cell(answer)="{ item }">
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.value">
-          <strong style="font-weight: 500;">
+          <strong style="font-weight: 500">
             {{ parseToUsd(item.value) }}
           </strong>
         </span>
@@ -253,7 +253,7 @@
               class="clear-filters"
               @click="resetFilters"
             >
-            - Clear filters
+              - Clear filters
             </span></span
           >
         </span>
@@ -339,9 +339,8 @@
           },
           { key: "answer", label: "Answer", sortable: false },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
-          { key: "contract_address", label: "Addresses", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
-       
+          { key: "contract_address", label: "Addresses", sortable: false },
         ],
       };
     },
@@ -838,7 +837,7 @@
               explorerUrl: this.findExplorer(item.networkId),
             },
           };
-        })
+        });
       },
     },
   };
