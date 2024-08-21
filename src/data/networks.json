@@ -63,8 +63,8 @@
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp"
   },
   "celoMainnet": {
-    "rpcUrl": "https://forno.celo.org",
-    "explorerUrl": "https://explorer.celo.org",
+    "rpcUrl": "https://celo.drpc.org",
+    "explorerUrl": "https://explorer.celo.org/mainnet",
     "chainId": 42220,
     "name": "Celo Mainnet",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png"
@@ -167,7 +167,7 @@
     "name": "zkLink",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zklink.webp"
   },
-  "energi": {
+  "zircuit": {
     "rpcUrl": "https://zircuit-mainnet.drpc.org",
     "explorerUrl": "https://explorer.zircuit.com",
     "chainId": 48900,

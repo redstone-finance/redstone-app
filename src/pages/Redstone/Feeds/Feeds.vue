@@ -246,14 +246,14 @@
             {{ totalRows }} entries
           </span>
           <span v-else
-            >No entries found -
+            >No entries found
             <span
               style="pointer-events: all"
               v-if="hasFilters"
               class="clear-filters"
               @click="resetFilters"
             >
-              Clear filters
+            - Clear filters
             </span></span
           >
         </span>
