@@ -49,8 +49,9 @@
       &:first-child {
         text-align: left;
       }
-      &:nth-child(2) {
-        text-align: left;
+      &:nth-child(3) {
+        // second is taken by popularity
+          text-align: left;
       }
 
       @media (min-width: breakpoint-min(lg)) {

@@ -565,12 +565,23 @@
         hexValue = hexValue.replace(/^0x/, "");
         const decimalValue = parseInt(hexValue, 16);
         const usdValue = decimalValue / Math.pow(10, 8);
-        return usdValue.toLocaleString("en-US", {
-          style: "currency",
-          currency: "USD",
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 18, // Adjust this value based on your precision needs
-        });
+        if (usdValue >= 1) {
+          return new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 3,
+            maximumFractionDigits: 3,
+          }).format(usdValue);
+        } else {
+          const formatter = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+            notation: "standard",
+            minimumSignificantDigits: 4,
+            maximumSignificantDigits: 4,
+          });
+          return formatter.format(usdValue);
+        }
       },
       transformHexString(str) {
         if (str == null) return "no data";
@@ -644,7 +655,10 @@
             ? triggerOverride[0]?.value ||
               triggerOverride[0].value.deviationPercentage
             : item.triggers.deviationPercentage;
-        return deviationPercentage ? deviationPercentage + "%" : "n/a";
+        console.log({ deviationPercentage });
+        return deviationPercentage
+          ? deviationPercentage?.deviationPercentage || deviationPercentage
+          : "n/a";
       },
       resolveTimeSinceLastUpdateInMilliseconds(item) {
         const triggerOverride = item.overrides.filter(
@@ -823,7 +837,10 @@
                 item?.timestamp,
                 this.resolveTimeSinceLastUpdateInMilliseconds(item)
               ) || JSON.stringify(item.triggers.cron),
-            deviation: this.resolveDeviationPercentage(item),
+            deviation:
+              this.resolveDeviationPercentage(item) != "n/a"
+                ? this.resolveDeviationPercentage(item) + "%"
+                : "n/a",
             cron: item.triggers.cron,
             token: item.feedId,
             relayerId: item.layerId,
