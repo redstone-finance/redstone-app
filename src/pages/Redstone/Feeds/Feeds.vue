@@ -338,9 +338,10 @@
             formatter: (value, key, item) => item.network.name,
           },
           { key: "answer", label: "Answer", sortable: false },
+          { key: "deviation", label: "Deviation threshold ", sortable: false },
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
-          { key: "deviation", label: "Deviation threshold ", sortable: false },
+       
         ],
       };
     },
