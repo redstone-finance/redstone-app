@@ -138,6 +138,12 @@
     "useEthRatio": false
   },
   {
+    "name": "ISEI",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png",
+    "token": "ISEI",
+    "useEthRatio": false
+  },
+  {
     "name": "TIA",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/tia.webp",
     "token": "TIA",
@@ -288,9 +294,117 @@
     "useEthRatio": false
   },
   {
-    "name": "LAB",
+    "name": "CELO/EUR",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.webp",
+    "token": "CELO/EUR",
+    "useEthRatio": false
+  },
+  {
+    "name": "CELO/BRL",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.webp",
+    "token": "CELO/BRL",
+    "useEthRatio": false
+  },
+  {
+    "name": "USDC/EUR",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdc.webp",
+    "token": "USDC/EUR",
+    "useEthRatio": false
+  },
+  {
+    "name": "USDC/BRL",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/usdc.webp",
+    "token": "USDC/BRL",
+    "useEthRatio": false
+  },
+  {
+    "name": "EUROC/EUR",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/euro.png",
+    "token": "EUROC/EUR",
+    "useEthRatio": false
+  },
+  {
+    "name": "weETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/weeth.webp",
+    "token": "weETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "ezETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ezeth.webp",
+    "token": "ezETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "apxETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/apxeth.webp",
+    "token": "apxETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "ETHx/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ethx.webp",
+    "token": "ETHx/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "ETH+/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.webp",
+    "token": "ETH+/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "pufETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/pufeth.webp",
+    "token": "pufETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "rsETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/rseth.webp",
+    "token": "rsETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "rswETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/rsweth.webp",
+    "token": "rswETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "sfrxETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sfrxeth.webp",
+    "token": "sfrxETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "osETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/oseth.webp",
+    "token": "osETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "SWETH/ETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
+    "token": "SWETH/ETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "wstETH/stETH Ratio",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/wsteth.webp",
+    "token": "wstETH/stETH",
+    "useEthRatio": true
+  },
+  {
+    "name": "SolvBTC MERLIN/BTC TWAP 60",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/solvbtc.webp",
+    "token": "SolvBTC_MERLIN/BTC-TWAP-60",
+    "useEthRatio": false
+  },
+  {
+    "name": "LAB.m",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/lab.webp",
-    "token": "LAB",
+    "token": "LAB.m",
     "useEthRatio": false
   },
   {
