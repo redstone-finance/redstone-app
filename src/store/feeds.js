@@ -156,7 +156,6 @@ export default {
         false
       )
         return;
-        console.log(state.relayerSchema[layerId])
       const method =
         state.relayerSchema[layerId]?.adapterContractType === "multi-feed"
           ? this.getters["feeds/getSmartContractByLayerId"](

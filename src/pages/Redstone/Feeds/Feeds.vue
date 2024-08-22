@@ -210,9 +210,9 @@
       </template>
       <template #cell(answer)="{ item }">
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
-        <span v-else-if="item.value">
+        <span v-else-if="item.answer">
           <strong style="font-weight: 500">
-            {{ parseToUsd(item.answer) }}
+            {{ parseToUsd(item.answer, useEthRatio) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -553,6 +553,13 @@
           (network) => network.chainId === networkId
         ).name;
       },
+      findUseRatioProp(token) {
+        const idealMatch = images.find((image) => token === image.token);
+        const secondMatch = images.find(
+          (image) => token.indexOf(image.token) >= 0
+        );
+        return idealMatch?.useEthRatio || secondMatch?.useEthRatio;
+      },
       findNetworkImage(networkId) {
         return Object.values(networks).find(
           (network) => network.chainId === networkId
@@ -598,27 +605,29 @@
       hasSlash(string) {
         return string.indexOf("/") >= 0;
       },
-      parseToUsd(hexValue) {
+      parseToCurrency(hexValue, parseToEth) {
         hexValue = hexValue.replace(/^0x/, "");
         const decimalValue = parseInt(hexValue, 16);
-        const usdValue = decimalValue / Math.pow(10, 8);
-        if (usdValue >= 1) {
-          return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 3,
-            maximumFractionDigits: 3,
-          }).format(usdValue);
+        const value = decimalValue / Math.pow(10, 8);
+        let formatterOptions = {
+          style: "currency",
+          currency: "USD",
+        };
+        if (value >= 1) {
+          formatterOptions.minimumFractionDigits = 3;
+          formatterOptions.maximumFractionDigits = 3;
         } else {
-          const formatter = new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            notation: "standard",
-            minimumSignificantDigits: 4,
-            maximumSignificantDigits: 4,
-          });
-          return formatter.format(usdValue);
+          formatterOptions.notation = "standard";
+          formatterOptions.minimumSignificantDigits = 4;
+          formatterOptions.maximumSignificantDigits = 4;
         }
+        const formatter = new Intl.NumberFormat("en-US", formatterOptions);
+        let formattedValue = formatter.format(value);
+        if (parseToEth) {
+          formattedValue = formattedValue.replace("$", "Ξ");
+        }
+
+        return formattedValue;
       },
       transformHexString(str) {
         if (str == null) return "no data";
@@ -797,9 +806,7 @@
         );
       },
       totalRows() {
-        return this.hasFilters
-          ? this.filteredItems.length
-          : this.feeds.length;
+        return this.hasFilters ? this.filteredItems.length : this.feeds.length;
       },
       firstEntry() {
         if (this.totalRows == 0) return 0;
@@ -902,6 +909,7 @@
                 : "n/a",
             cron: item.triggers.cron,
             token: item.feedId,
+            useEthRatio: this.findUseRatioProp(this.getFirstPart(item.feedId)),
             relayerId: item.layerId,
             feed_address: item.feedAddress,
             crypto_token: this.getFirstPart(item.feedId),
