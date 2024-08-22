@@ -6,9 +6,11 @@
   border-radius: 10px;
   padding: 2rem;
   box-shadow: var(--content-shadow);
-  h1 {
-    font-size: 18px;
-    margin-left: 15px;
+  &__view-details{
+    padding: 0 15px;
+    h1 {
+      font-size: 18px;
+    }
   }
   &__status {
     display: flex;
@@ -331,15 +333,51 @@
 
 .selected-items {
   margin-top: 10px;
-  font-size: 10px;
-  color: #aeaeae;
+  font-size: 12px;
+  color: #949494;
 }
 
 .separator {
-  width: 1px;
-  background: #ececec;
-  height: 50px;
-  margin: 0 10px;
+  height: 30px;
+  margin: auto 10px;
+  position: relative;
+  top: 15px
+}
+
+.selected-filters-icons {
+  position: relative;
+  background: linear-gradient(
+    to right, 
+    #f8f8f8 0%, 
+    #f8f8f8 50%, 
+    rgba(248, 248, 248, 0) 100%
+  );
+  padding: 5px;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.selected-filters-icons::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #e4e4e4;
+  border-radius: 30px;
+  mask-image: linear-gradient(
+    to right, 
+    black 0%, 
+    black 50%, 
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right, 
+    black 0%, 
+    black 50%, 
+    transparent 100%
+  );
 }
 
 .feeds__select {

@@ -1,6 +1,12 @@
 <template>
   <div class="feeds">
-    <h1>Push model on-chain feeds</h1>
+    <div class="feeds__view-details">
+      <h1>Push Model (On-chain Feeds)</h1>
+      <p>
+        RedStone Push Oracle offers robust, reliable and accurate data feeds
+        availabe to query from the destination network.
+      </p>
+    </div>
     <div class="feeds__actions-wrapper">
       <div style="width: 100%">
         <div class="feeds__actions-wrapper-item">
@@ -27,7 +33,7 @@
                 }}</strong></span
               >
               <span class="feeds__status-text"
-                >Selected tokens:
+                >Selected feeds:
                 <strong>{{
                   selectedCryptos.length || cryptoImages.length
                 }}</strong></span
@@ -78,23 +84,25 @@
         <div class="feeds__actions-wrapper-item">
           <div v-if="selectedNetworks.length > 0">
             <div class="selected-items">Selected networks:</div>
-            <SelectedFilters
-              @remove="removeNetwork"
-              class="mt-2"
-              :filters="displayedSelectedNetworks"
-            />
+            <div class="selected-filters-icons">
+              <SelectedFilters
+                @remove="removeNetwork"
+                :filters="displayedSelectedNetworks"
+              />
+            </div>
           </div>
           <div
             class="separator"
             v-if="selectedCryptos.length > 0 && selectedNetworks.length > 0"
           ></div>
-          <div v-if="selectedCryptos.length > 0" class="second-filters">
-            <div class="selected-items">Selected cryptos:</div>
-            <SelectedFilters
-              @remove="removeCrypto"
-              class="mt-2"
-              :filters="displayedSelectedCryptos"
-            />
+          <div v-if="selectedCryptos.length > 0">
+            <div class="selected-items">Selected feeds:</div>
+            <div class="selected-filters-icons">
+              <SelectedFilters
+                @remove="removeCrypto"
+                :filters="displayedSelectedCryptos"
+              />
+            </div>
           </div>
         </div>
         <div v-if="hasFilters" class="clear-filters" @click="resetFilters">
@@ -138,7 +146,7 @@
           class="fa fa-info-circle"
           v-b-tooltip.hover
           title="Time since last on-chain price update. Indicates data freshness and helps track update frequency."
-        ></i>
+      ></i>
       </template>
       <template #head(heartbeat)="data">
         {{ data.label }}
@@ -207,7 +215,7 @@
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.value">
           <strong style="font-weight: 500">
-            {{ parseToUsd(item.value) }}
+            {{ parseToUsd(item.answer) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -346,7 +354,7 @@
             formatter: (value, key, item) => item.network.name,
           },
           { key: "contract_address", label: "Addresses", sortable: false },
-          { key: "answer", label: "Answer", sortable: false },
+          { key: "answer", label: "Answer", sortable: true },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
         ],
@@ -702,14 +710,14 @@
     },
     computed: {
       prevIcon() {
-        return isScreen('sm') || isScreen('xs')
+        return isScreen("sm") || isScreen("xs")
           ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
            </svg>`
           : "Previous page";
       },
       nextIcon() {
-        return isScreen('sm') || isScreen('xs')
+        return isScreen("sm") || isScreen("xs")
           ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
            </svg>`
@@ -838,7 +846,7 @@
           //   return undefined
           // }
           return {
-            value: item.value,
+            answer: item.value,
             feed: this.hasSlash(item.feedId)
               ? this.stripAdditionalFeedInfo(item.feedId)
               : this.stripAdditionalFeedInfo(item.feedId) + "/USD",
