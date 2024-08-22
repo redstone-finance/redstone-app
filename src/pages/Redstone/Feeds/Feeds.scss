@@ -6,7 +6,10 @@
   border-radius: 10px;
   padding: 2rem;
   box-shadow: var(--content-shadow);
-
+  h1{
+    font-size: 18px;
+    margin-left: 15px;
+  }
   &__status {
     display: flex;
     flex-flow: row;

@@ -1,5 +1,6 @@
 <template>
   <div class="feeds">
+    <h1>Push model on-chain feeds</h1>
     <div class="feeds__actions-wrapper">
       <div style="width: 100%">
         <div class="feeds__actions-wrapper-item">
