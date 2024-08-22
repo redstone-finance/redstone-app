@@ -230,8 +230,8 @@
       </template>
     </b-table>
     <b-pagination
-      prev-text="Previous page"
-      next-text="Next page"
+      :prev-text="prevIcon"
+      :next-text="nextIcon"
       limit="1"
       @change="onPageChange"
       v-model="currentPage"
@@ -240,6 +240,12 @@
       align="fill"
       class="my-3 custom-pagination"
     >
+      <template #prev-text>
+        <span v-html="prevIcon"></span>
+      </template>
+      <template #next-text>
+        <span v-html="nextIcon"></span>
+      </template>
       <template #page="{ page }">
         <span v-if="page === currentPage" class="entry-info">
           <span v-if="totalRows > 0">
@@ -286,6 +292,7 @@
   import CopyToClipboard from "./components/CopyToClipboard.vue";
   import networks from "@/data/networks.json";
   import images from "@/data/logosDefinitions.json";
+  import isScreen from "@/core/screenHelper";
 
   export default {
     components: {
@@ -694,6 +701,20 @@
       },
     },
     computed: {
+      prevIcon() {
+        return isScreen('sm') || isScreen('xs')
+          ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+           </svg>`
+          : "Previous page";
+      },
+      nextIcon() {
+        return isScreen('sm') || isScreen('xs')
+          ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+           </svg>`
+          : "Next page";
+      },
       totalPages() {
         return Math.ceil(this.totalRows / this.perPage);
       },

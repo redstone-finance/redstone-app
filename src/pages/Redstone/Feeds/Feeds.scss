@@ -238,9 +238,6 @@
     }
     &.active {
       width: 40px !important;
-      display: inline-block !important;
-      margin-left: calc(50% - 100px);
-      transform: translateX(-50%);
       button {
         text-align: center !important;
         border: 0 !important;
@@ -254,6 +251,29 @@
   }
 }
 
+@media (max-width: breakpoint-min(lg)) {
+  .custom-pagination {
+    font-size: 10px;
+    li {
+      width: auto !important;
+    }
+
+    button {
+      padding: 10px;
+      box-shadow: none;
+      &:active {
+        box-shadow: none;
+      }
+    }
+    .page-item {
+      &.active {
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
 .feeds__per-page-select {
   background-color: #f8f9fa;
   border: 1px solid #ced4da;
