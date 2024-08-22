@@ -212,7 +212,7 @@
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
-            {{ parseToUsd(item.answer, useEthRatio) }}
+            {{ parseToUsd(item.answer, item.useEthRatio) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -539,13 +539,7 @@
         this.handleFilter("crypto", this.selectedCryptos);
       },
       stripAdditionalFeedInfo(string) {
-        const hasUnderscore = string.indexOf("_") >= 0;
-        const hasDash = string.indexOf("-") >= 0;
-        if (hasUnderscore) {
-          return string.split("_")[0];
-        } else if (hasDash) {
-          return string.split("-")[0];
-        }
+ 
         return string;
       },
       findNetworkName(networkId) {
@@ -605,7 +599,7 @@
       hasSlash(string) {
         return string.indexOf("/") >= 0;
       },
-      parseToCurrency(hexValue, parseToEth) {
+      parseToUsd(hexValue, parseToEth) {
         hexValue = hexValue.replace(/^0x/, "");
         const decimalValue = parseInt(hexValue, 16);
         const value = decimalValue / Math.pow(10, 8);
@@ -885,7 +879,7 @@
             answer: item.value,
             feed: this.hasSlash(item.feedId)
               ? this.stripAdditionalFeedInfo(item.feedId)
-              : this.stripAdditionalFeedInfo(item.feedId) + "/USD",
+              : this.stripAdditionalFeedInfo(item.feedId) +  (this.findUseRatioProp(item.feedId) ? '/ETH' : "/USD"),
             network: {
               id: item.networkId,
               name: this.findNetworkName(item.networkId),
@@ -909,11 +903,11 @@
                 : "n/a",
             cron: item.triggers.cron,
             token: item.feedId,
-            useEthRatio: this.findUseRatioProp(this.getFirstPart(item.feedId)),
+            useEthRatio: this.findUseRatioProp(item.feedId),
             relayerId: item.layerId,
             feed_address: item.feedAddress,
             crypto_token: this.getFirstPart(item.feedId),
-            token_image: this.getTokenImage(this.getFirstPart(item.feedId)),
+            token_image: this.getTokenImage(item.feedId),
             loaders: item.loaders,
             popularity: `${this.networkOrder.findIndex((network) => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex((crypto) => this.getFirstPart(item.feedId) === crypto.token)}`,
             explorer: {
