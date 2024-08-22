@@ -330,6 +330,8 @@
   font-size: 1rem;
   padding: 0.375rem 0.75rem;
   margin-left: 0.5rem;
+  width: 75px;
+  text-align: center;
 }
 @media (max-width: breakpoint-min(md)) {
   .feeds__table {
