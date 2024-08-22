@@ -107,6 +107,14 @@
     created() {
       this.initializeTempSelection();
     },
+    watch: {
+      value: {
+        handler(newValue) {
+          this.tempSelected = [...newValue];
+        },
+        immediate: true,
+      },
+    },
     computed: {
       filteredItems() {
         return this.items.filter((item) =>
@@ -160,123 +168,125 @@
 </script>
 <style lang="scss">
   .remove-query {
-  line-height: 15px;
-  position: absolute;
-  right: 25px;
-  padding: 10px;
-
-  &:hover {
-    cursor: pointer;
-    color: var(--redstone-red-color)
-  }
-}
-
-.network-name {
-  font-size: 14px;
-  font-weight: 300;
-}
-
-.crypto-dropdown-container {
-  position: relative;
-  z-index: 999;
-}
-
-.dropdown {
-  margin: 0 !important;
-
-  ul {
-    min-width: 250px;
-  }
-
-  button {
-    padding: 10px 18px;
-    font-size: 14px;
-    background: #fff;
-    border: 2px solid #e4e4e4;
+    line-height: 15px;
+    position: absolute;
+    right: 25px;
+    padding: 10px;
 
     &:hover {
+      cursor: pointer;
+      color: var(--redstone-red-color);
+    }
+  }
+
+  .network-name {
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .crypto-dropdown-container {
+    position: relative;
+    z-index: 999;
+  }
+
+  .dropdown {
+    margin: 0 !important;
+
+    ul {
+      min-width: 250px;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 14px;
       background: #fff;
-      color: #1a1414;
+      border: 2px solid #e4e4e4;
+
+      &:hover {
+        background: #fff;
+        color: #1a1414;
+      }
     }
   }
-}
 
-.crypto-dropdown {
-  width: 100%;
-
-  .b-dropdown-form {
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  ul {
+  .crypto-dropdown {
     width: 100%;
-    left: 0;
-    top: 100% !important;
-    transform: none !important;
-  }
 
-  .crypto-checkbox-list {
-    border-bottom: 1px solid rgb(228, 228, 228);
-    margin: 5px 0;
-    padding: 8px 10px;
-  }
-
-  .no-results {
-    text-align: center;
-    display: block;
-    width: 100%;
-    padding: 15px;
-    color: gray;
-  }
-
-  .confirm-button-container {
-    position: sticky;
-    bottom: 0;
-    background: #fff;
-    padding: 10px;
-    border-top: 1px solid #e4e4e4;
-    text-align: center;
-  }
-
-  .confirm-button {
-    width: 100%;
-    background-color: var(--redstone-red-color);
-    border-color: var(--redstone-red-color);
-
-    &:hover, &:focus {
-      background-color: darken(#FD627A, 10%);
-      border-color: darken(#FD627A, 10%);
+    .b-dropdown-form {
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
     }
-  }
-}
 
-.search-input-container {
-  position: sticky;
-  top: 0px;
-  background: #fff;
-  z-index: 2;
-  .form-control {
-    border: none;
-    border-bottom: 1px solid rgb(192, 192, 192);
-    border-radius: 0;
-    padding: 20px;
+    ul {
+      width: 100%;
+      left: 0;
+      top: 100% !important;
+      transform: none !important;
+    }
 
-    &:active,&:focus {
+    .crypto-checkbox-list {
+      border-bottom: 1px solid rgb(228, 228, 228);
+      margin: 5px 0;
+      padding: 8px 10px;
+    }
+
+    .no-results {
+      text-align: center;
+      display: block;
+      width: 100%;
+      padding: 15px;
+      color: gray;
+    }
+
+    .confirm-button-container {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 10px;
+      border-top: 1px solid #e4e4e4;
+      text-align: center;
+    }
+
+    .confirm-button {
+      width: 100%;
+      background-color: var(--redstone-red-color);
       border-color: var(--redstone-red-color);
+
+      &:hover,
+      &:focus {
+        background-color: darken(#fd627a, 10%);
+        border-color: darken(#fd627a, 10%);
+      }
     }
   }
-}
 
-.dropdown-menu {
-  padding: 0 !important;
-}
+  .search-input-container {
+    position: sticky;
+    top: 0px;
+    background: #fff;
+    z-index: 2;
+    .form-control {
+      border: none;
+      border-bottom: 1px solid rgb(192, 192, 192);
+      border-radius: 0;
+      padding: 20px;
 
-.dropdown.show {
-  button {
-    background: var(--redstone-red-color) !important;
-    border: 2px solid darken(#FD627A, $amount: 15) !important;
+      &:active,
+      &:focus {
+        border-color: var(--redstone-red-color);
+      }
+    }
   }
-}
+
+  .dropdown-menu {
+    padding: 0 !important;
+  }
+
+  .dropdown.show {
+    button {
+      background: var(--redstone-red-color) !important;
+      border: 2px solid darken(#fd627a, $amount: 15) !important;
+    }
+  }
 </style>
