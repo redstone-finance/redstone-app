@@ -131,6 +131,7 @@
       :filter-function="customFilter"
       :fields="fields"
       class="feeds__table"
+      :class="{'disable-sorting': !allLoadersComplete}"
     >
       <template #head(deviation)="data">
         {{ data.label }}
@@ -823,7 +824,7 @@
       },
       ...mapState("feeds", ["relayersDetails"]),
       ...mapState("layout", ["searchTerm"]),
-      ...mapGetters("feeds", ["combinedFeedsWithDetailsArray"]),
+      ...mapGetters("feeds", ["combinedFeedsWithDetailsArray", "allLoadersComplete"]),
       filteredNetworks() {
         {
           if (this.selectedCryptos.length === 0) {

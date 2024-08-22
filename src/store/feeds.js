@@ -49,6 +49,11 @@ export default {
     },
   },
   getters: {
+    allLoadersComplete: (state) => {
+      return Object.values(state.relayersDetails).every((relayer) => {
+        return Object.values(relayer.loaders).every((loader) => loader === false);
+      });
+    },
     getSmartContractByLayerId: (state) => (layerId) => {
       const contract = state.smartContracts[layerId];
       if (contract == null)
@@ -222,7 +227,6 @@ export default {
             blockTimestamp: null,
             dataFeed: null,
             loaders: {
-              feedId: true,
               feedDataValue: true,
               blockTimestamp: true,
             },
