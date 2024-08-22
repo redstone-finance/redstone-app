@@ -57,7 +57,7 @@ const router = new Router({
           path: "feeds",
           name: "Feeds list",
           component: Feeds,
-          meta: { noScroll: true },
+          meta: { noScroll: true, showSearchInputInNavbar: true },
         },
         {
           path: "data-services",

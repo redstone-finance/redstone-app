@@ -4,7 +4,7 @@
       <h1>Push Model (On-chain Feeds)</h1>
       <p>
         RedStone Push Oracle offers robust, reliable and accurate data feeds
-        availabe to query from the destination network.
+        available to query from the destination network.
       </p>
     </div>
     <div class="feeds__actions-wrapper">
@@ -146,7 +146,7 @@
           class="fa fa-info-circle"
           v-b-tooltip.hover
           title="Time since last on-chain price update. Indicates data freshness and helps track update frequency."
-      ></i>
+        ></i>
       </template>
       <template #head(heartbeat)="data">
         {{ data.label }}
@@ -206,9 +206,6 @@
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <!-- <router-link class="feeds__feed-link"
-                    :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }">
-                </router-link> -->
         <span>{{ item.feed }}</span>
       </template>
       <template #cell(answer)="{ item }">
@@ -381,14 +378,19 @@
         this.updateRouteParams();
       },
       initializeFiltersFromRoute() {
-        const { cryptos, networks, page, sortBy, sortDesc, perPage } =
+        const { cryptos, networks, page, sortBy, sortDesc, perPage, search } =
           this.$route.query;
-        this.selectedCryptos = cryptos ? cryptos.split(",") : [];
-        this.selectedNetworks = networks ? networks.split(",").map(Number) : [];
+        this.selectedCryptos = search ? [] : cryptos ? cryptos.split(",") : [];
+        this.selectedNetworks = search
+          ? []
+          : networks
+            ? networks.split(",").map(Number)
+            : [];
         this.currentPage = page ? parseInt(page) : 1;
         this.sortBy = sortBy || "popularity";
         this.sortDesc = sortDesc === "true";
         this.perPage = perPage ? parseInt(perPage) : 32;
+        // Note: We don't set searchTerm here as it's managed by the Vuex store
         this.applyFilters();
       },
       updateRouteParams() {
@@ -396,26 +398,29 @@
         this.scrollPosition =
           window.pageYOffset || document.documentElement.scrollTop;
         const query = { ...this.$route.query };
-        if (this.selectedCryptos.length > 0) {
-          query.cryptos = this.selectedCryptos.join(",");
-        } else {
+
+        if (this.searchTerm) {
+          query.search = this.searchTerm;
           delete query.cryptos;
-        }
-        if (this.selectedNetworks.length > 0) {
-          query.networks = this.selectedNetworks.join(",");
-        } else {
           delete query.networks;
-        }
-        query.page = this.currentPage.toString();
-        if (this.sortBy) {
-          query.sortBy = this.sortBy;
-          query.sortDesc = this.sortDesc.toString();
         } else {
-          delete query.sortBy;
-          delete query.sortDesc;
+          delete query.search;
+          if (this.selectedCryptos.length > 0) {
+            query.cryptos = this.selectedCryptos.join(",");
+          } else {
+            delete query.cryptos;
+          }
+          if (this.selectedNetworks.length > 0) {
+            query.networks = this.selectedNetworks.join(",");
+          } else {
+            delete query.networks;
+          }
         }
-        query.perPage = this.perPage.toString();
+
         query.page = this.currentPage.toString();
+        query.sortBy = this.sortBy;
+        query.sortDesc = this.sortDesc.toString();
+        query.perPage = this.perPage.toString();
 
         this.$router
           .replace({ query })
@@ -451,6 +456,7 @@
         this.filters = {
           selectedCryptos: this.selectedCryptos,
           selectedNetworks: this.selectedNetworks,
+          searchTerm: this.searchTerm,
         };
         this.$nextTick(() => {
           this.$refs.selectableTable.refresh();
@@ -459,6 +465,7 @@
       resetFilters() {
         this.selectedCryptos = [];
         this.selectedNetworks = [];
+        this.$store.dispatch("layout/updateSearchTerm", "");
         this.filters = null;
         this.currentFilter = null;
         this.currentPage = 1;
@@ -467,6 +474,7 @@
         this.$refs.selectableTable.refresh();
         this.updateRouteParams();
       },
+
       onPageChange(page) {
         this.currentPage = page;
         this.updateRouteParams();
@@ -476,16 +484,29 @@
       },
       customFilter(row, filters) {
         if (!filters) return true;
-        const { selectedCryptos, selectedNetworks } = filters;
+        const { selectedCryptos, selectedNetworks, searchTerm } = filters;
+
+        if (searchTerm) {
+          const searchLower = searchTerm.toLowerCase();
+          return (
+            row.feed.toLowerCase().includes(searchLower) ||
+            row.network.name.toLowerCase().includes(searchLower) ||
+            (row.contract_address &&
+              row.contract_address.toLowerCase().includes(searchLower))
+          );
+        }
+
         const cryptoMatch =
           selectedCryptos.length === 0 ||
           selectedCryptos.some((crypto) => {
             const feedParts = row.feed.split("/");
             return feedParts[0].toLowerCase() === crypto.toLowerCase();
           });
+
         const networkMatch =
           selectedNetworks.length === 0 ||
           selectedNetworks.includes(row.network.id);
+
         return cryptoMatch && networkMatch;
       },
       unselectInvalidItems() {
@@ -693,6 +714,14 @@
       ...mapActions("feeds", ["init", "initSingleContract"]),
     },
     watch: {
+      searchTerm: {
+        handler() {
+          this.currentPage = 1;
+          this.applyFilters();
+          this.updateRouteParams();
+        },
+        immediate: true,
+      },
       currentPage(newPage) {
         this.selectedPage = newPage;
       },
@@ -762,14 +791,14 @@
       },
       hasFilters() {
         return (
-          this.filters &&
-          (this.filters.selectedCryptos.length > 0 ||
-            this.filters.selectedNetworks.length > 0)
+          this.searchTerm ||
+          (this.filters &&
+            (this.filters.selectedCryptos.length > 0 ||
+              this.filters.selectedNetworks.length > 0))
         );
       },
       totalRows() {
-        return this.displayedSelectedNetworks.length > 0 ||
-          this.displayedSelectedCryptos.length > 0
+        return this.hasFilters
           ? this.filteredItems.length
           : this.feeds.length;
       },
@@ -793,6 +822,7 @@
         return this.feeds?.slice(startIndex, endIndex);
       },
       ...mapState("feeds", ["relayersDetails"]),
+      ...mapState("layout", ["searchTerm"]),
       ...mapGetters("feeds", ["combinedFeedsWithDetailsArray"]),
       filteredNetworks() {
         {
