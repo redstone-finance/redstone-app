@@ -5,7 +5,7 @@
         <!-- <a class="d-md-down-none px-2" href="#" @click="toggleSidebarMethod" id="barsTooltip">
           <i class='fi flaticon-menu' />
         </a> -->
-        <a class="fs-lg d-md-none" href="#" @click="toggleSidebarMenu">
+        <a class="fs-lg d-xl-none" href="#" @click="toggleSidebarMenu">
           <i class="fi flaticon-menu" />
         </a>
       </b-nav-item>
