@@ -38,15 +38,15 @@
       id="use-buttons"
       class="align-items-center flex-grow-1 justify-content-end"
     >
-      <a
+      <RouterLink
         id="use-push-button"
-        target="_blank"
+        :to="{ path: 'feeds' }"
         href="https://docs.redstone.finance/docs/smart-contract-devs/price-feeds"
       >
         <b-button class="btn btn-inverted rounded-pill" variant="primary">
           Use Push Model
         </b-button>
-      </a>
+      </RouterLink>
       <a
         id="use-pull-button"
         target="_blank"
@@ -64,6 +64,7 @@
   import _ from "lodash";
   import { mapState, mapActions } from "vuex";
   import CodeExample from "@/components/Token/CodeExample";
+  import { RouterLink } from "vue-router";
 
   export default {
     name: "Header",

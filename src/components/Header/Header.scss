@@ -207,3 +207,17 @@ i.flaticon-chevron-back {
   height: 24px;
   width: 14px;
 }
+
+#use-buttons {
+  button {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: breakpoint-min(lg)) {
+  #use-buttons {
+    button {
+      font-size: 14px;
+    }
+  }
+}

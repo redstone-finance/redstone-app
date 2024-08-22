@@ -6,7 +6,7 @@
   border-radius: 10px;
   padding: 2rem;
   box-shadow: var(--content-shadow);
-  h1{
+  h1 {
     font-size: 18px;
     margin-left: 15px;
   }
@@ -54,7 +54,7 @@
       }
       &:nth-child(3) {
         // second is taken by popularity
-          text-align: left;
+        text-align: left;
       }
 
       @media (min-width: breakpoint-min(lg)) {
@@ -379,4 +379,62 @@
   font-size: 0.8em;
   vertical-align: super;
   cursor: help;
+}
+
+.table.b-table.b-table-stacked-md > tbody > tr > td {
+  &:nth-child(2) {
+    display: none !important;
+  }
+}
+
+.feeds__actions-wrapper-label {
+  width: 100%;
+  margin-top: 10px;
+  .feeds__status-text {
+    text-align: center !important;
+  }
+  select {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: breakpoint-min(lg)) {
+  .feeds__actions-wrapper-label {
+    width: auto;
+    margin-top: 0;
+    .feeds__status-text {
+      text-align: right !important;
+    }
+    select {
+      width: 75px;
+      margin-left: 0;
+    }
+  }
+}
+.feeds__status {
+  width: 100%;
+  display: block;
+  .feeds__actions-wrapper-label {
+    width: 100%;
+    margin: 0 !important;
+  }
+  .feeds__status-text {
+    margin-top: 10px;
+    display: block;
+  }
+}
+
+@media (min-width: breakpoint-min(lg)) {
+  .feeds__status {
+    width: auto;
+    display: flex;
+    .feeds__actions-wrapper-label {
+      width: auto;
+      margin: 0 15px !important;
+    }
+    .feeds__status-text {
+      margin-top: 0px;
+    }
+  }
 }
