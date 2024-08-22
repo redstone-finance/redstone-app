@@ -2,7 +2,7 @@
 
 .app-header.navbar {
   height: $navbar-height;
-  z-index: 100;
+  z-index: 9999;
   padding: 00;
   background: var(--navbar-bg);
   box-shadow: var(--navbar-shadow);
@@ -211,6 +211,7 @@ i.flaticon-chevron-back {
 #use-buttons {
   button {
     font-size: 12px;
+    padding: 3px 6px !important;
   }
 }
 
