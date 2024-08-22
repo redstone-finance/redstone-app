@@ -692,7 +692,6 @@
             ? triggerOverride[0]?.value ||
               triggerOverride[0].value.deviationPercentage
             : item.triggers.deviationPercentage;
-        console.log({ deviationPercentage });
         return deviationPercentage
           ? deviationPercentage?.deviationPercentage || deviationPercentage
           : "n/a";
