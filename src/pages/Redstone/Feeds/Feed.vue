@@ -4,8 +4,8 @@
       <dl class="stats-grid">
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
-          <dd class="stat-value">
-            $ <strong>{{ chartData[chartData.length - 1].value }}</strong>
+          <dd class="stat-value" v-if="chartData">
+            $ <strong>{{ chartData[chartData?.length - 1].value }}</strong>
           </dd>
         </div>
         <div class="stat-item">
