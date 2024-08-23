@@ -109,7 +109,7 @@ export default {
             })),
             fill: true,
             lineTension: 0.1,
-            pointRadius: 0,
+            pointRadius: 4,
             pointHoverRadius: 0,
           },
         ],
@@ -176,6 +176,12 @@ export default {
       });
     },
     getChartOptions() {
+      const data = this.chartData.datasets[0].data;
+      const minValue = Math.min(...data.map(point => point.y));
+      const maxValue = Math.max(...data.map(point => point.y));
+      const range = maxValue - minValue;
+      const padding = range * 0.1; // 10% padding
+
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -222,7 +228,9 @@ export default {
           yAxes: [
             {
               ticks: {
-                beginAtZero: true,
+                beginAtZero: false,
+                suggestedMin: minValue - padding,
+                suggestedMax: maxValue + padding,
               },
             },
           ],
