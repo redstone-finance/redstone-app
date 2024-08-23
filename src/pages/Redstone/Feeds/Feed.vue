@@ -4,8 +4,8 @@
       <dl class="stats-grid">
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
-          <dd class="stat-value" v-if="chartData">
-            $ <strong>{{ chartData[chartData?.length - 1].value }}</strong>
+          <dd class="stat-value" v-if="currentChartData">
+            $ <strong>{{ currentChartData[currentChartData.length - 1].value }}</strong>
           </dd>
         </div>
         <div class="stat-item">
@@ -44,8 +44,8 @@
       </dl>
       <div class="feed-chart">
         <layer-chart
-          v-if="chartData"
-          :data="chartData"
+          v-if="currentChartData"
+          :data="currentChartData"
           :range="currentRange"
           @range-change="handleRangeChange"
         />
@@ -85,7 +85,11 @@ export default {
   data() {
     return {
       isLoading: false,
-      chartData: null,
+      chartDataCache: {
+        "1d": null,
+        "1w": null,
+        "1m": null,
+      },
       currentRange: "1w",
     };
   },
@@ -101,12 +105,17 @@ export default {
     },
     ...mapActions("feeds", ["initSingle", "fetchRelayerSchema"]),
     async fetchChartData() {
+      if (this.chartDataCache[this.currentRange]) {
+        // Data for this range already exists, no need to fetch
+        return;
+      }
+
       this.isLoading = true;
       try {
         const { data } = await axios.get(this.chartEndpoint);
-        this.chartData = data.onChainUpdates;
+        this.chartDataCache[this.currentRange] = data.onChainUpdates;
       } catch (error) {
-      console.error("Error fetching chart data:", error);
+        console.error("Error fetching chart data:", error);
       } finally {
         this.isLoading = false;
       }
@@ -124,6 +133,9 @@ export default {
           this.initSingle(this.relayerId);
         }
       }
+    },
+    currentRange() {
+      this.fetchChartData();
     },
   },
   computed: {
@@ -152,6 +164,9 @@ export default {
       const daysRange =
         this.currentRange === "1d" ? 1 : this.currentRange === "1w" ? 7 : 30;
       return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
+    },
+    currentChartData() {
+      return this.chartDataCache[this.currentRange];
     },
     ...mapState("feeds", ["relayersDetails", "relayersSchema"]),
     ...mapGetters("feeds", [
