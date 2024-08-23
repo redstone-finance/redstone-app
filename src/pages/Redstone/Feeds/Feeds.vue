@@ -81,265 +81,183 @@
             </span>
           </div>
         </div>
-        <div class="feeds__actions-wrapper-item">
-          <div v-if="selectedNetworks.length > 0">
-            <div class="selected-items">Selected networks:</div>
-            <div class="selected-filters-icons">
-              <SelectedFilters
-                @remove="removeNetwork"
-                :filters="displayedSelectedNetworks"
-              />
-            </div>
-          </div>
-          <div
-            class="separator"
-            v-if="selectedCryptos.length > 0 && selectedNetworks.length > 0"
-          ></div>
-          <div v-if="selectedCryptos.length > 0">
-            <div class="selected-items">Selected feeds:</div>
-            <div class="selected-filters-icons">
-              <SelectedFilters
-                @remove="removeCrypto"
-                :filters="displayedSelectedCryptos"
-              />
-            </div>
-          </div>
-        </div>
-        <div v-if="hasFiltersAndSearch" class="clear-filters" @click="resetFilters">
+        <div
+          v-if="hasFiltersAndSearch"
+          class="clear-filters"
+          @click="resetFilters"
+        >
           Clear all
         </div>
       </div>
-      <b-table 
-        v-if="displayedTableItems" 
-        id="feeds-table" 
-        v-model="displayedTableItems" 
-        key="table" 
+      <b-table
+        v-if="displayedTableItems"
+        id="feeds-table"
+        v-model="displayedTableItems"
+        key="table"
         stacked="md"
-        ref="selectableTable" 
-        :sortBy="sortBy" 
-        :sortDesc="sortDesc" 
-        @filtered="onFiltered" 
+        ref="selectableTable"
+        :sortBy="sortBy"
+        :sortDesc="sortDesc"
+        @filtered="onFiltered"
         :filter="filters"
-        sort-icon-left 
-        hover 
-        :items="feeds" 
-        :per-page="perPage" 
+        sort-icon-left
+        sticky-header="500px"
+        hover
+        :items="feeds"
+        :per-page="perPage"
         @sort-changed="handleSort"
-        :current-page="currentPage" 
-        :filter-function="customFilter" 
-        :fields="fields" 
+        :current-page="currentPage"
+        :filter-function="customFilter"
+        :fields="fields"
         class="feeds__table"
+        :class="{ 'disable-sorting': !allLoadersComplete }"
       >
+        <template #head(deviation)="data">
+          {{ data.label }}
+          <i
+            class="fa fa-info-circle"
+            v-b-tooltip.hover
+            title="The system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
+          ></i>
+        </template>
+        <template #head(timestamp)="data">
+          {{ data.label }}
+          <i
+            class="fa fa-info-circle"
+            v-b-tooltip.hover
+            title="Time since last on-chain price update. Indicates data freshness and helps track update frequency."
+          ></i>
+        </template>
+        <template #head(heartbeat)="data">
+          {{ data.label }}
+          <i
+            class="fa fa-info-circle"
+            v-b-tooltip.hover
+            title="An automatic timing system forces an on-chain price update when it counts down to 00:00. This acts as a safety net, ensuring updates happen even if price changes stay within the allowed range during the entire heartbeat period."
+          ></i>
+        </template>
         <template #cell(network)="{ item }">
-          <img class="feeds__token-image" :src="item.network.image" :alt="item.network.name">
+          <img
+            class="feeds__token-image"
+            :src="item.network.image"
+            :alt="item.network.name"
+          />
           {{ item.network.name }}
         </template>
         <template #cell(contract_address)="{ item }">
-          <contract-address :item="item" />
+          <div
+            v-if="
+              item.feed_address &&
+              item.explorer &&
+              item.feed_address != '__NO_FEED__'
+            "
+          >
+            <a
+              class="feeds__contract-address"
+              :title="`Open address in ${item.explorer.name} explorer`"
+              target="_blank"
+              :href="`${item.explorer.explorerUrl}/address/${item.feed_address}`"
+            >
+              {{ truncateString(item.feed_address) }}
+            </a>
+            <CopyToClipboard
+              copy-text="Copy feed address"
+              :value="item.feed_address"
+            />
+          </div>
+          <div v-else-if="item.contract_address && item.explorer">
+            <a
+              class="feeds__contract-address"
+              :title="`Open address in ${item.explorer.name} explorer`"
+              target="_blank"
+              :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
+            >
+              {{ truncateString(item.contract_address) }}
+            </a>
+            <CopyToClipboard
+              copy-text="Copy adapter address"
+              :value="item.contract_address"
+            />
+          </div>
         </template>
         <template #cell(feed)="{ item }">
-          <img :src="getImageUrl(item.token_image?.imageName)" class="feeds__token-image" :alt="item.feed">
-          <router-link 
-            class="feeds__feed-link"
-            :to="{ name: 'SingleFeed', params: { network: createNetworkUrlParam(item.network.name), token: item.token.toLowerCase(), meta: item } }"
-          >
-            <span>{{ item.feed }}</span>
-          </router-link>
-        </template>
-        <template #cell(timestamp)="{ item }">
-          <TimestampWithLoader 
-            :isLoading="item.loaders.blockTimestamp" 
-            :rawTimestamp="item.timestamp.raw"
-            :formattedDate="item.timestamp.date" 
-            :parsedTimestamp="item.timestamp.parsed" 
+          <img
+            :src="item.token_image?.imageName"
+            class="feeds__token-image"
+            :alt="item.feed"
           />
+          <span>{{ item.feed }}</span>
+        </template>
+        <template #cell(answer)="{ item }">
+          <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
+          <span v-else-if="item.answer">
+            <strong style="font-weight: 500">
+              {{ parseToUsd(item.answer, item.useEthRatio) }}
+            </strong>
+          </span>
+          <span v-else class="feeds__no-data">no-data</span>
         </template>
         <template #cell(heartbeat)="{ item }">
-          <HeartbeatTimer 
-            :isLoading="item.loaders.blockTimestamp" 
-            :heartbeat="item.heartbeat"
-            :layerId="item.layer_id" 
-          />
+          <Loader v-if="item.loaders?.blockTimestamp" class="feeds__loader" />
+          <span v-else class="feeds__timestamp">
+            <span v-if="heartbeatIsNumber(item.heartbeat)">
+              <to-date-counter :duration="item.heartbeat" />
+            </span>
+            <div v-else>
+              <span
+                style="cursor: pointer"
+                :id="`cron-trigger-${item.layer_id}`"
+              >
+                <to-date-counter
+                  class="d-inline"
+                  :duration="nearestCron(item.heartbeat)"
+                />
+              </span>
+            </div>
+          </span>
         </template>
       </b-table>
-      <b-pagination 
-        prev-text="Previous page" 
-        next-text="Next page" 
+      <b-pagination
+        :prev-text="prevIcon"
+        :next-text="nextIcon"
         limit="1"
         @change="onPageChange"
-        v-model="currentPage" 
-        :total-rows="totalRows" 
-        :per-page="perPage" 
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
         align="fill"
         class="my-3 custom-pagination"
-      ></b-pagination>
-    </div>
-    <b-table
-      v-if="displayedTableItems"
-      id="feeds-table"
-      v-model="displayedTableItems"
-      key="table"
-      stacked="md"
-      ref="selectableTable"
-      :sortBy="sortBy"
-      :sortDesc="sortDesc"
-      @filtered="onFiltered"
-      :filter="filters"
-      sort-icon-left
-      sticky-header="500px"
-      hover
-      :items="feeds"
-      :per-page="perPage"
-      @sort-changed="handleSort"
-      :current-page="currentPage"
-      :filter-function="customFilter"
-      :fields="fields"
-      class="feeds__table"
-      :class="{ 'disable-sorting': !allLoadersComplete }"
-    >
-      <template #head(deviation)="data">
-        {{ data.label }}
-        <i
-          class="fa fa-info-circle"
-          v-b-tooltip.hover
-          title="The system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
-        ></i>
-      </template>
-      <template #head(timestamp)="data">
-        {{ data.label }}
-        <i
-          class="fa fa-info-circle"
-          v-b-tooltip.hover
-          title="Time since last on-chain price update. Indicates data freshness and helps track update frequency."
-        ></i>
-      </template>
-      <template #head(heartbeat)="data">
-        {{ data.label }}
-        <i
-          class="fa fa-info-circle"
-          v-b-tooltip.hover
-          title="An automatic timing system forces an on-chain price update when it counts down to 00:00. This acts as a safety net, ensuring updates happen even if price changes stay within the allowed range during the entire heartbeat period."
-        ></i>
-      </template>
-      <template #cell(network)="{ item }">
-        <img
-          class="feeds__token-image"
-          :src="item.network.image"
-          :alt="item.network.name"
-        />
-        {{ item.network.name }}
-      </template>
-      <template #cell(contract_address)="{ item }">
-        <div
-          v-if="
-            item.feed_address &&
-            item.explorer &&
-            item.feed_address != '__NO_FEED__'
-          "
-        >
-          <a
-            class="feeds__contract-address"
-            :title="`Open address in ${item.explorer.name} explorer`"
-            target="_blank"
-            :href="`${item.explorer.explorerUrl}/address/${item.feed_address}`"
-          >
-            {{ truncateString(item.feed_address) }}
-          </a>
-          <CopyToClipboard
-            copy-text="Copy feed address"
-            :value="item.feed_address"
-          />
-        </div>
-        <div v-else-if="item.contract_address && item.explorer">
-          <a
-            class="feeds__contract-address"
-            :title="`Open address in ${item.explorer.name} explorer`"
-            target="_blank"
-            :href="`${item.explorer.explorerUrl}/address/${item.contract_address}`"
-          >
-            {{ truncateString(item.contract_address) }}
-          </a>
-          <CopyToClipboard
-            copy-text="Copy adapter address"
-            :value="item.contract_address"
-          />
-        </div>
-      </template>
-      <template #cell(feed)="{ item }">
-        <img
-          :src="item.token_image?.imageName"
-          class="feeds__token-image"
-          :alt="item.feed"
-        />
-        <span>{{ item.feed }}</span>
-      </template>
-      <template #cell(answer)="{ item }">
-        <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
-        <span v-else-if="item.answer">
-          <strong style="font-weight: 500">
-            {{ parseToUsd(item.answer, item.useEthRatio) }}
-          </strong>
-        </span>
-        <span v-else class="feeds__no-data">no-data</span>
-      </template>
-      <template #cell(heartbeat)="{ item }">
-        <Loader v-if="item.loaders?.blockTimestamp" class="feeds__loader" />
-        <span v-else class="feeds__timestamp">
-          <span v-if="heartbeatIsNumber(item.heartbeat)">
-            <to-date-counter :duration="item.heartbeat" />
-          </span>
-          <div v-else>
-            <span style="cursor: pointer" :id="`cron-trigger-${item.layer_id}`">
-              <to-date-counter
-                class="d-inline"
-                :duration="nearestCron(item.heartbeat)"
-              />
+      >
+        <template #prev-text>
+          <span v-html="prevIcon"></span>
+        </template>
+        <template #next-text>
+          <span v-html="nextIcon"></span>
+        </template>
+        <template #page="{ page }">
+          <span v-if="page === currentPage" class="entry-info">
+            <span v-if="totalRows > 0">
+              Showing {{ firstEntry }} to {{ lastEntry }} of
+              {{ totalRows }} entries
             </span>
-          </div>
-        </span>
-      </template>
-    </b-table>
-    <b-pagination
-      :prev-text="prevIcon"
-      :next-text="nextIcon"
-      limit="1"
-      @change="onPageChange"
-      v-model="currentPage"
-      :total-rows="totalRows"
-      :per-page="perPage"
-      align="fill"
-      class="my-3 custom-pagination"
-    >
-      <template #prev-text>
-        <span v-html="prevIcon"></span>
-      </template>
-      <template #next-text>
-        <span v-html="nextIcon"></span>
-      </template>
-      <template #page="{ page }">
-        <span v-if="page === currentPage" class="entry-info">
-          <span v-if="totalRows > 0">
-            Showing {{ firstEntry }} to {{ lastEntry }} of
-            {{ totalRows }} entries
-          </span>
-          <span v-else
-            >No entries found
-            <span
-              style="pointer-events: all"
-              v-if="hasFiltersAndSearch"
-              class="clear-filters"
-              @click="resetFilters"
+            <span v-else
+              >No entries found
+              <span
+                style="pointer-events: all"
+                v-if="hasFiltersAndSearch"
+                class="clear-filters"
+                @click="resetFilters"
+              >
+                - Clear filters
+              </span></span
             >
-              - Clear filters
-            </span></span
-          >
-        </span>
-        <span v-else>{{ page }}</span>
-      </template>
-    </b-pagination>
+          </span>
+          <span v-else>{{ page }}</span>
+        </template>
+      </b-pagination>
+    </div>
   </div>
 </template>
-
 <script>
   import _ from "lodash";
   import { mapActions, mapGetters, mapState } from "vuex";
@@ -360,21 +278,22 @@
   import ToDateCounter from "./components/ToDateCounter.vue";
   import SelectedFilters from "./components/SelectedFilters.vue";
   import CopyToClipboard from "./components/CopyToClipboard.vue";
+  import TimestampWithLoader from "./components/TimestampWithLoader.vue";
+  import HeartbeatTimer from "./components/HeartbeatTimer.vue";
   import networks from "@/data/networks.json";
   import images from "@/data/logosDefinitions.json";
   import isScreen from "@/core/screenHelper";
 
   export default {
     components: {
-        Loader,
-        CryptoPicker,
-        NetworkPicker,
-        CheckboxButton,
-        ToDateCounter,
-        ContractAddress,
-        TimestampWithLoader,
-        HeartbeatTimer,
-        SelectedFilters
+      Loader,
+      CryptoPicker,
+      NetworkPicker,
+      CheckboxButton,
+      ToDateCounter,
+      TimestampWithLoader,
+      HeartbeatTimer,
+      SelectedFilters,
     },
     data() {
       return {
@@ -501,43 +420,21 @@
               throw err;
             }
             if (!this.isInitialLoad) {
-                this.currentPage = 1 // Reset to first page when filters change, but not on initial load
+              this.currentPage = 1; // Reset to first page when filters change, but not on initial load
             }
-            this.applyFilters()
-            this.updateRouteParams()
-			})},
-        handleSort(ctx) {
-            this.sortBy = ctx.sortBy
-            this.sortDesc = ctx.sortDesc
-            this.updateRouteParams()
-        },
-        applyFilters() {
-            this.filters = {
-                selectedCryptos: this.selectedCryptos,
-                selectedNetworks: this.selectedNetworks
-            };
-            this.$refs.selectableTable.refresh()
-        },
-        resetFilters() {
-            this.selectedCryptos = []
-            this.selectedNetworks = []
-            this.filters = null
-            this.currentFilter = null
-            this.currentPage = 1
-            this.sortBy = null
-            this.sortDesc = false
-            this.$refs.selectableTable.refresh()
-            this.updateRouteParams()
-        },
-        onPageChange(page) {
-            this.currentPage = page
-            this.updateRouteParams()
-        },
-        onFiltered(filteredItems) {
-            this.filteredItems = filteredItems
-            // this.unselectInvalidItems()
-        },
-        handleFilter(filterType, value) {
+            this.applyFilters();
+            this.updateRouteParams();
+          });
+      },
+      onPageChange(page) {
+        this.currentPage = page;
+        this.updateRouteParams();
+      },
+      onFiltered(filteredItems) {
+        this.filteredItems = filteredItems;
+        // this.unselectInvalidItems()
+      },
+      handleFilter(filterType, value) {
         if (filterType === "cryptos") {
           this.selectedCryptos = value;
         } else if (filterType === "networks") {
@@ -570,7 +467,7 @@
       resetFilters(clearSearch = true) {
         this.selectedCryptos = [];
         this.selectedNetworks = [];
-        if(clearSearch){
+        if (clearSearch) {
           this.$store.dispatch("layout/updateSearchTerm", "");
         }
         this.filters = null;
@@ -581,14 +478,6 @@
         this.$refs.selectableTable.refresh();
         this.updateRouteParams();
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
-      },
-
-      onPageChange(page) {
-        this.currentPage = page;
-        this.updateRouteParams();
-      },
-      onFiltered(filteredItems) {
-        this.filteredItems = filteredItems;
       },
       customFilter(row, filters) {
         if (!filters) return true;
@@ -917,7 +806,9 @@
         return this.searchTerm || this.hasFilters;
       },
       totalRows() {
-        return this.hasFiltersAndSearch ? this.filteredItems.length : this.feeds.length;
+        return this.hasFiltersAndSearch
+          ? this.filteredItems.length
+          : this.feeds.length;
       },
       firstEntry() {
         if (this.totalRows == 0) return 0;
@@ -944,128 +835,95 @@
         "combinedFeedsWithDetailsArray",
         "allLoadersComplete",
       ]),
+      ...mapGetters("feeds", ["combinedFeedsWithDetailsArray"]),
       filteredNetworks() {
-        {
-          if (this.selectedCryptos.length === 0) {
-            return Object.values(networks).map((item) => item.chainId);
-          }
-
-          const networkSet = new Set();
-          this.displayedTableItems?.forEach((feed) => {
-            if (
-              this.selectedCryptos.some(
-                (crypto) => feed.feed.indexOf(crypto) >= 0
-              )
-            ) {
-              networkSet.add(feed.network.id);
-            }
-            )
-        },
-        hasFilters() {
-            return this.filters && (this.filters.selectedCryptos.length > 0 || this.filters.selectedNetworks.length > 0)
-        },
-        totalRows() {
-            return this.filteredItems.length > 0 ? this.filteredItems.length : this.feeds.length
-        },
-        networksMap() {
-            const map = Object.values(networks).map(network => ({ label: network.name, value: network.chainId }))
-            return map.filter(item => this.filteredNetworks.includes(item.value))
-        },
-        paginatedFeeds() {
-            const startIndex = (this.currentPage - 1) * this.perPage
-            const endIndex = startIndex + this.perPage
-            return this.feeds?.slice(startIndex, endIndex)
-        },
-        ...mapGetters('feeds', [
-            'combinedFeedsWithDetailsArray'
-        ]),
-        filteredNetworks() {
-            if (this.selectedCryptos.length === 0) {
-                return Object.values(networks).map(item => item.chainId)
-            }
-
-            const networkSet = new Set()
-            this.displayedTableItems?.forEach(feed => {
-                if (this.selectedCryptos.some(crypto => feed.feed.indexOf(crypto) >= 0)) {
-                    networkSet.add(feed.network.id)
-                }
-            })
-
-            return Array.from(networkSet)
-        },
-        filteredCurrencies() {
-            if (this.selectedNetworks.length === 0) {
-                return images.map(image => image.token)
-            }
-
-            const networkSet = new Set()
-            this.displayedTableItems?.forEach(feed => {
-                if (this.selectedNetworks.some(chainId => feed.network.id === chainId)) {
-                    networkSet.add(feed.crypto_token)
-                }
-            })
-            return Array.from(networkSet)
-        },
-        feeds() {
-            if (this.combinedFeedsWithDetailsArray.length === 0) return []
-            return this.combinedFeedsWithDetailsArray.map(transformFeed)
+        if (this.selectedCryptos.length === 0) {
+          return Object.values(networks).map((item) => item.chainId);
         }
-      },
-      networkOrder() {
-        return Object.values(networks);
-      },
-      cryptoOrder() {
-        return Object.values(images);
-      },
-      feeds() {
-        if (this.combinedFeedsWithDetailsArray.length === 0) return [];
-        return this.combinedFeedsWithDetailsArray.map((item) => {
-          // if(item.feedAddress === "__NO_FEED__" || item.feedAddress == ""){
-          //   return undefined
-          // }
-          return {
-            answer: this.parseToDecimal(item.value),
-            feed: this.hasSlash(item.feedId)
-              ? this.stripAdditionalFeedInfo(item.feedId)
-              : this.stripAdditionalFeedInfo(item.feedId) +
-                (this.findUseRatioProp(item.feedId) ? "/ETH" : "/USD"),
-            network: {
-              id: item.networkId,
-              name: this.findNetworkName(item.networkId),
-              image: this.findNetworkImage(item.networkId),
-            },
-            contract_address: item.contractAddress,
-            timestamp: {
-              parsed: parseUnixTime(item.timestamp),
-              raw: item.timestamp,
-              date: hexToDate(item.timestamp),
-            },
-            layer_id: item.feedId,
-            heartbeat:
-              getTimeUntilNextHeartbeat(
-                item?.timestamp,
-                this.resolveTimeSinceLastUpdateInMilliseconds(item)
-              ) || JSON.stringify(item.triggers.cron),
-            deviation:
-              this.resolveDeviationPercentage(item) != "n/a"
-                ? this.resolveDeviationPercentage(item) + "%"
-                : "n/a",
-            cron: item.triggers.cron,
-            token: item.feedId,
-            useEthRatio: this.findUseRatioProp(item.feedId),
-            relayerId: item.layerId,
-            feed_address: item.feedAddress,
-            crypto_token: this.getFirstPart(item.feedId),
-            token_image: this.getTokenImage(item.feedId),
-            loaders: item.loaders,
-            popularity: `${this.networkOrder.findIndex((network) => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex((crypto) => this.getFirstPart(item.feedId) === crypto.token)}`,
-            explorer: {
-              name: this.findNetworkName(item.networkId),
-              explorerUrl: this.findExplorer(item.networkId),
-            },
-          };
+
+        const networkSet = new Set();
+        this.displayedTableItems?.forEach((feed) => {
+          if (
+            this.selectedCryptos.some(
+              (crypto) => feed.feed.indexOf(crypto) >= 0
+            )
+          ) {
+            networkSet.add(feed.network.id);
+          }
         });
+
+        return Array.from(networkSet);
       },
+      filteredCurrencies() {
+        if (this.selectedNetworks.length === 0) {
+          return images.map((image) => image.token);
+        }
+
+        const networkSet = new Set();
+        this.displayedTableItems?.forEach((feed) => {
+          if (
+            this.selectedNetworks.some((chainId) => feed.network.id === chainId)
+          ) {
+            networkSet.add(feed.crypto_token);
+          }
+        });
+        return Array.from(networkSet);
+      },
+    },
+    networkOrder() {
+      return Object.values(networks);
+    },
+    cryptoOrder() {
+      return Object.values(images);
+    },
+    feeds() {
+      if (this.combinedFeedsWithDetailsArray.length === 0) return [];
+      return this.combinedFeedsWithDetailsArray.map((item) => {
+        // if(item.feedAddress === "__NO_FEED__" || item.feedAddress == ""){
+        //   return undefined
+        // }
+        return {
+          answer: this.parseToDecimal(item.value),
+          feed: this.hasSlash(item.feedId)
+            ? this.stripAdditionalFeedInfo(item.feedId)
+            : this.stripAdditionalFeedInfo(item.feedId) +
+              (this.findUseRatioProp(item.feedId) ? "/ETH" : "/USD"),
+          network: {
+            id: item.networkId,
+            name: this.findNetworkName(item.networkId),
+            image: this.findNetworkImage(item.networkId),
+          },
+          contract_address: item.contractAddress,
+          timestamp: {
+            parsed: parseUnixTime(item.timestamp),
+            raw: item.timestamp,
+            date: hexToDate(item.timestamp),
+          },
+          layer_id: item.feedId,
+          heartbeat:
+            getTimeUntilNextHeartbeat(
+              item?.timestamp,
+              this.resolveTimeSinceLastUpdateInMilliseconds(item)
+            ) || JSON.stringify(item.triggers.cron),
+          deviation:
+            this.resolveDeviationPercentage(item) != "n/a"
+              ? this.resolveDeviationPercentage(item) + "%"
+              : "n/a",
+          cron: item.triggers.cron,
+          token: item.feedId,
+          useEthRatio: this.findUseRatioProp(item.feedId),
+          relayerId: item.layerId,
+          feed_address: item.feedAddress,
+          crypto_token: this.getFirstPart(item.feedId),
+          token_image: this.getTokenImage(item.feedId),
+          loaders: item.loaders,
+          popularity: `${this.networkOrder.findIndex((network) => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex((crypto) => this.getFirstPart(item.feedId) === crypto.token)}`,
+          explorer: {
+            name: this.findNetworkName(item.networkId),
+            explorerUrl: this.findExplorer(item.networkId),
+          },
+        };
+      });
     },
   };
 </script>
