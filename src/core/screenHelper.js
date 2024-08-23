@@ -7,6 +7,8 @@ const screens = {
   "lg-min": 992,
   "lg-max": 1199,
   "xl-min": 1200,
+  "xxl-min": 1600,
+  "xxl-max": 3840,
 };
 
 export default function isScreen(size) {

@@ -5,7 +5,7 @@
         <!-- <a class="d-md-down-none px-2" href="#" @click="toggleSidebarMethod" id="barsTooltip">
           <i class='fi flaticon-menu' />
         </a> -->
-        <a class="fs-lg d-md-none" href="#" @click="toggleSidebarMenu">
+        <a class="fs-lg d-xl-none" href="#" @click="toggleSidebarMenu">
           <i class="fi flaticon-menu" />
         </a>
       </b-nav-item>
@@ -26,7 +26,20 @@
               v-model="searchTerm"
               id="search-input"
               placeholder="Search..."
+              v-b-tooltip.focus.left="
+                hasFeedsFilters
+                  ? 'You have filters selected, they will reset on search '
+                  : ''
+              "
             />
+              <template v-slot:append>
+                <b-input-group-text
+                  v-if="searchTerm"
+                  @click="resetSearch"
+                >
+                  <i class="fa fa-times"></i>
+                </b-input-group-text>
+              </template>
           </b-input-group>
           <a href="javascript:window.history.back()" v-else>
             <i class="fa flaticon-chevron-back" />
@@ -38,15 +51,15 @@
       id="use-buttons"
       class="align-items-center flex-grow-1 justify-content-end"
     >
-      <a
+      <RouterLink
         id="use-push-button"
-        target="_blank"
+        :to="{ path: 'feeds' }"
         href="https://docs.redstone.finance/docs/smart-contract-devs/price-feeds"
       >
         <b-button class="btn btn-inverted rounded-pill" variant="primary">
           Use Push Model
         </b-button>
-      </a>
+      </RouterLink>
       <a
         id="use-pull-button"
         target="_blank"
@@ -64,6 +77,7 @@
   import _ from "lodash";
   import { mapState, mapActions } from "vuex";
   import CodeExample from "@/components/Token/CodeExample";
+  import { RouterLink } from "vue-router";
 
   export default {
     name: "Header",
@@ -77,8 +91,8 @@
         "sidebarClose",
         "sidebarStatic",
         "showSearchInputInHeader",
+        "hasFeedsFilters",
       ]),
-
       searchTerm: {
         get() {
           return this.$store.state.layout.searchTerm;
@@ -116,6 +130,9 @@
       ]),
       toggleSidebarMenu() {
         this.toggleSidebar();
+      },
+      resetSearch() {
+        this.updateSearchTerm("")
       },
       logout() {
         window.localStorage.setItem("authenticated", false);

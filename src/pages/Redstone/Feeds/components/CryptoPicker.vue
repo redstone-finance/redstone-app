@@ -25,14 +25,14 @@
           <b-form-checkbox
             class="crypto-checkbox-list"
             variant="danger"
-            v-for="crypto in sortedFilteredCryptoImageData"
+            v-for="crypto in filteredCryptoImageData"
             :key="crypto.token"
             :value="crypto.token"
           >
             <div class="crypto-name">
               <b-img
                 :title="crypto.name"
-                :src="getImageUrl(crypto.imageName)"
+                :src="crypto.imageName"
                 :alt="crypto.name"
                 width="20"
                 height="20"
@@ -42,9 +42,7 @@
             </div>
           </b-form-checkbox>
         </b-form-checkbox-group>
-        <span
-          class="no-results"
-          v-if="sortedFilteredCryptoImageData.length === 0"
+        <span class="no-results" v-if="filteredCryptoImageData.length === 0"
           >No results found</span
         >
       </b-dropdown-form>
@@ -53,12 +51,15 @@
           @click="confirmChanges"
           variant="primary"
           class="confirm-button"
-          >Confirm Changes</b-button
         >
+          <i class="fa fa-icon fa-sliders mr-2"></i>Filter ({{
+            tempSelectedCryptos.length
+          }})
+        </b-button>
       </div>
       <div v-else-if="value.length > 0" class="confirm-button-container">
         <b-button @click="resetChanges" variant="primary" class="reset-button"
-          >Reset Changes</b-button
+          >Reset ({{ tempSelectedCryptos.length }})</b-button
         >
       </div>
     </b-dropdown>
@@ -108,8 +109,8 @@
         const selectedCount = this.value.length;
         const optionsCount = this.items.length;
         return selectedCount === 0
-          ? `All currencies (${optionsCount})`
-          : `Currencies (${selectedCount})`;
+          ? `All Feeds (${optionsCount})`
+          : `Selected feeds (${selectedCount})`;
       },
       filteredCryptoImageData() {
         if (!this.searchQuery) {
@@ -122,22 +123,20 @@
             crypto.name.toLowerCase().includes(query)
         );
       },
-      sortedFilteredCryptoImageData() {
-        return [...this.filteredCryptoImageData].sort((a, b) => {
-          const aSelected = this.value.includes(a.token);
-          const bSelected = this.value.includes(b.token);
-          if (aSelected === bSelected) {
-            return a.token.localeCompare(b.token);
-          }
-          return aSelected ? -1 : 1;
-        });
-      },
       hasChanges() {
         return !this.arraysEqual(this.tempSelectedCryptos, this.value);
       },
     },
     created() {
       this.initializeTempSelection();
+    },
+    watch: {
+      value: {
+        handler(newValue) {
+          this.tempSelectedCryptos = [...newValue];
+        },
+        immediate: true,
+      },
     },
     methods: {
       initializeTempSelection() {
@@ -148,9 +147,6 @@
         if (index > -1) {
           this.tempSelectedCryptos.splice(index, 1);
         }
-      },
-      getImageUrl(imageName) {
-        return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`;
       },
       getCryptoByToken(token) {
         return (
@@ -189,185 +185,185 @@
 </script>
 <style lang="scss">
   .remove-query {
-  line-height: 15px;
-
-  &:hover {
-    cursor: pointer;
-    color: var(--redstone-red-color)
-  }
-}
-
-.search-input-container {
-  position: sticky;
-  top: 0px;
-  background: #fff;
-  z-index: 2;
-
-  .form-control {
-    border: none;
-    border-bottom: 1px solid rgb(192, 192, 192);
-    border-radius: 0;
-    padding: 25px 20px !important;
-    font-style: italic;
-
-    &:active,
-    &:focus {
-      border-color: var(--redstone-red-color);
-    }
-  }
-}
-
-.dropdown-menu {
-  padding: 0 !important;
-}
-
-.crypto-dropdown-container {
-  position: relative;
-  z-index: 999;
-}
-
-.dropdown.show {
-  button {
-    background: var(--redstone-red-color);
-    border: 2px solid darken(#FD627A, $amount: 15) !important;
-  }
-}
-
-.crypto-name {
-  font-size: 14px;
-  font-weight: 300;
-}
-
-.dropdown {
-  margin: 0 !important;
-
-  ul {
-    min-width: 300px !important;
-  }
-
-  button {
-    padding: 10px 18px;
-    font-size: 14px;
-    background: #fff;
-    border: 2px solid #e4e4e4;
+    line-height: 15px;
 
     &:hover {
-      background: #fff;
-      color: #1a1414;
-    }
-  }
-}
-
-.crypto-dropdown {
-  width: 100%;
-
-  .custom-control {
-    margin: 0 !important;
-    line-height: 2rem;
-
-    &:hover {
-      background-color: rgb(243, 243, 243);
-    }
-
-    * {
       cursor: pointer;
+      color: var(--redstone-red-color);
     }
   }
 
-  .custom-control-label {
-    width: calc(100% - 30px) !important;
+  .search-input-container {
+    position: sticky;
+    top: 0px;
+    background: #fff;
+    z-index: 2;
+
+    .form-control {
+      border: none;
+      border-bottom: 1px solid rgb(192, 192, 192);
+      border-radius: 0;
+      padding: 25px 20px !important;
+      font-style: italic;
+
+      &:active,
+      &:focus {
+        border-color: var(--redstone-red-color);
+      }
+    }
   }
 
-  .b-dropdown-form {
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
+  .dropdown-menu {
+    padding: 0 !important;
   }
 
-  ul {
+  .crypto-dropdown-container {
+    position: relative;
+    z-index: 999;
+  }
+
+  .dropdown.show {
+    button {
+      background: var(--redstone-red-color);
+      border: 2px solid darken(#fd627a, $amount: 15) !important;
+    }
+  }
+
+  .crypto-name {
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  .dropdown {
+    margin: 0 !important;
+
+    ul {
+      min-width: 300px !important;
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 14px;
+      background: #fff;
+      border: 2px solid #e4e4e4;
+
+      &:hover {
+        background: #fff;
+        color: #1a1414;
+      }
+    }
+  }
+
+  .crypto-dropdown {
     width: 100%;
-    left: 0;
-    top: 100% !important;
-    transform: none !important;
-  }
 
-  label {
-    padding-left: 10px;
-    margin-left: 20px;
+    .custom-control {
+      margin: 0 !important;
+      line-height: 2rem;
 
-    &:focus,
-    &:active {
+      &:hover {
+        background-color: rgb(243, 243, 243);
+      }
+
+      * {
+        cursor: pointer;
+      }
+    }
+
+    .custom-control-label {
+      width: calc(100% - 30px) !important;
+    }
+
+    .b-dropdown-form {
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    ul {
+      width: 100%;
+      left: 0;
+      top: 100% !important;
+      transform: none !important;
+    }
+
+    label {
+      padding-left: 10px;
+      margin-left: 20px;
+
+      &:focus,
+      &:active {
+        &::before {
+          border-color: var(--redstone-red-color) !important;
+        }
+      }
+
+      &::before,
+      &::after {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    input:checked + label {
       &::before {
+        background-color: var(--redstone-red-color) !important;
         border-color: var(--redstone-red-color) !important;
       }
     }
 
-    &::before,
-    &::after {
-      width: 20px;
-      height: 20px;
+    .crypto-checkbox-list {
+      border-bottom: 1px solid rgb(228, 228, 228);
+      margin: 5px 0;
+      padding: 8px 10px;
     }
-  }
 
-  input:checked+label {
-    &::before {
-      background-color: var(--redstone-red-color) !important;
-      border-color: var(--redstone-red-color) !important;
-    }
-  }
-
-  .crypto-checkbox-list {
-    border-bottom: 1px solid rgb(228, 228, 228);
-    margin: 5px 0;
-    padding: 8px 10px;
-  }
-
-  .no-results {
-    text-align: center;
-    display: block;
-    width: 100%;
-    padding: 15px;
-    color: gray;
-  }
-
-  .confirm-button-container {
-    position: sticky;
-    bottom: 0;
-    background: #fff;
-    padding: 10px;
-    border-top: 1px solid #e4e4e4;
-    text-align: center;
-
-    button {
+    .no-results {
+      text-align: center;
+      display: block;
       width: 100%;
+      padding: 15px;
+      color: gray;
+    }
+
+    .confirm-button-container {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 10px;
+      border-top: 1px solid #e4e4e4;
+      text-align: center;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    .confirm-button {
+      width: 100%;
+      background-color: var(--redstone-red-color);
+      border-color: var(--redstone-red-color);
+
+      &:hover,
+      &:focus {
+        background-color: darken(#fd627a, 10%);
+        border-color: darken(#fd627a, 10%);
+        color: #fff;
+      }
     }
   }
 
-  .confirm-button {
+  .dropdown.show button.reset-button {
     width: 100%;
-    background-color: var(--redstone-red-color);
+    background: #fff !important;
+    color: var(--redstone-red-color) !important;
     border-color: var(--redstone-red-color);
 
     &:hover,
     &:focus {
-      background-color: darken(#FD627A, 10%);
-      border-color: darken(#FD627A, 10%);
+      background-color: darken(#fd627a, 10%);
+      border-color: darken(#fd627a, 10%);
       color: #fff;
     }
   }
-}
-
-.dropdown.show button.reset-button {
-  width: 100%;
-  background: #fff !important;
-  color: var(--redstone-red-color) !important;
-  border-color: var(--redstone-red-color);
-
-  &:hover,
-  &:focus {
-    background-color: darken(#FD627A, 10%);
-    border-color: darken(#FD627A, 10%);
-    color: #fff;
-  }
-}
 </style>

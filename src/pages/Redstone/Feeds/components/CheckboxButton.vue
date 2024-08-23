@@ -8,7 +8,7 @@
   >
     <b-img
       :title="name"
-      :src="getImageUrl(imageName)"
+      :src="imageName"
       :alt="name"
       width="20"
       height="20"
@@ -46,9 +46,6 @@
     methods: {
       toggleCheckbox() {
         this.$emit("change", { value: this.token, isChecked: this.isChecked });
-      },
-      getImageUrl(imageName) {
-        return `https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/${imageName}`;
       },
     },
   };

@@ -2,7 +2,7 @@
 
 .app-header.navbar {
   height: $navbar-height;
-  z-index: 100;
+  z-index: 9999;
   padding: 00;
   background: var(--navbar-bg);
   box-shadow: var(--navbar-shadow);
@@ -206,4 +206,31 @@ i.flaticon-chevron-back {
   display: block;
   height: 24px;
   width: 14px;
+}
+
+#use-buttons {
+  button {
+    font-size: 12px;
+    padding: 3px 6px !important;
+  }
+}
+
+@media (min-width: breakpoint-min(lg)) {
+  #use-buttons {
+    button {
+      font-size: 14px;
+    }
+  }
+}
+
+#search-input {
+  position: relative;
+  z-index: 99999;
+  + .input-group-append {
+    .fa {
+      cursor: pointer;
+      position: relative;
+      z-index: 99999;
+    }
+  }
 }

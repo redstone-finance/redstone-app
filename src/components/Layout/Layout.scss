@@ -18,8 +18,8 @@
     left $sidebar-transition-time ease-in-out,
     margin-left $sidebar-transition-time ease-in-out;
 
-  @media (min-width: breakpoint-min(md)) {
-    width: calc(100% - #{$sidebar-width-open});
+  @media (min-width: breakpoint-min(xl)) {
+  width: calc(100% - #{$sidebar-width-open});
   }
 }
 

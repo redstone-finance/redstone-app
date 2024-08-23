@@ -6,41 +6,6 @@
     "name": "Ethereum Mainnet",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.svg"
   },
-  "arbitrum": {
-    "rpcUrl": "https://arb1.arbitrum.io/rpc",
-    "explorerUrl": "https://arbiscan.io",
-    "chainId": 42161,
-    "name": "Arbitrum One",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/arbitrum.png"
-  },
-  "base": {
-    "rpcUrl": "https://mainnet.base.org",
-    "explorerUrl": "https://basescan.org",
-    "chainId": 8453,
-    "name": "Base",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/base.png"
-  },
-  "berachainTestnet": {
-    "rpcUrl": "https://bera-testnet.nodeinfra.com",
-    "explorerUrl": "https://testnet-explorer.berachain.com",
-    "chainId": 80084,
-    "name": "Berachain Testnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bear.webp"
-  },
-  "blastMainnet": {
-    "rpcUrl": "https://rpc.blast.io",
-    "explorerUrl": "https://blastscan.io",
-    "chainId": 81457,
-    "name": "Blast Mainnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/blast.png"
-  },
-  "blastTestnet": {
-    "rpcUrl": "https://sepolia.blast.io",
-    "explorerUrl": "https://testnet.blastscan.io",
-    "chainId": 168587773,
-    "name": "Blast Testnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/blast.png"
-  },
   "bnb": {
     "rpcUrl": "https://bsc-dataseed.binance.org/",
     "explorerUrl": "https://bscscan.com",
@@ -48,89 +13,12 @@
     "name": "BNB Chain",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.svg"
   },
-  "bob": {
-    "rpcUrl": "https://rpc.gobob.xyz",
-    "explorerUrl": "https://explorer.gobob.xyz",
-    "chainId": 60808,
-    "name": "Bob",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bob.png"
-  },
-  "canto": {
-    "rpcUrl": "https://canto.slingshot.finance",
-    "explorerUrl": "https://tuber.build",
-    "chainId": 7700,
-    "name": "Canto",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.png"
-  },
-  "cantoTestnet": {
-    "rpcUrl": "https://canto-testnet.plexnode.wtf",
-    "explorerUrl": "https://testnet.tuber.build",
-    "chainId": 7701,
-    "name": "Canto Testnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.png"
-  },
-  "cyber": {
-    "rpcUrl": "https://rpc.cyber.co",
-    "explorerUrl": "https://cyberscope.io",
-    "chainId": 7560,
-    "name": "Cyber",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/cyber.webp"
-  },
-  "etherlink": {
-    "rpcUrl": "https://node.mainnet.etherlink.com",
-    "explorerUrl": "https://explorer.etherlink.com",
-    "chainId": 42793,
-    "name": "Etherlink",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherlink.svg"
-  },
-  "etherlinkGhostnet": {
-    "rpcUrl": "https://node.ghostnet.etherlink.com",
-    "explorerUrl": "https://ghostnet-explorer.etherlink.com",
-    "chainId": 128123,
-    "name": "Etherlink Ghostnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherlink.svg"
-  },
-  "fraxtal": {
-    "rpcUrl": "https://rpc.frax.com",
-    "explorerUrl": "https://fraxscan.com",
-    "chainId": 252,
-    "name": "Fraxtal",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/fraxswap.svg"
-  },
-  "linea": {
-    "rpcUrl": "https://rpc.linea.build",
-    "explorerUrl": "https://lineascan.build",
-    "chainId": 59144,
-    "name": "Linea",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png"
-  },
-  "manta": {
-    "rpcUrl": "https://pacific-rpc.manta.network/http",
-    "explorerUrl": "https://pacific-explorer.manta.network",
-    "chainId": 169,
-    "name": "Manta",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/manta.png"
-  },
-  "mantle": {
-    "rpcUrl": "https://rpc.mantle.xyz",
-    "explorerUrl": "https://explorer.mantle.xyz",
-    "chainId": 5000,
-    "name": "Mantle",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp"
-  },
-  "merlin": {
-    "rpcUrl": "https://rpc.merlinchain.io",
-    "explorerUrl": "https://scan.merlinchain.io",
-    "chainId": 4200,
-    "name": "Merlin",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp"
-  },
-  "mode": {
-    "rpcUrl": "https://mainnet.mode.network",
-    "explorerUrl": "https://explorer.mode.network",
-    "chainId": 34443,
-    "name": "Mode",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mode.png"
+  "arbitrum": {
+    "rpcUrl": "https://arb1.arbitrum.io/rpc",
+    "explorerUrl": "https://arbiscan.io",
+    "chainId": 42161,
+    "name": "Arbitrum One",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/arbitrum.png"
   },
   "optimism": {
     "rpcUrl": "https://mainnet.optimism.io",
@@ -139,33 +27,12 @@
     "name": "Optimism",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/op.png"
   },
-  "real": {
-    "rpcUrl": "https://real.drpc.org",
-    "explorerUrl": "https://explorer.real.com",
-    "chainId": 111188,
-    "name": "Real",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/real.png"
-  },
-  "sei": {
-    "rpcUrl": "https://evm-rpc.sei-apis.com",
-    "explorerUrl": "https://seiexplorer.com",
-    "chainId": 1329,
-    "name": "Sei",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png"
-  },
-  "sepolia": {
-    "rpcUrl": "https://rpc.sepolia.org",
-    "explorerUrl": "https://sepolia.etherscan.io",
-    "chainId": 11155111,
-    "name": "Sepolia",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sepolia.jpeg"
-  },
-  "bscTestnet": {
-    "rpcUrl": "https://data-seed-prebsc-1-s1.binance.org:8545",
-    "explorerUrl": "https://testnet.bscscan.com",
-    "chainId": 97,
-    "name": "Binance Smart Chain Testnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.svg"
+  "base": {
+    "rpcUrl": "https://mainnet.base.org",
+    "explorerUrl": "https://basescan.org",
+    "chainId": 8453,
+    "name": "Base",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/base.svg"
   },
   "zksync": {
     "rpcUrl": "https://mainnet.era.zksync.io",
@@ -174,16 +41,30 @@
     "name": "zkSync Era Mainnet",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zksync.png"
   },
-  "celoBaklavaTestnet": {
-    "rpcUrl": "https://baklava-forno.celo-testnet.org",
-    "explorerUrl": "https://baklava-blockscout.celo-testnet.org",
-    "chainId": 62320,
-    "name": "Celo Baklava Testnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png"
+  "scroll": {
+    "rpcUrl": "https://rpc.scroll.io",
+    "explorerUrl": "https://scrollscan.com",
+    "chainId": 534352,
+    "name": "Scroll",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/scroll.png"
+  },
+  "linea": {
+    "rpcUrl": "https://rpc.linea.build",
+    "explorerUrl": "https://lineascan.build",
+    "chainId": 59144,
+    "name": "Linea",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/linea.png"
+  },
+  "mantle": {
+    "rpcUrl": "https://rpc.mantle.xyz",
+    "explorerUrl": "https://explorer.mantle.xyz",
+    "chainId": 5000,
+    "name": "Mantle",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp"
   },
   "celoMainnet": {
-    "rpcUrl": "https://forno.celo.org",
-    "explorerUrl": "https://explorer.celo.org",
+    "rpcUrl": "https://celo.drpc.org",
+    "explorerUrl": "https://explorer.celo.org/mainnet",
     "chainId": 42220,
     "name": "Celo Mainnet",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png"
@@ -194,6 +75,83 @@
     "chainId": 2222,
     "name": "Kava EVM",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/kava.png"
+  },
+  "manta": {
+    "rpcUrl": "https://pacific-rpc.manta.network/http",
+    "explorerUrl": "https://pacific-explorer.manta.network",
+    "chainId": 169,
+    "name": "Manta",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/manta.png"
+  },
+  "sei": {
+    "rpcUrl": "https://evm-rpc.sei-apis.com",
+    "explorerUrl": "https://seiexplorer.com",
+    "chainId": 1329,
+    "name": "Sei",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sei.png"
+  },
+  "canto": {
+    "rpcUrl": "https://canto.slingshot.finance",
+    "explorerUrl": "https://tuber.build",
+    "chainId": 7700,
+    "name": "Canto",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.png"
+  },
+  "mode": {
+    "rpcUrl": "https://mainnet.mode.network",
+    "explorerUrl": "https://explorer.mode.network",
+    "chainId": 34443,
+    "name": "Mode",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mode.png"
+  },
+  "blastMainnet": {
+    "rpcUrl": "https://rpc.blast.io",
+    "explorerUrl": "https://blastscan.io",
+    "chainId": 81457,
+    "name": "Blast Mainnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/blast.png"
+  },
+  "fraxtal": {
+    "rpcUrl": "https://rpc.frax.com",
+    "explorerUrl": "https://fraxscan.com",
+    "chainId": 252,
+    "name": "Fraxtal",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/fraxswap.svg"
+  },
+  "etherlink": {
+    "rpcUrl": "https://node.mainnet.etherlink.com",
+    "explorerUrl": "https://explorer.etherlink.com",
+    "chainId": 42793,
+    "name": "Etherlink",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherlink.svg"
+  },
+  "bob": {
+    "rpcUrl": "https://rpc.gobob.xyz",
+    "explorerUrl": "https://explorer.gobob.xyz",
+    "chainId": 60808,
+    "name": "Bob",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bob.png"
+  },
+  "cyber": {
+    "rpcUrl": "https://rpc.cyber.co",
+    "explorerUrl": "https://cyberscope.io",
+    "chainId": 7560,
+    "name": "Cyber",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/cyber.webp"
+  },
+  "merlin": {
+    "rpcUrl": "https://rpc.merlinchain.io",
+    "explorerUrl": "https://scan.merlinchain.io",
+    "chainId": 4200,
+    "name": "Merlin",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/merl.webp"
+  },
+  "real": {
+    "rpcUrl": "https://real.drpc.org",
+    "explorerUrl": "https://explorer.real.com",
+    "chainId": 111188,
+    "name": "Real",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/real.png"
   },
   "b2": {
     "rpcUrl": "https://rpc.ankr.com/b2",
@@ -209,11 +167,60 @@
     "name": "zkLink",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zklink.webp"
   },
-  "energi": {
-    "rpcUrl": "https://nodeapi.energi.network",
-    "explorerUrl": "https://explorer.energi.network",
+  "zircuit": {
+    "rpcUrl": "https://zircuit-mainnet.drpc.org",
+    "explorerUrl": "https://explorer.zircuit.com",
     "chainId": 48900,
-    "name": "Energi",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/energi.webp"
+    "name": "Zircuit",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zircuit.jpeg"
+  },
+  "sepolia": {
+    "rpcUrl": "https://rpc.sepolia.org",
+    "explorerUrl": "https://sepolia.etherscan.io",
+    "chainId": 11155111,
+    "name": "Sepolia",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sepolia.jpeg"
+  },
+  "bscTestnet": {
+    "rpcUrl": "https://data-seed-prebsc-1-s1.binance.org:8545",
+    "explorerUrl": "https://testnet.bscscan.com",
+    "chainId": 97,
+    "name": "Binance Smart Chain Testnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.svg"
+  },
+  "berachainTestnet": {
+    "rpcUrl": "https://bera-testnet.nodeinfra.com",
+    "explorerUrl": "https://testnet-explorer.berachain.com",
+    "chainId": 80084,
+    "name": "Berachain Testnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bear.webp"
+  },
+  "blastTestnet": {
+    "rpcUrl": "https://sepolia.blast.io",
+    "explorerUrl": "https://testnet.blastscan.io",
+    "chainId": 168587773,
+    "name": "Blast Testnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/blast.png"
+  },
+  "cantoTestnet": {
+    "rpcUrl": "https://canto-testnet.plexnode.wtf",
+    "explorerUrl": "https://testnet.tuber.build",
+    "chainId": 7701,
+    "name": "Canto Testnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/canto.png"
+  },
+  "etherlinkGhostnet": {
+    "rpcUrl": "https://node.ghostnet.etherlink.com",
+    "explorerUrl": "https://ghostnet-explorer.etherlink.com",
+    "chainId": 128123,
+    "name": "Etherlink Ghostnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherlink.svg"
+  },
+  "celoBaklavaTestnet": {
+    "rpcUrl": "https://baklava-forno.celo-testnet.org",
+    "explorerUrl": "https://baklava-blockscout.celo-testnet.org",
+    "chainId": 62320,
+    "name": "Celo Baklava Testnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png"
   }
 }
