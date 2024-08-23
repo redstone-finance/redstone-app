@@ -34,7 +34,7 @@
           <dt class="stat-title">Heartbeat</dt>
           <dd class="stat-value">
             <HeartbeatTimer
-              v-if="feedData"
+              v-if="feedData.heartbeat"
               :isLoading="feedData.loaders.blockTimestamp"
               :heartbeat="feedData.heartbeat"
               :layerId="feedData.layer_id"
@@ -104,10 +104,9 @@ export default {
       this.isLoading = true;
       try {
         const { data } = await axios.get(this.chartEndpoint);
-        console.log({ data });
         this.chartData = data.onChainUpdates;
       } catch (error) {
-        console.error("Error fetching chart data:", error);
+      console.error("Error fetching chart data:", error);
       } finally {
         this.isLoading = false;
       }
@@ -118,11 +117,11 @@ export default {
     },
   },
   watch: {
-    feedData() {
-      if (this.feedData.relayerId) {
-        console.log({relayer: this.feedData.relayerId})
-        if (this.getSmartContractByLayerId(this.feedData.relayerId) == null) {
-          this.initSingle(this.feedData.relayerId);
+    relayerId() {
+      if (this.relayerId) {
+        console.log(this.relayerId)
+        if (this.getSmartContractByLayerId(this.relayerId) == null) {
+          this.initSingle(this.relayerId);
         }
       }
     },
@@ -142,6 +141,9 @@ export default {
             feed.routeToken === this.token
         )
       );
+    },
+    relayerId() {
+      return this.feedData.relayerId
     },
     chartEndpoint() {
       const baseUrl = "https://api.redstone.finance/on-chain-updates";
