@@ -86,8 +86,8 @@ export default {
             routeNetwork: Object.values(networks)
               .find((network) => network.chainId === layer.chain.id)
               .name.toLowerCase()
-              .replace(" ", "-"),
-            routeToken: feedId.toLowerCase(),
+              .replace(" ", "-").replace("/", "--"),
+            routeToken: feedId.toLowerCase().replace(" ", "-").replace("/", "--"),
             networkId: layer.chain.id,
             feedId: feedId,
             overrides: [

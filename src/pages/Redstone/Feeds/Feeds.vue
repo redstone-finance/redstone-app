@@ -207,7 +207,7 @@
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <span>{{ item.feed }}</span>
+        <RouterLink :to="{name:'SingleFeed', params: { network: toUrlParam(item.network.name), token: toUrlParam(item.feed)}}">{{ item.feed }}</RouterLink>
       </template>
       <template #cell(answer)="{ item }">
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
@@ -299,6 +299,7 @@
   import networks from "@/data/networks.json";
   import images from "@/data/logosDefinitions.json";
   import isScreen from "@/core/screenHelper";
+import { RouterLink } from "vue-router";
 
   export default {
     components: {
@@ -489,6 +490,9 @@
       onFiltered(filteredItems) {
         this.filteredItems = filteredItems;
       },
+      toUrlParam(string){
+       return string.toLowerCase().replace(' ', '-').replace('/', '--')
+      },  
       customFilter(row, filters) {
         if (!filters) return true;
         const { selectedCryptos, selectedNetworks, searchTerm } = filters;
