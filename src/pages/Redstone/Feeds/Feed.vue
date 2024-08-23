@@ -4,10 +4,9 @@
       <dl class="stats-grid">
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
-          <dd class="stat-value" v-if="feedData.value?._hex">
-            $ <strong>{{ hexToPrice(feedData.value?._hex) }}</strong>
+          <dd class="stat-value">
+            $ <strong>{{ chartData[chartData.length - 1].value }}</strong>
           </dd>
-          <Loader v-else></Loader>
         </div>
         <div class="stat-item">
           <dt class="stat-title">Network</dt>
