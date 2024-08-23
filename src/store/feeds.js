@@ -1,8 +1,8 @@
-import axios from 'axios'
-import { ethers } from 'ethers'
-import { isEmpty, isObject } from 'lodash'
-import Vue from 'vue'
-import networks from '@/data/networks'
+import axios from "axios";
+import { ethers } from "ethers";
+import { isEmpty, isObject } from "lodash";
+import Vue from "vue";
+import networks from "@/data/networks";
 
 function stringToBytes32(str) {
   const bytes = ethers.utils.toUtf8Bytes(str);
@@ -32,26 +32,28 @@ export default {
   },
   mutations: {
     assignRelayerSchema(state, schema) {
-      state.relayerSchema = schema
+      state.relayerSchema = schema;
     },
     assignCreatedSmartContract(state, { contract, layerId }) {
-      state.smartContracts[layerId] = contract
+      state.smartContracts[layerId] = contract;
     },
     assignRelayerDetails(state, { key, layerId, data }) {
       if (state.relayersDetails[layerId]) {
-        state.relayersDetails[layerId][key] = data
+        state.relayersDetails[layerId][key] = data;
       }
     },
     disableLoaderMutation(state, { loaderId, layerId }) {
       if (state.relayersDetails[layerId]) {
-        state.relayersDetails[layerId].loaders[loaderId] = false
+        state.relayersDetails[layerId].loaders[loaderId] = false;
       }
     },
   },
   getters: {
     allLoadersComplete: (state) => {
       return Object.values(state.relayersDetails).every((relayer) => {
-        return Object.values(relayer.loaders).every((loader) => loader === false);
+        return Object.values(relayer.loaders).every(
+          (loader) => loader === false
+        );
       });
     },
     getSmartContractByLayerId: (state) => (layerId) => {
@@ -82,12 +84,13 @@ export default {
           const keyFeedTimestamp =
             state.relayersDetails[itemKey]?.blockTimestamp;
           const keyFeedValue = state.relayersDetails[itemKey]?.dataFeed;
+          const routeNetwork = Object.values(networks).find((network) => network.chainId === layer.chain.id).name.toLowerCase().replaceAll(' ', '-')
+          console.log({routeNetwork})
+          const routeToken = feedId.toLowerCase().replaceAll(" ", "-").replaceAll("/", "--")
+          console.log({routeToken})
           return {
-            routeNetwork: Object.values(networks)
-              .find((network) => network.chainId === layer.chain.id)
-              .name.toLowerCase()
-              .replace(" ", "-").replace("/", "--"),
-            routeToken: feedId.toLowerCase().replace(" ", "-").replace("/", "--"),
+            routeNetwork: routeNetwork,
+            routeToken: routeToken,
             networkId: layer.chain.id,
             feedId: feedId,
             overrides: [
@@ -269,6 +272,32 @@ export default {
           }
         );
       });
+    },
+    async initSingle({ state }, relayerId) {
+      if (!isEmpty(state.relayerSchema)) return;
+      await this.dispatch("feeds/fetchRelayerSchema");
+      await this.dispatch("feeds/createSmartContract", {
+        layerId: relayerId,
+        contractAddress: state.relayerSchema[relayerId].adapterContract,
+        chainId: state.relayerSchema[relayerId].chain.id,
+        contractType: state.relayerSchema[relayerId]?.adapterContractType,
+      });
+      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+        async (feedId) => {
+          await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+            layerId: relayerId,
+            feedId,
+          });
+        }
+      );
+      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+        async (feedId) => {
+          await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+            layerId: relayerId,
+            feedId,
+          });
+        }
+      );
     },
   },
 };

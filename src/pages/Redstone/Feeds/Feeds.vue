@@ -207,7 +207,7 @@
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <RouterLink :to="{name:'SingleFeed', params: { network: toUrlParam(item.network.name), token: toUrlParam(item.feed)}}">{{ item.feed }}</RouterLink>
+        <RouterLink :to="{name:'SingleFeed', params: { network: toUrlParam(item.network.name), token: toUrlParam(item.token)}}">{{ item.feed }}</RouterLink>
       </template>
       <template #cell(answer)="{ item }">
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />

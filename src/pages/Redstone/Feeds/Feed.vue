@@ -5,6 +5,8 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value">
+            {{ network }}
+            {{ token }}
             $ <strong>{{ chartData[chartData.length - 1].value }}</strong>
           </dd>
         </div>
@@ -99,7 +101,7 @@ export default {
       let price = decimalValue / 100000000;
       return price;
     },
-    ...mapActions("feeds", ["initSingleContract", "fetchRelayerSchema"]),
+    ...mapActions("feeds", ["initSingle", "fetchRelayerSchema"]),
     async fetchChartData() {
       this.isLoading = true;
       try {
@@ -121,7 +123,7 @@ export default {
     feedData() {
       if (this.feedData.relayerId) {
         if (this.getSmartContractByLayerId(this.feedData.relayerId) == null) {
-          this.initSingleContract(this.feedData.relayerId);
+          this.initSingle(this.feedData.relayerId);
         }
       }
     },
