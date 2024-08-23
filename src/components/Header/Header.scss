@@ -222,3 +222,15 @@ i.flaticon-chevron-back {
     }
   }
 }
+
+#search-input {
+  position: relative;
+  z-index: 99999;
+  + .input-group-append {
+    .fa {
+      cursor: pointer;
+      position: relative;
+      z-index: 99999;
+    }
+  }
+}

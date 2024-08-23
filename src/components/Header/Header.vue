@@ -26,8 +26,20 @@
               v-model="searchTerm"
               id="search-input"
               placeholder="Search..."
-              v-b-tooltip.focus.left="hasFeedsFilters ? 'You have filters selected, they will reset on search ' : ''"
+              v-b-tooltip.focus.left="
+                hasFeedsFilters
+                  ? 'You have filters selected, they will reset on search '
+                  : ''
+              "
             />
+              <template v-slot:append>
+                <b-input-group-text
+                  v-if="searchTerm"
+                  @click="resetSearch"
+                >
+                  <i class="fa fa-times"></i>
+                </b-input-group-text>
+              </template>
           </b-input-group>
           <a href="javascript:window.history.back()" v-else>
             <i class="fa flaticon-chevron-back" />
@@ -79,7 +91,7 @@
         "sidebarClose",
         "sidebarStatic",
         "showSearchInputInHeader",
-        "hasFeedsFilters"
+        "hasFeedsFilters",
       ]),
       searchTerm: {
         get() {
@@ -118,6 +130,9 @@
       ]),
       toggleSidebarMenu() {
         this.toggleSidebar();
+      },
+      resetSearch() {
+        this.updateSearchTerm("")
       },
       logout() {
         window.localStorage.setItem("authenticated", false);
