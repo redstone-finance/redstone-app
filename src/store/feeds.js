@@ -57,6 +57,7 @@ export default {
       });
     },
     getSmartContractByLayerId: (state) => (layerId) => {
+      console.log({contracts: state.smartContracts})
       const contract = state.smartContracts[layerId];
       if (contract == null)
         throw Error("No contract assigned to layer id:", layerId);
@@ -85,9 +86,7 @@ export default {
             state.relayersDetails[itemKey]?.blockTimestamp;
           const keyFeedValue = state.relayersDetails[itemKey]?.dataFeed;
           const routeNetwork = Object.values(networks).find((network) => network.chainId === layer.chain.id).name.toLowerCase().replaceAll(' ', '-')
-          console.log({routeNetwork})
           const routeToken = feedId.toLowerCase().replaceAll(" ", "-").replaceAll("/", "--")
-          console.log({routeToken})
           return {
             routeNetwork: routeNetwork,
             routeToken: routeToken,
@@ -226,7 +225,6 @@ export default {
       Object.keys(state.relayerSchema).forEach((layerId) => {
         Object.keys(state.relayerSchema[layerId].priceFeeds).forEach((key) => {
           Vue.set(state.relayersDetails, `${layerId}_${key}`, {
-            feedId: null,
             blockTimestamp: null,
             dataFeed: null,
             loaders: {
@@ -282,7 +280,8 @@ export default {
         chainId: state.relayerSchema[relayerId].chain.id,
         contractType: state.relayerSchema[relayerId]?.adapterContractType,
       });
-      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+      console.log(state.smartContracts)
+      await Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
         async (feedId) => {
           await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
             layerId: relayerId,
@@ -290,7 +289,7 @@ export default {
           });
         }
       );
-      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+      await Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
         async (feedId) => {
           await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
             layerId: relayerId,

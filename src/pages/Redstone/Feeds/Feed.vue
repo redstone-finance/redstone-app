@@ -5,8 +5,6 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value">
-            {{ network }}
-            {{ token }}
             $ <strong>{{ chartData[chartData.length - 1].value }}</strong>
           </dd>
         </div>
@@ -122,6 +120,7 @@ export default {
   watch: {
     feedData() {
       if (this.feedData.relayerId) {
+        console.log({relayer: this.feedData.relayerId})
         if (this.getSmartContractByLayerId(this.feedData.relayerId) == null) {
           this.initSingle(this.feedData.relayerId);
         }
