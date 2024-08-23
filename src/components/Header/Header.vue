@@ -26,6 +26,7 @@
               v-model="searchTerm"
               id="search-input"
               placeholder="Search..."
+              v-b-tooltip.focus.left="hasFeedsFilters ? 'You have filters selected, they will reset on search ' : ''"
             />
           </b-input-group>
           <a href="javascript:window.history.back()" v-else>
@@ -78,8 +79,8 @@
         "sidebarClose",
         "sidebarStatic",
         "showSearchInputInHeader",
+        "hasFeedsFilters"
       ]),
-
       searchTerm: {
         get() {
           return this.$store.state.layout.searchTerm;

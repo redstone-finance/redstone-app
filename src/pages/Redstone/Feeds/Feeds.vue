@@ -105,7 +105,7 @@
             </div>
           </div>
         </div>
-        <div v-if="hasFilters" class="clear-filters" @click="resetFilters">
+        <div v-if="hasFiltersAndSearch" class="clear-filters" @click="resetFilters">
           Clear all
         </div>
       </div>
@@ -131,7 +131,7 @@
       :filter-function="customFilter"
       :fields="fields"
       class="feeds__table"
-      :class="{'disable-sorting': !allLoadersComplete}"
+      :class="{ 'disable-sorting': !allLoadersComplete }"
     >
       <template #head(deviation)="data">
         {{ data.label }}
@@ -262,7 +262,7 @@
             >No entries found
             <span
               style="pointer-events: all"
-              v-if="hasFilters"
+              v-if="hasFiltersAndSearch"
               class="clear-filters"
               @click="resetFilters"
             >
@@ -352,7 +352,7 @@
             formatter: (value, key, item) => item.network.name,
           },
           { key: "contract_address", label: "Addresses", sortable: false },
-          { key: "answer", label: "Answer", sortable: false },
+          { key: "answer", label: "Answer", sortable: true },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
         ],
@@ -462,11 +462,16 @@
         this.$nextTick(() => {
           this.$refs.selectableTable.refresh();
         });
+        if (this.hasFilters) {
+          this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+        }
       },
-      resetFilters() {
+      resetFilters(clearSearch = true) {
         this.selectedCryptos = [];
         this.selectedNetworks = [];
-        this.$store.dispatch("layout/updateSearchTerm", "");
+        if(clearSearch){
+          this.$store.dispatch("layout/updateSearchTerm", "");
+        }
         this.filters = null;
         this.currentFilter = null;
         this.currentPage = 1;
@@ -474,6 +479,7 @@
         this.sortDesc = false;
         this.$refs.selectableTable.refresh();
         this.updateRouteParams();
+        this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
 
       onPageChange(page) {
@@ -540,7 +546,6 @@
         this.handleFilter("crypto", this.selectedCryptos);
       },
       stripAdditionalFeedInfo(string) {
- 
         return string;
       },
       findNetworkName(networkId) {
@@ -600,9 +605,11 @@
       hasSlash(string) {
         return string.indexOf("/") >= 0;
       },
-      parseToUsd(hexValue, parseToEth) {
-        hexValue = hexValue.replace(/^0x/, "");
-        const decimalValue = parseInt(hexValue, 16);
+      parseToDecimal(hexValue) {
+        hexValue = hexValue?.replace(/^0x/, "");
+        return parseInt(hexValue, 16);
+      },
+      parseToUsd(decimalValue, parseToEth) {
         const value = decimalValue / Math.pow(10, 8);
         let formatterOptions = {
           style: "currency",
@@ -718,10 +725,16 @@
     },
     watch: {
       searchTerm: {
-        handler() {
+        handler(newValue) {
           this.currentPage = 1;
           this.applyFilters();
           this.updateRouteParams();
+          if (this.searchTerm === "") {
+            this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+          } else if (newValue.length >= 3) {
+            this.resetFilters(false);
+            this.$store.dispatch("layout/updateFeedsFilterStatus", false);
+          }
         },
         immediate: true,
       },
@@ -794,14 +807,16 @@
       },
       hasFilters() {
         return (
-          this.searchTerm ||
-          (this.filters &&
-            (this.filters.selectedCryptos.length > 0 ||
-              this.filters.selectedNetworks.length > 0))
+          this.filters &&
+          (this.filters.selectedCryptos.length > 0 ||
+            this.filters.selectedNetworks.length > 0)
         );
       },
+      hasFiltersAndSearch() {
+        return this.searchTerm || this.hasFilters;
+      },
       totalRows() {
-        return this.hasFilters ? this.filteredItems.length : this.feeds.length;
+        return this.hasFiltersAndSearch ? this.filteredItems.length : this.feeds.length;
       },
       firstEntry() {
         if (this.totalRows == 0) return 0;
@@ -824,7 +839,10 @@
       },
       ...mapState("feeds", ["relayersDetails"]),
       ...mapState("layout", ["searchTerm"]),
-      ...mapGetters("feeds", ["combinedFeedsWithDetailsArray", "allLoadersComplete"]),
+      ...mapGetters("feeds", [
+        "combinedFeedsWithDetailsArray",
+        "allLoadersComplete",
+      ]),
       filteredNetworks() {
         {
           if (this.selectedCryptos.length === 0) {
@@ -877,10 +895,11 @@
           //   return undefined
           // }
           return {
-            answer: item.value,
+            answer: this.parseToDecimal(item.value),
             feed: this.hasSlash(item.feedId)
               ? this.stripAdditionalFeedInfo(item.feedId)
-              : this.stripAdditionalFeedInfo(item.feedId) +  (this.findUseRatioProp(item.feedId) ? '/ETH' : "/USD"),
+              : this.stripAdditionalFeedInfo(item.feedId) +
+                (this.findUseRatioProp(item.feedId) ? "/ETH" : "/USD"),
             network: {
               id: item.networkId,
               name: this.findNetworkName(item.networkId),
