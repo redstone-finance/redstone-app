@@ -18,7 +18,6 @@
 <script>
   import Chart from "chart.js";
   import { isValid, startOfDay, subDays, subMonths, parseISO } from "date-fns";
-
   const crosshairPlugin = {
     afterDatasetsDraw: function (chart) {
       if (chart.tooltip._active && chart.tooltip._active.length) {

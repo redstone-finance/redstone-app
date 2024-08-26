@@ -5,7 +5,10 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value" v-if="currentChartData">
-            $ <strong>{{ currentChartData[currentChartData.length - 1].value }}</strong>
+            $
+            <strong>{{
+              currentChartData[currentChartData.length - 1].value
+            }}</strong>
           </dd>
         </div>
         <div class="stat-item">
@@ -45,11 +48,17 @@
       </dl>
       <div class="feed-chart">
         <layer-chart
-          v-if="currentChartData"
+          v-if="currentChartData && !isLoading"
           :data="currentChartData"
           :range="currentRange"
           @range-change="handleRangeChange"
         />
+        <div class="loading-container" v-else>
+          <vue-loaders-ball-beat
+            color="var(--redstone-red-color)"
+            scale="1"
+          ></vue-loaders-ball-beat>
+        </div>
       </div>
     </div>
     <div class="applicant-info__item">
@@ -66,118 +75,117 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
-import LayerChart from "./components/LayerChart";
-import ContractAddress from "./components/ContractAddress.vue";
-import { transformFeed } from "./feedUtils";
-import TimestampWithLoader from "./components/TimestampWithLoader.vue";
-import Loader from './../../../components/Loader/Loader.vue'
-import HeartbeatTimer from "./components/HeartbeatTimer.vue";
-import axios from "axios";
+  import { mapActions, mapGetters, mapState } from "vuex";
+  import LayerChart from "./components/LayerChart";
+  import ContractAddress from "./components/ContractAddress.vue";
+  import { transformFeed } from "./feedUtils";
+  import TimestampWithLoader from "./components/TimestampWithLoader.vue";
+  import Loader from "./../../../components/Loader/Loader.vue";
+  import HeartbeatTimer from "./components/HeartbeatTimer.vue";
+  import axios from "axios";
 
-export default {
-  components: {
-    LayerChart,
-    ContractAddress,
-    TimestampWithLoader,
-    HeartbeatTimer,
-    Loader,
-  },
-  data() {
-    return {
-      isLoading: false,
-      chartDataCache: {
-        "1d": null,
-        "1w": null,
-        "1m": null,
+  export default {
+    components: {
+      LayerChart,
+      ContractAddress,
+      TimestampWithLoader,
+      HeartbeatTimer,
+      Loader,
+    },
+    data() {
+      return {
+        isLoading: false,
+        chartDataCache: {
+          "1d": null,
+          "1w": null,
+          "1m": null,
+        },
+        currentRange: "1w",
+      };
+    },
+    async mounted() {
+      await this.fetchRelayerSchema();
+      await this.fetchChartData();
+    },
+    methods: {
+      hexToPrice(hex) {
+        let decimalValue = parseInt(hex, 16);
+        let price = decimalValue / 100000000;
+        return price;
       },
-      currentRange: "1w",
-    };
-  },
-  async mounted() {
-    await this.fetchRelayerSchema();
-    await this.fetchChartData();
-  },
-  methods: {
-    hexToPrice(hex) {
-      let decimalValue = parseInt(hex, 16);
-      let price = decimalValue / 100000000;
-      return price;
-    },
-    ...mapActions("feeds", ["initSingle", "fetchRelayerSchema"]),
-    async fetchChartData() {
-      if (this.chartDataCache[this.currentRange]) {
-        // Data for this range already exists, no need to fetch
-        return;
-      }
-
-      this.isLoading = true;
-      try {
-        const { data } = await axios.get(this.chartEndpoint);
-        this.chartDataCache[this.currentRange] = data.onChainUpdates;
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
-    handleRangeChange(range) {
-      this.currentRange = range;
-      this.fetchChartData();
-    },
-  },
-  watch: {
-    relayerId() {
-      if (this.relayerId) {
-        console.log(this.relayerId)
-        if (this.getSmartContractByLayerId(this.relayerId) == null) {
-          this.initSingle(this.relayerId);
+      ...mapActions("feeds", ["initSingle", "fetchRelayerSchema"]),
+      async fetchChartData() {
+        if (this.chartDataCache[this.currentRange]) {
+          return;
         }
-      }
+
+        this.isLoading = true;
+        try {
+          const { data } = await axios.get(this.chartEndpoint);
+          this.chartDataCache[this.currentRange] = data.onChainUpdates;
+        } catch (error) {
+          console.error("Error fetching chart data:", error);
+        } finally {
+          this.isLoading = false;
+        }
+      },
+      handleRangeChange(range) {
+        this.currentRange = range;
+        this.fetchChartData();
+      },
     },
-    currentRange() {
-      this.fetchChartData();
+    watch: {
+      relayerId() {
+        if (this.relayerId) {
+          console.log(this.relayerId);
+          if (this.getSmartContractByLayerId(this.relayerId) == null) {
+            this.initSingle(this.relayerId);
+          }
+        }
+      },
+      currentRange() {
+        this.fetchChartData();
+      },
     },
-  },
-  computed: {
-    network() {
-      return this.$route.params.network;
+    computed: {
+      network() {
+        return this.$route.params.network;
+      },
+      token() {
+        return this.$route.params.token;
+      },
+      feedData() {
+        return transformFeed(
+          this.combinedFeedsWithDetailsArray.find(
+            (feed) =>
+              feed.routeNetwork === this.network &&
+              feed.routeToken === this.token
+          )
+        );
+      },
+      relayerId() {
+        return this.feedData.relayerId;
+      },
+      chartEndpoint() {
+        const baseUrl = "https://api.redstone.finance/on-chain-updates";
+        const dataFeedId = this.feedData.token || "ETH";
+        const adapterName = this.feedData.relayerId;
+        const daysRange =
+          this.currentRange === "1d" ? 1 : this.currentRange === "1w" ? 7 : 30;
+        return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
+      },
+      currentChartData() {
+        return this.chartDataCache[this.currentRange];
+      },
+      ...mapState("feeds", ["relayersDetails", "relayersSchema"]),
+      ...mapGetters("feeds", [
+        "combinedFeedsWithDetailsArray",
+        "getSmartContractByLayerId",
+      ]),
+      layer() {
+        return this.relayersSchema[this.layerId];
+      },
     },
-    token() {
-      return this.$route.params.token;
-    },
-    feedData() {
-      return transformFeed(
-        this.combinedFeedsWithDetailsArray.find(
-          (feed) =>
-            feed.routeNetwork === this.network &&
-            feed.routeToken === this.token
-        )
-      );
-    },
-    relayerId() {
-      return this.feedData.relayerId
-    },
-    chartEndpoint() {
-      const baseUrl = "https://api.redstone.finance/on-chain-updates";
-      const dataFeedId = this.feedData.token || "ETH";
-      const adapterName = this.feedData.relayerId;
-      const daysRange =
-        this.currentRange === "1d" ? 1 : this.currentRange === "1w" ? 7 : 30;
-      return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
-    },
-    currentChartData() {
-      return this.chartDataCache[this.currentRange];
-    },
-    ...mapState("feeds", ["relayersDetails", "relayersSchema"]),
-    ...mapGetters("feeds", [
-      "combinedFeedsWithDetailsArray",
-      "getSmartContractByLayerId",
-    ]),
-    layer() {
-      return this.relayersSchema[this.layerId];
-    },
-  },
-};
+  };
 </script>
 <style lang="scss" scoped src="./Feed.scss" />
