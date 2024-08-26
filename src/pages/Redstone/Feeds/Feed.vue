@@ -77,17 +77,26 @@
           Relayer ID: <strong>{{ relayerId }}</strong>
         </div>
         <div class="additional-details-cart__value">
-          Explorer: <a :href="feedData.explorer.explorerUrl" target="_blank">{{ feedData.explorer.name }}</a>
+          Explorer:
+          <a :href="feedData.explorer.explorerUrl" target="_blank">{{
+            feedData.explorer.name
+          }}</a>
         </div>
       </div>
     </div>
 
-    <div class="additional-details-card__wrapper">
-      <div class="additional-details-card__item additional-details-card__item--full">
-        <h3>Related feeds</h3>
-
+    <!-- <div class="additional-details-card__wrapper">
+      <div
+        class="additional-details-card__item additional-details-card__item--full"
+      >
+        <h3>Feeds over same network</h3>
+        <ul>
+          <li v-for="relayerId in feedsInNetwork" :key="relayerId">
+            {{ getFeedDetails(relayerId) }}
+          </li>
+        </ul>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -231,11 +240,11 @@
       },
     },
     computed: {
-      feedsInNetwork() {
-        return Object.values(this.relayerSchema).filter(
-          (relayer) => relayer.chain.id === this.layer.chain.id
-        );
-      },
+      // feedsInNetwork() {
+      //   return Object.keys(this.relayerSchema).filter(
+      //     (relayer) => relayer.chain.id === this.layer.chain.id
+      //   )
+      // },
       feedsInRelayer() {
         return this.relayerSchema[this.relayerId].priceFeeds;
       },
@@ -244,6 +253,14 @@
       },
       token() {
         return this.$route.params.token;
+      },
+      getFeedDetails(relayerId) {
+        return transformFeed(
+          this.combinedFeedsWithDetailsArray.filter(
+            (feed) =>
+              feed.layerId === relayerId
+          )
+        );
       },
       feedData() {
         return transformFeed(
