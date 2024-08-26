@@ -62,6 +62,10 @@
   export default {
     name: "LayerChart",
     props: {
+      currency: {
+        type: String,
+        required: true,
+      },
       data: {
         type: Array,
         required: true,
@@ -225,7 +229,7 @@
             callbacks: {
               label: (tooltipItem, data) => {
                 const value = tooltipItem.yLabel;
-                return `  Answer: $${value.toFixed(5)}`;
+                return `  Answer: ${this.currency} ${value.toFixed(5)}`;
               },
             },
           },

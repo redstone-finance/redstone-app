@@ -5,8 +5,8 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value" v-if="currentChartData">
-            $
-            <strong>{{
+            
+            <strong><span>{{ feedData.useEthRatio ? 'Ξ' : '$' }}</span> {{
               currentChartData[currentChartData.length - 1].value
             }}</strong>
           </dd>
@@ -53,6 +53,7 @@
           :range="currentRange"
           @range-change="handleRangeChange"
           :duplicated-ranges="duplicateRanges.flat()"
+          :currency="feedData.useEthRatio ? 'Ξ' : '$'"
         />
         <div class="loading-container" v-else>
           <vue-loaders-ball-beat
