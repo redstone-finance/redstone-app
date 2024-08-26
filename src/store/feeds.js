@@ -265,37 +265,62 @@ export default {
     //     feedId: feedId,
     //   });
     // },
+    async createContractAndFetchValues({ state }, { relayerId, feedId }) {
+      await this.dispatch("feeds/createSmartContract", {
+        layerId: relayerId,
+        contractAddress: state.relayerSchema[relayerId].adapterContract,
+        chainId: state.relayerSchema[relayerId].chain.id,
+        contractType: state.relayerSchema[relayerId]?.adapterContractType,
+      });
+      await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+        layerId: relayerId,
+        feedId,
+      });
+      await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+        layerId: relayerId,
+        feedId,
+      });
+    },
+    async createContractAndFetchValuesForRelayer({ state }, { relayerId }) {
+      await this.dispatch("feeds/createSmartContract", {
+        layerId: relayerId,
+        contractAddress: state.relayerSchema[relayerId].adapterContract,
+        chainId: state.relayerSchema[relayerId].chain.id,
+        contractType: state.relayerSchema[relayerId]?.adapterContractType,
+      });
+      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+        async (feedId) => {
+          await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+            layerId: relayerId,
+            feedId,
+          });
+        }
+      );
+
+      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+        async (feedId) => {
+          await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+            layerId: relayerId,
+            feedId,
+          });
+        }
+      );
+    },
     async initSchema({ state }) {
       if (!isEmpty(state.relayerSchema)) return;
       await this.dispatch("feeds/fetchRelayerSchema");
     },
     async initValues({ state }, displayedItemsPriority) {
-      console.log({displayedItemsPriority})
-      Object.keys(state.relayerSchema).forEach(async (key) => {
-        await this.dispatch("feeds/createSmartContract", {
-          layerId: key,
-          contractAddress: state.relayerSchema[key].adapterContract,
-          chainId: state.relayerSchema[key].chain.id,
-          contractType: state.relayerSchema[key]?.adapterContractType,
+      await displayedItemsPriority.forEach(async (item) => {
+        console.log(item);
+        await this.dispatch("feeds/createContractAndFetchValues", {
+          relayerId: item.relayerId,
+          feedId: item.layer_id,
         });
-        Object.keys(state.relayerSchema[key]?.priceFeeds).forEach(
-          async (feedId) => {
-            await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-              layerId: key,
-              feedId,
-            });
-          }
-        );
-
-        Object.keys(state.relayerSchema[key]?.priceFeeds).forEach(
-          async (feedId) => {
-            await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
-              layerId: key,
-              feedId,
-            });
-          }
-        );
       });
+      // await Object.keys(state.relayerSchema).forEach(async (key) => {
+      //   await this.dispatch("feeds/createContractAndFetchValuesForRelayer", key);
+      // });
     },
   },
   get actions() {
