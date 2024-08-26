@@ -549,9 +549,6 @@ import { RouterLink } from "vue-router";
         }
         this.handleFilter("crypto", this.selectedCryptos);
       },
-      stripAdditionalFeedInfo(string) {
-        return string;
-      },
       findNetworkName(networkId) {
         return Object.values(networks).find(
           (network) => network.chainId === networkId
@@ -909,9 +906,8 @@ import { RouterLink } from "vue-router";
           return {
             answer: this.parseToDecimal(item.value),
             feed: this.hasSlash(item.feedId)
-              ? this.stripAdditionalFeedInfo(item.feedId)
-              : this.stripAdditionalFeedInfo(item.feedId) +
-                (this.findUseRatioProp(item.feedId) ? "/ETH" : "/USD"),
+              ? item.feedId
+              : item.feedId + "/USD",
             network: {
               id: item.networkId,
               name: this.findNetworkName(item.networkId),
