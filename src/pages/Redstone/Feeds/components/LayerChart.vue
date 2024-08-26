@@ -6,8 +6,7 @@
         v-for="range in ranges"
         :key="range.value"
         size="sm"
-        v-if="
-          !duplicatedRanges.includes(range.value)"
+        v-if="!duplicatedRanges.includes(range.value)"
         @click="onRangeChange(range.value)"
         :class="['range-button', { active: selectedRange === range.value }]"
       >
@@ -131,7 +130,7 @@
         } else if (typeof timestamp === "string") {
           return parseISO(timestamp);
         }
-        return new Date(NaN); // Invalid date
+        return new Date(NaN);
       },
       filterDataByRange(data) {
         const now = new Date();
@@ -185,7 +184,7 @@
         const minValue = Math.min(...data.map((point) => point.y));
         const maxValue = Math.max(...data.map((point) => point.y));
         const range = maxValue - minValue;
-        const padding = range * 0.1; // 10% padding
+        const padding = range * 0.1;
 
         return {
           responsive: true,
@@ -227,7 +226,7 @@
                   },
                 },
                 gridLines: {
-                  display: true,
+                  display: false,
                   drawBorder: true,
                   color: "rgba(0, 0, 0, 0.1)",
                 },
@@ -246,6 +245,11 @@
                 },
               },
             ],
+          },
+          layout: {
+            padding: {
+              right: 20,
+            },
           },
         };
       },

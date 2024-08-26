@@ -139,7 +139,6 @@
           );
           const results = await Promise.all(fetchPromises);
 
-          // Store the results and compare data sets
           ranges.forEach((range, index) => {
             this.chartDataCache[range] = results[index];
           });
@@ -155,7 +154,11 @@
         const ranges = ["1d", "1w", "1m"];
         this.duplicateRanges = [];
         let equalPairs = [];
+        let singleItemRanges = [];
         for (let i = 0; i < ranges.length; i++) {
+          if (this.chartDataCache[ranges[i]]?.length === 1) {
+            singleItemRanges.push(ranges[i]);
+          }
           for (let j = i + 1; j < ranges.length; j++) {
             if (
               this.areDataSetsEqual(
@@ -176,9 +179,8 @@
           this.duplicateRanges = [larger];
           this.chartDataCache[larger] = this.chartDataCache[smaller];
         }
-        // If equalPairs.length === 0, no ranges are equal, so we don't need to do anything
-
-        console.log("Duplicate ranges:", this.duplicateRanges);
+        this.duplicateRanges.push(...singleItemRanges);
+        this.duplicateRanges = [...new Set(this.duplicateRanges)];
       },
       areDataSetsEqual(dataset1, dataset2) {
         if (!dataset1 || !dataset2 || dataset1.length !== dataset2.length) {
