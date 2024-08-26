@@ -173,7 +173,7 @@
           if (!elements.length) {
             return false;
           }
-          const offset = 10;
+          const offset = 20;
           const x = position.x;
           const y = position.y;
           return {
@@ -207,6 +207,21 @@
             mode: "index",
             intersect: false,
             position: "custom",
+            // Styling
+            bodyFontSize: 14,
+            bodyFontStyle: "normal",
+            bodyFontColor: "#404040",
+            backgroundColor: "rgba(254, 254, 254, 1)",
+            borderColor: '#fd627a',
+            borderWidth: 1,
+            titleFontSize: 14,
+            titleFontStyle: "bold",
+            titleFontColor: "#404040",
+            xPadding: 15,
+            yPadding: 15,
+            caretSize: 0,
+            cornerRadius: 15,
+            // End styling
             callbacks: {
               label: (tooltipItem, data) => {
                 const value = tooltipItem.yLabel;
@@ -358,8 +373,5 @@
       background: var(--redstone-red-color);
       color: #fff;
     }
-  }
-  :deep(.chartjs-tooltip:before) {
-    content: none !important;
   }
 </style>
