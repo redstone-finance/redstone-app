@@ -62,15 +62,31 @@
         </div>
       </div>
     </div>
-    <div class="applicant-info__item">
-      <dt class="applicant-info__label">Addresses</dt>
-      <dd class="applicant-info__value">
+    <div class="additional-details-card__wrapper">
+      <div class="additional-details-card__item">
+        <h3>Addresses</h3>
         <contract-address
           v-if="feedData"
           :item="feedData"
-          :separate-labels="true"
+          :separate-labels="false"
         />
-      </dd>
+      </div>
+      <div class="additional-details-card__item">
+        <h3>Product information</h3>
+        <div class="additional-details-cart__value">
+          Relayer ID: <strong>{{ relayerId }}</strong>
+        </div>
+        <div class="additional-details-cart__value">
+          Explorer: <a :href="feedData.explorer.explorerUrl" target="_blank">{{ feedData.explorer.name }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="additional-details-card__wrapper">
+      <div class="additional-details-card__item additional-details-card__item--full">
+        <h3>Related feeds</h3>
+
+      </div>
     </div>
   </div>
 </template>
@@ -215,11 +231,13 @@
       },
     },
     computed: {
-      feedsInNetwork(){
-        return Object.values(this.relayerSchema).filter(relayer => relayer.chain.id === this.layer.chain.id)
+      feedsInNetwork() {
+        return Object.values(this.relayerSchema).filter(
+          (relayer) => relayer.chain.id === this.layer.chain.id
+        );
       },
-      feedsInRelayer(){
-        return this.relayerSchema[this.relayerId].priceFeeds
+      feedsInRelayer() {
+        return this.relayerSchema[this.relayerId].priceFeeds;
       },
       network() {
         return this.$route.params.network;
