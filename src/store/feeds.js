@@ -281,7 +281,7 @@ export default {
         feedId,
       });
     },
-    async createContractAndFetchValuesForRelayer({ state }, { relayerId }) {
+    async createContractAndFetchValuesForRelayer({ state }, relayerId ) {
       await this.dispatch("feeds/createSmartContract", {
         layerId: relayerId,
         contractAddress: state.relayerSchema[relayerId].adapterContract,
