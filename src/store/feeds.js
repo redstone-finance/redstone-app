@@ -318,9 +318,9 @@ export default {
           feedId: item.layer_id,
         });
       });
-      // await Object.keys(state.relayerSchema).forEach(async (key) => {
-      //   await this.dispatch("feeds/createContractAndFetchValuesForRelayer", key);
-      // });
+      await Object.keys(state.relayerSchema).forEach(async (key) => {
+        await this.dispatch("feeds/createContractAndFetchValuesForRelayer", key);
+      });
     },
   },
   get actions() {
