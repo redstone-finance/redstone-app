@@ -5,9 +5,11 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value" v-if="currentChartData">
-            
-            <strong><span>{{ feedData.useEthRatio ? 'Ξ' : '$' }}</span> {{
-              currentChartData[currentChartData.length - 1].value
+            <strong>{{
+              parseToUsd(
+                currentChartData[currentChartData.length - 1].value,
+                feedData.useEthRatio
+              )
             }}</strong>
           </dd>
         </div>
@@ -156,6 +158,28 @@
           return null;
         }
       },
+      parseToUsd(decimalValue, parseToEth) {
+        const value = decimalValue / Math.pow(10, 8);
+        let formatterOptions = {
+          style: "currency",
+          currency: "USD",
+        };
+        if (value >= 1) {
+          formatterOptions.minimumFractionDigits = 3;
+          formatterOptions.maximumFractionDigits = 3;
+        } else {
+          formatterOptions.notation = "standard";
+          formatterOptions.minimumSignificantDigits = 4;
+          formatterOptions.maximumSignificantDigits = 4;
+        }
+        const formatter = new Intl.NumberFormat("en-US", formatterOptions);
+        let formattedValue = formatter.format(value);
+        if (parseToEth) {
+          formattedValue = formattedValue.replace("$", "Ξ");
+        }
+
+        return formattedValue;
+      },
       async initializeData() {
         this.isLoading = true;
         try {
@@ -258,8 +282,7 @@
       getFeedDetails(relayerId) {
         return transformFeed(
           this.combinedFeedsWithDetailsArray.filter(
-            (feed) =>
-              feed.layerId === relayerId
+            (feed) => feed.layerId === relayerId
           )
         );
       },
