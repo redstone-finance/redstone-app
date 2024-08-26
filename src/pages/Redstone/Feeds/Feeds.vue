@@ -217,8 +217,7 @@
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
-        
-            {{ parseToCurrency(item.answer, item.token.split('/')[1]) }}
+            {{ parseToCurrency(item.answer, item.token.split("/")[1]) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -637,8 +636,8 @@
               formattedValue = formattedValue.replace("$", "€");
               break;
             case "ETH":
-            formattedValue = formattedValue.replace("$", "Ξ");
-            break;
+              formattedValue = formattedValue.replace("$", "Ξ");
+              break;
             default:
               formattedValue = formattedValue.replace("$", currency);
           }
@@ -917,9 +916,8 @@
           return {
             answer: this.parseToDecimal(item.value),
             feed: this.hasSlash(item.feedId)
-              ? this.stripAdditionalFeedInfo(item.feedId)
-              : this.stripAdditionalFeedInfo(item.feedId) +
-                (this.findUseRatioProp(item.feedId) ? "/ETH" : "/USD"),
+              ? item.feedId
+              : item.feedId + "/USD",
             network: {
               id: item.networkId,
               name: this.findNetworkName(item.networkId),
