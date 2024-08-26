@@ -225,7 +225,7 @@
             callbacks: {
               label: (tooltipItem, data) => {
                 const value = tooltipItem.yLabel;
-                return `Price: $${value.toFixed(5)}`;
+                return `  Answer: $${value.toFixed(5)}`;
               },
             },
           },
