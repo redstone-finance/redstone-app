@@ -301,7 +301,7 @@
   import SelectedFilters from "./components/SelectedFilters.vue";
   import CopyToClipboard from "./components/CopyToClipboard.vue";
   import networks from "@/data/networks.json";
-  import images from "@/data/logosDefinitions.json";
+  import images from "@/data/symbols.json";
   import isScreen from "@/core/screenHelper";
 
   export default {
