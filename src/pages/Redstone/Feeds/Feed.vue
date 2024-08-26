@@ -52,6 +52,7 @@
           :data="currentChartData"
           :range="currentRange"
           @range-change="handleRangeChange"
+          :duplicated-ranges="duplicateRanges.flat()"
         />
         <div class="loading-container" v-else>
           <vue-loaders-ball-beat
@@ -101,11 +102,12 @@
           "1m": null,
         },
         currentRange: "1w",
+        duplicateRanges: [],
       };
     },
     async mounted() {
       await this.fetchRelayerSchema();
-      await this.fetchChartData();
+      await this.initializeData();
     },
     methods: {
       hexToPrice(hex) {
@@ -114,37 +116,100 @@
         return price;
       },
       ...mapActions("feeds", ["initSingle", "fetchRelayerSchema"]),
-      async fetchChartData() {
-        if (this.chartDataCache[this.currentRange]) {
-          return;
+      async fetchChartData(range) {
+        if (this.chartDataCache[range]) {
+          return this.chartDataCache[range];
         }
 
+        try {
+          const endpoint = this.getChartEndpoint(range);
+          const { data } = await axios.get(endpoint);
+          return data.onChainUpdates;
+        } catch (error) {
+          console.error(`Error fetching chart data for ${range}:`, error);
+          return null;
+        }
+      },
+      async initializeData() {
         this.isLoading = true;
         try {
-          const { data } = await axios.get(this.chartEndpoint);
-          this.chartDataCache[this.currentRange] = data.onChainUpdates;
+          const ranges = ["1d", "1w", "1m"];
+          const fetchPromises = ranges.map((range) =>
+            this.fetchChartData(range)
+          );
+          const results = await Promise.all(fetchPromises);
+
+          // Store the results and compare data sets
+          ranges.forEach((range, index) => {
+            this.chartDataCache[range] = results[index];
+          });
+
+          this.compareDateSets();
         } catch (error) {
-          console.error("Error fetching chart data:", error);
+          console.error("Error initializing data:", error);
         } finally {
           this.isLoading = false;
         }
       },
+      compareDateSets() {
+        const ranges = ["1d", "1w", "1m"];
+        this.duplicateRanges = [];
+        let equalPairs = [];
+        for (let i = 0; i < ranges.length; i++) {
+          for (let j = i + 1; j < ranges.length; j++) {
+            if (
+              this.areDataSetsEqual(
+                this.chartDataCache[ranges[i]],
+                this.chartDataCache[ranges[j]]
+              )
+            ) {
+              equalPairs.push([ranges[i], ranges[j]]);
+            }
+          }
+        }
+        if (equalPairs.length === 3) {
+          this.duplicateRanges = [ranges[1], ranges[2]];
+          this.chartDataCache[ranges[1]] = this.chartDataCache[ranges[2]] =
+            this.chartDataCache[ranges[0]];
+        } else if (equalPairs.length === 1) {
+          const [smaller, larger] = equalPairs[0];
+          this.duplicateRanges = [larger];
+          this.chartDataCache[larger] = this.chartDataCache[smaller];
+        }
+        // If equalPairs.length === 0, no ranges are equal, so we don't need to do anything
+
+        console.log("Duplicate ranges:", this.duplicateRanges);
+      },
+      areDataSetsEqual(dataset1, dataset2) {
+        if (!dataset1 || !dataset2 || dataset1.length !== dataset2.length) {
+          return false;
+        }
+
+        return dataset1.every(
+          (item, index) =>
+            item.timestamp === dataset2[index].timestamp &&
+            item.value === dataset2[index].value
+        );
+      },
       handleRangeChange(range) {
         this.currentRange = range;
-        this.fetchChartData();
+      },
+      getChartEndpoint(range) {
+        const baseUrl = "https://api.redstone.finance/on-chain-updates";
+        const dataFeedId = this.feedData.token || "ETH";
+        const adapterName = this.feedData.relayerId;
+        const daysRange = range === "1d" ? 1 : range === "1w" ? 7 : 30;
+        return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
       },
     },
     watch: {
       relayerId() {
-        if (this.relayerId) {
-          console.log(this.relayerId);
-          if (this.getSmartContractByLayerId(this.relayerId) == null) {
-            this.initSingle(this.relayerId);
-          }
+        if (
+          this.relayerId &&
+          this.getSmartContractByLayerId(this.relayerId) == null
+        ) {
+          this.initSingle(this.relayerId);
         }
-      },
-      currentRange() {
-        this.fetchChartData();
       },
     },
     computed: {
@@ -165,14 +230,6 @@
       },
       relayerId() {
         return this.feedData.relayerId;
-      },
-      chartEndpoint() {
-        const baseUrl = "https://api.redstone.finance/on-chain-updates";
-        const dataFeedId = this.feedData.token || "ETH";
-        const adapterName = this.feedData.relayerId;
-        const daysRange =
-          this.currentRange === "1d" ? 1 : this.currentRange === "1w" ? 7 : 30;
-        return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
       },
       currentChartData() {
         return this.chartDataCache[this.currentRange];

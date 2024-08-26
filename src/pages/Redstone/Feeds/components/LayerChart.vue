@@ -1,15 +1,18 @@
 <template>
   <div class="chart-container">
     <div class="chart-controls">
-      <select
-        v-model="selectedRange"
-        @change="onRangeChange"
-        class="range-dropdown"
+      <b-button
+        variant="danger"
+        v-for="range in ranges"
+        :key="range.value"
+        size="sm"
+        v-if="
+          !duplicatedRanges.includes(range.value)"
+        @click="onRangeChange(range.value)"
+        :class="['range-button', { active: selectedRange === range.value }]"
       >
-        <option value="1d">1 Day</option>
-        <option value="1w">1 Week</option>
-        <option value="1m">1 Month</option>
-      </select>
+        {{ range.label }}
+      </b-button>
     </div>
     <canvas ref="chart"></canvas>
   </div>
@@ -68,11 +71,20 @@
         type: String,
         required: true,
       },
+      duplicatedRanges: {
+        type: Array,
+        required: true,
+      },
     },
     data() {
       return {
         chart: null,
         selectedRange: this.range,
+        ranges: [
+          { value: "1d", label: "1D" },
+          { value: "1w", label: "1W" },
+          { value: "1m", label: "1M" },
+        ],
       };
     },
     computed: {
@@ -271,9 +283,8 @@
           });
         }
       },
-      onRangeChange() {
-        this.$emit("range-change", this.selectedRange);
-        this.updateChart();
+      onRangeChange(range) {
+        this.$emit("range-change", range);
       },
     },
     watch: {
@@ -296,26 +307,34 @@
   };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .chart-container {
-    margin-left: auto;
     height: 500px;
-    width: 100%;
+    width: calc(100%);
     position: relative;
+    margin-bottom: 40px;
+    padding: 0 20px;
   }
   .chart-controls {
     position: absolute;
-    top: 10px;
     right: 10px;
-    display: flex;
-    gap: 10px;
+    top: 10px;
+    padding: 8px;
+    border-radius: 10px;
+    background: #f5f5f5;
   }
-  .range-dropdown {
-    padding: 5px 10px;
-    background-color: white;
-    border: 1px solid #fd627a;
-    border-radius: 4px;
-    color: #fd627a;
-    cursor: pointer;
+  .range-button {
+    padding: 8px 15px;
+    font-size: 12px;
+    margin-right: 10px;
+    background: #fff;
+    color: var(--redstone-red-color);
+    &:last-child {
+      margin-right: 0;
+    }
+    &.active {
+      background: var(--redstone-red-color);
+      color: #fff;
+    }
   }
 </style>
