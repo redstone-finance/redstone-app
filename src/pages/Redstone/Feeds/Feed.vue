@@ -215,6 +215,12 @@
       },
     },
     computed: {
+      feedsInNetwork(){
+        return Object.values(this.relayerSchema).filter(relayer => relayer.chain.id === this.layer.chain.id)
+      },
+      feedsInRelayer(){
+        return this.relayerSchema[this.relayerId].priceFeeds
+      },
       network() {
         return this.$route.params.network;
       },
@@ -236,13 +242,13 @@
       currentChartData() {
         return this.chartDataCache[this.currentRange];
       },
-      ...mapState("feeds", ["relayersDetails", "relayersSchema"]),
+      ...mapState("feeds", ["relayersDetails", "relayerSchema"]),
       ...mapGetters("feeds", [
         "combinedFeedsWithDetailsArray",
         "getSmartContractByLayerId",
       ]),
       layer() {
-        return this.relayersSchema[this.layerId];
+        return this.relayerSchema[this.relayerId];
       },
     },
   };
