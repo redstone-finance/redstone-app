@@ -169,6 +169,19 @@
         const ctx = this.$refs.chart.getContext("2d");
         const data = this.chartData;
 
+        Chart.Tooltip.positioners.custom = function (elements, position) {
+          if (!elements.length) {
+            return false;
+          }
+          const offset = 10;
+          const x = position.x;
+          const y = position.y;
+          return {
+            x: x,
+            y: y - offset,
+          };
+        };
+
         this.chart = new Chart(ctx, {
           type: "line",
           data: data,
@@ -193,6 +206,7 @@
           tooltips: {
             mode: "index",
             intersect: false,
+            position: "custom",
             callbacks: {
               label: (tooltipItem, data) => {
                 const value = tooltipItem.yLabel;
@@ -207,6 +221,10 @@
           elements: {
             line: {
               borderWidth: 1,
+            },
+            point: {
+              radius: 0,
+              hitRadius: 10,
             },
           },
           animation: {
@@ -340,5 +358,8 @@
       background: var(--redstone-red-color);
       color: #fff;
     }
+  }
+  :deep(.chartjs-tooltip:before) {
+    content: none !important;
   }
 </style>
