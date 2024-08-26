@@ -55,7 +55,7 @@
           :range="currentRange"
           @range-change="handleRangeChange"
           :duplicated-ranges="duplicateRanges.flat()"
-          :currency="feedData.useEthRatio ? 'Ξ' : '$'"
+          :currency="getCurrency(feedData.token)"
         />
         <div class="loading-container" v-else>
           <vue-loaders-ball-beat
@@ -157,6 +157,23 @@
           console.error(`Error fetching chart data for ${range}:`, error);
           return null;
         }
+      },
+      getCurrency(token) {
+        const currency = token.split("/")[1];
+        let symbol = "$"
+        if (currency && currency !== "USD") {
+          switch (currency) {
+            case "EUR":
+              symbol = "€"
+              break;
+            case "ETH":
+              symbol = "Ξ"
+              break;
+            default:
+              symbol = currency;
+          }
+        }
+        return symbol
       },
       parseToCurrency(decimalValue, currency) {
         const value = decimalValue / Math.pow(10, 8);
