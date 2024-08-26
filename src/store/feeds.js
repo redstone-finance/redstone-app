@@ -243,28 +243,28 @@ export default {
         this.dispatch("feeds/initializeLayerDetails");
       }
     },
-    // async initSingleContract({ state }, layerId, feedId) {
-    //   await this.dispatch("feeds/fetchRelayerSchema");
-    //   await this.dispatch("feeds/createSmartContract", {
-    //     layerId: layerId,
-    //     contractAddress: state.relayerSchema[layerId].adapterContract,
-    //     chainId: state.relayerSchema[layerId].chain.id,
-    //     contractType: state.relayerSchema[layerId]?.adapterContractType,
-    //   });
-    //   if (state.relayerSchema[layerId]?.adapterContractType === "multi-feed") {
-    //     await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-    //       layerId,
-    //       feedId,
-    //     });
-    //   } else {
-    //     await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
-    //   }
+    async initSingleContract({ state }, layerId, feedId) {
+      await this.dispatch("feeds/fetchRelayerSchema");
+      await this.dispatch("feeds/createSmartContract", {
+        layerId: layerId,
+        contractAddress: state.relayerSchema[layerId].adapterContract,
+        chainId: state.relayerSchema[layerId].chain.id,
+        contractType: state.relayerSchema[layerId]?.adapterContractType,
+      });
+      if (state.relayerSchema[layerId]?.adapterContractType === "multi-feed") {
+        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+          layerId,
+          feedId,
+        });
+      } else {
+        await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
+      }
 
-    //   await this.dispatch("feeds/fetchValueForDataFeed", {
-    //     layerId: layerId,
-    //     feedId: feedId,
-    //   });
-    // },
+      await this.dispatch("feeds/fetchValueForDataFeed", {
+        layerId: layerId,
+        feedId: feedId,
+      });
+    },
     async createContractAndFetchValues({ state }, { relayerId, feedId }) {
       await this.dispatch("feeds/createSmartContract", {
         layerId: relayerId,

@@ -105,7 +105,11 @@
             </div>
           </div>
         </div>
-        <div v-if="hasFiltersAndSearch" class="clear-filters" @click="resetFilters">
+        <div
+          v-if="hasFiltersAndSearch"
+          class="clear-filters"
+          @click="resetFilters"
+        >
           Clear all
         </div>
       </div>
@@ -213,7 +217,8 @@
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
-            {{ parseToUsd(item.answer, item.useEthRatio) }}
+        
+            {{ parseToCurrency(item.answer, item.token.split('/')[1]) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -361,7 +366,7 @@
     async mounted() {
       prefetchImages(Object.values(networks).map((network) => network.iconUrl));
       await this.initSchema();
-      await this.initValues(this.displayedTableItems)
+      await this.initValues(this.displayedTableItems);
       this.initializeFiltersFromRoute();
       this.$nextTick(() => {
         this.isInitialLoad = false;
@@ -470,7 +475,7 @@
       resetFilters(clearSearch = true) {
         this.selectedCryptos = [];
         this.selectedNetworks = [];
-        if(clearSearch){
+        if (clearSearch) {
           this.$store.dispatch("layout/updateSearchTerm", "");
         }
         this.filters = null;
@@ -610,7 +615,7 @@
         hexValue = hexValue?.replace(/^0x/, "");
         return parseInt(hexValue, 16);
       },
-      parseToUsd(decimalValue, parseToEth) {
+      parseToCurrency(decimalValue, currency) {
         const value = decimalValue / Math.pow(10, 8);
         let formatterOptions = {
           style: "currency",
@@ -626,10 +631,18 @@
         }
         const formatter = new Intl.NumberFormat("en-US", formatterOptions);
         let formattedValue = formatter.format(value);
-        if (parseToEth) {
-          formattedValue = formattedValue.replace("$", "Ξ");
+        if (currency && currency !== "USD") {
+          switch (currency) {
+            case "EUR":
+              formattedValue = formattedValue.replace("$", "€");
+              break;
+            case "ETH":
+            formattedValue = formattedValue.replace("$", "Ξ");
+            break;
+            default:
+              formattedValue = formattedValue.replace("$", currency);
+          }
         }
-
         return formattedValue;
       },
       transformHexString(str) {
@@ -722,7 +735,11 @@
 
         return timeSinceLastUpdateInMilliseconds;
       },
-      ...mapActions("feeds", ["initSchema", "initValues", "initSingleContract"]),
+      ...mapActions("feeds", [
+        "initSchema",
+        "initValues",
+        "initSingleContract",
+      ]),
     },
     watch: {
       searchTerm: {
@@ -817,7 +834,9 @@
         return this.searchTerm || this.hasFilters;
       },
       totalRows() {
-        return this.hasFiltersAndSearch ? this.filteredItems.length : this.feeds.length;
+        return this.hasFiltersAndSearch
+          ? this.filteredItems.length
+          : this.feeds.length;
       },
       firstEntry() {
         if (this.totalRows == 0) return 0;
