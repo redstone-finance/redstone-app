@@ -213,7 +213,7 @@
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
-            {{ parseToUsd(item.answer, item.useEthRatio) }}
+            {{ parseToUsd(item.answer, item.token.split('/')[1]) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
@@ -613,7 +613,7 @@ import { RouterLink } from "vue-router";
         hexValue = hexValue?.replace(/^0x/, "");
         return parseInt(hexValue, 16);
       },
-      parseToUsd(decimalValue, parseToEth) {
+      parseToCurrency(decimalValue, currency) {
         const value = decimalValue / Math.pow(10, 8);
         let formatterOptions = {
           style: "currency",
@@ -629,10 +629,18 @@ import { RouterLink } from "vue-router";
         }
         const formatter = new Intl.NumberFormat("en-US", formatterOptions);
         let formattedValue = formatter.format(value);
-        if (parseToEth) {
-          formattedValue = formattedValue.replace("$", "Ξ");
+        if (currency && currency !== "USD") {
+          switch (currency) {
+            case "EUR":
+              formattedValue = formattedValue.replace("$", "€");
+              break;
+            case "ETH":
+            formattedValue = formattedValue.replace("$", "Ξ");
+            break;
+            default:
+              formattedValue = formattedValue.replace("$", currency);
+          }
         }
-
         return formattedValue;
       },
       transformHexString(str) {
