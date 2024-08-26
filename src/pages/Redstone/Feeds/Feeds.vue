@@ -558,13 +558,6 @@
           (network) => network.chainId === networkId
         ).name;
       },
-      findUseRatioProp(token) {
-        const idealMatch = images.find((image) => token === image.token);
-        const secondMatch = images.find(
-          (image) => token.indexOf(image.token) >= 0
-        );
-        return idealMatch?.useEthRatio || secondMatch?.useEthRatio;
-      },
       findNetworkImage(networkId) {
         return Object.values(networks).find(
           (network) => network.chainId === networkId
@@ -941,7 +934,6 @@
                 : "n/a",
             cron: item.triggers.cron,
             token: item.feedId,
-            useEthRatio: this.findUseRatioProp(item.feedId),
             relayerId: item.layerId,
             feed_address: item.feedAddress,
             crypto_token: this.getFirstPart(item.feedId),
