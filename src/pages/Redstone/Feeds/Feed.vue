@@ -6,9 +6,9 @@
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value" v-if="currentChartData">
             <strong>{{
-              parseToUsd(
+              parseToCurrency(
                 currentChartData[currentChartData.length - 1].value,
-                feedData.useEthRatio
+                feedData.token.split("/")[1]
               )
             }}</strong>
           </dd>
@@ -158,7 +158,7 @@
           return null;
         }
       },
-      parseToUsd(decimalValue, parseToEth) {
+      parseToCurrency(decimalValue, currency) {
         const value = decimalValue / Math.pow(10, 8);
         let formatterOptions = {
           style: "currency",
@@ -174,10 +174,18 @@
         }
         const formatter = new Intl.NumberFormat("en-US", formatterOptions);
         let formattedValue = formatter.format(value);
-        if (parseToEth) {
-          formattedValue = formattedValue.replace("$", "Ξ");
+        if (currency && currency !== "USD") {
+          switch (currency) {
+            case "EUR":
+              formattedValue = formattedValue.replace("$", "€");
+              break;
+            case "ETH":
+              formattedValue = formattedValue.replace("$", "Ξ");
+              break;
+            default:
+              formattedValue = formattedValue.replace("$", currency);
+          }
         }
-
         return formattedValue;
       },
       async initializeData() {

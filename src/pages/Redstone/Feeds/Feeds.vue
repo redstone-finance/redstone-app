@@ -213,7 +213,7 @@
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
-            {{ parseToUsd(item.answer, item.token.split('/')[1]) }}
+            {{ parseToCurrency(item.answer, item.token.split('/')[1]) }}
           </strong>
         </span>
         <span v-else class="feeds__no-data">no-data</span>
