@@ -51,7 +51,9 @@ export default {
   getters: {
     allLoadersComplete: (state) => {
       return Object.values(state.relayersDetails).every((relayer) => {
-        return Object.values(relayer.loaders).every((loader) => loader === false);
+        return Object.values(relayer.loaders).every(
+          (loader) => loader === false
+        );
       });
     },
     getSmartContractByLayerId: (state) => (layerId) => {
@@ -263,9 +265,12 @@ export default {
     //     feedId: feedId,
     //   });
     // },
-    async init({ state }) {
+    async initSchema({ state }) {
       if (!isEmpty(state.relayerSchema)) return;
       await this.dispatch("feeds/fetchRelayerSchema");
+    },
+    async initValues({ state }, displayedItemsPriority) {
+      console.log({displayedItemsPriority})
       Object.keys(state.relayerSchema).forEach(async (key) => {
         await this.dispatch("feeds/createSmartContract", {
           layerId: key,

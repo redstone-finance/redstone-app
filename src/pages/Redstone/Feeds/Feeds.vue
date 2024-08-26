@@ -360,7 +360,8 @@
     },
     async mounted() {
       prefetchImages(Object.values(networks).map((network) => network.iconUrl));
-      await this.init();
+      await this.initSchema();
+      await this.initValues(this.displayedTableItems)
       this.initializeFiltersFromRoute();
       this.$nextTick(() => {
         this.isInitialLoad = false;
@@ -721,7 +722,7 @@
 
         return timeSinceLastUpdateInMilliseconds;
       },
-      ...mapActions("feeds", ["init", "initSingleContract"]),
+      ...mapActions("feeds", ["initSchema", "initValues", "initSingleContract"]),
     },
     watch: {
       searchTerm: {
