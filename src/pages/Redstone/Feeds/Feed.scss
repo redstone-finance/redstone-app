@@ -114,6 +114,7 @@
 
   &__text {
     flex-grow: 1;
+    font-size: 1rem;
   }
 
   &__action {
@@ -182,8 +183,8 @@
 
 // General styles for the container
 .stats-grid {
-width: 100%;
-  border-bottom: 1px solid hsl(220, 14%, 96%);;
+  width: 100%;
+  border-bottom: 1px solid hsl(220, 14%, 96%);
   display: grid;
   border-radius: 15px;
   grid-template-columns: 1fr;
@@ -237,9 +238,27 @@ width: 100%;
 
 // Value styling
 .stat-value {
+  display: flex;
   width: 100%;
-  font-size: 1.875rem; // text-3xl
+  font-size: 1.2rem; // text-3xl
   font-weight: 500; // font-medium
-  line-height: 2.5rem; // leading-10
+  line-height: 1.2rem; // leading-10
   color: #111827; // text-gray-900
+  margin-bottom: 0;
+  align-items: center;
+  i {
+    margin-right: 10px;
+    color: #ccc;
+  }
+  strong {
+    font-size: 2rem;
+  }
+  img {
+    box-shadow: none !important;
+    border: 0;
+    height: 1.2rem;
+    width: auto;
+    margin: 0 10px 0;
+    padding: 0;
+  }
 }

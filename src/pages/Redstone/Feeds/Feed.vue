@@ -33,6 +33,7 @@
         <div class="stat-item">
           <dt class="stat-title">Heartbeat</dt>
           <dd class="stat-value">
+            <i class="fa fa-heartbeat"></i>
             <HeartbeatTimer
               v-if="feedData.heartbeat"
               :isLoading="feedData.loaders.blockTimestamp"
