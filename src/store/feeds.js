@@ -13,6 +13,8 @@ function stringToBytes32(str) {
 }
 const RELAYERS_SCHEMA_URL =
   "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
+  const RELAYERS_VALUES_URL =
+  "http://localhost:9000/feeds-answers-update";
 const CONTRACTS_ABI_DEFINITION = [
   "function getBlockTimestampFromLatestUpdate() view returns (uint256)",
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
@@ -28,10 +30,14 @@ export default {
     relayerSchema: {},
     smartContracts: {},
     relayersDetails: {},
+    relayersValues: {}
   },
   mutations: {
     assignRelayerSchema(state, schema) {
       state.relayerSchema = schema;
+    },
+    assignRelayerValues(state, values) {
+      state.relayersValues = values;
     },
     assignCreatedSmartContract(state, { contract, layerId }) {
       state.smartContracts[layerId] = contract;
@@ -112,6 +118,7 @@ export default {
             timestamp: keyFeedTimestamp || null,
             value: keyFeedValue || null,
             loaders: state.relayersDetails[itemKey]?.loaders,
+            apiValues: state.relayersValues?.[key]?.[feedId]
           };
         });
       });
@@ -243,6 +250,10 @@ export default {
         this.dispatch("feeds/initializeLayerDetails");
       }
     },
+    async fetchRelayerValues({ commit, state }) {
+      const { data } = await axios.get(RELAYERS_VALUES_URL);
+      commit("assignRelayerValues", data);
+    },
     async initSingleContract({ state }, layerId, feedId) {
       await this.dispatch("feeds/fetchRelayerSchema");
       await this.dispatch("feeds/createSmartContract", {
@@ -311,6 +322,7 @@ export default {
       await this.dispatch("feeds/fetchRelayerSchema");
     },
     async initValues({ state }, displayedItemsPriority) {
+      await this.dispatch("feeds/fetchRelayerValues")
       await displayedItemsPriority.forEach(async (item) => {
         console.log(item);
         await this.dispatch("feeds/createContractAndFetchValues", {

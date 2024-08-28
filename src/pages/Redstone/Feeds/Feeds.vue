@@ -214,6 +214,7 @@
         <span>{{ item.feed }}</span>
       </template>
       <template #cell(answer)="{ item }">
+        <span v-if="item.apiValues?.value">{{ parseToCurrency(item.apiValues.value) }}</span>
         <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
@@ -944,6 +945,7 @@
               name: this.findNetworkName(item.networkId),
               explorerUrl: this.findExplorer(item.networkId),
             },
+            apiValues: item.apiValues,
           };
         });
       },
