@@ -138,8 +138,8 @@ export default {
       }
 
       try {
-        const endpoint = this.getChartEndpoint(3); // Always fetch 3 days of data
-        const { data } = await axios.get(endpoint);
+        const endpoint = this.getChartEndpoint(30)
+        const { data } = await axios.get(endpoint)
         this.rawChartData = data.onChainUpdates;
         return this.rawChartData;
       } catch (error) {
