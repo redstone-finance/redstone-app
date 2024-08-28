@@ -214,8 +214,10 @@
         <span>{{ item.feed }}</span>
       </template>
       <template #cell(answer)="{ item }">
-        <span v-if="item.apiValues?.value">{{ parseToCurrency(item.apiValues.value) }}</span>
-        <Loader v-if="item.loaders?.feedDataValue" class="feeds__loader" />
+        <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
+          parseToCurrency(item.apiValues.value * 100000000)
+        }}</strong>
+        <Loader v-else-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
           <strong style="font-weight: 500">
             {{ parseToCurrency(item.answer, item.token.split("/")[1]) }}
@@ -224,7 +226,10 @@
         <span v-else class="feeds__no-data">no-data</span>
       </template>
       <template #cell(heartbeat)="{ item }">
-        <Loader v-if="item.loaders?.blockTimestamp" class="feeds__loader" />
+        {{ item?.apiValues }}
+       1: {{ getUnixTime(item?.apiValues?.timestamp) }}
+       2: {{ item.timestamp.raw }}
+        <Loader v-if="item.loaders?.blockTimestamp && item.heartbeat == null" class="feeds__loader" />
         <span v-else class="feeds__timestamp">
           <span v-if="heartbeatIsNumber(item.heartbeat)">
             <to-date-counter :duration="item.heartbeat" />
@@ -291,6 +296,7 @@
     timeUntilDate,
     findNearestCronDate,
   } from "@/core/timeHelpers";
+  import { getUnixTime } from "date-fns";
   import copyToClipboardHelper from "@/core/copyToClipboard";
   import prefetchImages from "@/core/prefetchImages";
   import truncateString from "@/core/truncate";
@@ -373,6 +379,7 @@
       });
     },
     methods: {
+      getUnixTime,
       copyToClipboardHelper,
       truncateString,
       onPerPageChange() {
@@ -926,7 +933,7 @@
             layer_id: item.feedId,
             heartbeat:
               getTimeUntilNextHeartbeat(
-                item?.timestamp,
+                '0x' + getUnixTime(new Date(item?.apiValues?.timestamp)).toString(16).padStart(8, '0') || item?.timestamp,
                 this.resolveTimeSinceLastUpdateInMilliseconds(item)
               ) || JSON.stringify(item.triggers.cron),
             deviation:
