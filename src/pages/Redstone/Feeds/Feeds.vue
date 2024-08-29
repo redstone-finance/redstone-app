@@ -226,10 +226,10 @@
         <span v-else class="feeds__no-data">no-data</span>
       </template>
       <template #cell(heartbeat)="{ item }">
-        {{ item?.apiValues }}
-       1: {{ getUnixTime(item?.apiValues?.timestamp) }}
-       2: {{ item.timestamp.raw }}
-        <Loader v-if="item.loaders?.blockTimestamp && item.heartbeat == null" class="feeds__loader" />
+        <Loader
+          v-if="item.loaders?.blockTimestamp && item.heartbeat == null"
+          class="feeds__loader"
+        />
         <span v-else class="feeds__timestamp">
           <span v-if="heartbeatIsNumber(item.heartbeat)">
             <to-date-counter :duration="item.heartbeat" />
@@ -911,9 +911,12 @@
       feeds() {
         if (this.combinedFeedsWithDetailsArray.length === 0) return [];
         return this.combinedFeedsWithDetailsArray.map((item) => {
-          // if(item.feedAddress === "__NO_FEED__" || item.feedAddress == ""){
-          //   return undefined
-          // }
+          const timestamp = item?.apiValues?.timestamp != null
+            ? "0x" +
+              getUnixTime(new Date(item?.apiValues?.timestamp))
+                .toString(16)
+                .padStart(8, "0")
+            : item?.timestamp;
           return {
             answer: this.parseToDecimal(item.value),
             feed: this.hasSlash(item.feedId)
@@ -933,7 +936,7 @@
             layer_id: item.feedId,
             heartbeat:
               getTimeUntilNextHeartbeat(
-                '0x' + getUnixTime(new Date(item?.apiValues?.timestamp)).toString(16).padStart(8, '0') || item?.timestamp,
+                timestamp,
                 this.resolveTimeSinceLastUpdateInMilliseconds(item)
               ) || JSON.stringify(item.triggers.cron),
             deviation:
