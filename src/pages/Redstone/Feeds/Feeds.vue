@@ -377,9 +377,10 @@
       };
     },
     async mounted() {
-      prefetchImages(Object.values(networks).map((network) => network.iconUrl));
       await this.initSchema()
-      await this.initValues(this.displayedTableItems)
+      await this.fetchRelayerValues()
+      prefetchImages(Object.values(networks).map((network) => network.iconUrl));
+      await this.initValues()
       this.isLoading = false;
       this.initializeFiltersFromRoute();
       this.$nextTick(() => {
@@ -747,6 +748,7 @@
         "initSchema",
         "initValues",
         "initSingleContract",
+        "fetchRelayerValues"
       ]),
     },
     watch: {

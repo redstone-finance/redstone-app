@@ -13,8 +13,7 @@ function stringToBytes32(str) {
 }
 const RELAYERS_SCHEMA_URL =
   "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
-  const RELAYERS_VALUES_URL =
-  "http://localhost:9000/feeds-answers-update";
+const RELAYERS_VALUES_URL = "https://api.redstone.finance/feeds-answers-update";
 const CONTRACTS_ABI_DEFINITION = [
   "function getBlockTimestampFromLatestUpdate() view returns (uint256)",
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
@@ -30,7 +29,7 @@ export default {
     relayerSchema: {},
     smartContracts: {},
     relayersDetails: {},
-    relayersValues: {}
+    relayersValues: {},
   },
   mutations: {
     assignRelayerSchema(state, schema) {
@@ -43,7 +42,6 @@ export default {
       state.smartContracts[layerId] = contract;
     },
     assignRelayerDetails(state, { key, layerId, data }) {
-      // console.log({key, layerId, data})
       if (state.relayersDetails[layerId]) {
         state.relayersDetails[layerId][key] = data;
       }
@@ -118,7 +116,7 @@ export default {
             timestamp: keyFeedTimestamp || null,
             value: keyFeedValue || null,
             loaders: state.relayersDetails[itemKey]?.loaders,
-            apiValues: state.relayersValues?.[key]?.[feedId]
+            apiValues: state.relayersValues?.[key]?.[feedId],
           };
         });
       });
@@ -251,8 +249,12 @@ export default {
       }
     },
     async fetchRelayerValues({ commit, state }) {
-      const { data } = await axios.get(RELAYERS_VALUES_URL);
-      commit("assignRelayerValues", data);
+      try {
+        const { data } = await axios.get(RELAYERS_VALUES_URL);
+        commit("assignRelayerValues", data);
+      } catch (error) {
+        console.log({ error });
+      }
     },
     async initSingleContract({ state }, layerId, feedId) {
       await this.dispatch("feeds/fetchRelayerSchema");
@@ -283,16 +285,20 @@ export default {
         chainId: state.relayerSchema[relayerId].chain.id,
         contractType: state.relayerSchema[relayerId]?.adapterContractType,
       });
-      await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-        layerId: relayerId,
-        feedId,
-      });
-      await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
-        layerId: relayerId,
-        feedId,
-      });
+      if (!state.relayersValues?.[relayerId]?.[feedId]?.timestamp) {
+        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+          layerId: relayerId,
+          feedId,
+        });
+      }
+      if (!state.relayersValues?.[relayerId]?.[feedId]?.value) {
+        await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+          layerId: relayerId,
+          feedId,
+        });
+      }
     },
-    async createContractAndFetchValuesForRelayer({ state }, relayerId ) {
+    async createContractAndFetchValuesForRelayer({ state }, relayerId) {
       await this.dispatch("feeds/createSmartContract", {
         layerId: relayerId,
         contractAddress: state.relayerSchema[relayerId].adapterContract,
@@ -301,19 +307,23 @@ export default {
       });
       Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
         async (feedId) => {
-          await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-            layerId: relayerId,
-            feedId,
-          });
+          if (!state.relayersValues?.[relayerId]?.[feedId]?.timestamp) {
+            await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+              layerId: relayerId,
+              feedId,
+            });
+          }
         }
       );
 
       Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
         async (feedId) => {
-          await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
-            layerId: relayerId,
-            feedId,
-          });
+          if (!state.relayersValues?.[relayerId]?.[feedId]?.value) {
+            await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+              layerId: relayerId,
+              feedId,
+            });
+          }
         }
       );
     },
@@ -321,17 +331,12 @@ export default {
       if (!isEmpty(state.relayerSchema)) return;
       await this.dispatch("feeds/fetchRelayerSchema");
     },
-    async initValues({ state }, displayedItemsPriority) {
-      await this.dispatch("feeds/fetchRelayerValues")
-      await displayedItemsPriority.forEach(async (item) => {
-        console.log(item);
-        await this.dispatch("feeds/createContractAndFetchValues", {
-          relayerId: item.relayerId,
-          feedId: item.layer_id,
-        });
-      });
+    async initValues({ state }) {
       await Object.keys(state.relayerSchema).forEach(async (key) => {
-        await this.dispatch("feeds/createContractAndFetchValuesForRelayer", key);
+        await this.dispatch(
+          "feeds/createContractAndFetchValuesForRelayer",
+          key
+        );
       });
     },
   },
