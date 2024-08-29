@@ -393,7 +393,7 @@
       truncateString,
       onPerPageChange() {
         this.currentPage = 1;
-        this.$refs.selectableTable.refresh();
+        this.$refs.selectableTable?.refresh();
         this.updateRouteParams();
       },
       onSelectedPageChange() {
@@ -482,7 +482,7 @@
           searchTerm: this.searchTerm,
         };
         this.$nextTick(() => {
-          this.$refs.selectableTable.refresh();
+          this.$refs.selectableTable?.refresh();
         });
         if (this.hasFilters) {
           this.$store.dispatch("layout/updateFeedsFilterStatus", true);
@@ -499,7 +499,7 @@
         this.currentPage = 1;
         this.sortBy = "popularity";
         this.sortDesc = false;
-        this.$refs.selectableTable.refresh();
+        this.$refs.selectableTable?.refresh();
         this.updateRouteParams();
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
@@ -597,7 +597,6 @@
       },
       nearestCron(cronString) {
         if (cronString == null) {
-          console.warn("Cron string is undefined or null");
           return 0;
         }
 
@@ -608,7 +607,7 @@
           return timeUntil;
         } catch (error) {
           console.error("Error parsing cron string:", error);
-          return "Invalid cron"; // or some error indicator
+          return "Invalid cron";
         }
       },
       getFirstPart(string) {
@@ -759,7 +758,7 @@
           this.updateRouteParams();
           if (this.searchTerm === "") {
             this.$store.dispatch("layout/updateFeedsFilterStatus", true);
-          } else if (newValue.length >= 3) {
+          } else if (newValue?.length >= 3) {
             this.resetFilters(false);
             this.$store.dispatch("layout/updateFeedsFilterStatus", false);
           }
@@ -919,7 +918,7 @@
         return Object.values(images);
       },
       feeds() {
-        if (this.combinedFeedsWithDetailsArray.length === 0) return [];
+        if (this.combinedFeedsWithDetailsArray?.length === 0) return [];
         return this.combinedFeedsWithDetailsArray.map((item) => {
           const timestamp = item?.apiValues?.timestamp != null
             ? "0x" +
