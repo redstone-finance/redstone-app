@@ -227,7 +227,7 @@
       </template>
       <template #cell(heartbeat)="{ item }">
         <Loader
-          v-if="item.loaders?.blockTimestamp && item.heartbeat == null"
+          v-if="item.loaders?.blockTimestamp && item?.apiValues?.timestamp == null"
           class="feeds__loader"
         />
         <span v-else class="feeds__timestamp">
