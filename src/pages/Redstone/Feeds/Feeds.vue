@@ -115,7 +115,7 @@
       </div>
     </div>
     <b-table
-      v-if="displayedTableItems"
+      v-if="displayedTableItems && !isLoading"
       id="feeds-table"
       v-model="displayedTableItems"
       key="table"
@@ -245,6 +245,12 @@
         </span>
       </template>
     </b-table>
+    <vue-loaders-ball-beat
+      v-else
+      class="table-loader"
+      color="var(--redstone-red-color)"
+      scale="0.5"
+    ></vue-loaders-ball-beat>
     <b-pagination
       :prev-text="prevIcon"
       :next-text="nextIcon"
@@ -323,6 +329,7 @@
     },
     data() {
       return {
+        isLoading: true,
         displayedTableItems: [],
         filters: null,
         selectedChain: null,
@@ -371,8 +378,9 @@
     },
     async mounted() {
       prefetchImages(Object.values(networks).map((network) => network.iconUrl));
-      await this.initSchema();
-      await this.initValues(this.displayedTableItems);
+      await this.initSchema()
+      await this.initValues(this.displayedTableItems)
+      this.isLoading = false;
       this.initializeFiltersFromRoute();
       this.$nextTick(() => {
         this.isInitialLoad = false;
