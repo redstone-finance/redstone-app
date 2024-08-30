@@ -660,9 +660,7 @@
       },
       getTokenImage(token) {
         const idealMatchImg = images.find((image) => token === image.token);
-        const secondMatch = images.find(
-          (image) => token.indexOf(image.token) >= 0
-        );
+        const secondMatch = images.find((image) => token.split('/')[0] === image.token);
         return (
           idealMatchImg ||
           secondMatch || {

@@ -230,6 +230,11 @@
     "token": "ZK"
   },
   {
+    "name": "ZKL",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/zklink.webp",
+    "token": "ZKL"
+  },
+  {
     "name": "cNote",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/cnote.webp",
     "token": "cNOTE"
