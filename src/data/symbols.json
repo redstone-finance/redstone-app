@@ -90,6 +90,11 @@
     "token": "XAU"
   },
   {
+    "name": "eBTC",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ebtc.webp",
+    "token": "eBTC"
+  },
+  {
     "name": "Bitcoin BNB",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bbtc.webp",
     "token": "BBTC"
