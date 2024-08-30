@@ -90,6 +90,16 @@
     "token": "XAU"
   },
   {
+    "name": "Bitcoin BNB",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bbtc.webp",
+    "token": "BBTC"
+  },
+  {
+    "name": "BUSD BNB",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bbusd.webp",
+    "token": "BBUSD"
+  },
+  {
     "name": "FRAX",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/frax.webp",
     "token": "FRAX"
