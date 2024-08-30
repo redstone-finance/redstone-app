@@ -90,7 +90,7 @@
     "token": "XAU"
   },
   {
-    "name": "eBTC",
+    "name": "eBTC Contract Ratio",
     "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/ebtc.webp",
     "token": "eBTC"
   },
