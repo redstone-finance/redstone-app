@@ -196,7 +196,7 @@
   },
   {
     "name": "pzETH",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.webp",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/pzeth.webp",
     "token": "pzETH"
   },
   {
@@ -371,7 +371,7 @@
   },
   {
     "name": "pzETH Fundamental",
-    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.webp",
+    "imageName": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/pzeth.webp",
     "token": "pzETH_FUNDAMENTAL"
   },
   {
