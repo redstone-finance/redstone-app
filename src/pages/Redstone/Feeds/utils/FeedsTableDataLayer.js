@@ -204,8 +204,8 @@ export const nearestCron = (cronString) => {
 };
 
 export const heartbeatIsNumber = (value) => {
-  return !isNaN(value)
-}
+  return !isNaN(value);
+};
 
 export const parseToCurrency = (decimalValue, currency) => {
   const value = decimalValue / Math.pow(10, 8);
