@@ -117,16 +117,17 @@
     <FeedsTable
       :is-loading="isLoading"
       :filters="filters"
-      :items="displayedTableItems"
+      :feeds="feeds"
+      @change="(value) => (displayedTableItems = value)"
       :per-page="perPage"
       :sort-by="sortBy"
       :sort-desc="sortDesc"
       :current-page="currentPage"
-      @update:sort-by="sortBy = $event"
-      @update:sort-desc="sortDesc = $event"
-      @update:filtered-items="filteredItems = $event"
+      @update:sort="handleSort"
+      @update:filteredItems="onFiltered"
     />
     <b-pagination
+      v-if="!isLoading"
       :prev-text="prevIcon"
       :next-text="nextIcon"
       limit="1"
@@ -172,7 +173,7 @@
     nearestCron,
     findNetworkName,
     findNetworkImage,
-    getTokenImage
+    getTokenImage,
   } from "./utils/FeedsTableDataLayer";
   import prefetchImages from "@/core/prefetchImages";
   import truncateString from "@/core/truncate";
@@ -204,7 +205,6 @@
         isLoading: true,
         displayedTableItems: [],
         filters: null,
-        selectedChain: null,
         selectedCryptos: [],
         selectedNetworks: [],
         perPage: 32,
@@ -354,43 +354,6 @@
       onFiltered(filteredItems) {
         this.filteredItems = filteredItems;
       },
-      customFilter(row, filters) {
-        if (!filters) return true;
-        const { selectedCryptos, selectedNetworks, searchTerm } = filters;
-
-        if (searchTerm) {
-          const searchLower = searchTerm.toLowerCase();
-          return (
-            row.feed.toLowerCase().includes(searchLower) ||
-            row.network.name.toLowerCase().includes(searchLower) ||
-            (row.contract_address &&
-              row.contract_address.toLowerCase().includes(searchLower))
-          );
-        }
-
-        const cryptoMatch =
-          selectedCryptos.length === 0 ||
-          selectedCryptos.some((crypto) => {
-            const feedParts = row.feed.split("/");
-            return feedParts[0].toLowerCase() === crypto.toLowerCase();
-          });
-
-        const networkMatch =
-          selectedNetworks.length === 0 ||
-          selectedNetworks.includes(row.network.id);
-
-        return cryptoMatch && networkMatch;
-      },
-      handleSingleFilterCheckbox(data) {
-        if (!data.isChecked) {
-          this.selectedCryptos.push(data.value);
-        } else {
-          this.selectedCryptos = this.selectedCryptos.filter(
-            (token) => token != data.value
-          );
-        }
-        this.handleFilter("crypto", this.selectedCryptos);
-      },
       tokenInNetwork(token, networkId) {
         return processTokenData(this.tokensInNetworks).some(
           (item) => item.token === token && item.network === networkId
@@ -420,8 +383,8 @@
     watch: {
       searchTerm: {
         handler(newValue) {
-          this.currentPage = 1
-          this.applyFilters()
+          this.currentPage = 1;
+          this.applyFilters();
           this.updateRouteParams();
           if (this.searchTerm === "") {
             this.$store.dispatch("layout/updateFeedsFilterStatus", true);
@@ -455,10 +418,10 @@
         "allLoadersComplete",
       ]),
       prevIcon() {
-        return isScreen("sm") || isScreen("xs") ? 'Previous' : "Previous page";
+        return isScreen("sm") || isScreen("xs") ? "Previous" : "Previous page";
       },
       nextIcon() {
-        return isScreen("sm") || isScreen("xs") ? 'Next' : "Next page";
+        return isScreen("sm") || isScreen("xs") ? "Next" : "Next page";
       },
       totalPages() {
         return Math.ceil(this.totalRows / this.perPage);
