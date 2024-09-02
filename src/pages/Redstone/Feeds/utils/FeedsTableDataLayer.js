@@ -87,13 +87,13 @@ const removeSeparators = (string) => {
   return noSeparators;
 };
 
-const findNetworkName = (networkId) => {
+ export const findNetworkName = (networkId) => {
   return Object.values(networks).find(
     (network) => network.chainId === networkId
   ).name;
 };
 
-const findNetworkImage = (networkId) => {
+export const findNetworkImage = (networkId) => {
   return Object.values(networks).find(
     (network) => network.chainId === networkId
   ).iconUrl;
@@ -121,7 +121,7 @@ const transformHexString = (str) => {
   return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`;
 };
 
-const getTokenImage = (token) => {
+export const getTokenImage = (token) => {
   const idealMatchImg = images.find((image) => token === image.token);
   const secondMatch = images.find(
     (image) => token.split("/")[0] === image.token

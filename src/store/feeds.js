@@ -122,7 +122,7 @@ export default {
       });
     },
   },
-  _actions: {
+  actions: {
     createSmartContract(
       { commit, state },
       { layerId, contractAddress, chainId, contractType }
@@ -339,11 +339,5 @@ export default {
         );
       });
     },
-  },
-  get actions() {
-    return this._actions;
-  },
-  set actions(value) {
-    this._actions = value;
   },
 };

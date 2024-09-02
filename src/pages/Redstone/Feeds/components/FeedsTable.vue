@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-table
-      v-if="displayedTableItems && !isLoading"
+    v-if="displayedTableItems && !isLoading"
       id="feeds-table"
       model-value="displayedTableItems"
       key="table"
@@ -143,27 +143,27 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from "vuex";
-  import {
-    mapFeedsData,
-    parseToCurrency,
-    heartbeatIsNumber,
-    nearestCron,
-  } from "../utils/FeedsTableDataLayer.js";
-  import Loader from "../../../../components/Loader/Loader";
-  import CopyToClipboard from "./CopyToClipboard.vue";
-  import ToDateCounter from "./ToDateCounter.vue";
-  import truncateString from "@/core/truncate";
+import { mapState, mapGetters } from "vuex";
+import {
+  mapFeedsData,
+  parseToCurrency,
+  heartbeatIsNumber,
+  nearestCron,
+} from "../utils/FeedsTableDataLayer.js";
+import Loader from "../../../../components/Loader/Loader";
+import CopyToClipboard from "./CopyToClipboard.vue";
+import ToDateCounter from "./ToDateCounter.vue";
+import truncateString from "@/core/truncate";
 
-  export default {
-    components: {
-      Loader,
-      CopyToClipboard,
-      ToDateCounter,
-    },
-    data() {
-      return {
-        fields: [
+export default {
+  components: {
+    Loader,
+    CopyToClipboard,
+    ToDateCounter,
+  },
+  data(){
+    return {
+      fields: [
           {
             key: "feed",
             label: "Feed",
@@ -181,73 +181,70 @@
             label: "Network",
             sortable: true,
             sortByFormatted: true,
-            formatter: (value, key, item) => item.network.name,
-          },
+          formatter: (value, key, item) => item.network.name,
+        },
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "answer", label: "Answer", sortable: true },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
         ],
-      };
+    }
+  },
+  props: {
+    isLoading: Boolean,
+    items: Array,
+    filters: Object,
+    perPage: Number,
+    sortBy: String,
+    sortDesc: Boolean,
+    currentPage: Number,
+  },
+  methods: {
+    truncateString,
+    nearestCron,
+    parseToCurrency,
+    heartbeatIsNumber,
+    handleSort(ctx) {
+      this.$emit("update:sortBy", ctx.sortBy);
+      this.$emit("update:sortDesc", ctx.sortDesc);
     },
-    props: {
-      isLoading: Boolean,
-      displayedTableItems: Array,
-      filters: Object,
-      perPage: Number,
-      sortBy: String,
-      sortDesc: Boolean,
-      currentPage: Number,
+    onFiltered(filteredItems) {
+      this.$emit("update:filteredItems", filteredItems);
     },
-    methods: {
-      truncateString,
-      nearestCron,
-      parseToCurrency,
-      heartbeatIsNumber,
-      handleSort(ctx) {
-        this.$emit("update:sortBy", ctx.sortBy);
-        this.$emit("update:sortDesc", ctx.sortDesc);
-      },
-      onFiltered(filteredItems) {
-        this.$emit("update:filteredItems", filteredItems);
-      },
-      customFilter(row, filters) {
-        if (!filters) return true;
-        const { selectedCryptos, selectedNetworks, searchTerm } = filters;
+    customFilter(row, filters) {
+      if (!filters) return true;
+      const { selectedCryptos, selectedNetworks, searchTerm } = filters;
 
-        if (searchTerm) {
-          const searchLower = searchTerm.toLowerCase();
-          return (
-            row.feed.toLowerCase().includes(searchLower) ||
-            row.network.name.toLowerCase().includes(searchLower) ||
-            (row.contract_address &&
-              row.contract_address.toLowerCase().includes(searchLower))
-          );
-        }
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          row.feed.toLowerCase().includes(searchLower) ||
+          row.network.name.toLowerCase().includes(searchLower) ||
+          (row.contract_address &&
+            row.contract_address.toLowerCase().includes(searchLower))
+        );
+      }
 
-        const cryptoMatch =
-          selectedCryptos.length === 0 ||
-          selectedCryptos.some((crypto) => {
-            const feedParts = row.feed.split("/");
-            return feedParts[0].toLowerCase() === crypto.toLowerCase();
-          });
+      const cryptoMatch =
+        selectedCryptos.length === 0 ||
+        selectedCryptos.some((crypto) => {
+          const feedParts = row.feed.split("/");
+          return feedParts[0].toLowerCase() === crypto.toLowerCase();
+        });
 
-        const networkMatch =
-          selectedNetworks.length === 0 ||
-          selectedNetworks.includes(row.network.id);
+      const networkMatch =
+        selectedNetworks.length === 0 ||
+        selectedNetworks.includes(row.network.id);
 
-        return cryptoMatch && networkMatch;
-      },
+      return cryptoMatch && networkMatch;
     },
-    computed: {
-      ...mapState("feeds", ["relayersDetails"]),
-      ...mapGetters("feeds", [
-        "combinedFeedsWithDetailsArray",
-        "allLoadersComplete",
-      ]),
-      feeds() {
-        return mapFeedsData(this.combinedFeedsWithDetailsArray);
-      },
+  },
+  computed: {
+    ...mapState("feeds", ["relayersDetails"]),
+    ...mapGetters("feeds", ["combinedFeedsWithDetailsArray", "allLoadersComplete"]),
+    feeds() {
+      return mapFeedsData(this.combinedFeedsWithDetailsArray);
     },
-  };
+  },
+};
 </script>

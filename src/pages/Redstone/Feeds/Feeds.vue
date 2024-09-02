@@ -115,16 +115,16 @@
       </div>
     </div>
     <FeedsTable
-      :isLoading="isLoading"
-      :displayedTableItems="displayedTableItems"
+      :is-loading="isLoading"
       :filters="filters"
-      :perPage="perPage"
-      :sortBy="sortBy"
-      :sortDesc="sortDesc"
-      :currentPage="currentPage"
-      @update:sortBy="sortBy = $event"
-      @update:sortDesc="sortDesc = $event"
-      @update:filteredItems="filteredItems = $event"
+      :items="displayedTableItems"
+      :per-page="perPage"
+      :sort-by="sortBy"
+      :sort-desc="sortDesc"
+      :current-page="currentPage"
+      @update:sort-by="sortBy = $event"
+      @update:sort-desc="sortDesc = $event"
+      @update:filtered-items="filteredItems = $event"
     />
     <b-pagination
       :prev-text="prevIcon"
@@ -170,6 +170,9 @@
     parseToCurrency,
     heartbeatIsNumber,
     nearestCron,
+    findNetworkName,
+    findNetworkImage,
+    getTokenImage
   } from "./utils/FeedsTableDataLayer";
   import prefetchImages from "@/core/prefetchImages";
   import truncateString from "@/core/truncate";
@@ -219,8 +222,8 @@
     async mounted() {
       await this.initSchema();
       await this.fetchRelayerValues();
-      prefetchImages(Object.values(networks).map((network) => network.iconUrl));
       await this.initValues();
+      prefetchImages(Object.values(networks).map((network) => network.iconUrl));
       this.isLoading = false;
       this.initializeFiltersFromRoute();
       this.$nextTick(() => {
@@ -344,7 +347,6 @@
         this.updateRouteParams();
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
-
       onPageChange(page) {
         this.currentPage = page;
         this.updateRouteParams();
@@ -418,8 +420,8 @@
     watch: {
       searchTerm: {
         handler(newValue) {
-          this.currentPage = 1;
-          this.applyFilters();
+          this.currentPage = 1
+          this.applyFilters()
           this.updateRouteParams();
           if (this.searchTerm === "") {
             this.$store.dispatch("layout/updateFeedsFilterStatus", true);
@@ -446,6 +448,12 @@
       },
     },
     computed: {
+      ...mapState("feeds", ["relayersDetails"]),
+      ...mapState("layout", ["searchTerm"]),
+      ...mapGetters("feeds", [
+        "combinedFeedsWithDetailsArray",
+        "allLoadersComplete",
+      ]),
       prevIcon() {
         return isScreen("sm") || isScreen("xs") ? 'Previous' : "Previous page";
       },
@@ -467,15 +475,15 @@
       displayedSelectedNetworks() {
         return this.selectedNetworks.map((network) => ({
           key: network,
-          name: this.findNetworkName(network),
-          imageUrl: this.findNetworkImage(network),
+          name: findNetworkName(network),
+          imageUrl: findNetworkImage(network),
         }));
       },
       displayedSelectedCryptos() {
         return this.selectedCryptos.map((crypto) => ({
           key: crypto,
           name: crypto,
-          imageUrl: this.getTokenImage(crypto).imageName,
+          imageUrl: getTokenImage(crypto).imageName,
         }));
       },
       cryptoImages() {
@@ -523,12 +531,6 @@
         const endIndex = startIndex + this.perPage;
         return this.feeds?.slice(startIndex, endIndex);
       },
-      ...mapState("feeds", ["relayersDetails"]),
-      ...mapState("layout", ["searchTerm"]),
-      ...mapGetters("feeds", [
-        "combinedFeedsWithDetailsArray",
-        "allLoadersComplete",
-      ]),
       filteredNetworks() {
         {
           if (this.selectedCryptos.length === 0) {

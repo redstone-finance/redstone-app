@@ -160,13 +160,6 @@
     "name": "Real",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/real.png"
   },
-  "etherfi": {
-    "rpcUrl": "https://rpc.flashbots.net/fast",
-    "explorerUrl": "https://etherscan.io",
-    "chainId": 1,
-    "name": "EtherFi",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/etherfi.png"
-  },
   "b2": {
     "rpcUrl": "https://rpc.ankr.com/b2",
     "explorerUrl": "https://explorer.b2network.io",
