@@ -227,7 +227,9 @@
       </template>
       <template #cell(heartbeat)="{ item }">
         <Loader
-          v-if="item.loaders?.blockTimestamp && item?.apiValues?.timestamp == null"
+          v-if="
+            item.loaders?.blockTimestamp && item?.apiValues?.timestamp == null
+          "
           class="feeds__loader"
         />
         <span v-else class="feeds__timestamp">
@@ -296,14 +298,12 @@
   import _ from "lodash";
   import { mapActions, mapGetters, mapState } from "vuex";
   import {
-    hexToDate,
-    parseUnixTime,
-    getTimeUntilNextHeartbeat,
-    timeUntilDate,
-    findNearestCronDate,
-  } from "@/core/timeHelpers";
-  import { getUnixTime } from "date-fns";
-  import copyToClipboardHelper from "@/core/copyToClipboard";
+    mapFeedsData,
+    processTokenData,
+    parseToCurrency,
+    heartbeatIsNumber,
+    nearestCron,
+  } from "./utils/FeedsTableDataLayer";
   import prefetchImages from "@/core/prefetchImages";
   import truncateString from "@/core/truncate";
   import Loader from "../../../components/Loader/Loader";
@@ -367,8 +367,8 @@
             label: "Network",
             sortable: true,
             sortByFormatted: true,
-            formatter: (value, key, item) => item.network.name,
-          },
+          formatter: (value, key, item) => item.network.name,
+        },
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "answer", label: "Answer", sortable: true },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
@@ -377,10 +377,10 @@
       };
     },
     async mounted() {
-      await this.initSchema()
-      await this.fetchRelayerValues()
+      await this.initSchema();
+      await this.fetchRelayerValues();
       prefetchImages(Object.values(networks).map((network) => network.iconUrl));
-      await this.initValues()
+      await this.initValues();
       this.isLoading = false;
       this.initializeFiltersFromRoute();
       this.$nextTick(() => {
@@ -388,9 +388,10 @@
       });
     },
     methods: {
-      getUnixTime,
-      copyToClipboardHelper,
+      nearestCron,
+      parseToCurrency,
       truncateString,
+      heartbeatIsNumber,
       onPerPageChange() {
         this.currentPage = 1;
         this.$refs.selectableTable?.refresh();
@@ -567,114 +568,10 @@
         }
         this.handleFilter("crypto", this.selectedCryptos);
       },
-      stripAdditionalFeedInfo(string) {
-        return string;
-      },
-      findNetworkName(networkId) {
-        return Object.values(networks).find(
-          (network) => network.chainId === networkId
-        ).name;
-      },
-      findNetworkImage(networkId) {
-        return Object.values(networks).find(
-          (network) => network.chainId === networkId
-        ).iconUrl;
-      },
-      findNetwork(networkId) {
-        return Object.values(networks).find(
-          (network) => network.chainId === networkId
+      tokenInNetwork(token, networkId) {
+        return processTokenData(this.tokensInNetworks).some(
+          (item) => item.token === token && item.network === networkId
         );
-      },
-      findExplorer(networkId) {
-        const hasExplorer = Object.values(networks).some(
-          (network) => network.chainId === networkId
-        );
-        if (!hasExplorer)
-          console.warn("Missing explorer for chain:", networkId);
-        return Object.values(networks).find(
-          (network) => network.chainId === networkId
-        ).explorerUrl;
-      },
-      nearestCron(cronString) {
-        if (cronString == null) {
-          return 0;
-        }
-
-        try {
-          const parsedCron = JSON.parse(cronString);
-          const nearestDate = findNearestCronDate(parsedCron);
-          const timeUntil = timeUntilDate(nearestDate);
-          return timeUntil;
-        } catch (error) {
-          console.error("Error parsing cron string:", error);
-          return "Invalid cron";
-        }
-      },
-      getFirstPart(string) {
-        const noSlash = string.split("/")[0];
-        const noUnder = noSlash.split("_")[0];
-        const noDash = noUnder.split("-")[0];
-        return noDash;
-      },
-      hasSlash(string) {
-        return string.indexOf("/") >= 0;
-      },
-      parseToDecimal(hexValue) {
-        hexValue = hexValue?.replace(/^0x/, "");
-        return parseInt(hexValue, 16);
-      },
-      parseToCurrency(decimalValue, currency) {
-        const value = decimalValue / Math.pow(10, 8);
-        let formatterOptions = {
-          style: "currency",
-          currency: "USD",
-        };
-        if (value >= 1) {
-          formatterOptions.minimumFractionDigits = 3;
-          formatterOptions.maximumFractionDigits = 3;
-        } else {
-          formatterOptions.notation = "standard";
-          formatterOptions.minimumSignificantDigits = 4;
-          formatterOptions.maximumSignificantDigits = 4;
-        }
-        const formatter = new Intl.NumberFormat("en-US", formatterOptions);
-        let formattedValue = formatter.format(value);
-        if (currency && currency !== "USD") {
-          switch (currency) {
-            case "EUR":
-              formattedValue = formattedValue.replace("$", "€");
-              break;
-            case "ETH":
-              formattedValue = formattedValue.replace("$", "Ξ");
-              break;
-            default:
-              formattedValue = formattedValue.replace("$", currency);
-          }
-        }
-        return formattedValue;
-      },
-      transformHexString(str) {
-        if (str == null) return "no data";
-        if (str?.length <= 10) return str;
-        return `${str?.slice(0, 7)} . . . ${str?.slice(-4)}`;
-      },
-      getTokenImage(token) {
-        const idealMatchImg = images.find((image) => token === image.token);
-        const secondMatch = images.find((image) => token.split('/')[0] === image.token);
-        return (
-          idealMatchImg ||
-          secondMatch || {
-            name: "placeholder",
-            imageName: "placeholder.png",
-            token: "placeholder",
-          }
-        );
-      },
-      createNetworkUrlParam(networkName) {
-        return networkName.toLowerCase().replace(" ", "-");
-      },
-      heartbeatIsNumber(heartbeat) {
-        return typeof heartbeat === "number";
       },
       removeCrypto(item) {
         this.selectedCryptos = this.selectedCryptos.filter(
@@ -690,62 +587,11 @@
         this.handleFilter("networks", this.selectedNetworks);
         this.updateRouteParams();
       },
-      processTokenData(data) {
-        const tokenMap = new Map();
-        data.forEach(({ token, network }) => {
-          const tokens = token.includes("/") ? token.split("/") : [token];
-          tokens.forEach((t) => {
-            if (!tokenMap.has(network)) {
-              tokenMap.set(network, new Set());
-            }
-            tokenMap.get(network).add(t);
-          });
-        });
-        const processedData = [];
-        for (const [network, tokens] of tokenMap.entries()) {
-          tokens.forEach((token) => {
-            processedData.push({ token, network });
-          });
-        }
-        return processedData;
-      },
-      tokenInNetwork(token, networkId) {
-        return this.processTokenData(this.tokensInNetworks).some(
-          (item) => item.token === token && item.network === networkId
-        );
-      },
-      resolveDeviationPercentage(item) {
-        const triggerOverride = item.overrides.filter(
-          (override) => override.value !== undefined
-        );
-        const deviationPercentage =
-          triggerOverride.length > 0
-            ? triggerOverride[0]?.value ||
-              triggerOverride[0].value.deviationPercentage
-            : item.triggers.deviationPercentage;
-        return deviationPercentage
-          ? deviationPercentage?.deviationPercentage || deviationPercentage
-          : "n/a";
-      },
-      resolveTimeSinceLastUpdateInMilliseconds(item) {
-        const triggerOverride = item.overrides.filter(
-          (override) => override.value !== undefined
-        );
-        const timeSinceLastUpdateInMilliseconds =
-          triggerOverride.length > 0 &&
-          triggerOverride[0]?.type === "full" &&
-          triggerOverride[0]?.value?.timeSinceLastUpdateInMilliseconds !==
-            undefined
-            ? triggerOverride[0].value.timeSinceLastUpdateInMilliseconds
-            : item.triggers.timeSinceLastUpdateInMilliseconds;
-
-        return timeSinceLastUpdateInMilliseconds;
-      },
       ...mapActions("feeds", [
         "initSchema",
         "initValues",
         "initSingleContract",
-        "fetchRelayerValues"
+        "fetchRelayerValues",
       ]),
     },
     watch: {
@@ -782,15 +628,15 @@
       prevIcon() {
         return isScreen("sm") || isScreen("xs")
           ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-           </svg>`
+               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+             </svg>`
           : "Previous page";
       },
       nextIcon() {
         return isScreen("sm") || isScreen("xs")
           ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-           </svg>`
+               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+             </svg>`
           : "Next page";
       },
       totalPages() {
@@ -909,62 +755,8 @@
           return Array.from(networkSet);
         }
       },
-      networkOrder() {
-        return Object.values(networks);
-      },
-      cryptoOrder() {
-        return Object.values(images);
-      },
       feeds() {
-        if (this.combinedFeedsWithDetailsArray?.length === 0) return [];
-        return this.combinedFeedsWithDetailsArray.map((item) => {
-          const timestamp = item?.apiValues?.timestamp != null
-            ? "0x" +
-              getUnixTime(new Date(item?.apiValues?.timestamp))
-                .toString(16)
-                .padStart(8, "0")
-            : item?.timestamp;
-          return {
-            answer: this.parseToDecimal(item.value),
-            feed: this.hasSlash(item.feedId)
-              ? item.feedId
-              : item.feedId + "/USD",
-            network: {
-              id: item.networkId,
-              name: this.findNetworkName(item.networkId),
-              image: this.findNetworkImage(item.networkId),
-            },
-            contract_address: item.contractAddress,
-            timestamp: {
-              parsed: parseUnixTime(item.timestamp),
-              raw: item.timestamp,
-              date: hexToDate(item.timestamp),
-            },
-            layer_id: item.feedId,
-            heartbeat:
-              getTimeUntilNextHeartbeat(
-                timestamp,
-                this.resolveTimeSinceLastUpdateInMilliseconds(item)
-              ) || JSON.stringify(item.triggers.cron),
-            deviation:
-              this.resolveDeviationPercentage(item) != "n/a"
-                ? this.resolveDeviationPercentage(item) + "%"
-                : "n/a",
-            cron: item.triggers.cron,
-            token: item.feedId,
-            relayerId: item.layerId,
-            feed_address: item.feedAddress,
-            crypto_token: this.getFirstPart(item.feedId),
-            token_image: this.getTokenImage(item.feedId),
-            loaders: item.loaders,
-            popularity: `${this.networkOrder.findIndex((network) => item.networkId === network.chainId)}_${this.cryptoOrder.findIndex((crypto) => this.getFirstPart(item.feedId) === crypto.token)}`,
-            explorer: {
-              name: this.findNetworkName(item.networkId),
-              explorerUrl: this.findExplorer(item.networkId),
-            },
-            apiValues: item.apiValues,
-          };
-        });
+        return mapFeedsData(this.combinedFeedsWithDetailsArray);
       },
     },
   };

@@ -26,7 +26,7 @@
             class="crypto-checkbox-list"
             variant="danger"
             v-for="item in filteredItems"
-            :key="item.value"
+            :key="`${item.value}-${item.label}`"
             :value="item.value"
           >
             <span class="network-name">{{ item.label }}</span>
