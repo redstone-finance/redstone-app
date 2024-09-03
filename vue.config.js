@@ -37,5 +37,16 @@ module.exports = {
             '@babel/plugin-transform-modules-commonjs'
           ]
         });
+
+    // Add alias configuration
+    config.resolve.alias
+      .set('@', path.resolve(__dirname, 'src'));
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
+    }
   }
 }

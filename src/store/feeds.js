@@ -23,6 +23,59 @@ const CONTRACTS_ABI_DEFINITION_MULTIFEED = [
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
 ];
 
+export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) => {
+  return Object.keys(relayerSchema).flatMap((key) => {
+    const layer = relayerSchema[key];
+    const networkMapped = Object.values(networks).some(
+      (network) => network.chainId === layer.chain.id
+    );
+
+    if (!networkMapped) {
+      console.warn(
+        `Warning: Network not mapped for chain ID ${layer.chain.id}`
+      );
+      return [];
+    }
+
+    return Object.keys(layer.priceFeeds).map((feedId) => {
+      const itemKey = `${key}_${feedId}`;
+      const keyFeedTimestamp =
+        relayersDetails[itemKey]?.blockTimestamp;
+      const keyFeedValue = relayersDetails[itemKey]?.dataFeed;
+      return {
+        routeNetwork: Object.values(networks)
+          .find((network) => network.chainId === layer.chain.id)
+          .name.toLowerCase()
+          .replace(" ", "-"),
+        routeToken: feedId.toLowerCase(),
+        networkId: layer.chain.id,
+        feedId: feedId,
+        overrides: [
+          {
+            type: "deviation",
+            value:
+              layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
+          },
+          {
+            type: "full",
+            value: layer.priceFeeds[feedId]?.updateTriggersOverrides,
+          },
+        ],
+        contractAddress: layer.adapterContract,
+        feedAddress: isObject(layer.priceFeeds[feedId])
+          ? layer.priceFeeds[feedId].priceFeedAddress
+          : layer.priceFeeds[feedId],
+        triggers: layer.updateTriggers,
+        layerId: key,
+        timestamp: keyFeedTimestamp || null,
+        value: keyFeedValue || null,
+        loaders: relayersDetails[itemKey]?.loaders,
+        apiValues: relayersValues?.[key]?.[feedId],
+      };
+    });
+  });
+}
+
 export default {
   namespaced: true,
   state: {
@@ -70,56 +123,7 @@ export default {
       return state.relayerSchema[layerId].priceFeeds.length > 1;
     },
     combinedFeedsWithDetailsArray(state, getters) {
-      return Object.keys(state.relayerSchema).flatMap((key) => {
-        const layer = state.relayerSchema[key];
-        const networkMapped = Object.values(networks).some(
-          (network) => network.chainId === layer.chain.id
-        );
-
-        if (!networkMapped) {
-          console.warn(
-            `Warning: Network not mapped for chain ID ${layer.chain.id}`
-          );
-          return [];
-        }
-
-        return Object.keys(layer.priceFeeds).map((feedId) => {
-          const itemKey = `${key}_${feedId}`;
-          const keyFeedTimestamp =
-            state.relayersDetails[itemKey]?.blockTimestamp;
-          const keyFeedValue = state.relayersDetails[itemKey]?.dataFeed;
-          return {
-            routeNetwork: Object.values(networks)
-              .find((network) => network.chainId === layer.chain.id)
-              .name.toLowerCase()
-              .replace(" ", "-"),
-            routeToken: feedId.toLowerCase(),
-            networkId: layer.chain.id,
-            feedId: feedId,
-            overrides: [
-              {
-                type: "deviation",
-                value:
-                  layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
-              },
-              {
-                type: "full",
-                value: layer.priceFeeds[feedId]?.updateTriggersOverrides,
-              },
-            ],
-            contractAddress: layer.adapterContract,
-            feedAddress: isObject(layer.priceFeeds[feedId])
-              ? layer.priceFeeds[feedId].priceFeedAddress
-              : layer.priceFeeds[feedId],
-            triggers: layer.updateTriggers,
-            layerId: key,
-            timestamp: keyFeedTimestamp || null,
-            value: keyFeedValue || null,
-            loaders: state.relayersDetails[itemKey]?.loaders,
-            apiValues: state.relayersValues?.[key]?.[feedId],
-          };
-        });
-      });
+      return relayerMapper(state.relayerSchema, state.relayersDetails, state.relayersValues)
     },
   },
   actions: {
