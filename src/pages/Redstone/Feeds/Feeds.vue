@@ -146,14 +146,14 @@
           </span>
           <span v-else
             >No entries found
+            <span v-if="hasFiltersAndSearch"> - </span>
             <span
               style="pointer-events: all"
               v-if="hasFiltersAndSearch"
               class="clear-filters"
               @click="resetFilters"
-            >
-              - Clear filters
-            </span></span
+              >Clear filters</span
+            ></span
           >
         </span>
         <span v-else>{{ page }}</span>
