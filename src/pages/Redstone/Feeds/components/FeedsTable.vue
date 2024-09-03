@@ -168,6 +168,7 @@
             label: "Feed",
             sortable: true,
             formatter: (value, key, item) => item.feed,
+            thStyle: { width: "300px" },
           },
           {
             key: "popularity",
