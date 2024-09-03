@@ -1,5 +1,5 @@
 import networks from "@/data/networks.json";
-import images from "@/data/logosDefinitions.json";
+import images from "@/data/symbols.json";
 import {
   parseUnixTime,
   hexToDate,

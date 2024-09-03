@@ -111,7 +111,16 @@
     }
 
     .input-group {
-      width: 45vw;
+      width: 25vw;
+      &:has(#search-input:focus) {
+        width: 90vw;
+      }
+      #search-input{
+        padding: 5px;
+      }
+      .input-group-text{
+        padding: 5px;
+      }
 
       @media (min-width: breakpoint-min(xs)) {
         width: 45vw;
@@ -119,6 +128,13 @@
 
       @media (min-width: breakpoint-min(sm)) {
         width: 40vw;
+        padding: 5px 15px;
+        &:has(#search-input:focus) {
+          width: 50vw;
+        }
+        .input-group-text{
+          padding: 5px 15px;
+        }
       }
 
       @media (min-width: breakpoint-min(lg)) {
@@ -234,3 +250,4 @@ i.flaticon-chevron-back {
     }
   }
 }
+

@@ -14,6 +14,7 @@ function stringToBytes32(str) {
 
 const RELAYERS_SCHEMA_URL =
   "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
+const RELAYERS_VALUES_URL = "https://api.redstone.finance/feeds-answers-update";
 const CONTRACTS_ABI_DEFINITION = [
   "function getBlockTimestampFromLatestUpdate() view returns (uint256)",
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
@@ -23,16 +24,73 @@ const CONTRACTS_ABI_DEFINITION_MULTIFEED = [
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
 ];
 
+export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) => {
+  return Object.keys(relayerSchema).flatMap((key) => {
+    const layer = relayerSchema[key];
+    const networkMapped = Object.values(networks).some(
+      (network) => network.chainId === layer.chain.id
+    );
+
+    if (!networkMapped) {
+      console.warn(
+        `Warning: Network not mapped for chain ID ${layer.chain.id}`
+      );
+      return [];
+    }
+
+    return Object.keys(layer.priceFeeds).map((feedId) => {
+      const itemKey = `${key}_${feedId}`;
+      const keyFeedTimestamp =
+        relayersDetails[itemKey]?.blockTimestamp;
+      const keyFeedValue = relayersDetails[itemKey]?.dataFeed;
+      return {
+        routeNetwork: Object.values(networks)
+          .find((network) => network.chainId === layer.chain.id)
+          .name.toLowerCase()
+          .replace(" ", "-"),
+        routeToken: feedId.toLowerCase(),
+        networkId: layer.chain.id,
+        feedId: feedId,
+        overrides: [
+          {
+            type: "deviation",
+            value:
+              layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
+          },
+          {
+            type: "full",
+            value: layer.priceFeeds[feedId]?.updateTriggersOverrides,
+          },
+        ],
+        contractAddress: layer.adapterContract,
+        feedAddress: isObject(layer.priceFeeds[feedId])
+          ? layer.priceFeeds[feedId].priceFeedAddress
+          : layer.priceFeeds[feedId],
+        triggers: layer.updateTriggers,
+        layerId: key,
+        timestamp: keyFeedTimestamp || null,
+        value: keyFeedValue || null,
+        loaders: relayersDetails[itemKey]?.loaders,
+        apiValues: relayersValues?.[key]?.[feedId],
+      };
+    });
+  });
+}
+
 export default {
   namespaced: true,
   state: {
     relayerSchema: {},
     smartContracts: {},
     relayersDetails: {},
+    relayersValues: {},
   },
   mutations: {
     assignRelayerSchema(state, schema) {
       state.relayerSchema = schema;
+    },
+    assignRelayerValues(state, values) {
+      state.relayersValues = values;
     },
     assignCreatedSmartContract(state, { contract, layerId }) {
       state.smartContracts[layerId] = contract;
@@ -69,60 +127,7 @@ export default {
       return state.relayerSchema[layerId].priceFeeds.length > 1;
     },
     combinedFeedsWithDetailsArray(state, getters) {
-      return Object.keys(state.relayerSchema).flatMap((key) => {
-        const layer = state.relayerSchema[key];
-        const networkMapped = Object.values(networks).some(
-          (network) => network.chainId === layer.chain.id
-        );
-
-        if (!networkMapped) {
-          console.warn(
-            `Warning: Network not mapped for chain ID ${layer.chain.id}`
-          );
-          return [];
-        }
-
-        return Object.keys(layer.priceFeeds).map((feedId) => {
-          const itemKey = `${key}_${feedId}`;
-          const keyFeedTimestamp =
-            state.relayersDetails[itemKey]?.blockTimestamp;
-          const keyFeedValue = state.relayersDetails[itemKey]?.dataFeed;
-          const routeNetwork = Object.values(networks)
-            .find((network) => network.chainId === layer.chain.id)
-            .name.toLowerCase()
-            .replaceAll(" ", "-");
-          const routeToken = feedId
-            .toLowerCase()
-            .replaceAll(" ", "-")
-            .replaceAll("/", "--");
-          return {
-            routeNetwork: routeNetwork,
-            routeToken: routeToken,
-            networkId: layer.chain.id,
-            feedId: feedId,
-            overrides: [
-              {
-                type: "deviation",
-                value:
-                  layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
-              },
-              {
-                type: "full",
-                value: layer.priceFeeds[feedId]?.updateTriggersOverrides,
-              },
-            ],
-            contractAddress: layer.adapterContract,
-            feedAddress: isObject(layer.priceFeeds[feedId])
-              ? layer.priceFeeds[feedId].priceFeedAddress
-              : layer.priceFeeds[feedId],
-            triggers: layer.updateTriggers,
-            layerId: key,
-            timestamp: keyFeedTimestamp || null,
-            value: keyFeedValue || null,
-            loaders: state.relayersDetails[itemKey]?.loaders,
-          };
-        });
-      });
+      return relayerMapper(state.relayerSchema, state.relayersDetails, state.relayersValues)
     },
   },
   actions: {
@@ -251,64 +256,96 @@ export default {
         this.dispatch("feeds/initializeLayerDetails");
       }
     },
-    async init({ state }) {
-      if (isEmpty(state.relayerSchema)){
-        await this.dispatch("feeds/fetchRelayerSchema");
+    async fetchRelayerValues({ commit, state }) {
+      try {
+        const { data } = await axios.get(RELAYERS_VALUES_URL);
+        commit("assignRelayerValues", data);
+      } catch (error) {
+        console.log({ error });
       }
-      Object.keys(state.relayerSchema).forEach(async (key) => {
-        await this.dispatch("feeds/createSmartContract", {
-          layerId: key,
-          contractAddress: state.relayerSchema[key].adapterContract,
-          chainId: state.relayerSchema[key].chain.id,
-          contractType: state.relayerSchema[key]?.adapterContractType,
+    },
+    async initSingleContract({ state }, layerId, feedId) {
+      await this.dispatch("feeds/fetchRelayerSchema");
+      await this.dispatch("feeds/createSmartContract", {
+        layerId: layerId,
+        contractAddress: state.relayerSchema[layerId].adapterContract,
+        chainId: state.relayerSchema[layerId].chain.id,
+        contractType: state.relayerSchema[layerId]?.adapterContractType,
+      });
+      if (state.relayerSchema[layerId]?.adapterContractType === "multi-feed") {
+        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+          layerId,
+          feedId,
         });
-        Object.keys(state.relayerSchema[key]?.priceFeeds).forEach(
-          async (feedId) => {
-            await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-              layerId: key,
-              feedId,
-            });
-          }
-        );
+      } else {
+        await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
+      }
 
-        Object.keys(state.relayerSchema[key]?.priceFeeds).forEach(
-          async (feedId) => {
-            await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
-              layerId: key,
-              feedId,
-            });
-          }
-        );
+      await this.dispatch("feeds/fetchValueForDataFeed", {
+        layerId: layerId,
+        feedId: feedId,
       });
     },
-    async initSingle({ state }, relayerId) {
-      if (isEmpty(state.relayerSchema)) {
-        await this.dispatch("feeds/fetchRelayerSchema");
-      }
-      if (relayerId == null) return;
+    async createContractAndFetchValues({ state }, { relayerId, feedId }) {
       await this.dispatch("feeds/createSmartContract", {
         layerId: relayerId,
         contractAddress: state.relayerSchema[relayerId].adapterContract,
         chainId: state.relayerSchema[relayerId].chain.id,
         contractType: state.relayerSchema[relayerId]?.adapterContractType,
       });
-      console.log(state.smartContracts);
-      await Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+      if (!state.relayersValues?.[relayerId]?.[feedId]?.timestamp) {
+        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+          layerId: relayerId,
+          feedId,
+        });
+      }
+      if (!state.relayersValues?.[relayerId]?.[feedId]?.value) {
+        await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+          layerId: relayerId,
+          feedId,
+        });
+      }
+    },
+    async createContractAndFetchValuesForRelayer({ state }, relayerId) {
+      await this.dispatch("feeds/createSmartContract", {
+        layerId: relayerId,
+        contractAddress: state.relayerSchema[relayerId].adapterContract,
+        chainId: state.relayerSchema[relayerId].chain.id,
+        contractType: state.relayerSchema[relayerId]?.adapterContractType,
+      });
+      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
         async (feedId) => {
-          await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-            layerId: relayerId,
-            feedId,
-          });
+          if (!state.relayersValues?.[relayerId]?.[feedId]?.timestamp) {
+            await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+              layerId: relayerId,
+              feedId,
+            });
+          }
         }
       );
-      await Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
+
+      Object.keys(state.relayerSchema[relayerId]?.priceFeeds).forEach(
         async (feedId) => {
-          await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
-            layerId: relayerId,
-            feedId,
-          });
+          if (!state.relayersValues?.[relayerId]?.[feedId]?.value) {
+            await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+              layerId: relayerId,
+              feedId,
+            });
+          }
         }
       );
+    },
+    async initSchema({ state }) {
+      if (!isEmpty(state.relayerSchema)) return;
+      await this.dispatch("feeds/fetchRelayerSchema");
+    },
+    async initValues({ state }) {
+      await Object.keys(state.relayerSchema).forEach(async (key) => {
+        await this.dispatch(
+          "feeds/createContractAndFetchValuesForRelayer",
+          key
+        );
+      });
     },
   },
 };

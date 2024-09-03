@@ -62,6 +62,13 @@
     "name": "Mantle",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/mnt.webp"
   },
+  "haven1Testnet": {
+    "rpcUrl": "https://testnet.haven1.org",
+    "explorerUrl": "https://explorer.testnet.haven1.org",
+    "chainId": 810,
+    "name": "Haven1 Testnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/haven1.webp"
+  },
   "celoMainnet": {
     "rpcUrl": "https://celo.drpc.org",
     "explorerUrl": "https://explorer.celo.org/mainnet",
