@@ -24,7 +24,11 @@ const CONTRACTS_ABI_DEFINITION_MULTIFEED = [
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
 ];
 
-export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) => {
+export const relayerMapper = (
+  relayerSchema,
+  relayersDetails,
+  relayersValues
+) => {
   return Object.keys(relayerSchema).flatMap((key) => {
     const layer = relayerSchema[key];
     const networkMapped = Object.values(networks).some(
@@ -40,8 +44,7 @@ export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) =>
 
     return Object.keys(layer.priceFeeds).map((feedId) => {
       const itemKey = `${key}_${feedId}`;
-      const keyFeedTimestamp =
-        relayersDetails[itemKey]?.blockTimestamp;
+      const keyFeedTimestamp = relayersDetails[itemKey]?.blockTimestamp;
       const keyFeedValue = relayersDetails[itemKey]?.dataFeed;
       return {
         routeNetwork: Object.values(networks)
@@ -54,8 +57,7 @@ export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) =>
         overrides: [
           {
             type: "deviation",
-            value:
-              layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
+            value: layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
           },
           {
             type: "full",
@@ -70,12 +72,12 @@ export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) =>
         layerId: key,
         timestamp: keyFeedTimestamp || null,
         value: keyFeedValue || null,
-        loaders: relayersDetails[itemKey]?.loaders,
+        loaders: relayersDetails?.[itemKey]?.loaders,
         apiValues: relayersValues?.[key]?.[feedId],
       };
     });
   });
-}
+};
 
 export default {
   namespaced: true,
@@ -109,17 +111,15 @@ export default {
   getters: {
     allLoadersComplete: (state) => {
       return Object.values(state.relayersDetails).every((relayer) => {
-        return Object.values(relayer.loaders).every(
+        return Object.values(relayer?.loaders).every(
           (loader) => loader === false
         );
       });
     },
     getSmartContractByLayerId: (state) => (layerId) => {
-      console.log({layerId})
-      console.log({ contracts: state.smartContracts });
       const contract = state.smartContracts[layerId];
-      if (contract == null){
-        return null
+      if (contract == null) {
+        return null;
       }
       return contract;
     },
@@ -127,7 +127,11 @@ export default {
       return state.relayerSchema[layerId].priceFeeds.length > 1;
     },
     combinedFeedsWithDetailsArray(state, getters) {
-      return relayerMapper(state.relayerSchema, state.relayersDetails, state.relayersValues)
+      return relayerMapper(
+        state.relayerSchema,
+        state.relayersDetails,
+        state.relayersValues
+      );
     },
   },
   actions: {
@@ -172,8 +176,8 @@ export default {
     },
     async fetchBlockTimeStampMultifeed({ commit, state }, { layerId, feedId }) {
       if (
-        state.relayersDetails[`${layerId}_${feedId}`].loaders.blockTimestamp ===
-        false
+        state.relayersDetails[`${layerId}_${feedId}`]?.loaders
+          .blockTimestamp === false
       )
         return;
       const method =
@@ -207,14 +211,13 @@ export default {
       { layerId, feedId }
     ) {
       if (
-        state.relayersDetails[`${layerId}_${feedId}`].loaders.feedDataValue ===
+        state.relayersDetails[`${layerId}_${feedId}`]?.loaders.feedDataValue ===
         false
       )
         return;
       this.getters["feeds/getSmartContractByLayerId"](layerId)
         .getValueForDataFeed(stringToBytes32(feedId))
         .then((value) => {
-          // console.log(value, feedId);
           commit("assignRelayerDetails", {
             key: "dataFeed",
             layerId: `${layerId}_${feedId}`,
@@ -250,7 +253,6 @@ export default {
     },
     async fetchRelayerSchema({ commit, state }) {
       const { data } = await axios.get(RELAYERS_SCHEMA_URL);
-      console.log("fetched");
       commit("assignRelayerSchema", { ...data.standard, ...data.multifeed });
       if (isEmpty(state.relayersDetails)) {
         this.dispatch("feeds/initializeLayerDetails");
@@ -264,7 +266,7 @@ export default {
         console.log({ error });
       }
     },
-    async initSingleContract({ state }, layerId, feedId) {
+    async initSingleContract({ state }, { layerId, feedId }) {
       await this.dispatch("feeds/fetchRelayerSchema");
       await this.dispatch("feeds/createSmartContract", {
         layerId: layerId,
@@ -278,10 +280,13 @@ export default {
           feedId,
         });
       } else {
-        await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
+        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
+          layerId,
+          feedId,
+        });
       }
 
-      await this.dispatch("feeds/fetchValueForDataFeed", {
+      await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
         layerId: layerId,
         feedId: feedId,
       });

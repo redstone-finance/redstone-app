@@ -13,7 +13,7 @@ import images from "@/data/symbols.json";
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
   return storeFeedsArray.map((item) => {
-    const answerCurrency = item.feedId.split("/")[1]
+    const answerCurrency = item.feedId.split("/")[1];
     return {
       answer: parseToDecimal(item.value),
       feed: hasSlash(item.feedId) ? item.feedId : item.feedId + "/USD",
@@ -31,8 +31,14 @@ export const mapFeedsData = (storeFeedsArray) => {
       feed_address: item.feedAddress,
       loaders: item.loaders,
       apiValues: item.apiValues,
-      contractAnswer: parseToCurrency(parseToDecimal(item.value), answerCurrency),
-      apiAnswer: parseToCurrency(item.apiValues?.value * 100000000, answerCurrency),
+      contractAnswer: parseToCurrency(
+        parseToDecimal(item.value),
+        answerCurrency
+      ),
+      apiAnswer: parseToCurrency(
+        item.apiValues?.value * 100000000,
+        answerCurrency
+      ),
       network: {
         id: item.networkId,
         name: findNetworkName(item.networkId),
@@ -45,6 +51,9 @@ export const mapFeedsData = (storeFeedsArray) => {
     };
   });
 };
+
+export const toUrlParam = (string) =>
+  string.toLowerCase().replace(" ", "-").replace("/", "--");
 
 const resolveTimestampForHeartbeat = (item) =>
   item?.apiValues?.timestamp != null
@@ -90,7 +99,7 @@ const removeSeparators = (string) => {
   return noSeparators;
 };
 
- export const findNetworkName = (networkId) => {
+export const findNetworkName = (networkId) => {
   return Object.values(networks).find(
     (network) => network.chainId === networkId
   ).name;

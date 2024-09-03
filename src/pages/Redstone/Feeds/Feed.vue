@@ -7,8 +7,9 @@
           <dd class="stat-value" v-if="currentChartData">
             <strong
               >{{
-                currenciesMap[feedData.token.split("/")[1]] ||
-                feedData.token.split("/")[1] || '$'
+                currenciesMap[feedData?.token.split("/")[1]] ||
+                feedData.token.split("/")[1] ||
+                "$"
               }}{{
                 currentChartData[currentChartData.length - 1].value
               }}</strong
@@ -21,31 +22,31 @@
             <img
               class="feeds__token-image small"
               v-if="feedData"
-              :src="feedData.network.image"
-              :alt="feedData.network.name"
+              :src="feedData?.network.image"
+              :alt="feedData?.network.name"
             />
             <span class="applicant-info__text">{{
-              feedData.network?.name
+              feedData?.network?.name
             }}</span>
           </dd>
         </div>
         <div class="stat-item">
           <dt class="stat-title">Symbol</dt>
-          <dd class="stat-value">{{ feedData.token }}</dd>
+          <dd class="stat-value">{{ feedData?.token }}</dd>
         </div>
         <div class="stat-item">
           <dt class="stat-title">Deviation threshold</dt>
-          <dd class="stat-value">{{ feedData.deviation }}</dd>
+          <dd class="stat-value">{{ feedData?.deviation }}</dd>
         </div>
         <div class="stat-item">
           <dt class="stat-title">Heartbeat</dt>
           <dd class="stat-value">
             <i class="fa fa-heartbeat"></i>
             <HeartbeatTimer
-              v-if="feedData.heartbeat"
-              :isLoading="feedData.loaders.blockTimestamp"
-              :heartbeat="feedData.heartbeat"
-              :layerId="feedData.layer_id"
+              v-if="feedData?.heartbeat"
+              :isLoading="feedData.loaders?.blockTimestamp"
+              :heartbeat="feedData?.heartbeat"
+              :layerId="feedData?.token"
             />
           </dd>
         </div>
@@ -83,8 +84,8 @@
         </div>
         <div class="additional-details-cart__value">
           Explorer:
-          <a :href="feedData.explorer.explorerUrl" target="_blank">{{
-            feedData.explorer.name
+          <a :href="feedData?.explorer?.explorerUrl" target="_blank">{{
+            feedData?.explorer.name
           }}</a>
         </div>
       </div>
@@ -96,7 +97,12 @@
   import { mapActions, mapGetters, mapState } from "vuex";
   import LayerChart from "./components/LayerChart";
   import ContractAddress from "./components/ContractAddress.vue";
-  import { transformFeed } from "./feedUtils";
+  import {
+    mapFeedsData,
+    parseToCurrency,
+    toUrlParam,
+    findNetworkName,
+  } from "./utils/FeedsTableDataLayer";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import Loader from "./../../../components/Loader/Loader.vue";
   import HeartbeatTimer from "./components/HeartbeatTimer.vue";
@@ -133,12 +139,13 @@
       await this.initializeData();
     },
     methods: {
+      parseToCurrency,
       hexToPrice(hex) {
         let decimalValue = parseInt(hex, 16);
         let price = decimalValue / 100000000;
         return price;
       },
-      ...mapActions("feeds", ["initSingle", "fetchRelayerSchema"]),
+      ...mapActions("feeds", ["initSingleContract", "fetchRelayerSchema"]),
       async fetchChartData() {
         if (this.rawChartData) {
           return this.rawChartData;
@@ -170,36 +177,6 @@
           }
         }
         return symbol;
-      },
-      parseToCurrency(decimalValue, currency) {
-        const value = decimalValue / Math.pow(10, 8);
-        let formatterOptions = {
-          style: "currency",
-          currency: "USD",
-        };
-        if (value >= 1) {
-          formatterOptions.minimumFractionDigits = 3;
-          formatterOptions.maximumFractionDigits = 3;
-        } else {
-          formatterOptions.notation = "standard";
-          formatterOptions.minimumSignificantDigits = 4;
-          formatterOptions.maximumSignificantDigits = 4;
-        }
-        const formatter = new Intl.NumberFormat("en-US", formatterOptions);
-        let formattedValue = formatter.format(value);
-        if (currency && currency !== "USD") {
-          switch (currency) {
-            case "EUR":
-              formattedValue = formattedValue.replace("$", "€");
-              break;
-            case "ETH":
-              formattedValue = formattedValue.replace("$", "Ξ");
-              break;
-            default:
-              formattedValue = formattedValue.replace("$", currency);
-          }
-        }
-        return formattedValue;
       },
       async initializeData() {
         this.isLoading = true;
@@ -277,7 +254,7 @@
       getChartEndpoint(daysRange) {
         const baseUrl = "https://api.redstone.finance/on-chain-updates";
         const dataFeedId = this.feedData.token || "ETH";
-        const adapterName = this.feedData.relayerId;
+        const adapterName = this.feedData?.relayerId;
         return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
       },
     },
@@ -287,7 +264,10 @@
           this.relayerId &&
           this.getSmartContractByLayerId(this.relayerId) == null
         ) {
-          this.initSingle(this.relayerId);
+          this.initSingleContract({
+            layerId: this.relayerId,
+            feedId: this.feedData?.token,
+          });
         }
       },
     },
@@ -296,29 +276,29 @@
         return this.relayerSchema[this.relayerId].priceFeeds;
       },
       network() {
-        return this.$route.params.network;
+        return this.$route.params?.network;
       },
       token() {
         return this.$route.params.token;
       },
       getFeedDetails(relayerId) {
-        return transformFeed(
+        return mapFeedsData(
           this.combinedFeedsWithDetailsArray.filter(
             (feed) => feed.layerId === relayerId
           )
         );
       },
       feedData() {
-        return transformFeed(
-          this.combinedFeedsWithDetailsArray.find(
+        return mapFeedsData(
+          this.combinedFeedsWithDetailsArray.filter(
             (feed) =>
-              feed.routeNetwork === this.network &&
-              feed.routeToken === this.token
+              toUrlParam(findNetworkName(feed?.networkId)) === this.network &&
+              toUrlParam(feed.feedId) === this.token
           )
-        );
+        )[0];
       },
       relayerId() {
-        return this.feedData.relayerId;
+        return this.feedData?.relayerId;
       },
       currentChartData() {
         return this.chartDataCache[this.currentRange];

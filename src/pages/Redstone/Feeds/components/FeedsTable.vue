@@ -147,6 +147,7 @@
     parseToCurrency,
     heartbeatIsNumber,
     nearestCron,
+    toUrlParam
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
@@ -200,6 +201,7 @@
       currentPage: Number,
     },
     methods: {
+      toUrlParam,
       truncateString,
       nearestCron,
       parseToCurrency,
@@ -239,10 +241,7 @@
           selectedNetworks.includes(row.network.id);
 
         return cryptoMatch && networkMatch;
-      },
-      toUrlParam(string){
-       return string.toLowerCase().replace(' ', '-').replace('/', '--')
-      },  
+      }, 
     },
     computed: {
       ...mapState("feeds", ["relayersDetails"]),
