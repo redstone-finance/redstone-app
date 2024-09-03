@@ -26,8 +26,6 @@ export default {
   },
   updateRouteParams() {
     if (this.isInitialLoad) return;
-    this.scrollPosition =
-      window.pageYOffset || document.documentElement.scrollTop;
     const query = { ...this.$route.query };
 
     if (this.searchTerm) {
@@ -55,11 +53,6 @@ export default {
 
     this.$router
       .replace({ query })
-      .then(() => {
-        this.$nextTick(() => {
-          window.scrollTo(0, this.scrollPosition);
-        });
-      })
       .catch((err) => {
         if (err.name !== "NavigationDuplicated") {
           throw err;

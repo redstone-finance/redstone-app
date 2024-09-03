@@ -215,7 +215,6 @@
         isUnselecting: false,
         isInitialLoad: true,
         selectedPage: 1,
-        scrollPosition: 0,
         perPageOptions: [8, 16, 32, 64],
       };
     },
@@ -263,14 +262,6 @@
       },
       feeds() {
         this.filteredItems = [];
-      },
-      "$route.query": {
-        handler() {
-          this.$nextTick(() => {
-            window.scrollTo(0, this.scrollPosition);
-          });
-        },
-        deep: true,
       },
     },
     computed: {

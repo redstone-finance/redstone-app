@@ -57,7 +57,7 @@ const router = new Router({
           path: "feeds",
           name: "Feeds list",
           component: Feeds,
-          meta: { noScroll: true, showSearchInputInNavbar: true },
+          meta: { showSearchInputInNavbar: true },
         },
         {
           path: "data-services",
@@ -75,21 +75,6 @@ const router = new Router({
       ],
     },
   ],
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    }
-    if (to.hash) {
-      return { selector: to.hash };
-    }
-    if (to.matched.some((m) => m.meta.noScroll)) {
-      return false;
-    }
-    if (to.name === from.name && to.path === from.path) {
-      return false;
-    }
-    return { x: 0, y: 0 };
-  },
 });
 
 router.beforeEach((to, from, next) => {
