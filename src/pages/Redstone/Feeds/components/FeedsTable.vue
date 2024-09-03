@@ -100,7 +100,7 @@
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
-          parseToCurrency(item.apiValues.value * 100000000)
+          parseToCurrency(item.apiValues.value * 100000000, item.token.split("/")[1])
         }}</strong>
         <Loader v-else-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
