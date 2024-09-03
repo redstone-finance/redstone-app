@@ -8,7 +8,7 @@
             <strong
               >{{
                 currenciesMap[feedData.token.split("/")[1]] ||
-                feedData.token.split("/")[1]
+                feedData.token.split("/")[1] || '$'
               }}{{
                 currentChartData[currentChartData.length - 1].value
               }}</strong
