@@ -56,6 +56,8 @@ describe("All feed names are formatted as expected", () => {
           EUR: "€",
           USD: "$",
           ETH: "Ξ",
+          BRL: "R$",
+          GBP: "£"
         };
         expect(symbolsMap[splitToken] || splitToken).toBe(
           expectedToPriceSymbol
