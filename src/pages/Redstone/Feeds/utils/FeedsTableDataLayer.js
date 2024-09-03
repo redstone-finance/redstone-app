@@ -233,6 +233,7 @@ export const parseToCurrency = (decimalValue, currency) => {
         break;
       case "ETH":
         formattedValue = formattedValue.replace("$", "Ξ");
+        break;
       case "BRL":
         formattedValue = formattedValue.replace("$", "R$");
         break;
