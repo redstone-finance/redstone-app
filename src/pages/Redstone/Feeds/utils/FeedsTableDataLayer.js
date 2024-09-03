@@ -13,6 +13,7 @@ import images from "@/data/symbols.json";
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
   return storeFeedsArray.map((item) => {
+    const answerCurrency = item.feedId.split("/")[1]
     return {
       answer: parseToDecimal(item.value),
       feed: hasSlash(item.feedId) ? item.feedId : item.feedId + "/USD",
@@ -30,6 +31,8 @@ export const mapFeedsData = (storeFeedsArray) => {
       feed_address: item.feedAddress,
       loaders: item.loaders,
       apiValues: item.apiValues,
+      contractAnswer: parseToCurrency(parseToDecimal(item.value), answerCurrency),
+      apiAnswer: parseToCurrency(item.apiValues?.value * 100000000, answerCurrency),
       network: {
         id: item.networkId,
         name: findNetworkName(item.networkId),
@@ -76,7 +79,7 @@ const parseToDecimal = (hexValue) => {
   return parseInt(hexValue, 16);
 };
 
-const hasSlash = (string) => {
+export const hasSlash = (string) => {
   return string.indexOf("/") >= 0;
 };
 
