@@ -1,7 +1,7 @@
 import { nextTick } from "vue";
 import { mapFeedsData } from "../../src/pages/Redstone/Feeds/utils/FeedsTableDataLayer.js";
 import { relayerMapper } from "../../src/store/feeds.js";
-import relayerSchema from "../mocks/relayers.js";
+import relayerSchema from "../mocks/relayers.json";
 import apiValues from "../mocks/apiValues.json";
 
 const intiRelayerDetails = (relayers) => {
