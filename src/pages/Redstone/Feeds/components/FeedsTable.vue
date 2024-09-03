@@ -21,7 +21,6 @@
       :filter-function="customFilter"
       :fields="fields"
       class="feeds__table"
-      :class="{ 'disable-sorting': !allLoadersComplete }"
     >
       <template #head(deviation)="data">
         {{ data.label }}
@@ -184,7 +183,7 @@
             formatter: (value, key, item) => item.network.name,
           },
           { key: "contract_address", label: "Addresses", sortable: false },
-          { key: "answer", label: "Answer", sortable: true },
+          { key: "answer", label: "Answer", sortable: false },
           { key: "deviation", label: "Deviation threshold ", sortable: false },
           { key: "heartbeat", label: "Heartbeat", sortable: false },
         ],
