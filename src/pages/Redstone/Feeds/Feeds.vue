@@ -115,6 +115,7 @@
       </div>
     </div>
     <FeedsTable
+      ref="tableComponent"
       :is-loading="isLoading"
       :filters="filters"
       :feeds="feeds"
@@ -202,6 +203,7 @@
     },
     data() {
       return {
+        tableComponent: null,
         isLoading: true,
         displayedTableItems: [],
         filters: null,

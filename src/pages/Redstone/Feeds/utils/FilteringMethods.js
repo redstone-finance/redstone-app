@@ -2,7 +2,7 @@ import { processTokenData } from "./FeedsTableDataLayer";
 export default {
   onPerPageChange() {
     this.currentPage = 1;
-    this.$refs.selectableTable?.refresh();
+    this.$refs?.tableComponent?.$refs?.selectableTable?.refresh();
     this.updateRouteParams();
   },
   onSelectedPageChange() {
@@ -51,13 +51,11 @@ export default {
     query.sortDesc = this.sortDesc.toString();
     query.perPage = this.perPage.toString();
 
-    this.$router
-      .replace({ query })
-      .catch((err) => {
-        if (err.name !== "NavigationDuplicated") {
-          throw err;
-        }
-      });
+    this.$router.replace({ query }).catch((err) => {
+      if (err.name !== "NavigationDuplicated") {
+        throw err;
+      }
+    });
   },
   handleFilter(filterType, value) {
     if (filterType === "cryptos") {
@@ -83,7 +81,7 @@ export default {
       searchTerm: this.searchTerm,
     };
     this.$nextTick(() => {
-      this.$refs.selectableTable?.refresh();
+      this.$refs.tableComponent?.$refs?.selectableTable?.refresh();
     });
     if (this.hasFilters) {
       this.$store.dispatch("layout/updateFeedsFilterStatus", true);
@@ -94,13 +92,15 @@ export default {
     this.selectedNetworks = [];
     if (clearSearch) {
       this.$store.dispatch("layout/updateSearchTerm", "");
+      this.filters.searchTerm = ''
     }
-    this.filters = null;
+    this.filters.networks = null
+    this.filters.cryptos = null
     this.currentFilter = null;
     this.currentPage = 1;
     this.sortBy = "popularity";
     this.sortDesc = false;
-    this.$refs.selectableTable?.refresh();
+    this.$refs.tableComponent?.$refs?.selectableTable?.refresh();
     this.updateRouteParams();
     this.$store.dispatch("layout/updateFeedsFilterStatus", false);
   },

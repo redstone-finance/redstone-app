@@ -100,7 +100,7 @@
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
-         item.apiAnswer
+          item.apiAnswer
         }}</strong>
         <Loader v-else-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
@@ -207,7 +207,7 @@
       handleSort(ctx) {
         this.$emit("update:sort", ctx);
       },
-      onChange(value){
+      onChange(value) {
         this.$emit("change", value);
       },
       onFiltered(filteredItems) {
@@ -216,15 +216,16 @@
       customFilter(row, filters) {
         if (!filters) return true;
         const { selectedCryptos, selectedNetworks, searchTerm } = filters;
-
+        let matchesSearch = true;
         if (searchTerm) {
           const searchLower = searchTerm.toLowerCase();
-          return (
+          matchesSearch =
             row.feed.toLowerCase().includes(searchLower) ||
             row.network.name.toLowerCase().includes(searchLower) ||
             (row.contract_address &&
-              row.contract_address.toLowerCase().includes(searchLower))
-          );
+              row.contract_address.toLowerCase().includes(searchLower)) ||
+            (row.feed_address &&
+              row.feed_address.toLowerCase().includes(searchLower));
         }
 
         const cryptoMatch =
@@ -238,14 +239,12 @@
           selectedNetworks.length === 0 ||
           selectedNetworks.includes(row.network.id);
 
-        return cryptoMatch && networkMatch;
+        return matchesSearch && cryptoMatch && networkMatch;
       },
     },
     computed: {
       ...mapState("feeds", ["relayersDetails"]),
-      ...mapGetters("feeds", [
-        "allLoadersComplete",
-      ]),
+      ...mapGetters("feeds", ["allLoadersComplete"]),
     },
   };
 </script>
