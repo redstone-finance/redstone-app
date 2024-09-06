@@ -3,12 +3,14 @@ import mainManifest from "redstone-monorepo-github/packages/oracle-node/manifest
 import arbitrumManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/arbitrum.json";
 import avalancheManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/avalanche.json";
 import primaryManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/primary.json";
+import primaryLongManifest from "redstone-monorepo-github/packages/oracle-node/manifests/data-services/primary-long.json";
 
 export const DEFAULT_PROVIDER = "coingecko";
 
 const manifests = {
   coingecko: mainManifest,
   "redstone-primary-prod": primaryManifest,
+  "redstone-primary-long-prod": primaryLongManifest,
   "redstone-avalanche-prod": avalancheManifest,
   "redstone-arbitrum-prod": arbitrumManifest,
 };
