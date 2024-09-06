@@ -9,7 +9,6 @@ export const DEFAULT_PROVIDER = "coingecko";
 const manifests = {
   coingecko: mainManifest,
   "redstone-primary-prod": primaryManifest,
-  "redstone-primary-long-prod": primaryLongManifest,
   "redstone-avalanche-prod": avalancheManifest,
   "redstone-arbitrum-prod": arbitrumManifest,
 };
