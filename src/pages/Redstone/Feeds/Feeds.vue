@@ -2,6 +2,7 @@
   <div class="feeds">
     <div class="feeds__view-details">
       <h1>Push Model (On-chain Feeds)</h1>
+      {{ tokensInManifest.length }}
       <p>
         RedStone Push Oracle offers robust, reliable and accurate data feeds
         available to query from the destination network.
@@ -174,7 +175,7 @@
     findNetworkName,
     findNetworkImage,
     getTokenImage,
-    images
+    images,
   } from "./utils/FeedsTableDataLayer";
   import filterMethods from "./utils/FilteringMethods.js";
   import prefetchImages from "@/core/prefetchImages";
@@ -305,12 +306,21 @@
           imageUrl: getTokenImage(crypto).logoURI,
         }));
       },
+      tokensInManifest() {
+        return images.filter((image) =>
+          Array.from(
+            new Set(
+              this.combinedFeedsWithDetailsArray.map((feed) => feed.feedId)
+            )
+          ).includes(image.token)
+        );
+      },
       cryptoImages() {
-        return images.filter((image) => {
+        return this.tokensInManifest.filter((image) => {
           const networks =
             this.selectedNetworks.length > 0
               ? this.selectedNetworks
-              : this.filteredNetworks;
+              : this.filteredNetworks
           return networks?.some((networkId) => {
             return this.tokenInNetwork(image.token, networkId);
           });

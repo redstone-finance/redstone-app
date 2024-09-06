@@ -12,6 +12,7 @@ import tokens from "@/config/tokens.json";
 
 export const images = Object.keys(tokens).map((token) => ({token, ...tokens[token]}))
 
+
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
   return storeFeedsArray.map((item) => {

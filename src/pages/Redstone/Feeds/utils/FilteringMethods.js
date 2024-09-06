@@ -113,7 +113,7 @@ export default {
   },
   tokenInNetwork(token, networkId) {
     return processTokenData(this.tokensInNetworks).some(
-      (item) => item.token === token && item.network === networkId
+      (item) => item.network === networkId
     );
   },
   removeCrypto(item) {
