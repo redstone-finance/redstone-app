@@ -80,6 +80,7 @@ export default {
       selectedNetworks: this.selectedNetworks,
       searchTerm: this.searchTerm,
     };
+    console.log(this.selectedCryptos)
     this.$nextTick(() => {
       this.$refs.tableComponent?.$refs?.selectableTable?.refresh();
     });

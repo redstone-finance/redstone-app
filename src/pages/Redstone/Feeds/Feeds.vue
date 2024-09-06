@@ -2,7 +2,6 @@
   <div class="feeds">
     <div class="feeds__view-details">
       <h1>Push Model (On-chain Feeds)</h1>
-      {{ tokensInManifest.length }}
       <p>
         RedStone Push Oracle offers robust, reliable and accurate data feeds
         available to query from the destination network.

@@ -231,8 +231,7 @@
         const cryptoMatch =
           selectedCryptos.length === 0 ||
           selectedCryptos.some((crypto) => {
-            const feedParts = row.feed.split("/");
-            return feedParts[0].toLowerCase() === crypto.toLowerCase();
+            return row.feed.toLowerCase() === crypto.toLowerCase();
           });
 
         const networkMatch =

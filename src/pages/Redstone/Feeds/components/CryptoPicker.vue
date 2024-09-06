@@ -232,6 +232,9 @@
   .crypto-name {
     font-size: 14px;
     font-weight: 300;
+    img{
+      border-radius: 50%;
+    }
   }
 
   .dropdown {
