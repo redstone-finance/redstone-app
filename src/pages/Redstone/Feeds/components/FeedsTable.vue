@@ -92,7 +92,7 @@
       </template>
       <template #cell(feed)="{ item }">
         <img
-          :src="item.token_image?.imageName"
+          :src="item.token_image?.logoURI"
           class="feeds__token-image"
           :alt="item.feed"
         />

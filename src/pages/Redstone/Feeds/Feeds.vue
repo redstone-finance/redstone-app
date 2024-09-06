@@ -174,6 +174,7 @@
     findNetworkName,
     findNetworkImage,
     getTokenImage,
+    images
   } from "./utils/FeedsTableDataLayer";
   import filterMethods from "./utils/FilteringMethods.js";
   import prefetchImages from "@/core/prefetchImages";
@@ -186,7 +187,6 @@
   import SelectedFilters from "./components/SelectedFilters.vue";
   import CopyToClipboard from "./components/CopyToClipboard.vue";
   import networks from "@/data/networks.json";
-  import images from "@/data/symbols.json";
   import isScreen from "@/core/screenHelper";
   import FeedsTable from "./components/FeedsTable.vue";
 
@@ -302,7 +302,7 @@
         return this.selectedCryptos.map((crypto) => ({
           key: crypto,
           name: crypto,
-          imageUrl: getTokenImage(crypto).imageName,
+          imageUrl: getTokenImage(crypto).logoURI,
         }));
       },
       cryptoImages() {

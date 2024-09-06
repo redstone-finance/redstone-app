@@ -32,7 +32,7 @@
             <div class="crypto-name">
               <b-img
                 :title="crypto.name"
-                :src="crypto.imageName"
+                :src="crypto.logoURI"
                 :alt="crypto.name"
                 width="20"
                 height="20"

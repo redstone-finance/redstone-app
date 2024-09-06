@@ -8,7 +8,9 @@ import {
 import { getUnixTime } from "date-fns";
 
 import networks from "@/data/networks.json";
-import images from "@/data/symbols.json";
+import tokens from "@/config/tokens.json";
+
+export const images = Object.keys(tokens).map((token) => ({token, ...tokens[token]}))
 
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
@@ -133,7 +135,7 @@ export const getTokenImage = (token) => {
     idealMatchImg ||
     secondMatch || {
       name: "placeholder",
-      imageName: "placeholder.png",
+      logoURI: "placeholder.png",
       token: "placeholder",
     }
   );
