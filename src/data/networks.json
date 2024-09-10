@@ -167,6 +167,13 @@
     "name": "B2 Network",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/b2.png"
   },
+  "hemi": {
+    "rpcUrl": "https://testnet.rpc.hemi.network/rpc",
+    "explorerUrl": "https://testnet.explorer.hemi.xyz",
+    "chainId": 743111,
+    "name": "Hemi Sepolia",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sepolia.jpeg"
+  },
   "zkLink": {
     "rpcUrl": "https://rpc.zklink.io",
     "explorerUrl": "https://explorer.zklink.io",
