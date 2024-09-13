@@ -155,7 +155,7 @@ export default {
       try {
         var id = await api.getDataFeedId();
       } catch (error) {
-        console.log('Single data feed id contract fetch error', layerId, error)
+        console.warn('Single data feed id contract fetch error', layerId)
       }
       try {
         var ids = await api.getDataFeedIds();
@@ -195,7 +195,7 @@ export default {
           });
         })
         .catch((error) => {
-          console.log("Contract timestamp fetching erro", layerId, error);
+          console.log("Contract timestamp fetching erro", layerId);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
@@ -223,7 +223,7 @@ export default {
           });
         })
         .catch((error) => {
-          console.log("Contract timestamp fetching error", layerId, error);
+          console.warn("Contract timestamp fetching error", layerId, error);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
@@ -262,7 +262,7 @@ export default {
         const { data } = await axios.get(RELAYERS_VALUES_URL);
         commit("assignRelayerValues", data);
       } catch (error) {
-        console.log({ error });
+        console.warn("Relayers fetch error");
       }
     },
     async initSingleContract({ state }, layerId, feedId) {
