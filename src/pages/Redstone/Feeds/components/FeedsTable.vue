@@ -117,7 +117,12 @@
           "
           class="feeds__loader"
         />
-        <span v-else class="feeds__timestamp"  v-b-tooltip.hover :title="item.heartbeatTitle">
+        <span
+          v-else
+          class="feeds__timestamp"
+          v-b-tooltip.hover
+          :title="item.heartbeatTitle"
+        >
           <span v-if="heartbeatIsNumber(item.heartbeat)">
             <to-date-counter :duration="item.heartbeat" />
           </span>
@@ -229,7 +234,7 @@
             (row.feed_address &&
               row.feed_address.toLowerCase().includes(searchLower)) ||
             (row.feed && tokenLower.includes(searchLower));
-            return matchesSearch
+          return matchesSearch;
         }
 
         const cryptoMatch =
@@ -237,7 +242,7 @@
         const networkMatch =
           selectedNetworks?.length === 0 ||
           selectedNetworks?.includes(row.network.id);
-        return cryptoMatch && networkMatch
+        return cryptoMatch && networkMatch;
       },
     },
     computed: {
