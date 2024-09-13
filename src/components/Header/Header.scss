@@ -2,7 +2,7 @@
 
 .app-header.navbar {
   height: $navbar-height;
-  z-index: 100;
+  z-index: 9999;
   padding: 00;
   background: var(--navbar-bg);
   box-shadow: var(--navbar-shadow);
@@ -111,7 +111,16 @@
     }
 
     .input-group {
-      width: 45vw;
+      width: 25vw;
+      &:has(#search-input:focus) {
+        width: 90vw;
+      }
+      #search-input {
+        padding: 5px;
+      }
+      .input-group-text {
+        padding: 5px;
+      }
 
       @media (min-width: breakpoint-min(xs)) {
         width: 45vw;
@@ -119,6 +128,13 @@
 
       @media (min-width: breakpoint-min(sm)) {
         width: 40vw;
+        padding: 5px 15px;
+        &:has(#search-input:focus) {
+          width: 50vw;
+        }
+        .input-group-text {
+          padding: 5px 15px;
+        }
       }
 
       @media (min-width: breakpoint-min(lg)) {
@@ -206,4 +222,31 @@ i.flaticon-chevron-back {
   display: block;
   height: 24px;
   width: 14px;
+}
+
+#use-buttons {
+  button {
+    font-size: 12px;
+    padding: 3px 6px !important;
+  }
+}
+
+@media (min-width: breakpoint-min(lg)) {
+  #use-buttons {
+    button {
+      font-size: 14px;
+    }
+  }
+}
+
+#search-input {
+  position: relative;
+  z-index: 99999;
+  + .input-group-append {
+    .fa {
+      cursor: pointer;
+      position: relative;
+      z-index: 99999;
+    }
+  }
 }

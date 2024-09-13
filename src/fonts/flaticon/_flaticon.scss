@@ -747,6 +747,7 @@ i.fi {
 
 .flaticon-layers::before {
   content: "\f1a2";
+  font-size: 24px;
 }
 
 .flaticon-layers-1::before {
@@ -767,6 +768,10 @@ i.fi {
 
 .flaticon-link::before {
   content: "\f1a7";
+}
+
+.router-link-active .flaticon-layers {
+  color: #000 !important;
 }
 
 .router-link-active .flaticon-list {

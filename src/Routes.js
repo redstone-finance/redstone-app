@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-
 import Layout from "@/components/Layout/Layout";
 import ErrorPage from "@/pages/Error/Error";
 
@@ -11,6 +10,7 @@ import Sources from "@/pages/Redstone/Sources/Sources";
 import Source from "@/pages/Redstone/Source/Source";
 import DataServices from "@/pages/Redstone/DataServices/DataServices";
 import DataService from "@/pages/Redstone/DataService/DataService";
+import Feeds from "@/pages/Redstone/Feeds/Feeds";
 
 // Store
 import store from "./store";
@@ -24,7 +24,6 @@ const router = new Router({
       name: "Error",
       component: ErrorPage,
     },
-
     {
       path: "/app",
       name: "Layout",
@@ -55,6 +54,12 @@ const router = new Router({
           component: Source,
         },
         {
+          path: "feeds",
+          name: "Feeds list",
+          component: Feeds,
+          meta: { showSearchInputInNavbar: true },
+        },
+        {
           path: "data-services",
           name: "DataServicesPage",
           component: DataServices,
@@ -70,9 +75,6 @@ const router = new Router({
       ],
     },
   ],
-  scrollBehavior: () => {
-    document.getElementsByClassName("sing-dashboard")[0].scrollIntoView();
-  },
 });
 
 router.beforeEach((to, from, next) => {

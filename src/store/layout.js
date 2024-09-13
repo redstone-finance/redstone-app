@@ -8,6 +8,7 @@ export default {
     chatNotificationPopover: false,
     showSearchInputInHeader: false,
     searchTerm: "",
+    hasFeedsFilters: false,
   },
   mutations: {
     toggleSidebar(state) {
@@ -38,6 +39,9 @@ export default {
     updateSearchTerm(state, searchTerm) {
       state.searchTerm = searchTerm;
     },
+    updateFeedsFilterStatus(state, status) {
+      state.hasFeedsFilters = status;
+    },
   },
   actions: {
     toggleSidebar({ commit }) {
@@ -54,6 +58,9 @@ export default {
     },
     setSearchInputVisibilityInHeader({ commit }, visibility) {
       commit("setSearchInputVisibilityInHeader", visibility);
+    },
+    updateFeedsFilterStatus({ commit }, status) {
+      commit("updateFeedsFilterStatus", status);
     },
     updateSearchTerm({ commit }, searchTerm) {
       commit("updateSearchTerm", searchTerm);

@@ -748,7 +748,7 @@
   }
 }
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
   .custom-control-input:checked ~ .custom-control-label {
   &::before {
     color: currentColor !important;

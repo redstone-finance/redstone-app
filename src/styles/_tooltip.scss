@@ -1,0 +1,14 @@
+.tooltip .tooltip-inner {
+  background-color: #fff;
+  color: #404040;
+  border: 1px solid #d8d8d8;
+  padding: 8px 12px;
+  box-shadow: var(--content-shadow);
+}
+.tooltip {
+  opacity: 1 !important;
+  z-index: 999999;
+}
+.tooltip .arrow::before {
+  border-top-color: #d8d8d8;
+}
