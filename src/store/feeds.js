@@ -195,7 +195,7 @@ export default {
           });
         })
         .catch((error) => {
-          console.log("Contract timestamp fetching error", layerId);
+          console.warn("Contract timestamp fetching error", layerId);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
