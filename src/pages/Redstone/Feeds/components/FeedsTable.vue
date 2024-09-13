@@ -111,6 +111,7 @@
         <span v-else class="feeds__no-data">no-data</span>
       </template>
       <template #cell(heartbeat)="{ item }">
+        <!-- {{ item?.apiValues?.timestamp }} -->
         <Loader
           v-if="
             item.loaders?.blockTimestamp && item?.apiValues?.timestamp == null
