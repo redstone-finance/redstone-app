@@ -60,8 +60,10 @@ export default {
   handleFilter(filterType, value) {
     if (filterType === "cryptos") {
       this.selectedCryptos = value;
+      this.$store.dispatch("layout/updateSearchTerm", "");
     } else if (filterType === "networks") {
       this.selectedNetworks = value;
+      this.$store.dispatch("layout/updateSearchTerm", "");
     }
     if (!this.isInitialLoad) {
       this.currentPage = 1;
@@ -94,8 +96,8 @@ export default {
       this.$store.dispatch("layout/updateSearchTerm", "");
       this.filters.searchTerm = "";
     }
-    this.filters.selectedNetworks = null;
-    this.filters.selectedCryptos = null;
+    this.filters.selectedNetworks = [];
+    this.filters.selectedCryptos = [];
     this.currentFilter = null;
     this.currentPage = 1;
     this.sortBy = "popularity";

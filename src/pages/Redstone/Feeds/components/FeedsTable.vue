@@ -217,7 +217,7 @@
         if (!filters) return true;
         const { selectedCryptos, selectedNetworks, searchTerm } = filters;
         let matchesSearch = true;
-        if (searchTerm) {
+        if (searchTerm && searchTerm.trim() !== "") {
           const searchLower = searchTerm.toLowerCase();
           const tokenLower = row.feed ? row.feed.toLowerCase() : "";
 
@@ -229,9 +229,7 @@
             (row.feed_address &&
               row.feed_address.toLowerCase().includes(searchLower)) ||
             (row.feed && tokenLower.includes(searchLower));
-        }
-        if(searchTerm && searchTerm.trim() !== '') {
-          return matchesSearch
+            return matchesSearch
         }
 
         const cryptoMatch =
