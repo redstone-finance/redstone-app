@@ -6,7 +6,7 @@ import {
   findNearestCronDate,
 } from "@/core/timeHelpers";
 import { getUnixTime } from "date-fns";
-
+import cronstrue from 'cronstrue'
 import networks from "@/data/networks.json";
 import tokens from "@/config/tokens.json";
 
@@ -29,6 +29,7 @@ export const mapFeedsData = (storeFeedsArray) => {
       token_image: getTokenImage(item.feedId),
       popularity: getPopularityValue(item),
       contract_address: item.contractAddress,
+      heartbeatTitle: heartbeatTitle(item),
       cron: item.triggers.cron,
       layer_id: item.feedId,
       token: item.feedId,
@@ -187,6 +188,16 @@ const resolveDeviationPercentage = (item) => {
     ? deviationPercentage?.deviationPercentage || deviationPercentage
     : "n/a";
 };
+
+const heartbeatTitle = (item) => {
+  const heartbeat = resolveTimeSinceLastUpdateInMilliseconds(item)
+  const crons = item.triggers.cron
+  if(crons){
+    return crons.map(cron => cronstrue.toString(cron)).join(', ')
+  }else{
+    return heartbeat + 'ms'
+  }
+}
 
 const resolveTimeSinceLastUpdateInMilliseconds = (item) => {
   const triggerOverride = item.overrides.filter(
