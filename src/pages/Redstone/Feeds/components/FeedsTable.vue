@@ -219,23 +219,27 @@
         let matchesSearch = true;
         if (searchTerm) {
           const searchLower = searchTerm.toLowerCase();
+          const tokenLower = row.feed ? row.feed.toLowerCase() : "";
+
           matchesSearch =
             row.feed.toLowerCase().includes(searchLower) ||
             row.network.name.toLowerCase().includes(searchLower) ||
             (row.contract_address &&
               row.contract_address.toLowerCase().includes(searchLower)) ||
             (row.feed_address &&
-              row.feed_address.toLowerCase().includes(searchLower));
+              row.feed_address.toLowerCase().includes(searchLower)) ||
+            (row.feed && tokenLower.includes(searchLower));
+        }
+        if(searchTerm && searchTerm.trim() !== '') {
+          return matchesSearch
         }
 
         const cryptoMatch =
-          selectedCryptos.length === 0 ||
-          selectedCryptos.includes(row.token)
+          selectedCryptos?.length === 0 || selectedCryptos?.includes(row.token);
         const networkMatch =
-          selectedNetworks.length === 0 ||
-          selectedNetworks.includes(row.network.id);
-
-        return matchesSearch && cryptoMatch && networkMatch;
+          selectedNetworks?.length === 0 ||
+          selectedNetworks?.includes(row.network.id);
+        return cryptoMatch && networkMatch
       },
     },
     computed: {
