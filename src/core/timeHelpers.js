@@ -59,14 +59,12 @@ export function getTimeUntilNextHeartbeat(
   lastHeartbeatItem,
   heartbeatInterval
 ) {
-  const lastHeartbeatTimestamp = lastHeartbeatItem * 1000;
+  const lastHeartbeatTimestamp = parseInt(lastHeartbeatItem, 16) * 1000;
   const now = Date.now();
+  const heartbeatIntervalMs = heartbeatInterval < 1000 ? heartbeatInterval * 1000 : heartbeatInterval;
   const timeSinceLastHeartbeat = now - lastHeartbeatTimestamp;
-  if (timeSinceLastHeartbeat >= heartbeatInterval) {
-    return 0;
-  }
-  const timeUntilNextHeartbeat = heartbeatInterval - timeSinceLastHeartbeat;
-  return timeUntilNextHeartbeat;
+  const timeUntilNextHeartbeat = heartbeatIntervalMs - (timeSinceLastHeartbeat % heartbeatIntervalMs);
+  return timeUntilNextHeartbeat < 1000 ? 0 : timeUntilNextHeartbeat;
 }
 
 export function parseCustomCron(cronExpr) {

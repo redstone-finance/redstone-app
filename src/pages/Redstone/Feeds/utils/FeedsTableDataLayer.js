@@ -58,13 +58,17 @@ export const mapFeedsData = (storeFeedsArray) => {
   });
 };
 
-const resolveTimestampForHeartbeat = (item) =>
-  item?.apiValues?.timestamp != null
-    ? "0x" +
-      getUnixTime(new Date(item?.apiValues?.timestamp))
-        .toString(16)
-        .padStart(8, "0")
-    : item?.timestamp;
+const resolveTimestampForHeartbeat = (item) => {
+  if (item?.apiValues?.timestamp != null) {
+    const unixTimestamp = Math.floor(new Date(item.apiValues.timestamp).getTime() / 1000);
+    return "0x" + unixTimestamp.toString(16).padStart(8, "0");
+  } else if (item?.timestamp) {
+    return item.timestamp;
+  } else {
+    return "0x" + Math.floor(Date.now() / 1000).toString(16).padStart(8, "0");
+  }
+}
+  
 
 const getHeartbeatValue = (item) =>
   getTimeUntilNextHeartbeat(
@@ -132,12 +136,14 @@ const findExplorer = (networkId) => {
 
 const msToTime = (ms) => {
   const duration = intervalToDuration({ start: 0, end: ms });
-  const { hours, minutes } = duration;
+  const { days, hours, minutes } = duration;
 
-  if (hours === 0) {
-    return formatDuration({ minutes }, { format: ["minutes"] });
-  } else {
+  if (days > 0) {
+    return formatDuration({ days, hours, minutes }, { format: ["days", "hours", "minutes"] });
+  } else if (hours > 0) {
     return formatDuration({ hours, minutes }, { format: ["hours", "minutes"] });
+  } else {
+    return formatDuration({ minutes }, { format: ["minutes"] });
   }
 };
 
