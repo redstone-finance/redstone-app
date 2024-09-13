@@ -155,7 +155,7 @@ export default {
       try {
         var id = await api.getDataFeedId();
       } catch (error) {
-        // console.log('error, id, single', layerId, error)
+        console.log('Single data feed id contract fetch error', layerId, error)
       }
       try {
         var ids = await api.getDataFeedIds();
@@ -195,7 +195,7 @@ export default {
           });
         })
         .catch((error) => {
-          // console.log("timestamp error", layerId, error);
+          console.log("Contract timestamp fetching erro", layerId, error);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
@@ -216,7 +216,6 @@ export default {
       this.getters["feeds/getSmartContractByLayerId"](layerId)
         .getValueForDataFeed(stringToBytes32(feedId))
         .then((value) => {
-          // console.log(value, feedId);
           commit("assignRelayerDetails", {
             key: "dataFeed",
             layerId: `${layerId}_${feedId}`,
@@ -224,7 +223,7 @@ export default {
           });
         })
         .catch((error) => {
-          // console.log("timestamp error", layerId, error);
+          console.log("Contract timestamp fetching error", layerId, error);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
