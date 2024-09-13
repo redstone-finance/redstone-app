@@ -319,7 +319,7 @@
           const networks =
             this.selectedNetworks.length > 0
               ? this.selectedNetworks
-              : this.filteredNetworks
+              : this.filteredNetworks;
           return networks?.some((networkId) => {
             return this.tokenInNetwork(image.token, networkId);
           });

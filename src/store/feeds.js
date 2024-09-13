@@ -23,7 +23,11 @@ const CONTRACTS_ABI_DEFINITION_MULTIFEED = [
   "function getValueForDataFeed(bytes32 dataFeedId) view returns (uint256)",
 ];
 
-export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) => {
+export const relayerMapper = (
+  relayerSchema,
+  relayersDetails,
+  relayersValues
+) => {
   return Object.keys(relayerSchema).flatMap((key) => {
     const layer = relayerSchema[key];
     const networkMapped = Object.values(networks).some(
@@ -39,8 +43,7 @@ export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) =>
 
     return Object.keys(layer.priceFeeds).map((feedId) => {
       const itemKey = `${key}_${feedId}`;
-      const keyFeedTimestamp =
-        relayersDetails[itemKey]?.blockTimestamp;
+      const keyFeedTimestamp = relayersDetails[itemKey]?.blockTimestamp;
       const keyFeedValue = relayersDetails[itemKey]?.dataFeed;
       return {
         routeNetwork: Object.values(networks)
@@ -53,8 +56,7 @@ export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) =>
         overrides: [
           {
             type: "deviation",
-            value:
-              layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
+            value: layer.updateTriggers.priceFeedsDeviationOverrides?.[feedId],
           },
           {
             type: "full",
@@ -74,7 +76,7 @@ export const relayerMapper = (relayerSchema, relayersDetails, relayersValues) =>
       };
     });
   });
-}
+};
 
 export default {
   namespaced: true,
@@ -123,7 +125,11 @@ export default {
       return state.relayerSchema[layerId].priceFeeds.length > 1;
     },
     combinedFeedsWithDetailsArray(state, getters) {
-      return relayerMapper(state.relayerSchema, state.relayersDetails, state.relayersValues)
+      return relayerMapper(
+        state.relayerSchema,
+        state.relayersDetails,
+        state.relayersValues
+      );
     },
   },
   actions: {

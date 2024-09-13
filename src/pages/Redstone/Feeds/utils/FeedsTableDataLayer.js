@@ -10,13 +10,15 @@ import { getUnixTime } from "date-fns";
 import networks from "@/data/networks.json";
 import tokens from "@/config/tokens.json";
 
-export const images = Object.keys(tokens).map((token) => ({token, ...tokens[token]}))
-
+export const images = Object.keys(tokens).map((token) => ({
+  token,
+  ...tokens[token],
+}));
 
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
   return storeFeedsArray.map((item) => {
-    const answerCurrency = item.feedId.split("/")[1]
+    const answerCurrency = item.feedId.split("/")[1];
     return {
       answer: parseToDecimal(item.value),
       feed: hasSlash(item.feedId) ? item.feedId : item.feedId + "/USD",
@@ -34,8 +36,14 @@ export const mapFeedsData = (storeFeedsArray) => {
       feed_address: item.feedAddress,
       loaders: item.loaders,
       apiValues: item.apiValues,
-      contractAnswer: parseToCurrency(parseToDecimal(item.value), answerCurrency),
-      apiAnswer: parseToCurrency(item.apiValues?.value * 100000000, answerCurrency),
+      contractAnswer: parseToCurrency(
+        parseToDecimal(item.value),
+        answerCurrency
+      ),
+      apiAnswer: parseToCurrency(
+        item.apiValues?.value * 100000000,
+        answerCurrency
+      ),
       network: {
         id: item.networkId,
         name: findNetworkName(item.networkId),
@@ -93,7 +101,7 @@ const removeSeparators = (string) => {
   return noSeparators;
 };
 
- export const findNetworkName = (networkId) => {
+export const findNetworkName = (networkId) => {
   return Object.values(networks).find(
     (network) => network.chainId === networkId
   ).name;

@@ -92,10 +92,10 @@ export default {
     this.selectedNetworks = [];
     if (clearSearch) {
       this.$store.dispatch("layout/updateSearchTerm", "");
-      this.filters.searchTerm = ''
+      this.filters.searchTerm = "";
     }
-    this.filters.networks = null
-    this.filters.cryptos = null
+    this.filters.networks = null;
+    this.filters.cryptos = null;
     this.currentFilter = null;
     this.currentPage = 1;
     this.sortBy = "popularity";

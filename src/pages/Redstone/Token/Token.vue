@@ -78,7 +78,7 @@
 
     methods: {
       async loadPrices() {
-        console.log({provider: this.selectedProvider})
+        console.log({ provider: this.selectedProvider });
         this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
           provider: this.selectedProvider,
         });

@@ -32,14 +32,11 @@
                   : ''
               "
             />
-              <template v-slot:append>
-                <b-input-group-text
-                  v-if="searchTerm"
-                  @click="resetSearch"
-                >
-                  <i class="fa fa-times"></i>
-                </b-input-group-text>
-              </template>
+            <template v-slot:append>
+              <b-input-group-text v-if="searchTerm" @click="resetSearch">
+                <i class="fa fa-times"></i>
+              </b-input-group-text>
+            </template>
           </b-input-group>
           <a href="javascript:window.history.back()" v-else>
             <i class="fa flaticon-chevron-back" />
@@ -132,7 +129,7 @@
         this.toggleSidebar();
       },
       resetSearch() {
-        this.updateSearchTerm("")
+        this.updateSearchTerm("");
       },
       logout() {
         window.localStorage.setItem("authenticated", false);
