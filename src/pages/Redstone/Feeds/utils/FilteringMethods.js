@@ -94,8 +94,8 @@ export default {
       this.$store.dispatch("layout/updateSearchTerm", "");
       this.filters.searchTerm = "";
     }
-    this.filters.networks = null;
-    this.filters.cryptos = null;
+    this.filters.selectedNetworks = null;
+    this.filters.selectedCryptos = null;
     this.currentFilter = null;
     this.currentPage = 1;
     this.sortBy = "popularity";

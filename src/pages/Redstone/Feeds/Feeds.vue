@@ -328,8 +328,8 @@
       hasFilters() {
         return (
           this.filters &&
-          (this.filters.selectedCryptos.length > 0 ||
-            this.filters.selectedNetworks.length > 0)
+          (this.filters?.selectedCryptos?.length > 0 ||
+            this.filters?.selectedNetworks?.length > 0)
         );
       },
       hasFiltersAndSearch() {

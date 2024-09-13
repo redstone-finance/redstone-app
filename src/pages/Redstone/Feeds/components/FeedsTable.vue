@@ -230,10 +230,7 @@
 
         const cryptoMatch =
           selectedCryptos.length === 0 ||
-          selectedCryptos.some((crypto) => {
-            return row.feed.toLowerCase() === crypto.toLowerCase();
-          });
-
+          selectedCryptos.includes(row.token)
         const networkMatch =
           selectedNetworks.length === 0 ||
           selectedNetworks.includes(row.network.id);
