@@ -5,7 +5,7 @@ import {
   timeUntilDate,
   findNearestCronDate,
 } from "@/core/timeHelpers";
-import { getUnixTime } from "date-fns";
+import { getUnixTime, intervalToDuration, formatDuration } from "date-fns";
 import cronstrue from 'cronstrue'
 import networks from "@/data/networks.json";
 import tokens from "@/config/tokens.json";
@@ -130,6 +130,17 @@ const findExplorer = (networkId) => {
   ).explorerUrl;
 };
 
+const msToTime = (ms) => {
+  const duration = intervalToDuration({ start: 0, end: ms });
+  const { hours, minutes } = duration;
+
+  if (hours === 0) {
+    return formatDuration({ minutes }, { format: ['minutes'] });
+  } else {
+    return formatDuration({ hours, minutes }, { format: ['hours', 'minutes'] });
+  }
+}
+
 const transformHexString = (str) => {
   if (str == null) return "no data";
   if (str?.length <= 10) return str;
@@ -195,7 +206,7 @@ const heartbeatTitle = (item) => {
   if(crons){
     return crons.map(cron => cronstrue.toString(cron)).join(', ')
   }else{
-    return heartbeat + 'ms'
+    return 'Heartbeat:' + msToTime(heartbeat)
   }
 }
 
