@@ -155,7 +155,7 @@ export default {
       try {
         var id = await api.getDataFeedId();
       } catch (error) {
-        console.warn('Single data feed id contract fetch error', layerId)
+        console.warn("Single data feed id contract fetch error", layerId);
       }
       try {
         var ids = await api.getDataFeedIds();
