@@ -73,11 +73,12 @@
     },
 
     timers: {
-      loadPrices: { autostart: true, time: 2000, repeat: true },
+      // loadPrices: { autostart: true, time: 2000, repeat: true },
     },
 
     methods: {
       async loadPrices() {
+        console.log({provider: this.selectedProvider})
         this.currentPrice = await redstoneAdapter.getPrice(this.symbol, {
           provider: this.selectedProvider,
         });
