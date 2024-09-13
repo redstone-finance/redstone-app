@@ -21,7 +21,9 @@ export const mapFeedsData = (storeFeedsArray) => {
     const answerCurrency = item.feedId.split("/")[1];
     return {
       answer: parseToDecimal(item.value),
-      feed: hasSlash(item.feedId) ? item.feedId : item.feedId + "/USD",
+      feed: hasSlash(item.feedId)
+        ? item.feedId
+        : item.feedId + "/" + resolveDenomination(item.feedId),
       timestamp: getTimestampValue(item),
       heartbeat: getHeartbeatValue(item),
       deviation: getDeviationValue(item),
@@ -39,11 +41,13 @@ export const mapFeedsData = (storeFeedsArray) => {
       apiValues: item.apiValues,
       contractAnswer: parseToCurrency(
         parseToDecimal(item.value),
-        answerCurrency
+        answerCurrency,
+        item.feedId
       ),
       apiAnswer: parseToCurrency(
         item.apiValues?.value * 100000000,
-        answerCurrency
+        answerCurrency,
+        item.feedId
       ),
       network: {
         id: item.networkId,
@@ -60,15 +64,25 @@ export const mapFeedsData = (storeFeedsArray) => {
 
 const resolveTimestampForHeartbeat = (item) => {
   if (item?.apiValues?.timestamp != null) {
-    const unixTimestamp = Math.floor(new Date(item.apiValues.timestamp).getTime() / 1000);
+    const unixTimestamp = Math.floor(
+      new Date(item.apiValues.timestamp).getTime() / 1000
+    );
     return "0x" + unixTimestamp.toString(16).padStart(8, "0");
   } else if (item?.timestamp) {
     return item.timestamp;
   } else {
-    return "0x" + Math.floor(Date.now() / 1000).toString(16).padStart(8, "0");
+    return (
+      "0x" +
+      Math.floor(Date.now() / 1000)
+        .toString(16)
+        .padStart(8, "0")
+    );
   }
-}
-  
+};
+
+const resolveDenomination = (token) => {
+  return denominationCustomMap?.[token] || "USD";
+};
 
 const getHeartbeatValue = (item) =>
   getTimeUntilNextHeartbeat(
@@ -139,7 +153,10 @@ const msToTime = (ms) => {
   const { days, hours, minutes } = duration;
 
   if (days > 0) {
-    return formatDuration({ days, hours, minutes }, { format: ["days", "hours", "minutes"] });
+    return formatDuration(
+      { days, hours, minutes },
+      { format: ["days", "hours", "minutes"] }
+    );
   } else if (hours > 0) {
     return formatDuration({ hours, minutes }, { format: ["hours", "minutes"] });
   } else {
@@ -249,8 +266,56 @@ export const heartbeatIsNumber = (value) => {
   return !isNaN(value);
 };
 
-export const parseToCurrency = (decimalValue, currency) => {
+export const denominationCustomMap = {
+  "wstETH_FUNDAMENTAL": "ETH",
+  "uniETH_FUNDAMENTAL": "ETH",
+  "deUSD_FUNDAMENTAL": "USD",
+  "pufETH_FUNDAMENTAL": "ETH",
+  "pzETH_FUNDAMENTAL": "ETH",
+  "mETH_FUNDAMENTAL": "ETH",
+  "LBTC_FUNDAMENTAL": "BTC",
+  "ETH_CLE": "ETH",
+  "ETH_ELE": "ETH",
+  "ETH_CLE+": "ETH",
+  "mETH_RATE_PROVIDER": "ETH",
+  "sUSDe_RATE_PROVIDER": "USD",
+  "SolvBTC_MERLIN": "BTC",
+  "SolvBTC.BBN": "BTC",
+  "SolvBTC_BNB": "BTC",
+  "BBTC": "BTC",
+  "BBUSD": "USD",
+  "PREMIA-TWAP-60": "USD",
+  "ezETH-TWAP-60": "ETH",
+  "USDB-TWAP-30": "USD",
+  "SolvBTC_MERLIN/BTC-TWAP-60": "BTC",
+  "weETH_FUNDAMENTAL": "ETH",
+  "apxETH": "ETH",
+  "ETH+": "ETH",
+  "sfrxETH": "ETH",
+  "wstETH/stETH": "ETH",
+  "wstETH/ETH": "ETH",
+  "stETH/ETH": "ETH",
+  "rETH/ETH": "ETH",
+  "SWETH/ETH": "ETH",
+  "ETHx/ETH": "ETH",
+  "weETH/ETH": "ETH",
+  "osETH/ETH": "ETH",
+  "pxETH/ETH": "ETH",
+  "rsETH/ETH": "ETH",
+  "ezETH/ETH": "ETH",
+  "rswETH/ETH": "ETH",
+  "pufETH/ETH": "ETH",
+  "pzETH/ETH": "ETH",
+  "apxETH/ETH": "ETH",
+  "ETH+/ETH": "ETH",
+  "sfrxETH/ETH": "ETH",
+  "eBTC/WBTC": "BTC"
+}
+
+export const parseToCurrency = (decimalValue, currency, token) => {
   const value = decimalValue / Math.pow(10, 8);
+  const customDenomination = denominationCustomMap?.[token];
+  const finalCurrency = customDenomination || currency;
   let formatterOptions = {
     style: "currency",
     currency: "USD",
@@ -265,8 +330,8 @@ export const parseToCurrency = (decimalValue, currency) => {
   }
   const formatter = new Intl.NumberFormat("en-US", formatterOptions);
   let formattedValue = formatter.format(value);
-  if (currency && currency !== "USD") {
-    switch (currency) {
+  if (finalCurrency && currency !== "USD") {
+    switch (finalCurrency) {
       case "EUR":
         formattedValue = formattedValue.replace("$", "€");
         break;
@@ -279,8 +344,9 @@ export const parseToCurrency = (decimalValue, currency) => {
       case "GBP":
         formattedValue = formattedValue.replace("$", "£");
         break;
-      default:
-        formattedValue = formattedValue.replace("$", currency);
+      case "BTC":
+        formattedValue = formattedValue.replace("$", "₿");
+        break;
     }
   }
   return formattedValue;
