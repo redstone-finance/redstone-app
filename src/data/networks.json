@@ -1,17 +1,17 @@
 {
-  "ethereum": {
-    "rpcUrl": "https://rpc.flashbots.net/fast",
-    "explorerUrl": "https://etherscan.io",
-    "chainId": 1,
-    "name": "Ethereum Mainnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.svg"
-  },
   "bnb": {
     "rpcUrl": "https://bsc-dataseed.binance.org/",
     "explorerUrl": "https://bscscan.com",
     "chainId": 56,
     "name": "BNB Chain",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.svg"
+  },
+  "ethereum": {
+    "rpcUrl": "https://rpc.flashbots.net/fast",
+    "explorerUrl": "https://etherscan.io",
+    "chainId": 1,
+    "name": "Ethereum Mainnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.svg"
   },
   "arbitrum": {
     "rpcUrl": "https://arb1.arbitrum.io/rpc",
