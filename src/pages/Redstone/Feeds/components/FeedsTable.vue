@@ -157,7 +157,6 @@
   import CopyToClipboard from "./CopyToClipboard.vue";
   import ToDateCounter from "./ToDateCounter.vue";
   import truncateString from "@/core/truncate";
-  import cronstrue from "cronstrue";
   export default {
     components: {
       Loader,
