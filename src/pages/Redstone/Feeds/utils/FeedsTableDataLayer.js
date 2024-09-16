@@ -267,23 +267,23 @@ export const heartbeatIsNumber = (value) => {
 };
 
 export const denominationCustomMap = {
-  wstETH_FUNDAMENTAL: "ETH",
-  uniETH_FUNDAMENTAL: "ETH",
-  deUSD_FUNDAMENTAL: "USD",
-  pufETH_FUNDAMENTAL: "ETH",
-  pzETH_FUNDAMENTAL: "ETH",
-  mETH_FUNDAMENTAL: "ETH",
-  LBTC_FUNDAMENTAL: "BTC",
-  ETH_CLE: "ETH",
-  ETH_ELE: "ETH",
+  "wstETH_FUNDAMENTAL": "ETH",
+  "uniETH_FUNDAMENTAL": "ETH",
+  "deUSD_FUNDAMENTAL": "USD",
+  "pufETH_FUNDAMENTAL": "ETH",
+  "pzETH_FUNDAMENTAL": "ETH",
+  "mETH_FUNDAMENTAL": "ETH",
+  "LBTC_FUNDAMENTAL": "BTC",
+  "ETH_CLE": "ETH",
+  "ETH_ELE": "ETH",
   "ETH_CLE+": "ETH",
-  mETH_RATE_PROVIDER: "ETH",
-  sUSDe_RATE_PROVIDER: "USD",
-  SolvBTC_MERLIN: "BTC",
+  "mETH_RATE_PROVIDER": "ETH",
+  "sUSDe_RATE_PROVIDER": "USD",
+  "SolvBTC_MERLIN": "BTC",
   "SolvBTC.BBN": "BTC",
-  SolvBTC_BNB: "BTC",
-  BBTC: "BTC",
-  BBUSD: "USD",
+  "SolvBTC_BNB": "BTC",
+  "BBTC": "BTC",
+  "BBUSD": "USD",
   "PREMIA-TWAP-60": "USD",
   "ezETH-TWAP-60": "ETH",
   "USDB-TWAP-30": "USD",
@@ -332,9 +332,12 @@ export const parseToCurrency = (decimalValue, currency, token) => {
       case "BTC":
         formattedValue = formattedValue.replace("$", "₿");
         break;
+<<<<<<< HEAD
       default:
         formattedValue = formattedValue.replace("$", "") + currency;
         break;
+=======
+>>>>>>> 010f8291727ac8e65e7695e5f174fd67d374503c
     }
   }
   return formattedValue;
