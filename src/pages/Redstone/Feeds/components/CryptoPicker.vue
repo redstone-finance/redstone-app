@@ -222,7 +222,7 @@
     z-index: 999;
   }
 
-  .dropdown.show {
+  .crypto-dropdown-container .dropdown.show {
     button {
       background: var(--redstone-red-color);
       border: 2px solid darken(#fd627a, $amount: 15) !important;
