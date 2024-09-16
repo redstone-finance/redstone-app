@@ -303,7 +303,6 @@ export const parseToCurrency = (decimalValue, currency, token) => {
     style: "currency",
     currency: "USD",
   };
-  console.log(finalCurrency);
   if (value >= 1) {
     formatterOptions.minimumFractionDigits = 3;
     formatterOptions.maximumFractionDigits = 3;
