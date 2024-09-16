@@ -296,7 +296,8 @@ export const denominationCustomMap = {
 };
 
 export const parseToCurrency = (decimalValue, currency, token) => {
-  const value = decimalValue / Math.pow(10, 8);
+  const sUSDe_RATE = token === 'sUSDe_RATE_PROVIDER'
+  const value = decimalValue / Math.pow(10, sUSDe_RATE ? 18 : 8)
   const customDenomination = denominationCustomMap?.[token];
   const finalCurrency = customDenomination || currency;
   let formatterOptions = {
@@ -329,6 +330,8 @@ export const parseToCurrency = (decimalValue, currency, token) => {
         break;
       case "BTC":
         formattedValue = formattedValue.replace("$", "₿");
+        break;
+      case "USD":
         break;
       case "USDe":
         formattedValue = formattedValue.replace("$", "") + 'USDe';
