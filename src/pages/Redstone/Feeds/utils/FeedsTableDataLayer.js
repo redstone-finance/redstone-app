@@ -332,12 +332,9 @@ export const parseToCurrency = (decimalValue, currency, token) => {
       case "BTC":
         formattedValue = formattedValue.replace("$", "₿");
         break;
-<<<<<<< HEAD
       default:
         formattedValue = formattedValue.replace("$", "") + currency;
         break;
-=======
->>>>>>> 010f8291727ac8e65e7695e5f174fd67d374503c
     }
   }
   return formattedValue;
