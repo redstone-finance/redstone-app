@@ -158,11 +158,6 @@ export default {
         .map((p) => priceData(symbol, provider, p[1], p[0]));
     } else {
       return await getApiData(symbol, { provider, daysCount });
-      // return await redstone
-      //   .query()
-      //   .symbol(symbol)
-      //   .forLastDays(daysCount)
-      //   .exec({ defaultProvider: provider });
     }
   },
   getAllPrices: async function (opts) {
