@@ -150,15 +150,12 @@ const findExplorer = (networkId) => {
 
 const msToTime = (ms) => {
   const duration = intervalToDuration({ start: 0, end: ms });
-  const { days, hours, minutes } = duration;
+  const { minutes } = duration;
 
-  if (days > 0) {
-    return formatDuration(
-      { days, hours, minutes },
-      { format: ["days", "hours", "minutes"] }
-    );
-  } else if (hours > 0) {
-    return formatDuration({ hours, minutes }, { format: ["hours", "minutes"] });
+  const totalHours = Math.floor(ms / (1000 * 60 * 60));
+
+  if (totalHours > 0) {
+    return formatDuration({ hours: totalHours, minutes }, { format: ["hours", "minutes"] });
   } else {
     return formatDuration({ minutes }, { format: ["minutes"] });
   }
