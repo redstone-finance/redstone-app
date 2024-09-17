@@ -15,9 +15,16 @@ export const images = Object.keys(tokens).map((token) => ({
   ...tokens[token],
 }));
 
+const excludedFeeds = [{feed: 'ETHx', chainId: 1}]
+
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
-  return storeFeedsArray.map((item) => {
+  const feedsWithoutExcluded = storeFeedsArray.filter(feed => 
+    !excludedFeeds.some(excluded => 
+      excluded.feed === feed.feedId && excluded.chainId === feed.networkId
+    )
+  );
+  return feedsWithoutExcluded.map((item) => {
     const answerCurrency = item.feedId.split("/")[1];
     return {
       answer: parseToDecimal(item.value),
