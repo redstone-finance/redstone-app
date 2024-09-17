@@ -95,8 +95,6 @@ function fixHistoricalRedstoneProvider(opts) {
 
 export default {
   getPrice: async function (symbol, opts) {
-    console.log("single price");
-    // console.log({api: this.getApiData(symbol, opts)})
     if (opts.provider === "coingecko") {
       const geckoId = coingeckoId(symbol);
       const baseUrl = `${COINGECKO_URL}/simple/price`;
@@ -118,11 +116,6 @@ export default {
     } else {
       const data = await getApiData(symbol, { provider: opts.provider, symbols: [symbol] });
       return data[symbol]
-      // return await redstone
-      //   .query()
-      //   .symbol(symbol)
-      //   .latest()
-      //   .exec({ defaultProvider: opts.provider });
     }
   },
   getHistoricalPrice: async function (symbol, opts) {
@@ -148,15 +141,6 @@ export default {
         provider: opts.provider,
         lastHour: true,
       });
-      // return (
-      //   await redstone.getHistoricalPrice(
-      //     symbol,
-      //     fixHistoricalRedstoneProvider(opts)
-      //   )
-      // ).map((priceData) => {
-      //   priceData.provider = opts.provider;
-      //   return priceData;
-      // });
     }
   },
   query: async function (provider, symbol, daysCount) {
@@ -177,11 +161,6 @@ export default {
         .map((p) => priceData(symbol, provider, p[1], p[0]));
     } else {
       return await getApiData(symbol, { provider, daysCount });
-      // return await redstone
-      //   .query()
-      //   .symbol(symbol)
-      //   .forLastDays(daysCount)
-      //   .exec({ defaultProvider: provider });
     }
   },
   getAllPrices: async function (opts) {

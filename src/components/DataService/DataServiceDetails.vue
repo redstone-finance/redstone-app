@@ -50,6 +50,7 @@
       <b-table
         id="assets-table"
         stacked="md"
+        hover
         :items="visibleTokens"
         :fields="fieldsFiltered"
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
@@ -59,13 +60,13 @@
           <span class="token-name ml-3">{{ data.item.name }}</span>
         </template>
         <template #cell(symbol)="data">
-          <!-- <span
+          <span
             class="text-truncate d-block"
             v-b-tooltip.hover
             :title="data.item.symbol"
           >
             {{ data.item.symbol }}
-          </span> -->
+          </span>
         </template>
         <template #cell(sources)="data">
           <div
@@ -343,7 +344,11 @@ hr {
   }
 
   th:nth-of-type(2) {
-    display: none;
+    width: 100px;
+  }
+
+  th:nth-of-type(3) {
+    width: fit-content;
   }
 
   th:nth-of-type(4) {
@@ -351,6 +356,10 @@ hr {
   }
 
   th:nth-of-type(2) {
+    overflow: hidden;
+  }
+
+  td .source-links {
     overflow: hidden;
   }
 
