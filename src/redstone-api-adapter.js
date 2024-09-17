@@ -33,7 +33,6 @@ const makeConfigurableRequest = async (baseUrl, params = {}) => {
     }
   });
   const result = await axios.get(url.toString());
-  console.log({ result });
   return result.data;
 };
 
@@ -62,7 +61,6 @@ const getApiData = async function (symbol, opts) {
   }
 
   if (opts.symbols) {
-    console.log('add symbols')
     params = {
       ...params,
       symbols: opts.symbols,
@@ -119,7 +117,6 @@ export default {
     }
   },
   getHistoricalPrice: async function (symbol, opts) {
-    console.log("last hour");
     if (opts.provider === "coingecko") {
       const baseUrl = `${COINGECKO_URL}/coins/${coingeckoId(
         symbol
