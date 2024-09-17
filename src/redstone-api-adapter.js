@@ -29,6 +29,7 @@ function fixHistoricalRedstoneProvider(opts) {
 
 export default {
   getPrice: async function (symbol, opts) {
+    // console.log({api: this.getApiData(symbol, opts)})
     if (opts.provider === "coingecko") {
       const geckoId = coingeckoId(symbol);
       const url = `${COINGECKO_URL}/simple/price?ids=${geckoId}&vs_currencies=${CURRENCY}&precision=2&include_last_updated_at=true`;
@@ -48,7 +49,14 @@ export default {
         .exec({ defaultProvider: opts.provider });
     }
   },
+  getApiData: async function (symbol, opts) {
+    const url = `http://localhost:9000/prices?provider=${opts.provider}&symbol=${symbol}&forceInflux=true&fromTimestamp=${opts.startDate}&toTimestamp=${opts.endDate}&interval=1`;
+    const result = (await axios.get(url)).data;
+
+    return result
+  },
   getHistoricalPrice: async function (symbol, opts) {
+    console.log({api: this.getApiData(symbol, opts)})
     if (opts.provider === "coingecko") {
       const from = (opts.startDate / 1000) | 0;
       const to = (opts.endDate / 1000) | 0;

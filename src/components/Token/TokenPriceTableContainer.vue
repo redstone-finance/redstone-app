@@ -258,10 +258,12 @@
           offset: this.offset,
         };
         if (this.isValidDate(this.startDate)) {
-          params.startDate = this.startDate;
+          console.log(this.startDate.getTime())
+          params.startDate = this.startDate.getTime();
         }
         if (this.isValidDate(this.endDate)) {
-          params.endDate = this.endDate;
+          console.log(this.endDate.getTime())
+          params.endDate = this.endDate.getTime();
         }
         const nextPrices = await redstoneAdapter.getHistoricalPrice(
           this.symbol,
