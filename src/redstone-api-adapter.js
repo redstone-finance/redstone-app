@@ -37,7 +37,7 @@ const makeConfigurableRequest = async (baseUrl, params = {}) => {
 };
 
 const getApiData = async function (symbol, opts) {
-  const baseUrl = "http://localhost:9000/prices";
+  const baseUrl = "https://api.redstone.finance/prices";
   let params = {
     provider: opts.provider,
     symbol: symbol,
