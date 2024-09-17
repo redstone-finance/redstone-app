@@ -37,7 +37,7 @@ const makeConfigurableRequest = async (baseUrl, params = {}) => {
 };
 
 const getApiData = async function (symbol, opts) {
-  const baseUrl = "https://api.redstone.finance/prices";
+  const baseUrl = "http://localhost:9000/prices";
   let params = {
     provider: opts.provider,
     symbol: symbol,
@@ -158,6 +158,11 @@ export default {
         .map((p) => priceData(symbol, provider, p[1], p[0]));
     } else {
       return await getApiData(symbol, { provider, daysCount });
+      // return await redstone
+      //   .query()
+      //   .symbol(symbol)
+      //   .forLastDays(daysCount)
+      //   .exec({ defaultProvider: provider });
     }
   },
   getAllPrices: async function (opts) {
