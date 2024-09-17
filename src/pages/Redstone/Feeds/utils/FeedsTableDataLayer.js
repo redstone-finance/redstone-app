@@ -176,7 +176,7 @@ export const getTokenImage = (token) => {
     idealMatchImg ||
     secondMatch || {
       name: "placeholder",
-      logoURI: "placeholder.png",
+      logoURI: "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
       token: "placeholder",
     }
   );
