@@ -1,5 +1,6 @@
 <template>
   <div class="sources-wrapper">
+    <h1 class="h6 text-black fw-bold text-dark">Redstone sources</h1>
     <b-table
       id="sources-table"
       stacked="md"

@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div>"
+    <h1 class="h6 text-black fw-bold text-dark">Redstone tokens</h1>
     <Loader v-if="loading" :class="'widget-loader'" :size="40"></Loader>
     <div v-else>
       <div class="token-tabs" ref="tabWrapper">
