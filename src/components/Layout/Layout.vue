@@ -28,7 +28,8 @@
         :swipe-options="{ direction: 'horizontal' }"
       >
         <transition name="router-animation">
-          <router-view />
+          <router-view v-if="$route.name !== 'Layout'"/>
+          <h1 v-else>Redstone Finance App</h1>
         </transition>
       </v-touch>
     </div>
