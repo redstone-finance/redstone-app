@@ -358,180 +358,182 @@
 <style lang="scss">
   @import "~@/styles/app";
 
-.price, .time {
-  color: $gray-750;
-}
-
-.tx-link {
-  font-size: 12px;
-}
-
-a.tx-link,
-.tx-link > .link {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  color: $gray-600;
-}
-
-a.tx-link {
-  color: var(--redstone-red-color);
-}
-
-.badge {
-  color: white;
-  display: flex !important;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 95px;
-  padding: 3px 10px;
-  border-radius: 5px;
-  margin-right: 8px;
-  height: 28px;
-
-  &.mining {
-    background: $gray-600;  
-  }
-
-  &.mined {
-    background: var(--redstone-red-color); 
-  }
-
-  .badge-text {
-    font-size: 14px;
-    font-weight: $font-weight-normal;
-  }
-
-  .pending-tx-loader-container {
-    img {
-      width: 20px;
-    }
-  }
-}
-
-.load-more-link-container {
-  display: flex;
-  justify-content:center;
-}
-
-.datepicker-container {
-  margin-right: 20px;
-  display: flex;
-
-  label {
-    font-size: 14px;
-    font-weight: $font-weight-thin;
-    text-align: left;
-    justify-content: left !important;
+  .price,
+  .time {
     color: $gray-750;
+  }
+
+  .tx-link {
+    font-size: 12px;
+  }
+
+  a.tx-link,
+  .tx-link > .link {
+    display: block;
     white-space: nowrap;
-    margin-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    color: $gray-600;
   }
 
-  @media (max-width: breakpoint-max(sm)) {
-    flex-wrap: wrap;
+  a.tx-link {
+    color: var(--redstone-red-color);
+  }
 
-    > label {
-      flex: 0 0 100%;
+  .badge {
+    color: white;
+    display: flex !important;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 95px;
+    padding: 3px 10px;
+    border-radius: 5px;
+    margin-right: 8px;
+    height: 28px;
+
+    &.mining {
+      background: $gray-600;
     }
-  }
 
-  .b-form-btn-label-control.form-control {
-    height: 35px;
-  }
+    &.mined {
+      background: var(--redstone-red-color);
+    }
 
-  .form-control.b-form-datepicker, .form-control.b-form-timepicker {
-    margin-right: 10px;
-    display: flex;
-  }
+    .badge-text {
+      font-size: 14px;
+      font-weight: $font-weight-normal;
+    }
 
-  .form-control {
-    display: inline-block;
-    width: auto;
-    vertical-align: middle;
-    background-color: transparent;
-    border: 1px solid $gray-450;
-  }
-
-  .b-form-btn-label-control {
-    flex-direction: row-reverse;
-
-    & > button {
-      padding: 0 10px 0 0;
-
-      svg {
-        fill: $gray-550;
+    .pending-tx-loader-container {
+      img {
+        width: 20px;
       }
     }
   }
 
-  .b-form-btn-label-control.form-control > .form-control {
-    word-break: normal;
-    white-space: nowrap;
-  }
-
-  .b-form-btn-label-control.form-control > label.form-control {
-    margin-top: 2px;
-    padding-left: 10px;
-    font-weight: $font-weight-soft-bold;
-  }
-}
-
-.b-time {
-  output {
+  .load-more-link-container {
+    display: flex;
     justify-content: center;
   }
-}
 
-.pagination-container {
-  margin-top: 10px;
-}
+  .datepicker-container {
+    margin-right: 20px;
+    display: flex;
 
-.price-table {
-  margin-top: 20px;
-  padding: 20px;
-}
+    label {
+      font-size: 14px;
+      font-weight: $font-weight-thin;
+      text-align: left;
+      justify-content: left !important;
+      color: $gray-750;
+      white-space: nowrap;
+      margin-right: 10px;
+    }
 
-.table-title {
-  font-size: 24px;
-  color: $navy;
-  font-weight: $font-weight-semi-bold;
-}
+    @media (max-width: breakpoint-max(sm)) {
+      flex-wrap: wrap;
 
-a.btn-dispute {
-  padding: 2px 10px 4px 11px;
-  border-radius: 7px;
-  border: solid 1px var(--redstone-red-color);
-  color: var(--redstone-red-color);
+      > label {
+        flex: 0 0 100%;
+      }
+    }
 
-  &.disabled {
-    border: solid 1px $gray-600;
-    color: $gray-600;
+    .b-form-btn-label-control.form-control {
+      height: 35px;
+    }
+
+    .form-control.b-form-datepicker,
+    .form-control.b-form-timepicker {
+      margin-right: 10px;
+      display: flex;
+    }
+
+    .form-control {
+      display: inline-block;
+      width: auto;
+      vertical-align: middle;
+      background-color: transparent;
+      border: 1px solid $gray-450;
+    }
+
+    .b-form-btn-label-control {
+      flex-direction: row-reverse;
+
+      & > button {
+        padding: 0 10px 0 0;
+
+        svg {
+          fill: $gray-550;
+        }
+      }
+    }
+
+    .b-form-btn-label-control.form-control > .form-control {
+      word-break: normal;
+      white-space: nowrap;
+    }
+
+    .b-form-btn-label-control.form-control > label.form-control {
+      margin-top: 2px;
+      padding-left: 10px;
+      font-weight: $font-weight-soft-bold;
+    }
   }
-}
 
-.b-form-datepicker {
-  .dropdown-menu {
-    left: -100px !important;
-  }
-}
-
-.b-form-timepicker {
-  .dropdown-menu {
-    left: -78px !important;
-  }
-}
-
-#prices-table {
-  td {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  .b-time {
+    output {
+      justify-content: center;
+    }
   }
 
-  th {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  .pagination-container {
+    margin-top: 10px;
   }
-}
+
+  .price-table {
+    margin-top: 20px;
+    padding: 20px;
+  }
+
+  .table-title {
+    font-size: 24px;
+    color: $navy;
+    font-weight: $font-weight-semi-bold;
+  }
+
+  a.btn-dispute {
+    padding: 2px 10px 4px 11px;
+    border-radius: 7px;
+    border: solid 1px var(--redstone-red-color);
+    color: var(--redstone-red-color);
+
+    &.disabled {
+      border: solid 1px $gray-600;
+      color: $gray-600;
+    }
+  }
+
+  .b-form-datepicker {
+    .dropdown-menu {
+      left: -100px !important;
+    }
+  }
+
+  .b-form-timepicker {
+    .dropdown-menu {
+      left: -78px !important;
+    }
+  }
+
+  #prices-table {
+    td {
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    th {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
 </style>

@@ -115,10 +115,10 @@
       &:has(#search-input:focus) {
         width: 90vw;
       }
-      #search-input{
+      #search-input {
         padding: 5px;
       }
-      .input-group-text{
+      .input-group-text {
         padding: 5px;
       }
 
@@ -132,7 +132,7 @@
         &:has(#search-input:focus) {
           width: 50vw;
         }
-        .input-group-text{
+        .input-group-text {
           padding: 5px 15px;
         }
       }
@@ -250,4 +250,3 @@ i.flaticon-chevron-back {
     }
   }
 }
-

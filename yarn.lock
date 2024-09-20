@@ -5639,6 +5639,14 @@ cron-parser@^4.9.0:
   dependencies:
     luxon "^3.2.1"
 
+<<<<<<< HEAD
+=======
+cronstrue@^2.50.0:
+  version "2.50.0"
+  resolved "https://registry.yarnpkg.com/cronstrue/-/cronstrue-2.50.0.tgz#eabba0f915f186765258b707b7a3950c663b5573"
+  integrity sha512-ULYhWIonJzlScCCQrPUG5uMXzXxSixty4djud9SS37DoNxDdkeRocxzHuAo4ImRBUK+mAuU5X9TSwEDccnnuPg==
+
+>>>>>>> origin
 cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -13031,9 +13039,9 @@ redstone-api@^0.4.12:
     lodash "^4.17.21"
     pako "^2.0.3"
 
-redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#0272d7b:
+redstone-monorepo-github@redstone-finance/redstone-oracles-monorepo#6e131af:
   version "0.0.2"
-  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/0272d7be240f078f3e938ad0ca2cd709c15cae29"
+  resolved "https://codeload.github.com/redstone-finance/redstone-oracles-monorepo/tar.gz/6e131af492cb237035bae09c43c0590ee4b4341f"
 
 redstone-oracles-smartweave-contracts@*:
   version "1.0.6"

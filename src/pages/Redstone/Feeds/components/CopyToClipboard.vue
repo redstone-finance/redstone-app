@@ -37,9 +37,7 @@
     },
     computed: {
       tooltipHtml() {
-        return this.isCopied
-          ? `${this.copiedText}`
-          : this.copyText;
+        return this.isCopied ? `${this.copiedText}` : this.copyText;
       },
     },
     methods: {

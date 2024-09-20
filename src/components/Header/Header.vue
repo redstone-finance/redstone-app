@@ -32,43 +32,17 @@
                   : ''
               "
             />
-              <template v-slot:append>
-                <b-input-group-text
-                  v-if="searchTerm"
-                  @click="resetSearch"
-                >
-                  <i class="fa fa-times"></i>
-                </b-input-group-text>
-              </template>
+            <template v-slot:append>
+              <b-input-group-text v-if="searchTerm" @click="resetSearch">
+                <i class="fa fa-times"></i>
+              </b-input-group-text>
+            </template>
           </b-input-group>
           <a href="javascript:window.history.back()" v-else>
             <i class="fa flaticon-chevron-back" />
           </a>
         </b-form-group>
       </b-form>
-    </b-nav>
-    <b-nav
-      id="use-buttons"
-      class="align-items-center flex-grow-1 justify-content-end"
-    >
-      <RouterLink
-        id="use-push-button"
-        :to="{ path: 'feeds' }"
-        href="https://docs.redstone.finance/docs/smart-contract-devs/price-feeds"
-      >
-        <b-button class="btn btn-inverted rounded-pill" variant="primary">
-          Use Push Model
-        </b-button>
-      </RouterLink>
-      <a
-        id="use-pull-button"
-        target="_blank"
-        href="https://docs.redstone.finance/docs/get-started/models/redstone-core"
-      >
-        <b-button class="btn btn-danger rounded-pill" variant="primary">
-          Use Pull Model
-        </b-button>
-      </a>
     </b-nav>
   </b-navbar>
 </template>
@@ -132,7 +106,7 @@
         this.toggleSidebar();
       },
       resetSearch() {
-        this.updateSearchTerm("")
+        this.updateSearchTerm("");
       },
       logout() {
         window.localStorage.setItem("authenticated", false);

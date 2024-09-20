@@ -92,15 +92,15 @@
       </template>
       <template #cell(feed)="{ item }">
         <img
-          :src="item.token_image?.imageName"
+          :src="item.token_image?.logoURI"
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <RouterLink :to="{name:'SingleFeed', params: { network: toUrlParam(item.network.name), token: toUrlParam(item.token)}}">{{ item.feed }}</RouterLink>
+        <span>{{ item.feed }}</span>
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
-         item.apiAnswer
+          item.apiAnswer
         }}</strong>
         <Loader v-else-if="item.loaders?.feedDataValue" class="feeds__loader" />
         <span v-else-if="item.answer">
@@ -117,7 +117,12 @@
           "
           class="feeds__loader"
         />
-        <span v-else class="feeds__timestamp">
+        <span
+          v-else
+          class="feeds__timestamp"
+          v-b-tooltip.hover
+          :title="item.heartbeatTitle"
+        >
           <span v-if="heartbeatIsNumber(item.heartbeat)">
             <to-date-counter :duration="item.heartbeat" />
           </span>
@@ -147,13 +152,11 @@
     parseToCurrency,
     heartbeatIsNumber,
     nearestCron,
-    toUrlParam
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
   import ToDateCounter from "./ToDateCounter.vue";
   import truncateString from "@/core/truncate";
-
   export default {
     components: {
       Loader,
@@ -201,7 +204,6 @@
       currentPage: Number,
     },
     methods: {
-      toUrlParam,
       truncateString,
       nearestCron,
       parseToCurrency,
@@ -209,7 +211,7 @@
       handleSort(ctx) {
         this.$emit("update:sort", ctx);
       },
-      onChange(value){
+      onChange(value) {
         this.$emit("change", value);
       },
       onFiltered(filteredItems) {
@@ -218,36 +220,33 @@
       customFilter(row, filters) {
         if (!filters) return true;
         const { selectedCryptos, selectedNetworks, searchTerm } = filters;
-
-        if (searchTerm) {
+        let matchesSearch = true;
+        if (searchTerm && searchTerm.trim() !== "") {
           const searchLower = searchTerm.toLowerCase();
-          return (
+          const tokenLower = row.feed ? row.feed.toLowerCase() : "";
+
+          matchesSearch =
             row.feed.toLowerCase().includes(searchLower) ||
             row.network.name.toLowerCase().includes(searchLower) ||
             (row.contract_address &&
-              row.contract_address.toLowerCase().includes(searchLower))
-          );
+              row.contract_address.toLowerCase().includes(searchLower)) ||
+            (row.feed_address &&
+              row.feed_address.toLowerCase().includes(searchLower)) ||
+            (row.feed && tokenLower.includes(searchLower));
+          return matchesSearch;
         }
 
         const cryptoMatch =
-          selectedCryptos.length === 0 ||
-          selectedCryptos.some((crypto) => {
-            const feedParts = row.feed.split("/");
-            return feedParts[0].toLowerCase() === crypto.toLowerCase();
-          });
-
+          selectedCryptos?.length === 0 || selectedCryptos?.includes(row.token);
         const networkMatch =
-          selectedNetworks.length === 0 ||
-          selectedNetworks.includes(row.network.id);
-
+          selectedNetworks?.length === 0 ||
+          selectedNetworks?.includes(row.network.id);
         return cryptoMatch && networkMatch;
-      }, 
+      },
     },
     computed: {
       ...mapState("feeds", ["relayersDetails"]),
-      ...mapGetters("feeds", [
-        "allLoadersComplete",
-      ]),
+      ...mapGetters("feeds", ["allLoadersComplete"]),
     },
   };
 </script>

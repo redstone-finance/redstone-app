@@ -1,5 +1,6 @@
 <template>
   <div class="providers-wrapper">
+    <h1 class="h6 text-black fw-bold text-dark">Redstone data services</h1>
     <b-row class="justify-content-center">
       <b-col
         cols="12"

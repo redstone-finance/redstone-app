@@ -1,17 +1,17 @@
 {
-  "ethereum": {
-    "rpcUrl": "https://rpc.flashbots.net/fast",
-    "explorerUrl": "https://etherscan.io",
-    "chainId": 1,
-    "name": "Ethereum Mainnet",
-    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.svg"
-  },
   "bnb": {
     "rpcUrl": "https://bsc-dataseed.binance.org/",
     "explorerUrl": "https://bscscan.com",
     "chainId": 56,
     "name": "BNB Chain",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/bnb.svg"
+  },
+  "ethereum": {
+    "rpcUrl": "https://rpc.flashbots.net/fast",
+    "explorerUrl": "https://etherscan.io",
+    "chainId": 1,
+    "name": "Ethereum Mainnet",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/eth.svg"
   },
   "arbitrum": {
     "rpcUrl": "https://arb1.arbitrum.io/rpc",
@@ -166,6 +166,13 @@
     "chainId": 223,
     "name": "B2 Network",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/b2.png"
+  },
+  "hemi": {
+    "rpcUrl": "https://testnet.rpc.hemi.network/rpc",
+    "explorerUrl": "https://testnet.explorer.hemi.xyz",
+    "chainId": 743111,
+    "name": "Hemi Sepolia",
+    "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/sepolia.jpeg"
   },
   "zkLink": {
     "rpcUrl": "https://rpc.zklink.io",

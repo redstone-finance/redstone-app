@@ -32,7 +32,7 @@
             <div class="crypto-name">
               <b-img
                 :title="crypto.name"
-                :src="crypto.imageName"
+                :src="crypto.logoURI"
                 :alt="crypto.name"
                 width="20"
                 height="20"
@@ -222,7 +222,7 @@
     z-index: 999;
   }
 
-  .dropdown.show {
+  .crypto-dropdown-container .dropdown.show {
     button {
       background: var(--redstone-red-color);
       border: 2px solid darken(#fd627a, $amount: 15) !important;
@@ -232,6 +232,9 @@
   .crypto-name {
     font-size: 14px;
     font-weight: 300;
+    img{
+      border-radius: 50%;
+    }
   }
 
   .dropdown {

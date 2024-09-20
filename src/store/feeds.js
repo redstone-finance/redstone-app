@@ -11,7 +11,6 @@ function stringToBytes32(str) {
   hexString = hexString.padEnd(64, "0");
   return "0x" + hexString;
 }
-
 const RELAYERS_SCHEMA_URL =
   "https://p6s64pjzub.execute-api.eu-west-1.amazonaws.com/dev/execute";
 const RELAYERS_VALUES_URL = "https://api.redstone.finance/feeds-answers-update";
@@ -72,7 +71,7 @@ export const relayerMapper = (
         layerId: key,
         timestamp: keyFeedTimestamp || null,
         value: keyFeedValue || null,
-        loaders: relayersDetails?.[itemKey]?.loaders,
+        loaders: relayersDetails[itemKey]?.loaders,
         apiValues: relayersValues?.[key]?.[feedId],
       };
     });
@@ -111,16 +110,15 @@ export default {
   getters: {
     allLoadersComplete: (state) => {
       return Object.values(state.relayersDetails).every((relayer) => {
-        return Object.values(relayer?.loaders).every(
+        return Object.values(relayer.loaders).every(
           (loader) => loader === false
         );
       });
     },
     getSmartContractByLayerId: (state) => (layerId) => {
       const contract = state.smartContracts[layerId];
-      if (contract == null) {
-        return null;
-      }
+      if (contract == null)
+        throw Error("No contract assigned to layer id:", layerId);
       return contract;
     },
     hasMultipleFeeds: (state) => (layerId) => {
@@ -157,7 +155,7 @@ export default {
       try {
         var id = await api.getDataFeedId();
       } catch (error) {
-        // console.log('error, id, single', layerId, error)
+        console.warn("Single data feed id contract fetch error", layerId);
       }
       try {
         var ids = await api.getDataFeedIds();
@@ -176,8 +174,8 @@ export default {
     },
     async fetchBlockTimeStampMultifeed({ commit, state }, { layerId, feedId }) {
       if (
-        state.relayersDetails[`${layerId}_${feedId}`]?.loaders
-          .blockTimestamp === false
+        state.relayersDetails[`${layerId}_${feedId}`].loaders.blockTimestamp ===
+        false
       )
         return;
       const method =
@@ -197,7 +195,7 @@ export default {
           });
         })
         .catch((error) => {
-          // console.log("timestamp error", layerId, error);
+          console.warn("Contract timestamp fetching error", layerId);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
@@ -211,7 +209,7 @@ export default {
       { layerId, feedId }
     ) {
       if (
-        state.relayersDetails[`${layerId}_${feedId}`]?.loaders.feedDataValue ===
+        state.relayersDetails[`${layerId}_${feedId}`].loaders.feedDataValue ===
         false
       )
         return;
@@ -225,7 +223,7 @@ export default {
           });
         })
         .catch((error) => {
-          // console.log("timestamp error", layerId, error);
+          console.warn("Contract timestamp fetching error", layerId);
         })
         .finally(() => {
           this.dispatch("feeds/disableLoader", {
@@ -241,6 +239,7 @@ export default {
       Object.keys(state.relayerSchema).forEach((layerId) => {
         Object.keys(state.relayerSchema[layerId].priceFeeds).forEach((key) => {
           Vue.set(state.relayersDetails, `${layerId}_${key}`, {
+            feedId: null,
             blockTimestamp: null,
             dataFeed: null,
             loaders: {
@@ -263,10 +262,10 @@ export default {
         const { data } = await axios.get(RELAYERS_VALUES_URL);
         commit("assignRelayerValues", data);
       } catch (error) {
-        console.log({ error });
+        console.warn("Relayers fetch error");
       }
     },
-    async initSingleContract({ state }, { layerId, feedId }) {
+    async initSingleContract({ state }, layerId, feedId) {
       await this.dispatch("feeds/fetchRelayerSchema");
       await this.dispatch("feeds/createSmartContract", {
         layerId: layerId,
@@ -280,13 +279,10 @@ export default {
           feedId,
         });
       } else {
-        await this.dispatch("feeds/fetchBlockTimeStampMultifeed", {
-          layerId,
-          feedId,
-        });
+        await this.dispatch("feeds/fetchBlockTimeStamp", layerId);
       }
 
-      await this.dispatch("feeds/fetchValueForDataFeedMultifeed", {
+      await this.dispatch("feeds/fetchValueForDataFeed", {
         layerId: layerId,
         feedId: feedId,
       });

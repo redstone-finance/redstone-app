@@ -283,7 +283,7 @@
     padding: 0 !important;
   }
 
-  .dropdown.show {
+  .crypto-dropdown-container .dropdown.show {
     button {
       background: var(--redstone-red-color) !important;
       border: 2px solid darken(#fd627a, $amount: 15) !important;

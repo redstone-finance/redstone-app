@@ -1,6 +1,6 @@
 {
   "name": "redstone-app",
-  "version": "2.1.7",
+  "version": "2.2.1",
   "private": true,
   "scripts": {
     "serve": "NODE_OPTIONS=--openssl-legacy-provider vue-cli-service serve --port 3000",
@@ -22,8 +22,8 @@
     "bootstrap-vue": "2.21.2",
     "cache-loader": "^4.1.0",
     "chart.js": "2",
-    "chartjs-plugin-zoom": "0.7.7",
     "cron-parser": "^4.9.0",
+    "cronstrue": "^2.50.0",
     "css-loader": "^1.0.1",
     "date-fns": "^3.6.0",
     "dateformat": "^4.5.1",
@@ -41,7 +41,7 @@
     "mini-css-extract-plugin": "^1.6.0",
     "npm": "^7.17.0",
     "redstone-api": "^0.4.12",
-    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#0272d7b",
+    "redstone-monorepo-github": "redstone-finance/redstone-oracles-monorepo#6e131af",
     "redstone-protocol": "^1.0.5",
     "redstone-sdk": "^1.6.1",
     "rickshaw": "1.7.1",
