@@ -4,14 +4,14 @@
       <dl class="stats-grid">
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
-          <dd class="stat-value" v-if="currentChartData">
+          <dd class="stat-value" v-if="feedData">
             <strong
               >{{
                 currenciesMap[feedData?.token.split("/")[1]] ||
                 feedData.token.split("/")[1] ||
                 "$"
               }}{{
-                currentChartData[currentChartData.length - 1].value
+                feedData?.apiValues?.value
               }}</strong
             >
           </dd>
