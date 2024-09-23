@@ -32,7 +32,7 @@
         </div>
         <div class="stat-item">
           <dt class="stat-title">Symbol</dt>
-          <dd class="stat-value">{{ feedData?.token }}</dd>
+          <dd class="stat-value">{{ feedData?.feed }}</dd>
         </div>
         <div class="stat-item">
           <dt class="stat-title">Deviation threshold</dt>
