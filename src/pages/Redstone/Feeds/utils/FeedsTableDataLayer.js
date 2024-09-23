@@ -50,6 +50,7 @@ export const mapFeedsData = (storeFeedsArray) => {
       relayerId: item.layerId,
       feed_address: item.feedAddress,
       loaders: item.loaders,
+      heartbeatInterval: resolveTimeSinceLastUpdateInMilliseconds(item),
       apiValues: item.apiValues,
       contractAnswer: parseToCurrency(
         parseToDecimal(item.value),
@@ -243,7 +244,7 @@ const heartbeatTitle = (item) => {
   if (crons) {
     return crons.map((cron) => cronstrue.toString(cron)).join(", ");
   } else {
-    return "Heartbeat: " + msToTime(heartbeat);
+    return msToTime(heartbeat);
   }
 };
 

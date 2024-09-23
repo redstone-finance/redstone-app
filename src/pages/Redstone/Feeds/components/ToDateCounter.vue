@@ -1,37 +1,27 @@
 <template>
   <div 
-    class="relative" 
-    style="width: 50px; height: 50px;"
+    class="timer-container"
     v-b-tooltip.hover
-    :title="formattedTime"
+    :title="formattedTime || '0s until heartbeat'"
   >
-    <svg class="w-full h-full" viewBox="0 0 50 50">
+    <svg class="timer-svg" viewBox="0 0 50 50">
       <circle
-        class="text-gray-200"
-        stroke-width="5"
-        stroke="currentColor"
-        fill="transparent"
+        class="timer-circle-bg"
         r="20"
         cx="25"
         cy="25"
       />
       <circle
-        class="text-blue-600 transition-all duration-1000 ease-linear"
-        stroke-width="5"
+        class="timer-circle-progress"
         :stroke-dasharray="circumference"
         :stroke-dashoffset="strokeDashoffset"
-        stroke-linecap="round"
-        stroke="currentColor"
-        fill="transparent"
         r="20"
         cx="25"
         cy="25"
-        transform="rotate(-90 25 25)"
       />
       <path
-        d="M25 35.7l-1.5-1.4c-5.3-4.8-8.8-8-8.8-11.9 0-3.2 2.5-5.7 5.7-5.7 1.8 0 3.5.8 4.6 2.1 1.1-1.3 2.8-2.1 4.6-2.1 3.2 0 5.7 2.5 5.7 5.7 0 3.9-3.5 7.1-8.8 11.9L25 35.7z"
-        :class="['heart-icon', { 'heartbeat': isFinished }]"
-        fill="currentColor"
+        d="M25 36.7l-1.5-1.4c-5.3-4.8-8.8-8-8.8-11.9 0-3.2 2.5-5.7 5.7-5.7 1.8 0 3.5 0.8 4.6 2.1 1.1-1.3 2.8-2.1 4.6-2.1 3.2 0 5.7 2.5 5.7 5.7 0 3.9-3.5 7.1-8.8 11.9L25 36.7z"
+        :class="['heart-icon', { 'heart-icon--beating': isBeating }]"
       />
     </svg>
   </div>
@@ -41,8 +31,13 @@
 import { intervalToDuration, formatDuration } from 'date-fns'
 
 export default {
+  name: 'ToDateCounter',
   props: {
     duration: {
+      type: Number,
+      required: true,
+    },
+    interval: {
       type: Number,
       required: true,
     },
@@ -51,9 +46,10 @@ export default {
     return {
       remainingTime: 0,
       radius: 20,
-      isFinished: false,
+      isBeating: false,
       timerInterval: null,
-      restartTimeout: null,
+      beatTimeout: null,
+      isFirstCycle: true,
     };
   },
   computed: {
@@ -61,85 +57,122 @@ export default {
       return 2 * Math.PI * this.radius;
     },
     strokeDashoffset() {
-      return this.circumference * (1 - (this.duration - this.remainingTime) / this.duration);
+      const totalTime = this.isFirstCycle ? this.interval : this.interval;
+      const elapsedTime = totalTime - this.remainingTime;
+      const progress = elapsedTime / totalTime;
+      return this.circumference * (1 - progress);
     },
     formattedTime() {
       const duration = intervalToDuration({ start: 0, end: this.remainingTime });
-      return formatDuration(duration, { format: ['hours', 'minutes', 'seconds'] });
+      const format = ['seconds'];
+      if (duration.minutes > 0 || duration.hours > 0) format.unshift('minutes');
+      if (duration.hours > 0) format.unshift('hours');
+      return formatDuration(duration, { format, zero: true });
     },
   },
   watch: {
     duration: {
       immediate: true,
-      handler(newDuration) {
-        this.startTimer(newDuration);
+      handler() {
+        this.startTimer();
+      },
+    },
+    interval: {
+      handler() {
+        if (!this.isFirstCycle) {
+          this.startTimer();
+        }
       },
     },
   },
   methods: {
-    startTimer(duration) {
+    startTimer() {
       this.clearTimers();
-      this.remainingTime = duration;
-      this.isFinished = false;
-
-      this.timerInterval = setInterval(() => {
+      if (this.isFirstCycle) {
+        this.remainingTime = this.duration;
+      } else {
+        this.remainingTime = this.interval;
+      }
+      const tick = () => {
         if (this.remainingTime > 0) {
-          this.remainingTime = Math.max(0, this.remainingTime - 1000);
+          this.remainingTime = Math.max(0, this.remainingTime - 100);
+          this.timerInterval = setTimeout(tick, 100);
         } else {
           this.finishTimer();
         }
-      }, 1000);
+      };
+
+      tick();
+    },
+    startBeat() {
+      this.isBeating = true;
+      this.beatTimeout = setTimeout(() => {
+        this.isBeating = false;
+      }, 1500);
     },
     finishTimer() {
-      clearInterval(this.timerInterval);
-      this.isFinished = true;
-      
-      // Restart the timer after 3 seconds
-      this.restartTimeout = setTimeout(() => {
-        this.startTimer(this.duration);
-      }, 3000);
+      this.startBeat();
+      this.isFirstCycle = false;
+      this.$nextTick(() => {
+        this.startTimer();
+      });
     },
     clearTimers() {
       if (this.timerInterval) {
-        clearInterval(this.timerInterval);
-      }
-      if (this.restartTimeout) {
-        clearTimeout(this.restartTimeout);
+        clearTimeout(this.timerInterval);
       }
     },
   },
   beforeUnmount() {
     this.clearTimers();
+    if (this.beatTimeout) {
+        clearTimeout(this.beatTimeout);
+      }
   },
 };
 </script>
 
 <style scoped>
-.text-gray-200 {
-  color: #e5e7eb;
+.timer-container {
+  position: relative;
+  width: 30px;
+  height: 30px;
 }
-.text-blue-600 {
-  color: #2563eb;
+
+.timer-svg {
+  width: 100%;
+  height: 100%;
 }
-.transition-all {
-  transition-property: all;
+
+.timer-circle-bg {
+  stroke: #e5e7eb;
+  stroke-width: 3;
+  fill: transparent;
 }
-.duration-1000 {
-  transition-duration: 1000ms;
-}
-.ease-linear {
-  transition-timing-function: linear;
-}
-.heart-icon {
-  color: #ef4444;
+
+.timer-circle-progress {
+  stroke: rgb(80, 80, 80);
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: transparent;
+  transform: rotate(-90deg);
   transform-origin: center;
-  transition: transform 0.3s ease;
+  transition: stroke-dashoffset 100ms linear;
 }
-.heartbeat {
-  animation: heartbeat 1.5s ease-in-out infinite;
+
+.heart-icon {
+  fill: #9ca3af;
+  transform-origin: center;
+  transition: transform 0.3s ease, fill 0.3s ease;
 }
+
+.heart-icon--beating {
+  fill: var(--redstone-red-color);
+  animation: heartbeat 1.5s ease-in-out;
+}
+
 @keyframes heartbeat {
-  0% { transform: scale(1); }
+  0%, 100% { transform: scale(1); }
   14% { transform: scale(1.3); }
   28% { transform: scale(1); }
   42% { transform: scale(1.3); }

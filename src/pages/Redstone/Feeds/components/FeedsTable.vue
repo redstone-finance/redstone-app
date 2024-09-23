@@ -96,7 +96,16 @@
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <RouterLink :to="{name:'SingleFeed', params: { network: toUrlParam(item.network.name), token: toUrlParam(item.token)}}">{{ item.feed }}</RouterLink>
+        <RouterLink
+          :to="{
+            name: 'SingleFeed',
+            params: {
+              network: toUrlParam(item.network.name),
+              token: toUrlParam(item.token),
+            },
+          }"
+          >{{ item.feed }}</RouterLink
+        >
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
@@ -117,21 +126,20 @@
           "
           class="feeds__loader"
         />
-        <span
-          v-else
-          class="feeds__timestamp"
-          v-b-tooltip.hover
-          :title="item.heartbeatTitle"
-        >
+        <span v-else class="feeds__timestamp">
           <span v-if="heartbeatIsNumber(item.heartbeat)">
-            <to-date-counter :duration="item.heartbeat" />
+            <div style="display: flex; align-items: center; justify-content: center;">
+              <span> {{ item.heartbeatTitle }}</span>
+              <to-date-counter
+                class="ml-2"
+                :interval="item.heartbeatInterval"
+                :duration="item.heartbeat"
+              />
+            </div>
           </span>
           <div v-else>
             <span style="cursor: pointer" :id="`cron-trigger-${item.layer_id}`">
-              <to-date-counter
-                class="d-inline"
-                :duration="nearestCron(item.heartbeat)"
-              />
+              {{item.heartbeatTitle}}
             </span>
           </div>
         </span>
@@ -152,7 +160,7 @@
     parseToCurrency,
     heartbeatIsNumber,
     nearestCron,
-    toUrlParam
+    toUrlParam,
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
