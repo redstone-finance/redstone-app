@@ -5,7 +5,7 @@ import {
   timeUntilDate,
   findNearestCronDate,
 } from "@/core/timeHelpers";
-import { getUnixTime, intervalToDuration, formatDuration } from "date-fns";
+import { intervalToDuration, formatDuration } from "date-fns";
 import cronstrue from "cronstrue";
 import networks from "@/data/networks.json";
 import tokens from "@/config/tokens.json";
@@ -16,6 +16,9 @@ export const images = Object.keys(tokens).map((token) => ({
 }));
 
 const excludedFeeds = [{feed: 'ETHx', chainId: 1}]
+
+export const toUrlParam = (string) =>
+  string.toLowerCase().replace(" ", "-").replace("/", "--");
 
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];

@@ -96,7 +96,7 @@
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <span>{{ item.feed }}</span>
+        <RouterLink :to="{name:'SingleFeed', params: { network: toUrlParam(item.network.name), token: toUrlParam(item.token)}}">{{ item.feed }}</RouterLink>
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
@@ -152,6 +152,7 @@
     parseToCurrency,
     heartbeatIsNumber,
     nearestCron,
+    toUrlParam
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
@@ -204,6 +205,7 @@
       currentPage: Number,
     },
     methods: {
+      toUrlParam,
       truncateString,
       nearestCron,
       parseToCurrency,
