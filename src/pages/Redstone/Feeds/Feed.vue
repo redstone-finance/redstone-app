@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="feed-details">
-      {{ feedData.token }}
       <dl class="stats-grid">
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
