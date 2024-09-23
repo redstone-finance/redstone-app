@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="feed-details">
+      {{ feedData.token }}
       <dl class="stats-grid">
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
@@ -38,16 +39,38 @@
           <dt class="stat-title">Deviation threshold</dt>
           <dd class="stat-value">{{ feedData?.deviation }}</dd>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" v-if="feedData">
           <dt class="stat-title">Heartbeat</dt>
           <dd class="stat-value">
             <i class="fa fa-heartbeat"></i>
-            <HeartbeatTimer
-              v-if="feedData?.heartbeat"
-              :isLoading="feedData.loaders?.blockTimestamp"
-              :heartbeat="feedData?.heartbeat"
-              :layerId="feedData?.token"
+            <Loader
+              v-if="
+                feedData?.loaders?.blockTimestamp &&
+                feedData?.apiValues?.timestamp == null
+              "
+              class="feeds__loader"
             />
+            <span
+              v-else
+              class="feeds__timestamp"
+              v-b-tooltip.hover
+              :title="feedData?.heartbeatTitle"
+            >
+              <span v-if="heartbeatIsNumber(feedData?.heartbeat)">
+                <to-date-counter :duration="feedData?.heartbeat" />
+              </span>
+              <div v-else>
+                <span
+                  style="cursor: pointer"
+                  :id="`cron-trigger-${feedData?.layer_id}`"
+                >
+                  <to-date-counter
+                    class="d-inline"
+                    :duration="nearestCron(feedData?.heartbeat)"
+                  />
+                </span>
+              </div>
+            </span>
           </dd>
         </div>
       </dl>
@@ -97,11 +120,13 @@
   import { mapActions, mapGetters, mapState } from "vuex";
   import LayerChart from "./components/LayerChart";
   import ContractAddress from "./components/ContractAddress.vue";
+  import ToDateCounter from "./components/ToDateCounter.vue";
   import {
     mapFeedsData,
     parseToCurrency,
     toUrlParam,
     findNetworkName,
+    heartbeatIsNumber
   } from "./utils/FeedsTableDataLayer";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import Loader from "./../../../components/Loader/Loader.vue";
@@ -115,6 +140,7 @@
       TimestampWithLoader,
       HeartbeatTimer,
       Loader,
+      ToDateCounter
     },
     data() {
       return {
@@ -135,17 +161,23 @@
       };
     },
     async mounted() {
+      await this.fetchRelayerValues();
       await this.fetchRelayerSchema();
       await this.initializeData();
     },
     methods: {
       parseToCurrency,
+      heartbeatIsNumber,
       hexToPrice(hex) {
         let decimalValue = parseInt(hex, 16);
         let price = decimalValue / 100000000;
         return price;
       },
-      ...mapActions("feeds", ["initSingleContract", "fetchRelayerSchema"]),
+      ...mapActions("feeds", [
+        "initSingleContract",
+        "fetchRelayerSchema",
+        "fetchRelayerValues",
+      ]),
       async fetchChartData() {
         if (this.rawChartData) {
           return this.rawChartData;
