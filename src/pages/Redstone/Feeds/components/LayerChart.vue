@@ -20,6 +20,7 @@
 <script>
   import Chart from "chart.js";
   import { isValid, startOfDay, subDays, subMonths, parseISO } from "date-fns";
+  import { currencySymbolMap } from "./../utils/FeedsTableDataLayer";
   const crosshairPlugin = {
     afterDatasetsDraw: function (chart) {
       if (chart.tooltip._active && chart.tooltip._active.length) {
@@ -76,6 +77,10 @@
       },
       duplicatedRanges: {
         type: Array,
+        required: true,
+      },
+      denomination: {
+        type: String,
         required: true,
       },
     },
@@ -216,7 +221,7 @@
             bodyFontStyle: "normal",
             bodyFontColor: "#404040",
             backgroundColor: "rgba(254, 254, 254, 1)",
-            borderColor: '#fd627a',
+            borderColor: "#fd627a",
             borderWidth: 1,
             titleFontSize: 14,
             titleFontStyle: "bold",
@@ -279,6 +284,9 @@
                   beginAtZero: false,
                   suggestedMin: minValue - padding,
                   suggestedMax: maxValue + padding,
+                  callback: (value) => {
+                    return `${currencySymbolMap[this.denomination] || this.denomination} ${value.toFixed(2)}`;
+                  },
                 },
               },
             ],

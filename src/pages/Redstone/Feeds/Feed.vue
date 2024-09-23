@@ -5,14 +5,10 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value" v-if="feedData">
+            <span>{{ currencySymbolMap[feedData?.denomination] || feedData.denomination
+            }}</span>
             <strong
-              >{{
-                currenciesMap[feedData?.token.split("/")[1]] ||
-                feedData.token.split("/")[1] ||
-                "$"
-              }}{{
-                feedData?.apiValues?.value
-              }}</strong
+              >{{ feedData?.apiValues?.value }}</strong
             >
           </dd>
         </div>
@@ -78,6 +74,7 @@
           v-if="currentChartData && !isLoading"
           :data="currentChartData"
           :range="currentRange"
+          :denomination="feedData.denomination"
           @range-change="handleRangeChange"
           :duplicated-ranges="duplicateRanges.flat()"
           :currency="getCurrency(feedData.token)"
@@ -125,7 +122,8 @@
     parseToCurrency,
     toUrlParam,
     findNetworkName,
-    heartbeatIsNumber
+    heartbeatIsNumber,
+    currencySymbolMap
   } from "./utils/FeedsTableDataLayer";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import Loader from "./../../../components/Loader/Loader.vue";
@@ -139,7 +137,7 @@
       TimestampWithLoader,
       HeartbeatTimer,
       Loader,
-      ToDateCounter
+      ToDateCounter,
     },
     data() {
       return {
@@ -152,11 +150,7 @@
         currentRange: "1w",
         duplicateRanges: [],
         rawChartData: null,
-        currenciesMap: {
-          ETH: "Ξ",
-          EUR: "€",
-          USD: "$",
-        },
+        currencySymbolMap
       };
     },
     async mounted() {
