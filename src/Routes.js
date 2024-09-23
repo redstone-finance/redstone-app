@@ -18,20 +18,22 @@ import store from "./store";
 Vue.use(Router);
 
 const router = new Router({
+  mode: 'history',
+  strict: true, // This enforces trailing slashes
   routes: [
     {
-      path: "/error",
+      path: "/error/",
       name: "Error",
       component: ErrorPage,
     },
     {
-      path: "/app",
+      path: "/app/",
       name: "Layout",
       component: Layout,
       children: [
         // Redstone
         {
-          path: "tokens",
+          path: "tokens/",
           name: "TokensPage",
           component: Tokens,
           meta: {
@@ -39,28 +41,28 @@ const router = new Router({
           },
         },
         {
-          path: "token/:symbol",
+          path: "token/:symbol/",
           name: "TokenPage",
           component: Token,
         },
         {
-          path: "sources",
+          path: "sources/",
           name: "SourcesPage",
           component: Sources,
         },
         {
-          path: "source/:sourceId",
+          path: "source/:sourceId/",
           name: "SourcePage",
           component: Source,
         },
         {
-          path: "feeds",
+          path: "feeds/",
           name: "Feeds list",
           component: Feeds,
           meta: { showSearchInputInNavbar: true },
         },
         {
-          path: "data-services",
+          path: "data-services/",
           name: "DataServicesPage",
           component: DataServices,
           meta: {
@@ -68,7 +70,7 @@ const router = new Router({
           },
         },
         {
-          path: "data-services/:id",
+          path: "data-services/:id/",
           name: "DataServicePage",
           component: DataService,
         },
@@ -77,13 +79,25 @@ const router = new Router({
   ],
 });
 
+// Redirect to trailing slash if missing
 router.beforeEach((to, from, next) => {
-  if (to.meta.showSearchInputInNavbar) {
-    store.dispatch("layout/setSearchInputVisibilityInHeader", true);
+  if (!to.path.endsWith('/') && to.path.length > 1) {
+    const { hash, params, query } = to;
+    next({
+      path: `${to.path}/`,
+      hash,
+      params,
+      query
+    });
   } else {
-    store.dispatch("layout/setSearchInputVisibilityInHeader", false);
+    // Existing logic for search input visibility
+    if (to.meta.showSearchInputInNavbar) {
+      store.dispatch("layout/setSearchInputVisibilityInHeader", true);
+    } else {
+      store.dispatch("layout/setSearchInputVisibilityInHeader", false);
+    }
+    next();
   }
-  next();
 });
 
 export default router;

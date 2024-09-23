@@ -1,9 +1,5 @@
 const path = require('path');
-
-let publicPath = process.env.NODE_ENV === 'production' ? './' : './';
-
 module.exports = {
-  publicPath,
   productionSourceMap: true,
   chainWebpack: config => {
     // Existing vue-loader configuration
