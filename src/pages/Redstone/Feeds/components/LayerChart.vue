@@ -326,6 +326,9 @@
                 return `  Answer: ${this.currency} ${value.toFixed(5)}`;
               },
             },
+            filter: function (tooltipItem, data) {
+            return tooltipItem.datasetIndex === 0;
+          },
           },
           hover: {
             mode: "index",
