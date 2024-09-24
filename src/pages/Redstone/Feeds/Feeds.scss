@@ -287,6 +287,16 @@
   margin-left: 0.5rem;
 }
 
+.cron-trigger {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  > span {
+    font-size: 12px;
+  }
+}
+
 .cron-schedule {
   border: 1px solid #d8d8d8;
   border-radius: 5px;

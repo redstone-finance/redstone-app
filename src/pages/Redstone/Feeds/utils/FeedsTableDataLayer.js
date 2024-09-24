@@ -163,18 +163,26 @@ const findExplorer = (networkId) => {
 };
 
 const msToTime = (ms) => {
-  const duration = intervalToDuration({ start: 0, end: ms });
-  const { minutes } = duration;
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-  const totalHours = Math.floor(ms / (1000 * 60 * 60));
-
-  if (totalHours > 0) {
+  if (hours > 0) {
     return formatDuration(
-      { hours: totalHours, minutes },
+      { hours, minutes },
       { format: ["hours", "minutes"] }
     );
+  } else if (minutes > 0) {
+    return formatDuration(
+      { minutes, seconds },
+      { format: ["minutes", "seconds"] }
+    );
   } else {
-    return formatDuration({ minutes }, { format: ["minutes"] });
+    return formatDuration(
+      { seconds },
+      { format: ["seconds"] }
+    );
   }
 };
 

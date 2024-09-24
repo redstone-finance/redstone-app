@@ -27,7 +27,7 @@
         <i
           class="fa fa-info-circle"
           v-b-tooltip.hover
-          title="The system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
+          title="Deviation threshold - the system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
         ></i>
       </template>
       <template #head(timestamp)="data">
@@ -128,7 +128,13 @@
         />
         <span v-else class="feeds__timestamp">
           <span v-if="heartbeatIsNumber(item.heartbeat)">
-            <div style="display: flex; align-items: center; justify-content: center;">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
               <span> {{ item.heartbeatTitle }}</span>
               <to-date-counter
                 class="ml-2"
@@ -138,8 +144,9 @@
             </div>
           </span>
           <div v-else>
-            <span style="cursor: pointer" :id="`cron-trigger-${item.layer_id}`">
-              {{item.heartbeatTitle}}
+            <span class="cron-trigger"  :id="`cron-trigger-${item.layer_id}`">
+              <span>Cron: {{ item.heartbeatTitle }}</span>
+              <cron-counter :crons="item.heartbeat" class="mt-2" />
             </span>
           </div>
         </span>
@@ -165,11 +172,13 @@
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
   import ToDateCounter from "./ToDateCounter.vue";
+  import CronCounter from "./CronCounter.vue";
   import truncateString from "@/core/truncate";
   export default {
     components: {
       Loader,
       CopyToClipboard,
+      CronCounter,
       ToDateCounter,
     },
     data() {
@@ -198,8 +207,8 @@
           },
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "answer", label: "Answer", sortable: false },
-          { key: "deviation", label: "Deviation threshold ", sortable: false },
-          { key: "heartbeat", label: "Heartbeat", sortable: false },
+          { key: "deviation", label: "Deviation", sortable: false, thStyle: { width: "120px" } },
+          { key: "heartbeat", label: "Heartbeat", sortable: false, thStyle: { width: "180px" }, },
         ],
       };
     },
