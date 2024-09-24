@@ -256,11 +256,6 @@
       font-weight: 300;
     }
   }
-  span{
-   position: relative;
-   top: 4px;
-   color: gray;
-  }
   img {
     box-shadow: none !important;
     border: 0;
@@ -314,3 +309,7 @@
 }
 
 
+.cron-trigger{
+  flex-direction: row;
+  justify-items: center;
+}

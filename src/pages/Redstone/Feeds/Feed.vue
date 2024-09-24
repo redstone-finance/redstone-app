@@ -5,11 +5,10 @@
         <div class="stat-item">
           <dt class="stat-title">Answer</dt>
           <dd class="stat-value" v-if="feedData">
-            <span>{{ currencySymbolMap[feedData?.denomination] || feedData.denomination
+            <span>{{
+              currencySymbolMap[feedData?.denomination] || feedData.denomination
             }}</span>
-            <strong
-              >{{ feedData?.apiValues?.value }}</strong
-            >
+            <strong>{{ feedData?.apiValues?.value }}</strong>
           </dd>
         </div>
         <div class="stat-item">
@@ -37,7 +36,6 @@
         <div class="stat-item" v-if="feedData">
           <dt class="stat-title">Heartbeat</dt>
           <dd class="stat-value">
-            <i class="fa fa-heartbeat"></i>
             <Loader
               v-if="
                 feedData?.loaders?.blockTimestamp &&
@@ -48,21 +46,31 @@
             <span
               v-else
               class="feeds__timestamp"
-              v-b-tooltip.hover
-              :title="feedData?.heartbeatTitle"
             >
-              <span v-if="heartbeatIsNumber(feedData?.heartbeat)">
-                <to-date-counter :duration="feedData?.heartbeat" />
+              <span v-if="heartbeatIsNumber(feedData.heartbeat)">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span> {{ feedData.heartbeatTitle }}</span>
+                  <to-date-counter
+                  style="position: relative; top"
+                    class="ml-2"
+                    :interval="feedData.heartbeatInterval"
+                    :duration="feedData.heartbeat"
+                  />
+                </div>
               </span>
               <div v-else>
                 <span
-                  style="cursor: pointer"
-                  :id="`cron-trigger-${feedData?.layer_id}`"
+                  class="cron-trigger"
+                  :id="`cron-trigger-${feedData.layer_id}`"
                 >
-                  <to-date-counter
-                    class="d-inline"
-                    :duration="nearestCron(feedData?.heartbeat)"
-                  />
+                  <span>Cron: {{ feedData.heartbeatTitle }}</span>
+                  <cron-counter :crons="feedData.heartbeat" class="ml-2" />
                 </span>
               </div>
             </span>
@@ -117,13 +125,14 @@
   import LayerChart from "./components/LayerChart";
   import ContractAddress from "./components/ContractAddress.vue";
   import ToDateCounter from "./components/ToDateCounter.vue";
+  import CronCounter from "./components/CronCounter.vue";
   import {
     mapFeedsData,
     parseToCurrency,
     toUrlParam,
     findNetworkName,
     heartbeatIsNumber,
-    currencySymbolMap
+    currencySymbolMap,
   } from "./utils/FeedsTableDataLayer";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import Loader from "./../../../components/Loader/Loader.vue";
@@ -138,6 +147,7 @@
       HeartbeatTimer,
       Loader,
       ToDateCounter,
+      CronCounter,
     },
     data() {
       return {
@@ -150,7 +160,7 @@
         currentRange: "1w",
         duplicateRanges: [],
         rawChartData: null,
-        currencySymbolMap
+        currencySymbolMap,
       };
     },
     async mounted() {

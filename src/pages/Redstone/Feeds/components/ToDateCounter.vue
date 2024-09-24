@@ -2,7 +2,7 @@
   <div 
     class="timer-container"
     v-b-tooltip.hover
-    :title="formattedTime || '0s until heartbeat'"
+    :title="formattedTime || 'Heartbeat'"
   >
     <svg class="timer-svg" viewBox="0 0 50 50">
       <circle

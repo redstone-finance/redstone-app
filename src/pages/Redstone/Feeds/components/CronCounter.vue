@@ -2,7 +2,7 @@
   <div 
     class="timer-container"
     v-b-tooltip.hover
-    :title="formattedTime || 'Time until next event'"
+    :title="formattedTime || 'Heartbeat'"
   >
     <svg class="timer-svg" viewBox="0 0 50 50">
       <circle
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { intervalToDuration, formatDuration, differenceInSeconds, subDays } from 'date-fns'
+import { intervalToDuration, formatDuration, differenceInSeconds, addDays, set, isSameDay, parseISO } from 'date-fns'
 import cronParser from 'cron-parser'
 
 export default {
@@ -50,48 +50,49 @@ export default {
       currentTime: new Date(),
       parsedCrons: [],
       lastEventTime: null,
+      nextEventTime: null,
     };
   },
   computed: {
-    cronsToDates() {
-      return this.parsedCrons.map(cronString => {
+    cronEvents() {
+      const events = [];
+      const today = new Date();
+      const tomorrow = addDays(today, 1);
+
+      this.parsedCrons.forEach(cronString => {
         try {
-          const interval = cronParser.parseExpression(cronString);
-          let next = interval.next().toDate();
-          
-          // If the next event is in the past, get the next one
-          while (next <= this.currentTime) {
-            next = interval.next().toDate();
+          // Get events for today
+          let interval = cronParser.parseExpression(cronString, { currentDate: set(today, {hours: 0, minutes: 0, seconds: 0, milliseconds: 0}) });
+          for (let i = 0; i < 24; i++) { // Assuming max 24 events per day
+            const next = interval.next();
+            if (next.getDate() !== today.getDate()) break;
+            events.push({ date: next.toDate(), cron: cronString });
           }
-          
-          return { date: next, cron: cronString };
+
+          // Get events for tomorrow
+          interval = cronParser.parseExpression(cronString, { currentDate: set(tomorrow, {hours: 0, minutes: 0, seconds: 0, milliseconds: 0}) });
+          for (let i = 0; i < 24; i++) { // Assuming max 24 events per day
+            const next = interval.next();
+            if (next.getDate() !== tomorrow.getDate()) break;
+            events.push({ date: next.toDate(), cron: cronString });
+          }
         } catch (err) {
           console.error(`Error parsing cron expression: ${cronString}`, err);
-          return null;
         }
-      }).filter(item => item !== null).sort((a, b) => a.date - b.date);
-    },
-    secondsUntilDates() {
-      return this.cronsToDates.map(item => 
-        Math.max(0, differenceInSeconds(item.date, this.currentTime))
-      );
-    },
-    nextEventTime() {
-      return this.cronsToDates[0]?.date || null;
-    },
-    nextEventCron() {
-      return this.cronsToDates[0]?.cron || null;
+      });
+
+      return events.sort((a, b) => a.date - b.date);
     },
     circumference() {
       return 2 * Math.PI * this.radius;
     },
     strokeDashoffset() {
-      if (this.totalInterval === 0) return this.circumference;
+      if (this.totalInterval === 0) return 0;
       const progress = 1 - (this.remainingTime / this.totalInterval);
       return this.circumference * (1 - progress);
     },
     formattedTime() {
-      const duration = intervalToDuration({ start: 0, end: this.remainingTime * 1000 });
+      const duration = intervalToDuration({ start: 0, end: Math.max(0, this.remainingTime) * 1000 });
       const format = ['seconds'];
       if (duration.minutes > 0 || duration.hours > 0) format.unshift('minutes');
       if (duration.hours > 0) format.unshift('hours');
@@ -130,37 +131,44 @@ export default {
         }
       };
 
-      tick();
+      this.timerInterval = setTimeout(tick, 1000);
     },
     updateTimer() {
       this.currentTime = new Date();
-      if (this.nextEventTime) {
-        this.remainingTime = differenceInSeconds(this.nextEventTime, this.currentTime);
-        this.lastEventTime = this.findLastEventTime(this.nextEventCron);
-        this.totalInterval = differenceInSeconds(this.nextEventTime, this.lastEventTime);
+      const events = this.cronEvents;
+      
+      if (events.length > 0) {
+        const nextEventIndex = events.findIndex(event => event.date > this.currentTime);
+        
+        if (nextEventIndex !== -1) {
+          this.nextEventTime = events[nextEventIndex].date;
+          
+          if (nextEventIndex > 0) {
+            this.lastEventTime = events[nextEventIndex - 1].date;
+          } else {
+            // If it's the first event of the day, use the last event of the previous day or midnight
+            this.lastEventTime = set(this.currentTime, { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
+          }
+          
+          this.remainingTime = Math.max(0, differenceInSeconds(this.nextEventTime, this.currentTime));
+          this.totalInterval = differenceInSeconds(this.nextEventTime, this.lastEventTime);
+        } else {
+          // If all events for today have passed, use the first event of tomorrow
+          this.nextEventTime = events[0].date;
+          this.lastEventTime = set(this.currentTime, { hours: 23, minutes: 59, seconds: 59, milliseconds: 999 });
+          this.remainingTime = Math.max(0, differenceInSeconds(this.nextEventTime, this.currentTime));
+          this.totalInterval = differenceInSeconds(this.nextEventTime, this.lastEventTime);
+        }
       } else {
         this.remainingTime = 0;
         this.totalInterval = 0;
       }
     },
-    findLastEventTime(cronString) {
-      try {
-        const interval = cronParser.parseExpression(cronString, { currentDate: subDays(this.currentTime, 1) });
-        let prev = interval.prev().toDate();
-        
-        // If the previous event is in the future, get the one before
-        while (prev > this.currentTime) {
-          prev = interval.prev().toDate();
-        }
-        
-        return prev;
-      } catch (err) {
-        console.error(`Error finding last event time for cron: ${cronString}`, err);
-        return this.currentTime; // Fallback to current time if there's an error
-      }
-    },
     startBeat() {
       this.isBeating = true;
+      if (this.beatTimeout) {
+        clearTimeout(this.beatTimeout);
+      }
       this.beatTimeout = setTimeout(() => {
         this.isBeating = false;
       }, 1500);
@@ -168,23 +176,26 @@ export default {
     finishTimer() {
       this.startBeat();
       this.$nextTick(() => {
-        this.startTimer();
+        setTimeout(() => {
+          this.startTimer();
+        }, 0);
       });
     },
     clearTimers() {
       if (this.timerInterval) {
         clearTimeout(this.timerInterval);
       }
-      if (this.beatTimeout) {
-        clearTimeout(this.beatTimeout);
-      }
     },
   },
   beforeUnmount() {
     this.clearTimers();
+    if (this.beatTimeout) {
+        clearTimeout(this.beatTimeout);
+      }
   },
 };
 </script>
+
 <style scoped>
 .timer-container {
   position: relative;
