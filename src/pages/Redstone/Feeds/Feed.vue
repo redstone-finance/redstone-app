@@ -94,6 +94,7 @@
           @range-change="handleRangeChange"
           :duplicated-ranges="duplicateRanges.flat()"
           :currency="getCurrency(feedData.token)"
+          :maxDataPoints="250"
         />
         <div class="loading-container" v-else>
           <vue-loaders-ball-beat

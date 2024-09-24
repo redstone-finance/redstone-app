@@ -85,6 +85,10 @@ export default {
       type: String,
       required: true,
     },
+    maxDataPoints: {
+      type: Number,
+      default: 100,
+    },
   },
   data() {
     return {
@@ -112,22 +116,37 @@ export default {
         });
 
       const filteredData = this.filterDataByRange(sortedData);
+      const clusteredData = this.clusterData(filteredData);
+      const peakData = this.isMobile ? [] : this.findPeakPoints(clusteredData);
 
       return {
-        labels: filteredData.map((entry) => new Date(entry.timestamp)),
+        labels: clusteredData.map((entry) => new Date(entry.timestamp)),
         datasets: [
           {
             label: "Price",
             borderColor: "#FD627A",
-            data: filteredData.map((entry) => ({
+            data: clusteredData.map((entry) => ({
               x: new Date(entry.timestamp),
               y: parseFloat(entry.value),
             })),
             fill: true,
             lineTension: 0.1,
-            pointRadius: this.isMobile ? 0 : 4,
+            pointRadius: 0,
             pointHoverRadius: 0,
           },
+          {
+            label: "Peak Points",
+            data: peakData.map((entry) => ({
+              x: new Date(entry.timestamp),
+              y: parseFloat(entry.value),
+            })),
+            borderColor: 'rgba(0,0,0,0)',
+            pointBackgroundColor: "#FD627A",
+            pointBorderColor: "#FD627A",
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            showLine: false,
+          }
         ],
       };
     },
@@ -165,6 +184,56 @@ export default {
         const entryDate = this.parseTimestamp(entry.timestamp);
         return entryDate >= startDate && entryDate <= now;
       });
+    },
+    clusterData(data) {
+      if (data.length <= this.maxDataPoints) {
+        return data;
+      }
+
+      const factor = Math.ceil(data.length / this.maxDataPoints);
+      const clusteredData = [];
+
+      for (let i = 0; i < data.length; i += factor) {
+        const cluster = data.slice(i, i + factor);
+        const avgTimestamp = new Date(
+          cluster.reduce((sum, point) => sum + this.parseTimestamp(point.timestamp).getTime(), 0) / cluster.length
+        );
+        const avgValue = cluster.reduce((sum, point) => sum + parseFloat(point.value), 0) / cluster.length;
+        
+        clusteredData.push({
+          timestamp: avgTimestamp,
+          value: avgValue.toFixed(5),
+        });
+      }
+
+      return clusteredData;
+    },
+    findPeakPoints(data) {
+      if (data.length < 3) return data;
+
+      let peaks = [];
+      for (let i = 1; i < data.length - 1; i++) {
+        const prev = parseFloat(data[i - 1].value);
+        const curr = parseFloat(data[i].value);
+        const next = parseFloat(data[i + 1].value);
+
+        if ((curr > prev && curr > next) || (curr < prev && curr < next)) {
+          peaks.push(data[i]);
+        }
+      }
+
+      // Always include the first and last points
+      peaks.unshift(data[0]);
+      peaks.push(data[data.length - 1]);
+
+      // Limit the number of peak points
+      const maxPeaks = Math.min(this.maxDataPoints, Math.floor(data.length / 2));
+      if (peaks.length > maxPeaks) {
+        const step = peaks.length / maxPeaks;
+        peaks = peaks.filter((_, index) => Math.floor(index % step) === 0);
+      }
+
+      return peaks;
     },
     createGradient(ctx, chartArea) {
       const gradient = ctx.createLinearGradient(
@@ -248,10 +317,6 @@ export default {
           line: {
             borderWidth: 1,
           },
-          point: {
-            radius: 0,
-            hitRadius: 0,
-          },
         },
         animation: {
           duration: 0,
@@ -324,8 +389,7 @@ export default {
     updateChart() {
       if (this.chart) {
         const newData = this.chartData;
-        this.chart.data.labels = newData.labels;
-        this.chart.data.datasets[0].data = newData.datasets[0].data;
+        this.chart.data = newData;
         this.chart.options = this.getChartOptions();
         this.updateGradient();
         this.chart.update({
