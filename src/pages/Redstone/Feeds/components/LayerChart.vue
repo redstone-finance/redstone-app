@@ -125,7 +125,7 @@ export default {
             })),
             fill: true,
             lineTension: 0.1,
-            pointRadius: 4,
+            pointRadius: this.isMobile ? 0 : 4,
             pointHoverRadius: 0,
           },
         ],
@@ -134,7 +134,6 @@ export default {
   },
   mounted() {
     this.checkMobileView();
-    window.addEventListener('resize', this.checkMobileView);
     this.createChart();
   },
   methods: {
@@ -250,8 +249,8 @@ export default {
             borderWidth: 1,
           },
           point: {
-            radius: this.isMobile ? 0 : 4,
-            hitRadius: this.isMobile ? 0 : 10,
+            radius: 0,
+            hitRadius: 0,
           },
         },
         animation: {
@@ -340,9 +339,6 @@ export default {
     },
     checkMobileView() {
       this.isMobile = isScreen('xs') || isScreen('sm');
-      if (this.chart) {
-        this.updateChart();
-      }
     },
   },
   watch: {
@@ -361,7 +357,6 @@ export default {
     if (this.chart) {
       this.chart.destroy();
     }
-    window.removeEventListener('resize', this.checkMobileView);
   },
 };
 </script>

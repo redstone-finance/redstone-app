@@ -12,23 +12,23 @@
           </dd>
         </div>
         <div class="stat-item">
-  <dt class="stat-title">Network</dt>
-  <dd class="stat-value-wrapper">
-    <div class="stat-value">
-      <img
-        class="feeds__token-image small"
-        v-if="feedData"
-        :src="feedData?.network.image"
-        :alt="feedData?.network.name"
-      />
-      <span class="applicant-info__text">
-        <a :href="feedData?.explorer?.explorerUrl" target="_blank">
-          {{ feedData?.network?.name }}
-        </a>
-      </span>
-    </div>
-  </dd>
-</div>
+          <dt class="stat-title">Network</dt>
+          <dd class="stat-value-wrapper">
+            <div class="stat-value">
+              <img
+                class="feeds__token-image small"
+                v-if="feedData"
+                :src="feedData?.network.image"
+                :alt="feedData?.network.name"
+              />
+              <span class="applicant-info__text">
+                <a :href="feedData?.explorer?.explorerUrl" target="_blank">
+                  {{ feedData?.network?.name }}
+                </a>
+              </span>
+            </div>
+          </dd>
+        </div>
         <div class="stat-item">
           <dt class="stat-title">Symbol</dt>
           <dd class="stat-value">{{ feedData?.feed }}</dd>
