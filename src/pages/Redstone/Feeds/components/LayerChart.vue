@@ -358,11 +358,13 @@
 
 <style scoped lang="scss">
   .chart-container {
-    height: 500px;
-    width: calc(100%);
     position: relative;
     margin-bottom: 40px;
     padding: 0 20px;
+  }
+  canvas {
+    height: 500px;
+    width: calc(100%);
   }
   .chart-controls {
     position: absolute;

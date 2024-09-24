@@ -2,7 +2,6 @@
   background: #fff;
   padding: 15px 0;
   border-radius: 15px;
-  max-height: 100vh;
   display: flex;
   flex-flow: row wrap;
 
@@ -252,7 +251,7 @@
   }
   strong {
     font-size: 2rem;
-    span{
+    span {
       font-weight: 300;
     }
   }
@@ -280,7 +279,7 @@
   }
   &__item {
     display: flex;
-    width: 50%;
+    width: 100%;
     flex-flow: column wrap;
     padding: 30px;
     border-radius: 15px;
@@ -292,24 +291,40 @@
     &:first-child {
       margin-right: 10px;
     }
-    &:last-child {
-      margin-left: 10px;
-    }
     h3 {
       margin-bottom: 15px;
     }
-    &__value{
+    &__value {
       display: flex;
     }
-    &--full{
+    &--full {
       width: 100%;
       margin: 15px 0 0 0 !important;
     }
   }
 }
 
-
-.cron-trigger{
+.cron-trigger {
   flex-direction: row;
   justify-items: center;
+}
+
+.contract-address {
+  padding: 20px 30px 15px;
+  margin-top: -15px;
+  width: 100%;
+  border-bottom: 1px solid hsl(220, 14%, 96%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: rgb(250, 250, 250);
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+  
+  :deep > div {
+    font-weight: 500;
+  }
 }

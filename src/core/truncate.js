@@ -1,7 +1,7 @@
 import isScreen from "./screenHelper.js";
 
-export default function truncateString(s) {
-  if (isScreen("xxl")) return s;
+export default function truncateString(s, disableTruncate = false) {
+  if (isScreen("xxl") || (disableTruncate && !isScreen("xs"))) return s;
   if (s?.length <= 11) {
     return s;
   }

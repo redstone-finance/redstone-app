@@ -20,9 +20,11 @@
               :src="feedData?.network.image"
               :alt="feedData?.network.name"
             />
-            <span class="applicant-info__text">{{
-              feedData?.network?.name
-            }}</span>
+            <span class="applicant-info__text">
+              <a :href="feedData?.explorer?.explorerUrl" target="_blank">{{
+                feedData?.network?.name
+              }}</a></span
+            >
           </dd>
         </div>
         <div class="stat-item">
@@ -43,10 +45,7 @@
               "
               class="feeds__loader"
             />
-            <span
-              v-else
-              class="feeds__timestamp"
-            >
+            <span v-else class="feeds__timestamp">
               <span v-if="heartbeatIsNumber(feedData.heartbeat)">
                 <div
                   style="
@@ -57,7 +56,7 @@
                 >
                   <span> {{ feedData.heartbeatTitle }}</span>
                   <to-date-counter
-                  style="position: relative; top"
+                    style="position: relative; top"
                     class="ml-2"
                     :interval="feedData.heartbeatInterval"
                     :duration="feedData.heartbeat"
@@ -77,6 +76,13 @@
           </dd>
         </div>
       </dl>
+      <contract-address
+      class="contract-address"
+          v-if="feedData"
+          :item="feedData"
+          disable-truncate
+          :separate-labels="false"
+        />
       <div class="feed-chart">
         <layer-chart
           v-if="currentChartData && !isLoading"
@@ -92,28 +98,6 @@
             color="var(--redstone-red-color)"
             scale="1"
           ></vue-loaders-ball-beat>
-        </div>
-      </div>
-    </div>
-    <div class="additional-details-card__wrapper">
-      <div class="additional-details-card__item">
-        <h3>Addresses</h3>
-        <contract-address
-          v-if="feedData"
-          :item="feedData"
-          :separate-labels="false"
-        />
-      </div>
-      <div class="additional-details-card__item">
-        <h3>Product information</h3>
-        <div class="additional-details-cart__value">
-          Relayer ID: <strong>{{ relayerId }}</strong>
-        </div>
-        <div class="additional-details-cart__value">
-          Explorer:
-          <a :href="feedData?.explorer?.explorerUrl" target="_blank">{{
-            feedData?.explorer.name
-          }}</a>
         </div>
       </div>
     </div>
