@@ -364,7 +364,7 @@
   }
   canvas {
     height: 500px;
-    width: calc(100%);
+    width: 100%;
   }
   .chart-controls {
     position: absolute;
@@ -386,6 +386,25 @@
     &.active {
       background: var(--redstone-red-color);
       color: #fff;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .chart-container {
+      padding-top: 60px; 
+    }
+    .chart-controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+    canvas {
+      height: 300px;
     }
   }
 </style>
