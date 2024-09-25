@@ -373,7 +373,7 @@
                   suggestedMin: minValue - padding,
                   suggestedMax: maxValue + padding,
                   callback: (value) => {
-                    return `${currencySymbolMap[this.denomination] || this.denomination} ${value.toFixed(2)}`;
+                    return `${currencySymbolMap[this.denomination] || this.denomination} ${value.toFixed(5)}`;
                   },
                 },
               },
