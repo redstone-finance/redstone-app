@@ -169,20 +169,14 @@ const msToTime = (ms) => {
   const seconds = totalSeconds % 60;
 
   if (hours > 0) {
-    return formatDuration(
-      { hours, minutes },
-      { format: ["hours", "minutes"] }
-    );
+    return formatDuration({ hours, minutes }, { format: ["hours", "minutes"] });
   } else if (minutes > 0) {
     return formatDuration(
       { minutes, seconds },
       { format: ["minutes", "seconds"] }
     );
   } else {
-    return formatDuration(
-      { seconds },
-      { format: ["seconds"] }
-    );
+    return formatDuration({ seconds }, { format: ["seconds"] });
   }
 };
 
@@ -318,11 +312,7 @@ export const denominationCustomMap = {
   "eBTC/WBTC": "BTC",
 };
 
-export const parseToCurrency = (decimalValue, currency, token) => {
-  const sUSDe_RATE = token === "sUSDe_RATE_PROVIDER";
-  const value = decimalValue / Math.pow(10, sUSDe_RATE ? 18 : 8);
-  const customDenomination = denominationCustomMap?.[token];
-  const finalCurrency = customDenomination || currency;
+export const formatToCurrency = (value) => {
   let formatterOptions = {
     style: "currency",
     currency: "USD",
@@ -336,7 +326,17 @@ export const parseToCurrency = (decimalValue, currency, token) => {
     formatterOptions.maximumSignificantDigits = 4;
   }
   const formatter = new Intl.NumberFormat("en-US", formatterOptions);
-  let formattedValue = formatter.format(value);
+  return formatter.format(value);
+};
+
+export const formatPriceWithoutCurrency = (value, sUSDe_RATE = false) => formatToCurrency(value / Math.pow(10, sUSDe_RATE ? 10 : 0)).replace("$", "")
+
+export const parseToCurrency = (decimalValue, currency, token) => {
+  const sUSDe_RATE = token === "sUSDe_RATE_PROVIDER";
+  const value = decimalValue / Math.pow(10, sUSDe_RATE ? 18 : 8);
+  const customDenomination = denominationCustomMap?.[token];
+  const finalCurrency = customDenomination || currency;
+  let formattedValue = formatToCurrency(value)
   if (finalCurrency && currency !== "USD") {
     switch (finalCurrency) {
       case "EUR":

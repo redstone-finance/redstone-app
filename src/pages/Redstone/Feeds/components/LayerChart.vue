@@ -24,7 +24,7 @@
   import Chart from "chart.js";
   import { isValid, subDays, subMonths, parseISO } from "date-fns";
   import isScreen from "../../../../core/screenHelper";
-  import { currencySymbolMap } from "./../utils/FeedsTableDataLayer";
+  import { currencySymbolMap, formatPriceWithoutCurrency } from "./../utils/FeedsTableDataLayer";
   import zoomPlugin from "chartjs-plugin-zoom";
 
   Chart.plugins.register(zoomPlugin);
@@ -95,6 +95,10 @@
         type: Number,
         default: 100,
       },
+      specialDenomination: {
+        type: Boolean,
+        default: false
+      }
     },
     data() {
       return {
@@ -323,7 +327,7 @@
             callbacks: {
               label: (tooltipItem, data) => {
                 const value = tooltipItem.yLabel;
-                return `  Answer: ${this.currency} ${value.toFixed(5)}`;
+                return `  Answer: ${this.currency} ${formatPriceWithoutCurrency(value, this.specialDenomination)}`;
               },
             },
             filter: function (tooltipItem, data) {
@@ -373,7 +377,7 @@
                   suggestedMin: minValue - padding,
                   suggestedMax: maxValue + padding,
                   callback: (value) => {
-                    return `${currencySymbolMap[this.denomination] || this.denomination} ${value.toFixed(5)}`;
+                    return `${currencySymbolMap[this.denomination] || this.denomination} ${formatPriceWithoutCurrency(value, this.specialDenomination)}`;
                   },
                 },
               },

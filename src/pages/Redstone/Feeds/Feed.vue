@@ -8,7 +8,7 @@
             <span>{{
               currencySymbolMap[feedData?.denomination] || feedData.denomination
             }}</span>
-            <strong>{{ feedData?.apiValues?.value }}</strong>
+            <strong>{{ formatPriceWithoutCurrency(feedData?.apiValues?.value, sUSDe_RATE) }}</strong>
           </dd>
         </div>
         <div class="stat-item">
@@ -92,6 +92,7 @@
           :range="currentRange"
           :denomination="feedData.denomination"
           @range-change="handleRangeChange"
+          :special-denomination="sUSDe_RATE"
           :duplicated-ranges="duplicateRanges.flat()"
           :currency="getCurrency(feedData.token)"
           :maxDataPoints="250"
@@ -120,6 +121,7 @@
     findNetworkName,
     heartbeatIsNumber,
     currencySymbolMap,
+    formatPriceWithoutCurrency
   } from "./utils/FeedsTableDataLayer";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import Loader from "./../../../components/Loader/Loader.vue";
@@ -156,6 +158,7 @@
       await this.initializeData();
     },
     methods: {
+      formatPriceWithoutCurrency,
       parseToCurrency,
       heartbeatIsNumber,
       hexToPrice(hex) {
@@ -294,6 +297,9 @@
       },
     },
     computed: {
+      sUSDe_RATE(){
+        return this.feedData.token === "sUSDe_RATE_PROVIDER";
+      },
       feedsInRelayer() {
         return this.relayerSchema[this.relayerId].priceFeeds;
       },
