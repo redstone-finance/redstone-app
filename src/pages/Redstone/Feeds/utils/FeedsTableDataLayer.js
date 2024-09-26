@@ -5,7 +5,12 @@ import {
   timeUntilDate,
   findNearestCronDate,
 } from "@/core/timeHelpers";
-import { intervalToDuration, formatDuration } from "date-fns";
+import {
+  format,
+  formatDuration,
+  parseISO,
+  formatDistanceToNow,
+} from "date-fns";
 import cronstrue from "cronstrue";
 import networks from "@/data/networks.json";
 import tokens from "@/config/tokens.json";
@@ -52,6 +57,14 @@ export const mapFeedsData = (storeFeedsArray) => {
       loaders: item.loaders,
       heartbeatInterval: resolveTimeSinceLastUpdateInMilliseconds(item),
       apiValues: item.apiValues,
+      updateTime: item.apiValues?.timestamp
+        ? format(parseISO(item.apiValues?.timestamp), "MMMM d, yyyy h:mm a zzz")
+        : "",
+      humanUpdateTime: item.apiValues?.timestamp
+        ? formatDistanceToNow(parseISO(item.apiValues?.timestamp), {
+            addSuffix: true,
+          })
+        : "",
       contractAnswer: parseToCurrency(
         parseToDecimal(item.value),
         answerCurrency,
@@ -329,14 +342,15 @@ export const formatToCurrency = (value) => {
   return formatter.format(value);
 };
 
-export const formatPriceWithoutCurrency = (value, sUSDe_RATE = false) => formatToCurrency(value / Math.pow(10, sUSDe_RATE ? 10 : 0)).replace("$", "")
+export const formatPriceWithoutCurrency = (value, sUSDe_RATE = false) =>
+  formatToCurrency(value / Math.pow(10, sUSDe_RATE ? 10 : 0)).replace("$", "");
 
 export const parseToCurrency = (decimalValue, currency, token) => {
   const sUSDe_RATE = token === "sUSDe_RATE_PROVIDER";
   const value = decimalValue / Math.pow(10, sUSDe_RATE ? 18 : 8);
   const customDenomination = denominationCustomMap?.[token];
   const finalCurrency = customDenomination || currency;
-  let formattedValue = formatToCurrency(value)
+  let formattedValue = formatToCurrency(value);
   if (finalCurrency && currency !== "USD") {
     switch (finalCurrency) {
       case "EUR":

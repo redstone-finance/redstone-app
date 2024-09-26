@@ -9,6 +9,7 @@
               currencySymbolMap[feedData?.denomination] || feedData.denomination
             }}</span>
             <strong>{{ formatPriceWithoutCurrency(feedData?.apiValues?.value, sUSDe_RATE) }}</strong>
+            <span class="timestamp" v-b-tooltip.hover :title="feedData.updateTime">Updated {{ feedData.humanUpdateTime }}</span>
           </dd>
         </div>
         <div class="stat-item">
@@ -58,7 +59,6 @@
                 >
                   <span> {{ feedData.heartbeatTitle }}</span>
                   <to-date-counter
-                    style="position: relative; top"
                     class="ml-2"
                     :interval="feedData.heartbeatInterval"
                     :duration="feedData.heartbeat"
