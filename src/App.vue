@@ -11,11 +11,6 @@
     beforeMount() {
       // this.initArweave();
       this.prefetchAll();
-      const currentPath = this.$router.history.current.path;
-
-      if (currentPath === "/" || currentPath === "/app") {
-        this.$router.push("/app/tokens");
-      }
     },
     methods: {
       ...mapActions("prefetch", ["prefetchAll"]),
