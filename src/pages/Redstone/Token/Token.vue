@@ -99,8 +99,8 @@
 
       parseSymbol() {
         let symbol = this.$route.params.symbol;
-        if (symbol.includes("\\")) {
-          symbol = symbol.replace("\\", "/");
+        if (symbol.includes("-")) {
+          symbol = symbol.replace("-", "/");
         }
         return symbol;
       },

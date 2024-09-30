@@ -19,7 +19,7 @@
               $router.push(
                 `/app/token/${
                   token.symbol.includes('/')
-                    ? token.symbol.replace('/', '\\')
+                    ? token.symbol.replace('/', '-')
                     : token.symbol
                 }`
               )
