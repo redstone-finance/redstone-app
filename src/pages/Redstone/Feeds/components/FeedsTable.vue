@@ -27,7 +27,7 @@
         <i
           class="fa fa-info-circle"
           v-b-tooltip.hover
-          title="The system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
+          title="Deviation threshold - the system triggers an update when a node detects that the off-chain data has diverged from the on-chain value beyond a predetermined threshold difference."
         ></i>
       </template>
       <template #head(timestamp)="data">
@@ -96,7 +96,16 @@
           class="feeds__token-image"
           :alt="item.feed"
         />
-        <span>{{ item.feed }}</span>
+        <RouterLink
+          :to="{
+            name: 'SingleFeed',
+            params: {
+              network: toUrlParam(item.network.name),
+              token: toUrlParam(item.token),
+            },
+          }"
+          >{{ item.feed }}</RouterLink
+        >
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
@@ -117,21 +126,27 @@
           "
           class="feeds__loader"
         />
-        <span
-          v-else
-          class="feeds__timestamp"
-          v-b-tooltip.hover
-          :title="item.heartbeatTitle"
-        >
+        <span v-else class="feeds__timestamp">
           <span v-if="heartbeatIsNumber(item.heartbeat)">
-            <to-date-counter :duration="item.heartbeat" />
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <span> {{ item.heartbeatTitle }}</span>
+              <to-date-counter
+                class="ml-2"
+                :interval="item.heartbeatInterval"
+                :duration="item.heartbeat"
+              />
+            </div>
           </span>
           <div v-else>
-            <span style="cursor: pointer" :id="`cron-trigger-${item.layer_id}`">
-              <to-date-counter
-                class="d-inline"
-                :duration="nearestCron(item.heartbeat)"
-              />
+            <span class="cron-trigger"  :id="`cron-trigger-${item.layer_id}`">
+              <span>Cron: {{ item.heartbeatTitle }}</span>
+              <cron-counter :crons="item.heartbeat" class="mt-2" />
             </span>
           </div>
         </span>
@@ -152,15 +167,18 @@
     parseToCurrency,
     heartbeatIsNumber,
     nearestCron,
+    toUrlParam,
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
   import ToDateCounter from "./ToDateCounter.vue";
+  import CronCounter from "./CronCounter.vue";
   import truncateString from "@/core/truncate";
   export default {
     components: {
       Loader,
       CopyToClipboard,
+      CronCounter,
       ToDateCounter,
     },
     data() {
@@ -189,8 +207,8 @@
           },
           { key: "contract_address", label: "Addresses", sortable: false },
           { key: "answer", label: "Answer", sortable: false },
-          { key: "deviation", label: "Deviation threshold ", sortable: false },
-          { key: "heartbeat", label: "Heartbeat", sortable: false },
+          { key: "deviation", label: "Deviation", sortable: false, thStyle: { width: "120px" } },
+          { key: "heartbeat", label: "Heartbeat", sortable: false, thStyle: { width: "180px" }, },
         ],
       };
     },
@@ -204,6 +222,7 @@
       currentPage: Number,
     },
     methods: {
+      toUrlParam,
       truncateString,
       nearestCron,
       parseToCurrency,

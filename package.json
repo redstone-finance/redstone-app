@@ -22,6 +22,7 @@
     "bootstrap-vue": "2.21.2",
     "cache-loader": "^4.1.0",
     "chart.js": "2",
+    "chartjs-plugin-zoom": "0.7.7",
     "cron-parser": "^4.9.0",
     "cronstrue": "^2.50.0",
     "css-loader": "^1.0.1",

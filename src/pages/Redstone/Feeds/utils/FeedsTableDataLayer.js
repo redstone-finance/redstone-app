@@ -5,7 +5,12 @@ import {
   timeUntilDate,
   findNearestCronDate,
 } from "@/core/timeHelpers";
-import { getUnixTime, intervalToDuration, formatDuration } from "date-fns";
+import {
+  format,
+  formatDuration,
+  parseISO,
+  formatDistanceToNow,
+} from "date-fns";
 import cronstrue from "cronstrue";
 import networks from "@/data/networks.json";
 import tokens from "@/config/tokens.json";
@@ -15,14 +20,19 @@ export const images = Object.keys(tokens).map((token) => ({
   ...tokens[token],
 }));
 
-const excludedFeeds = [{feed: 'ETHx', chainId: 1}]
+const excludedFeeds = [{ feed: "ETHx", chainId: 1 }];
+
+export const toUrlParam = (string) =>
+  string.toLowerCase().replace(" ", "-").replace("/", "--");
 
 export const mapFeedsData = (storeFeedsArray) => {
   if (storeFeedsArray?.length === 0) return [];
-  const feedsWithoutExcluded = storeFeedsArray.filter(feed => 
-    !excludedFeeds.some(excluded => 
-      excluded.feed === feed.feedId && excluded.chainId === feed.networkId
-    )
+  const feedsWithoutExcluded = storeFeedsArray.filter(
+    (feed) =>
+      !excludedFeeds.some(
+        (excluded) =>
+          excluded.feed === feed.feedId && excluded.chainId === feed.networkId
+      )
   );
   return feedsWithoutExcluded.map((item) => {
     const answerCurrency = item.feedId.split("/")[1];
@@ -45,12 +55,22 @@ export const mapFeedsData = (storeFeedsArray) => {
       relayerId: item.layerId,
       feed_address: item.feedAddress,
       loaders: item.loaders,
+      heartbeatInterval: resolveTimeSinceLastUpdateInMilliseconds(item),
       apiValues: item.apiValues,
+      updateTime: item.apiValues?.timestamp
+        ? format(parseISO(item.apiValues?.timestamp), "MMMM d, yyyy h:mm a zzz")
+        : "",
+      humanUpdateTime: item.apiValues?.timestamp
+        ? formatDistanceToNow(parseISO(item.apiValues?.timestamp), {
+            addSuffix: true,
+          })
+        : "",
       contractAnswer: parseToCurrency(
         parseToDecimal(item.value),
         answerCurrency,
         item.feedId
       ),
+      denomination: resolveDenomination(item.feedId),
       apiAnswer: parseToCurrency(
         item.apiValues?.value * 100000000,
         answerCurrency,
@@ -88,7 +108,7 @@ const resolveTimestampForHeartbeat = (item) => {
 };
 
 const resolveDenomination = (token) => {
-  return denominationCustomMap?.[token] || "USD";
+  return denominationCustomMap?.[token] || token.split("/")[1] || "USD";
 };
 
 const getHeartbeatValue = (item) =>
@@ -156,15 +176,20 @@ const findExplorer = (networkId) => {
 };
 
 const msToTime = (ms) => {
-  const duration = intervalToDuration({ start: 0, end: ms });
-  const { minutes } = duration;
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-  const totalHours = Math.floor(ms / (1000 * 60 * 60));
-
-  if (totalHours > 0) {
-    return formatDuration({ hours: totalHours, minutes }, { format: ["hours", "minutes"] });
+  if (hours > 0) {
+    return formatDuration({ hours, minutes }, { format: ["hours", "minutes"] });
+  } else if (minutes > 0) {
+    return formatDuration(
+      { minutes, seconds },
+      { format: ["minutes", "seconds"] }
+    );
   } else {
-    return formatDuration({ minutes }, { format: ["minutes"] });
+    return formatDuration({ seconds }, { format: ["seconds"] });
   }
 };
 
@@ -183,7 +208,8 @@ export const getTokenImage = (token) => {
     idealMatchImg ||
     secondMatch || {
       name: "placeholder",
-      logoURI: "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
+      logoURI:
+        "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/placeholder.png",
       token: "placeholder",
     }
   );
@@ -233,7 +259,7 @@ const heartbeatTitle = (item) => {
   if (crons) {
     return crons.map((cron) => cronstrue.toString(cron)).join(", ");
   } else {
-    return "Heartbeat: " + msToTime(heartbeat);
+    return msToTime(heartbeat);
   }
 };
 
@@ -271,22 +297,22 @@ export const heartbeatIsNumber = (value) => {
 };
 
 export const denominationCustomMap = {
-  "wstETH_FUNDAMENTAL": "USD",
-  "uniETH_FUNDAMENTAL": "USD",
-  "deUSD_FUNDAMENTAL": "USD",
-  "pufETH_FUNDAMENTAL": "ETH",
-  "pzETH_FUNDAMENTAL": "ETH",
-  "mETH_FUNDAMENTAL": "ETH",
-  "LBTC_FUNDAMENTAL": "BTC",
-  "ETH_CLE": "ETH",
-  "ETH_ELE": "ETH",
+  wstETH_FUNDAMENTAL: "USD",
+  uniETH_FUNDAMENTAL: "USD",
+  deUSD_FUNDAMENTAL: "USD",
+  pufETH_FUNDAMENTAL: "ETH",
+  pzETH_FUNDAMENTAL: "ETH",
+  mETH_FUNDAMENTAL: "ETH",
+  LBTC_FUNDAMENTAL: "BTC",
+  ETH_CLE: "ETH",
+  ETH_ELE: "ETH",
   "ETH_CLE+": "ETH",
-  "sUSDe_RATE_PROVIDER": "USDe",
-  "SolvBTC_MERLIN": "USD",
+  sUSDe_RATE_PROVIDER: "USDe",
+  SolvBTC_MERLIN: "USD",
   "SolvBTC.BBN": "USD",
-  "SolvBTC_BNB": "USD",
-  "BBTC": "USD",
-  "BBUSD": "USD",
+  SolvBTC_BNB: "USD",
+  BBTC: "USD",
+  BBUSD: "USD",
   "PREMIA-TWAP-60": "USD",
   "ezETH-TWAP-60": "USD",
   "USDB-TWAP-30": "USD",
@@ -299,11 +325,7 @@ export const denominationCustomMap = {
   "eBTC/WBTC": "BTC",
 };
 
-export const parseToCurrency = (decimalValue, currency, token) => {
-  const sUSDe_RATE = token === 'sUSDe_RATE_PROVIDER'
-  const value = decimalValue / Math.pow(10, sUSDe_RATE ? 18 : 8)
-  const customDenomination = denominationCustomMap?.[token];
-  const finalCurrency = customDenomination || currency;
+export const formatToCurrency = (value) => {
   let formatterOptions = {
     style: "currency",
     currency: "USD",
@@ -317,7 +339,18 @@ export const parseToCurrency = (decimalValue, currency, token) => {
     formatterOptions.maximumSignificantDigits = 4;
   }
   const formatter = new Intl.NumberFormat("en-US", formatterOptions);
-  let formattedValue = formatter.format(value);
+  return formatter.format(value);
+};
+
+export const formatPriceWithoutCurrency = (value, sUSDe_RATE = false) =>
+  formatToCurrency(value / Math.pow(10, sUSDe_RATE ? 10 : 0)).replace("$", "");
+
+export const parseToCurrency = (decimalValue, currency, token) => {
+  const sUSDe_RATE = token === "sUSDe_RATE_PROVIDER";
+  const value = decimalValue / Math.pow(10, sUSDe_RATE ? 18 : 8);
+  const customDenomination = denominationCustomMap?.[token];
+  const finalCurrency = customDenomination || currency;
+  let formattedValue = formatToCurrency(value);
   if (finalCurrency && currency !== "USD") {
     switch (finalCurrency) {
       case "EUR":
@@ -338,7 +371,7 @@ export const parseToCurrency = (decimalValue, currency, token) => {
       case "USD":
         break;
       case "USDe":
-        formattedValue = formattedValue.replace("$", "") + 'USDe';
+        formattedValue = formattedValue.replace("$", "") + "USDe";
         break;
       default:
         formattedValue = formattedValue.replace("$", "") + currency;
@@ -346,6 +379,16 @@ export const parseToCurrency = (decimalValue, currency, token) => {
     }
   }
   return formattedValue;
+};
+
+export const currencySymbolMap = {
+  USD: "$",
+  EUR: "€",
+  ETH: "Ξ",
+  BRL: "R$",
+  GBP: "£",
+  BTC: "₿",
+  USDe: "USDe",
 };
 
 const networkOrder = () => {
