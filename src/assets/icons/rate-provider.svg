@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Main circle -->
+  <circle cx="50" cy="50" r="45" fill="none" stroke="black" stroke-width="4"/>
+  
+  <!-- "R" for RATE, shifted even further left -->
+  <path d="M25 30 V70 M25 30 H40 Q45 30 45 40 T40 50 H25 M40 50 L45 70" fill="none" stroke="black" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- "P" for PROVIDER, shifted even further left -->
+  <path d="M59 30 V70 M59 30 H74 Q79 30 79 40 T74 50 H59" fill="none" stroke="black" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
