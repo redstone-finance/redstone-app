@@ -175,6 +175,7 @@
               :key="source"
               :value="source"
               :style="{ color: sourceColors[source] }"
+              v-if="getCurrentPriceForSource(source)"
             >
               <div class="source-label">
                 <div class="source-name">
