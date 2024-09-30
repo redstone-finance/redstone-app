@@ -38,9 +38,9 @@
               </b-input-group-text>
             </template>
           </b-input-group>
-          <a href="javascript:window.history.back()" v-else>
-            <i class="fa flaticon-chevron-back" />
-          </a>
+          <span @click="safeGoBack" v-else>
+            <i role="button" class="fa flaticon-chevron-back" />
+          </span>
         </b-form-group>
       </b-form>
     </b-nav>
@@ -102,6 +102,29 @@
         "changeSidebarActive",
         "updateSearchTerm",
       ]),
+      safeGoBack() {
+        const allowedDomains = [
+          "https://app.redstone.finance/",
+          "http://localhost:3000/",
+          "https://localhost:3000/",
+        ];
+
+        const isAllowedDomain = allowedDomains.some((domain) =>
+          document.referrer.startsWith(domain)
+        );
+
+        if (isAllowedDomain) {
+          window.history.back();
+        } else {
+          // Determine the appropriate base URL
+          const currentHost = window.location.host;
+          const baseUrl = currentHost.includes("localhost")
+            ? "http://localhost:3000/"
+            : "https://app.redstone.finance/";
+
+          window.location.href = baseUrl;
+        }
+      },
       toggleSidebarMenu() {
         this.toggleSidebar();
       },

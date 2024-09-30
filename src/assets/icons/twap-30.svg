@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Main circle -->
+  <circle cx="50" cy="50" r="45" fill="none" stroke="black" stroke-width="4"/>
+  
+  <!-- Smaller "T" for TWAP -->
+  <path d="M35 25 H65 M50 25 V45" fill="none" stroke="black" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- "30" below the T -->
+  <text x="50" y="75" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="black">30</text>
+</svg>

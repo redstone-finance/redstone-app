@@ -19,7 +19,12 @@ import store from "./store";
 Vue.use(Router);
 
 const router = new Router({
+  mode: 'history',
   routes: [
+    {
+      path: "/",
+      redirect: "/app/tokens/",
+    },
     {
       path: "/error",
       name: "Error",
@@ -84,12 +89,19 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.showSearchInputInNavbar) {
-    store.dispatch("layout/setSearchInputVisibilityInHeader", true);
+  const hasTrailingSlash = to.path.endsWith('/');
+  const isRoot = to.path === '/';
+
+  if (!hasTrailingSlash && !isRoot) {
+    next({ path: `${to.path}/`, query: to.query, hash: to.hash });
   } else {
-    store.dispatch("layout/setSearchInputVisibilityInHeader", false);
+    if (to.meta.showSearchInputInNavbar) {
+      store.dispatch("layout/setSearchInputVisibilityInHeader", true);
+    } else {
+      store.dispatch("layout/setSearchInputVisibilityInHeader", false);
+    }
+    next();
   }
-  next();
 });
 
 export default router;
