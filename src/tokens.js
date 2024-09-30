@@ -87,13 +87,13 @@ export function getCurrency(details) {
   if (details.name?.includes("/")) {
     const [, currency] = details.name?.split("/");
 
-    return currency;
+    return currency.replaceAll(" ", "-");
   }
 
   if (details.symbol?.includes("/")) {
     const [, currency] = details.symbol?.split("/");
 
-    return currency;
+    return currency.replaceAll(" ", "-");
   }
 
   return "USD";
