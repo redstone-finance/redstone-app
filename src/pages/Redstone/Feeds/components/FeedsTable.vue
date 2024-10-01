@@ -104,7 +104,7 @@
               token: toUrlParam(item.token),
             },
           }"
-          >{{ item.feed }}</RouterLink
+          >{{ clearFeedName(item.feed) }}</RouterLink
         >
         <img v-if="item.isFundamentalFeed" style="width: 25px; height: 25px; margin-left: 5px; background-color: #fff; border-radius: 50%; padding: 2px; opacity: 0.7;" src="../../../../assets/icons/fundamental.svg">
         <img v-if="item.isTwap30" style="width: 25px; height: 25px; margin-left: 5px; background-color: #fff; border-radius: 50%; padding: 2px; opacity: 0.7;" src="../../../../assets/icons/twap-30.svg">
@@ -171,6 +171,7 @@
     heartbeatIsNumber,
     nearestCron,
     toUrlParam,
+    clearFeedName
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
@@ -183,7 +184,6 @@
       CopyToClipboard,
       CronCounter,
       ToDateCounter,
-
     },
     data() {
       return {
@@ -231,6 +231,7 @@
       nearestCron,
       parseToCurrency,
       heartbeatIsNumber,
+      clearFeedName,
       handleSort(ctx) {
         this.$emit("update:sort", ctx);
       },
