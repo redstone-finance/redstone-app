@@ -28,7 +28,6 @@
     subMonths,
     parseISO,
     differenceInMinutes,
-
   } from "date-fns";
   import isScreen from "../../../../core/screenHelper";
   import {
@@ -124,7 +123,7 @@
     computed: {
       maxDataPoints() {
         const rangeInMinutes = this.getRangeInMinutes();
-        return Math.min(rangeInMinutes, 24 * 60); 
+        return Math.min(rangeInMinutes, 24 * 60);
       },
       chartData() {
         const sortedData = [...this.data]
@@ -210,7 +209,7 @@
             startDate = subMonths(now, 1);
             break;
           default:
-            startDate = subDays(now, 1); 
+            startDate = subDays(now, 1);
         }
         return differenceInMinutes(now, startDate);
       },
@@ -302,10 +301,7 @@
         peaks.push(data[data.length - 1]);
 
         // Limit the number of peak points
-        const maxPeaks = Math.min(
-          this.maxDataPoints,
-          Math.floor(data.length / 2)
-        );
+        const maxPeaks = 0;
         if (peaks.length > maxPeaks) {
           const step = peaks.length / maxPeaks;
           peaks = peaks.filter((_, index) => Math.floor(index % step) === 0);
@@ -396,7 +392,7 @@
           },
           elements: {
             line: {
-              borderWidth: 1,
+              borderWidth: 2,
             },
           },
           animation: {
