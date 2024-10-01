@@ -22,9 +22,19 @@
 
 <script>
   import Chart from "chart.js";
-  import { isValid, subDays, subMonths, parseISO } from "date-fns";
+  import {
+    isValid,
+    subDays,
+    subMonths,
+    parseISO,
+    differenceInMinutes,
+
+  } from "date-fns";
   import isScreen from "../../../../core/screenHelper";
-  import { currencySymbolMap, formatPriceWithoutCurrency } from "./../utils/FeedsTableDataLayer";
+  import {
+    currencySymbolMap,
+    formatPriceWithoutCurrency,
+  } from "./../utils/FeedsTableDataLayer";
   import zoomPlugin from "chartjs-plugin-zoom";
 
   Chart.plugins.register(zoomPlugin);
@@ -91,14 +101,10 @@
         type: String,
         required: true,
       },
-      maxDataPoints: {
-        type: Number,
-        default: 100,
-      },
       specialDenomination: {
         type: Boolean,
-        default: false
-      }
+        default: false,
+      },
     },
     data() {
       return {
@@ -111,9 +117,15 @@
         ],
         isMobile: false,
         isZoomed: false,
+        zoomedStartDate: null,
+        zoomedEndDate: null,
       };
     },
     computed: {
+      maxDataPoints() {
+        const rangeInMinutes = this.getRangeInMinutes();
+        return Math.min(rangeInMinutes, 24 * 60); 
+      },
       chartData() {
         const sortedData = [...this.data]
           .filter((entry) => {
@@ -126,8 +138,23 @@
             return dateA.getTime() - dateB.getTime();
           });
 
-        const filteredData = this.filterDataByRange(sortedData);
-        const clusteredData = this.clusterData(filteredData);
+        let filteredData = this.filterDataByRange(sortedData);
+
+        // Apply zoom filter if active
+        if (this.isZoomed && this.zoomedStartDate && this.zoomedEndDate) {
+          filteredData = filteredData.filter((entry) => {
+            const entryDate = this.parseTimestamp(entry.timestamp);
+            return (
+              entryDate >= this.zoomedStartDate &&
+              entryDate <= this.zoomedEndDate
+            );
+          });
+        }
+
+        const clusteredData = this.shouldClusterData(filteredData)
+          ? this.clusterData(filteredData)
+          : filteredData;
+
         const peakData = this.isMobile
           ? []
           : this.findPeakPoints(clusteredData);
@@ -169,6 +196,35 @@
       this.createChart();
     },
     methods: {
+      getRangeInMinutes() {
+        const now = new Date();
+        let startDate;
+        switch (this.selectedRange) {
+          case "1d":
+            startDate = subDays(now, 1);
+            break;
+          case "1w":
+            startDate = subDays(now, 7);
+            break;
+          case "1m":
+            startDate = subMonths(now, 1);
+            break;
+          default:
+            startDate = subDays(now, 1); 
+        }
+        return differenceInMinutes(now, startDate);
+      },
+
+      shouldClusterData(data) {
+        if (this.isZoomed) {
+          const zoomDuration = differenceInMinutes(
+            this.zoomedEndDate,
+            this.zoomedStartDate
+          );
+          return data.length > Math.min(zoomDuration, 24 * 60);
+        }
+        return data.length > this.maxDataPoints;
+      },
       parseTimestamp(timestamp) {
         if (typeof timestamp === "number") {
           return new Date(timestamp);
@@ -331,8 +387,8 @@
               },
             },
             filter: function (tooltipItem, data) {
-            return tooltipItem.datasetIndex === 0;
-          },
+              return tooltipItem.datasetIndex === 0;
+            },
           },
           hover: {
             mode: "index",
@@ -404,14 +460,22 @@
                   backgroundColor: "rgba(253, 98, 122, 0.2)",
                   animationDuration: 0,
                 },
-                onZoom: () => {
-                  this.isZoomed = true;
+                onZoom: (chart) => {
+                  this.handleZoom(chart);
                 },
               },
             },
           },
         };
       },
+      handleZoom(chart) {
+        const { min, max } = chart.scales["x-axis-0"];
+        this.zoomedStartDate = new Date(min);
+        this.zoomedEndDate = new Date(max);
+        this.isZoomed = true;
+        this.updateChart();
+      },
+
       updateGradient() {
         if (this.chart && this.chart.chartArea) {
           const chartArea = this.chart.chartArea;
@@ -446,7 +510,10 @@
         }
       },
       onRangeChange(range) {
-        this.chart.resetZoom()
+        this.chart.resetZoom();
+        this.isZoomed = false;
+        this.zoomedStartDate = null;
+        this.zoomedEndDate = null;
         this.$emit("range-change", range);
       },
       checkMobileView() {
