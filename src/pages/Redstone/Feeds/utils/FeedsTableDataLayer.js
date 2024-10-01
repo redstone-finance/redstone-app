@@ -43,6 +43,7 @@ export const mapFeedsData = (storeFeedsArray) => {
         : item.feedId + "/" + resolveDenomination(item.feedId),
       timestamp: getTimestampValue(item),
       heartbeat: getHeartbeatValue(item),
+      isFundamentalFeed: isFundamentalFeed(item.feedId),
       deviation: getDeviationValue(item),
       crypto_token: removeSeparators(item.feedId),
       token_image: getTokenImage(item.feedId),
@@ -291,6 +292,8 @@ export const nearestCron = (cronString) => {
     return "Invalid cron";
   }
 };
+
+export const isFundamentalFeed = (feedId) => feedId.includes('_FUNDAMENTAL');
 
 export const heartbeatIsNumber = (value) => {
   return !isNaN(value);
