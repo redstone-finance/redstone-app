@@ -44,6 +44,8 @@ export const mapFeedsData = (storeFeedsArray) => {
       timestamp: getTimestampValue(item),
       heartbeat: getHeartbeatValue(item),
       isFundamentalFeed: isFundamentalFeed(item.feedId),
+      isTwap30: isTwapFeed(item.feedId, 30),
+      isTwap60: isTwapFeed(item.feedId, 60),
       deviation: getDeviationValue(item),
       crypto_token: removeSeparators(item.feedId),
       token_image: getTokenImage(item.feedId),
@@ -294,6 +296,7 @@ export const nearestCron = (cronString) => {
 };
 
 export const isFundamentalFeed = (feedId) => feedId.includes('_FUNDAMENTAL');
+export const isTwapFeed = (feedId, twapValue) => feedId.includes(`TWAP-${twapValue}`);
 
 export const heartbeatIsNumber = (value) => {
   return !isNaN(value);

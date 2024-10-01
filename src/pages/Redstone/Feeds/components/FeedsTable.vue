@@ -107,6 +107,8 @@
           >{{ item.feed }}</RouterLink
         >
         <img v-if="item.isFundamentalFeed" style="width: 25px; height: 25px; margin-left: 5px; background-color: #fff; border-radius: 50%; padding: 2px; opacity: 0.7;" src="../../../../assets/icons/fundamental.svg">
+        <img v-if="item.isTwap30" style="width: 25px; height: 25px; margin-left: 5px; background-color: #fff; border-radius: 50%; padding: 2px; opacity: 0.7;" src="../../../../assets/icons/twap-30.svg">
+        <img v-if="item.isTwap60" style="width: 25px; height: 25px; margin-left: 5px; background-color: #fff; border-radius: 50%; padding: 2px; opacity: 0.7;" src="../../../../assets/icons/twap-60.svg">
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
