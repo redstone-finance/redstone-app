@@ -28,6 +28,11 @@
     subMonths,
     parseISO,
     differenceInMinutes,
+    differenceInHours,
+    differenceInDays,
+    startOfMinute,
+    startOfHour,
+    startOfDay,
   } from "date-fns";
   import isScreen from "../../../../core/screenHelper";
   import {
@@ -122,8 +127,32 @@
     },
     computed: {
       maxDataPoints() {
-        const rangeInMinutes = this.getRangeInMinutes();
-        return Math.min(rangeInMinutes, 24 * 60);
+        const now = new Date();
+        let startDate;
+        if (this.isZoomed && this.zoomedStartDate && this.zoomedEndDate) {
+          const diffInMinutes = differenceInMinutes(
+            this.zoomedEndDate,
+            this.zoomedStartDate
+          );
+          return diffInMinutes <= 1440
+            ? diffInMinutes
+            : Math.ceil(diffInMinutes / 10);
+        } else {
+          switch (this.selectedRange) {
+            case "1d":
+              startDate = subDays(now, 1);
+              return Math.ceil(differenceInMinutes(now, startDate) / 10); // Every 10 minutes for 1 day
+            case "1w":
+              startDate = subDays(now, 7);
+              return differenceInHours(now, startDate); // Every hour for 1 week
+            case "1m":
+              startDate = subMonths(now, 1);
+              return Math.ceil(differenceInHours(now, startDate) / 6); // Every 6 hours for 1 month
+            default:
+              startDate = subDays(now, 7);
+              return differenceInHours(now, startDate); // Default to 1 week with hourly intervals
+          }
+        }
       },
       chartData() {
         const sortedData = [...this.data]
@@ -137,11 +166,14 @@
             return dateA.getTime() - dateB.getTime();
           });
 
-        let filteredData = this.filterDataByRange(sortedData);
+        let processedData = this.processDataForRange(
+          sortedData,
+          this.selectedRange
+        );
 
         // Apply zoom filter if active
         if (this.isZoomed && this.zoomedStartDate && this.zoomedEndDate) {
-          filteredData = filteredData.filter((entry) => {
+          processedData = processedData.filter((entry) => {
             const entryDate = this.parseTimestamp(entry.timestamp);
             return (
               entryDate >= this.zoomedStartDate &&
@@ -150,41 +182,20 @@
           });
         }
 
-        const clusteredData = this.shouldClusterData(filteredData)
-          ? this.clusterData(filteredData)
-          : filteredData;
-
-        const peakData = this.isMobile
-          ? []
-          : this.findPeakPoints(clusteredData);
-
         return {
-          labels: clusteredData.map((entry) => new Date(entry.timestamp)),
+          labels: processedData.map((entry) => new Date(entry.timestamp)),
           datasets: [
             {
               label: "Price",
               borderColor: "#FD627A",
-              data: clusteredData.map((entry) => ({
+              data: processedData.map((entry) => ({
                 x: new Date(entry.timestamp),
                 y: parseFloat(entry.value),
               })),
               fill: true,
               lineTension: 0.1,
-              pointRadius: 0,
-              pointHoverRadius: 0,
-            },
-            {
-              label: "Peak Points",
-              data: peakData.map((entry) => ({
-                x: new Date(entry.timestamp),
-                y: parseFloat(entry.value),
-              })),
-              borderColor: "rgba(0,0,0,0)",
-              pointBackgroundColor: "#FD627A",
-              pointBorderColor: "#FD627A",
-              pointRadius: 4,
-              pointHoverRadius: 6,
-              showLine: false,
+              pointRadius: 3,
+              pointHoverRadius: 5,
             },
           ],
         };
@@ -195,6 +206,125 @@
       this.createChart();
     },
     methods: {
+      processDataForRange(data, range) {
+        const now = new Date();
+        let startDate;
+        let interval;
+
+        if (this.isZoomed && this.zoomedStartDate && this.zoomedEndDate) {
+          startDate = this.zoomedStartDate;
+          const diffInMinutes = differenceInMinutes(
+            this.zoomedEndDate,
+            this.zoomedStartDate
+          );
+          interval = diffInMinutes <= 1440 ? "minute" : "10minutes";
+        } else {
+          switch (range) {
+            case "1d":
+              startDate = subDays(now, 1);
+              interval = "10minutes";
+              break;
+            case "1w":
+              startDate = subDays(now, 7);
+              interval = "hour";
+              break;
+            case "1m":
+              startDate = subMonths(now, 1);
+              interval = "6hours";
+              break;
+            default:
+              startDate = subDays(now, 7);
+              interval = "hour";
+          }
+        }
+
+        return this.selectDataPoints(data, startDate, now, interval);
+      },
+
+      selectDataPoints(data, startDate, endDate, interval) {
+        let filteredData = data.filter((entry) => {
+          const entryDate = this.parseTimestamp(entry.timestamp);
+          return entryDate >= startDate && entryDate <= endDate;
+        });
+
+        let groupedData = {};
+
+        filteredData.forEach((entry) => {
+          const entryDate = this.parseTimestamp(entry.timestamp);
+          let key;
+
+          switch (interval) {
+            case "minute":
+              key = startOfMinute(entryDate).getTime();
+              break;
+            case "10minutes":
+              key = startOfMinute(entryDate).getTime();
+              key = key - (key % (10 * 60 * 1000));
+              break;
+            case "hour":
+              key = startOfHour(entryDate).getTime();
+              break;
+            case "6hours":
+              key = startOfHour(entryDate).getTime();
+              key = key - (key % (6 * 60 * 60 * 1000));
+              break;
+            case "day":
+              key = startOfDay(entryDate).getTime();
+              break;
+          }
+
+          if (
+            !groupedData[key] ||
+            entryDate > this.parseTimestamp(groupedData[key].timestamp)
+          ) {
+            groupedData[key] = entry;
+          }
+        });
+
+        return Object.values(groupedData).sort(
+          (a, b) =>
+            this.parseTimestamp(a.timestamp) - this.parseTimestamp(b.timestamp)
+        );
+      },
+
+      selectMeaningfulPoints(data, startDate, endDate, interval) {
+        let filteredData = data.filter((entry) => {
+          const entryDate = this.parseTimestamp(entry.timestamp);
+          return entryDate >= startDate && entryDate <= endDate;
+        });
+
+        let groupedData = {};
+
+        filteredData.forEach((entry) => {
+          const entryDate = this.parseTimestamp(entry.timestamp);
+          let key;
+
+          switch (interval) {
+            case "hour":
+              key = startOfHour(entryDate).getTime();
+              break;
+            case "12hours":
+              key = startOfHour(entryDate).getTime();
+              key = key - (key % (12 * 60 * 60 * 1000));
+              break;
+            case "day":
+              key = startOfDay(entryDate).getTime();
+              break;
+          }
+
+          if (
+            !groupedData[key] ||
+            parseFloat(entry.value) > parseFloat(groupedData[key].value)
+          ) {
+            groupedData[key] = entry;
+          }
+        });
+
+        return Object.values(groupedData).sort(
+          (a, b) =>
+            this.parseTimestamp(a.timestamp) - this.parseTimestamp(b.timestamp)
+        );
+      },
       getRangeInMinutes() {
         const now = new Date();
         let startDate;
@@ -282,33 +412,6 @@
 
         return clusteredData;
       },
-      findPeakPoints(data) {
-        if (data.length < 3) return data;
-
-        let peaks = [];
-        for (let i = 1; i < data.length - 1; i++) {
-          const prev = parseFloat(data[i - 1].value);
-          const curr = parseFloat(data[i].value);
-          const next = parseFloat(data[i + 1].value);
-
-          if ((curr > prev && curr > next) || (curr < prev && curr < next)) {
-            peaks.push(data[i]);
-          }
-        }
-
-        // Always include the first and last points
-        peaks.unshift(data[0]);
-        peaks.push(data[data.length - 1]);
-
-        // Limit the number of peak points
-        const maxPeaks = 0;
-        if (peaks.length > maxPeaks) {
-          const step = peaks.length / maxPeaks;
-          peaks = peaks.filter((_, index) => Math.floor(index % step) === 0);
-        }
-
-        return peaks;
-      },
       createGradient(ctx, chartArea) {
         const gradient = ctx.createLinearGradient(
           0,
@@ -394,6 +497,11 @@
             line: {
               borderWidth: 2,
             },
+            point: {
+              radius: 3,
+              hitRadius: 10,
+              hoverRadius: 5,
+            },
           },
           animation: {
             duration: 0,
@@ -454,7 +562,7 @@
           plugins: {
             zoom: {
               pan: {
-                enabled: false, // Disable panning
+                enabled: false,
               },
               zoom: {
                 enabled: true,
@@ -479,6 +587,13 @@
               },
             },
           },
+          onHover: (event, chartElements) => {
+            if (chartElements.length === 0) {
+              this.chart.canvas.style.cursor = "default";
+            } else {
+              this.chart.canvas.style.cursor = "pointer";
+            }
+          },
         };
       },
       handleZoom(chart) {
@@ -499,15 +614,25 @@
         }
       },
       getTimeUnit() {
-        switch (this.selectedRange) {
-          case "1d":
-            return "hour";
-          case "1w":
-            return "day";
-          case "1m":
-            return "day";
-          default:
-            return "day";
+        if (this.isZoomed && this.zoomedStartDate && this.zoomedEndDate) {
+          const diffInDays = differenceInDays(
+            this.zoomedEndDate,
+            this.zoomedStartDate
+          );
+          if (diffInDays <= 1) return "hour";
+          if (diffInDays <= 7) return "day";
+          return "week";
+        } else {
+          switch (this.selectedRange) {
+            case "1d":
+              return "hour";
+            case "1w":
+              return "day";
+            case "1m":
+              return "day"; // Changed from "week" to "day" for more granular display
+            default:
+              return "day";
+          }
         }
       },
       updateChart() {
@@ -524,11 +649,13 @@
         }
       },
       onRangeChange(range) {
-        this.chart.resetZoom();
+        this.selectedRange = range;
         this.isZoomed = false;
         this.zoomedStartDate = null;
         this.zoomedEndDate = null;
+        this.chart.resetZoom();
         this.$emit("range-change", range);
+        this.updateChart();
       },
       checkMobileView() {
         this.isMobile = isScreen("xs") || isScreen("sm");
