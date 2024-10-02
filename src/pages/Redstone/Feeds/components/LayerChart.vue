@@ -419,6 +419,8 @@
                 ticks: {
                   autoSkip: true,
                   maxTicksLimit: 10,
+                  maxRotation: 0,
+                  minRotation: 0,
                 },
               },
             ],
@@ -431,34 +433,49 @@
                   callback: (value) => {
                     return `${currencySymbolMap[this.denomination] || this.denomination} ${formatPriceWithoutCurrency(value, this.specialDenomination)}`;
                   },
+                  maxRotation: 0,
+                  minRotation: 0,
+                },
+                gridLines: {
+                  display: true,
+                  color: "rgba(0, 0, 0, 0.1)",
                 },
               },
             ],
           },
           layout: {
             padding: {
-              right: 20,
+              left: 10,
+              right: 30,
+              top: 10,
+              bottom: 10,
             },
           },
           plugins: {
             zoom: {
               pan: {
-                enabled: false,
-                mode: "x",
+                enabled: false, // Disable panning
               },
               zoom: {
                 enabled: true,
                 mode: "x",
+                rangeMin: {
+                  x: null,
+                  y: null,
+                },
+                rangeMax: {
+                  x: null,
+                  y: null,
+                },
+                speed: 0.1,
+                sensitivity: 3,
                 drag: {
                   enabled: true,
                   borderColor: "rgba(253, 98, 122, 0.4)",
                   borderWidth: 1,
                   backgroundColor: "rgba(253, 98, 122, 0.2)",
-                  animationDuration: 0,
                 },
-                onZoom: (chart) => {
-                  this.handleZoom(chart);
-                },
+                onZoom: () => this.onZoomComplete(),
               },
             },
           },
@@ -501,7 +518,8 @@
           this.updateGradient();
           this.chart.update({
             duration: 0,
-            resetTransforms: true,
+            lazy: false,
+            preservation: true,
           });
         }
       },
@@ -514,6 +532,13 @@
       },
       checkMobileView() {
         this.isMobile = isScreen("xs") || isScreen("sm");
+      },
+      onZoomComplete() {
+        this.isZoomed = true;
+        const { min, max } = this.chart.scales["x-axis-0"];
+        this.zoomedStartDate = new Date(min);
+        this.zoomedEndDate = new Date(max);
+        this.updateChart();
       },
     },
     watch: {
