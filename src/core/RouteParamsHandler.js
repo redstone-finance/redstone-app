@@ -1,5 +1,6 @@
 export class RouteParamsHandler {
-  constructor(router, options = {}) {
+  constructor(router, options = {}, perPage = 32) {
+    this.perPage = perPage
     this.router = router;
     this.options = {
       cryptosParam: "cryptos",
@@ -40,7 +41,7 @@ export class RouteParamsHandler {
       currentPage: query[pageParam] ? parseInt(query[pageParam]) : 1,
       sortBy: query[sortByParam] || "popularity",
       sortDesc: query[sortDescParam] === "true",
-      perPage: query[perPageParam] ? parseInt(query[perPageParam]) : 32,
+      perPage: query[perPageParam] ? parseInt(query[perPageParam]) : this.perPage,
       searchTerm: query[searchParam] || "",
     };
   }

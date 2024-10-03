@@ -123,7 +123,6 @@
   import LabelValue from "@/components/DataService/LabelValue";
   import sourcesData from "../../config/sources.json";
   import _ from "lodash";
-  import showMoreTokensMixin from "@/mixins/show-more-tokens";
   import { getDetailsForSymbol } from "@/tokens";
   import { RouteParamsHandler } from "@/core/RouteParamsHandler";
 
@@ -133,8 +132,6 @@
     props: {
       provider: {},
     },
-
-    mixins: [showMoreTokensMixin],
 
     data() {
       return {
@@ -265,7 +262,7 @@
       this.routeParamsHandler = new RouteParamsHandler(this.$router, {
         pageParam: "page",
         perPageParam: "perPage",
-      });
+      }, 16);
       this.initializeFromRoute();
     },
 
