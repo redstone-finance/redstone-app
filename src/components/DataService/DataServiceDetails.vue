@@ -1,5 +1,5 @@
 <template>
-  <div class="provider-details">
+  <div class="provider-details pull-model">
     <div class="provider-info mt-2">
       <div class="mb-3 provider-description">
         <div v-if="provider">
@@ -316,6 +316,125 @@ hr {
 
 <style lang="scss">
   @import "~@/styles/app";
+
+  .pull-model {
+  table {
+    border-top: 1px solid rgb(227, 227, 227);
+  }
+
+  thead {
+    tr {
+      background: #f4f4f4;
+    }
+
+    th {
+      background-position: 30px !important;
+      padding: 30px 15px !important;
+      text-align: center;
+      border: 1px solid rgb(227, 227, 227) !important;
+      text-transform: capitalize !important;
+      font-size: 12px !important;
+    }
+  }
+
+  tbody tr {
+    &:hover {
+      background: #fff !important;
+    }
+
+    &:nth-child(even) {
+      background: #f4f4f4 !important;
+    }
+
+    padding: 10px !important;
+
+    td {
+      text-align: center;
+      border-top: 1px solid rgb(227, 227, 227);
+      border-bottom: 1px solid rgb(227, 227, 227);
+      &:first-child {
+        text-align: left;
+      }
+      &:nth-child(3) {
+        // second is taken by popularity
+        text-align: left;
+      }
+
+      @media (min-width: breakpoint-min(lg)) {
+        &:first-child {
+          border-left: 1px solid rgb(227, 227, 227);
+        }
+
+        &:last-child {
+          border-right: 1px solid rgb(227, 227, 227);
+        }
+      }
+    }
+  }
+
+  &__table {
+    font-size: 14px;
+  }
+
+  @media (max-width: breakpoint-min(md)) {
+    &__table {
+      border: 0;
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        tr {
+          border: 1px solid #ced4da;
+          margin-bottom: 1rem;
+          display: block;
+          border-radius: 5px;
+          &:nth-child(even) {
+            background-color: #fff !important;
+          }
+
+          td {
+            display: block;
+            text-align: left;
+            padding: 15px 0 !important;
+            position: relative;
+            border: 0 !important;
+            div {
+              width: 100% !important;
+            }
+            &::before {
+              content: attr(data-label);
+              text-align: left;
+              font-size: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .table.b-table > tbody > tr > [data-label]::before {
+    content: attr(data-label);
+  }
+
+
+  .disable-sorting {
+    thead {
+      th:nth-child(5) {
+        pointer-events: none !important;
+      }
+    }
+  }
+
+  .table-loader {
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    padding: 100px 0;
+  }
+}
+
 
 .label-value {
   .value {
