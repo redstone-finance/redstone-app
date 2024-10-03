@@ -40,8 +40,10 @@
         id="assets-table"
         stacked="md"
         hover
-        :items="visibleTokens"
+        :items="tokens"
         :fields="fieldsFiltered"
+        :per-page="perPage"
+        :current-page="currentPage"
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
         <template #cell(name)="data">
@@ -81,12 +83,38 @@
           </div>
         </template>
       </b-table>
-      <div
-        v-if="!allTokensVisible"
-        v-observe-visibility="loadMoreSectionVisibilityChanged"
+      <b-pagination
+        :prev-text="prevIcon"
+        :next-text="nextIcon"
+        limit="1"
+        @change="onPageChange"
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        align="fill"
+        class="my-3 custom-pagination"
       >
-        <div v-for="n in 5" :key="n" class="preloader token-preloader"></div>
-      </div>
+        <template #page="{ page }">
+          <span v-if="page === currentPage" class="entry-info">
+            <span v-if="totalRows > 0">
+              Showing {{ firstEntry }} to {{ lastEntry }} of
+              {{ totalRows }} entries
+            </span>
+            <span v-else
+              >No entries found
+              <span v-if="hasFiltersAndSearch"> - </span>
+              <span
+                style="pointer-events: all"
+                v-if="hasFiltersAndSearch"
+                class="clear-filters"
+                @click="resetFilters"
+                >Clear filters</span
+              ></span
+            >
+          </span>
+          <span v-else>{{ page }}</span>
+        </template>
+      </b-pagination>
     </div>
   </div>
 </template>
@@ -97,6 +125,7 @@
   import _ from "lodash";
   import showMoreTokensMixin from "@/mixins/show-more-tokens";
   import { getDetailsForSymbol } from "@/tokens";
+  import { RouteParamsHandler } from "@/core/RouteParamsHandler";
 
   export default {
     name: "DataService",
@@ -111,15 +140,17 @@
       return {
         fields: [
           { key: "name", label: "Asset", thStyle: { width: "300px" } },
-          {key: "symbol", label: "Symbol",  thStyle: { width: "200px" },},
+          { key: "symbol", label: "Symbol", thStyle: { width: "200px" } },
           "sources",
         ],
         firstManifest: null,
         transactionTime: null,
         tokens: null,
-        VISIBLE_CHUNK_SIZE: 10,
         logoPlaceholder:
           "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
+        currentPage: 1,
+        perPage: 10,
+        routeParamsHandler: null,
       };
     },
 
@@ -131,9 +162,11 @@
         }
         return str.substring(0, lastDashIndex);
       },
+
       formatSources(source) {
         return source.map((s) => _.startCase(s)).join(", ");
       },
+
       prepareTokensDataForTable() {
         this.tokens = Object.entries(this.currentManifest.tokens).map(
           (entry) => {
@@ -159,17 +192,28 @@
 
         setTimeout(this.showMoreTokens, 0);
       },
-      loadMoreSectionVisibilityChanged() {
-        this.showMoreTokens();
+
+      onPageChange(page) {
+        this.currentPage = page;
+        this.updateRouteParams();
       },
-      scrollFunction() {
-        if (
-          window.innerHeight + window.pageYOffset >=
-          document.body.offsetHeight
-        ) {
-          this.showMoreTokens();
-        }
+
+      updateRouteParams() {
+        this.routeParamsHandler.updateRouteParams({
+          currentPage: this.currentPage,
+          perPage: this.perPage,
+          // Add any other params you want to include in the route
+        });
       },
+
+      initializeFromRoute() {
+        const routeParams =
+          this.routeParamsHandler.initializeFiltersFromRoute();
+        this.currentPage = routeParams.currentPage;
+        this.perPage = routeParams.perPage;
+      },
+
+      resetFilters() {},
     },
 
     components: {
@@ -180,16 +224,55 @@
       currentManifest() {
         return this.provider?.currentManifest;
       },
+
       dataServiceId() {
         return this.$route.params.id;
       },
+
       fieldsFiltered() {
         return this.fields;
+      },
+
+      totalRows() {
+        return this.tokens ? this.tokens.length : 0;
+      },
+
+      firstEntry() {
+        return this.totalRows === 0
+          ? 0
+          : (this.currentPage - 1) * this.perPage + 1;
+      },
+
+      lastEntry() {
+        return Math.min(this.currentPage * this.perPage, this.totalRows);
+      },
+
+      prevIcon() {
+        return "Previous";
+      },
+
+      nextIcon() {
+        return "Next";
+      },
+
+      hasFiltersAndSearch() {
+        return false;
       },
     },
 
     created() {
       document.addEventListener("scroll", this.scrollFunction);
+      this.routeParamsHandler = new RouteParamsHandler(this.$router, {
+        pageParam: "page",
+        perPageParam: "perPage",
+      });
+      this.initializeFromRoute();
+    },
+
+    mounted() {
+      this.$nextTick(() => {
+        this.routeParamsHandler.setInitialLoadComplete();
+      });
     },
 
     watch: {
@@ -201,6 +284,16 @@
           }
         },
       },
+      $route: {
+        handler: function () {
+          this.initializeFromRoute();
+        },
+        immediate: true,
+      },
+    },
+
+    beforeDestroy() {
+      document.removeEventListener("scroll", this.scrollFunction);
     },
   };
 </script>
