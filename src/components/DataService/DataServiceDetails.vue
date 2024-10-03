@@ -414,9 +414,9 @@ hr {
     }
   }
 
-  .table.b-table > tbody > tr > [data-label]::before {
-    content: attr(data-label);
-  }
+  // .table.b-table > tbody > tr > [data-label]::before {
+  //   content: attr(data-label);
+  // }
 
 
   .disable-sorting {
