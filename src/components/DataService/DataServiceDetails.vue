@@ -196,10 +196,10 @@
       },
 
       updateRouteParams() {
+        console.log(this.currentPage)
         this.routeParamsHandler.updateRouteParams({
           currentPage: this.currentPage,
-          perPage: this.perPage,
-          // Add any other params you want to include in the route
+          // perPage: this.perPage,
         });
       },
 
@@ -261,7 +261,7 @@
       document.addEventListener("scroll", this.scrollFunction);
       this.routeParamsHandler = new RouteParamsHandler(this.$router, {
         pageParam: "page",
-        perPageParam: "perPage",
+        // perPageParam: "perPage",
       }, 16);
       this.initializeFromRoute();
     },
@@ -280,12 +280,6 @@
             this.prepareTokensDataForTable();
           }
         },
-      },
-      $route: {
-        handler: function () {
-          this.initializeFromRoute();
-        },
-        immediate: true,
       },
     },
 

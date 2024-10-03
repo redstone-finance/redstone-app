@@ -1,6 +1,6 @@
 export class RouteParamsHandler {
   constructor(router, options = {}, perPage = 32) {
-    this.perPage = perPage
+    this.perPage = perPage;
     this.router = router;
     this.options = {
       cryptosParam: "cryptos",
@@ -60,32 +60,51 @@ export class RouteParamsHandler {
       searchParam,
     } = this.options;
 
-    if (params.searchTerm) {
-      query[searchParam] = params.searchTerm;
-      delete query[cryptosParam];
-      delete query[networksParam];
-    } else {
-      delete query[searchParam];
-      if (params.selectedCryptos?.length > 0) {
+    if (params.searchTerm !== undefined) {
+      if (params.searchTerm) {
+        query[searchParam] = params.searchTerm;
+        delete query[cryptosParam];
+        delete query[networksParam];
+      } else {
+        delete query[searchParam];
+      }
+    }
+
+    if (params.selectedCryptos !== undefined) {
+      if (params.selectedCryptos.length > 0) {
         query[cryptosParam] = params.selectedCryptos.join(",");
       } else {
         delete query[cryptosParam];
       }
-      if (params.selectedNetworks?.length > 0) {
+    }
+
+    if (params.selectedNetworks !== undefined) {
+      if (params.selectedNetworks.length > 0) {
         query[networksParam] = params.selectedNetworks.join(",");
       } else {
         delete query[networksParam];
       }
     }
 
-    query[pageParam] = params.currentPage.toString();
-    query[sortByParam] = params.sortBy;
-    query[sortDescParam] = params.sortDesc.toString();
-    query[perPageParam] = params.perPage.toString();
+    if (params.currentPage !== undefined) {
+      query[pageParam] = params.currentPage.toString();
+    }
+
+    if (params.sortBy !== undefined) {
+      query[sortByParam] = params.sortBy;
+    }
+
+    if (params.sortDesc !== undefined) {
+      query[sortDescParam] = params.sortDesc.toString();
+    }
+
+    if (params.perPage !== undefined) {
+      query[perPageParam] = params.perPage.toString();
+    }
 
     this.router.replace({ query }).catch((err) => {
       if (err.name !== "NavigationDuplicated") {
-        throw err;
+        console.warn("Navigation duplicated:", err);
       }
     });
   }
