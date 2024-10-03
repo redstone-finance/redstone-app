@@ -10,64 +10,36 @@ export default {
     this.updateRouteParams();
   },
   initializeFiltersFromRoute() {
-    const { cryptos, networks, page, sortBy, sortDesc, perPage, search } =
-      this.$route.query;
-    this.selectedCryptos = search ? [] : cryptos ? cryptos.split(",") : [];
-    this.selectedNetworks = search
-      ? []
-      : networks
-        ? networks.split(",").map(Number)
-        : [];
-    this.currentPage = page ? parseInt(page) : 1;
-    this.sortBy = sortBy || "popularity";
-    this.sortDesc = sortDesc === "true";
-    this.perPage = perPage ? parseInt(perPage) : 32;
+    const routeParams = this.routeParamsHandler.initializeFiltersFromRoute();
+    this.selectedCryptos = routeParams.selectedCryptos;
+    this.selectedNetworks = routeParams.selectedNetworks;
+    this.currentPage = routeParams.currentPage;
+    this.sortBy = routeParams.sortBy;
+    this.sortDesc = routeParams.sortDesc;
+    this.perPage = routeParams.perPage;
+    this.$store.dispatch('layout/updateSearchTerm', routeParams.searchTerm);
     this.applyFilters();
   },
   updateRouteParams() {
-    if (this.isInitialLoad) return;
-    const query = { ...this.$route.query };
-
-    if (this.searchTerm) {
-      query.search = this.searchTerm;
-      delete query.cryptos;
-      delete query.networks;
-    } else {
-      delete query.search;
-      if (this.selectedCryptos.length > 0) {
-        query.cryptos = this.selectedCryptos.join(",");
-      } else {
-        delete query.cryptos;
-      }
-      if (this.selectedNetworks.length > 0) {
-        query.networks = this.selectedNetworks.join(",");
-      } else {
-        delete query.networks;
-      }
-    }
-
-    query.page = this.currentPage.toString();
-    query.sortBy = this.sortBy;
-    query.sortDesc = this.sortDesc.toString();
-    query.perPage = this.perPage.toString();
-
-    this.$router.replace({ query }).catch((err) => {
-      if (err.name !== "NavigationDuplicated") {
-        throw err;
-      }
+    this.routeParamsHandler.updateRouteParams({
+      searchTerm: this.searchTerm,
+      selectedCryptos: this.selectedCryptos,
+      selectedNetworks: this.selectedNetworks,
+      currentPage: this.currentPage,
+      sortBy: this.sortBy,
+      sortDesc: this.sortDesc,
+      perPage: this.perPage,
     });
   },
   handleFilter(filterType, value) {
-    if (filterType === "cryptos") {
+    if (filterType === 'cryptos') {
       this.selectedCryptos = value;
-      this.$store.dispatch("layout/updateSearchTerm", "");
-    } else if (filterType === "networks") {
+      this.$store.dispatch('layout/updateSearchTerm', '');
+    } else if (filterType === 'networks') {
       this.selectedNetworks = value;
-      this.$store.dispatch("layout/updateSearchTerm", "");
+      this.$store.dispatch('layout/updateSearchTerm', '');
     }
-    if (!this.isInitialLoad) {
-      this.currentPage = 1;
-    }
+    this.currentPage = 1;
     this.applyFilters();
     this.updateRouteParams();
   },

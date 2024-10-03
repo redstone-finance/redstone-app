@@ -179,6 +179,8 @@
   import filterMethods from "./utils/FilteringMethods.js";
   import prefetchImages from "@/core/prefetchImages";
   import truncateString from "@/core/truncate";
+  import { RouteParamsHandler } from '@/core/RouteParamsHandler';
+
   import Loader from "../../../components/Loader/Loader";
   import CryptoPicker from "./components/CryptoPicker.vue";
   import NetworkPicker from "./components/NetworkPicker.vue";
@@ -203,6 +205,7 @@
     },
     data() {
       return {
+        routeParamsHandler: null,
         tableComponent: null,
         isLoading: true,
         displayedTableItems: [],
@@ -221,16 +224,17 @@
       };
     },
     async mounted() {
-      await this.initSchema();
-      await this.fetchRelayerValues();
-      await this.initValues();
-      prefetchImages(Object.values(networks).map((network) => network.iconUrl));
-      this.isLoading = false;
-      this.initializeFiltersFromRoute();
-      this.$nextTick(() => {
-        this.isInitialLoad = false;
-      });
-    },
+    this.routeParamsHandler = new RouteParamsHandler(this.$router);
+    await this.initSchema();
+    await this.fetchRelayerValues();
+    await this.initValues();
+    prefetchImages(Object.values(networks).map((network) => network.iconUrl));
+    this.isLoading = false;
+    this.initializeFiltersFromRoute();
+    this.$nextTick(() => {
+      this.routeParamsHandler.setInitialLoadComplete();
+    });
+  },
     methods: {
       nearestCron,
       parseToCurrency,
