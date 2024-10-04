@@ -63,12 +63,16 @@
     <div>
       <b-table
         id="assets-table"
+        ref="assetsTable"
         stacked="md"
         hover
         :items="tokens"
         :fields="fieldsFiltered"
         :per-page="perPage"
         :current-page="currentPage"
+        :filter="filters"
+        :filter-function="customFilter"
+        @filtered="onFiltered"
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
         <template #cell(name)="data">
@@ -145,6 +149,7 @@
 </template>
 
 <script>
+  import { mapState } from "vuex";
   import LabelValue from "@/components/DataService/LabelValue";
   import sourcesData from "../../config/sources.json";
   import _ from "lodash";
@@ -153,6 +158,10 @@
 
   export default {
     name: "DataService",
+
+    components: {
+      LabelValue,
+    },
 
     props: {
       provider: {},
@@ -174,7 +183,63 @@
         perPage: 16,
         routeParamsHandler: null,
         perPageOptions: [8, 16, 32, 64],
+        filteredItems: [],
       };
+    },
+
+    computed: {
+      ...mapState("layout", ["searchTerm"]),
+
+      filters() {
+        return {
+          searchTerm: this.searchTerm,
+        };
+      },
+
+      totalRows() {
+        return this.filteredItems.length;
+      },
+
+      firstEntry() {
+        return this.totalRows === 0
+          ? 0
+          : (this.currentPage - 1) * this.perPage + 1;
+      },
+
+      lastEntry() {
+        return Math.min(this.currentPage * this.perPage, this.totalRows);
+      },
+
+      availablePages() {
+        return Array.from(
+          { length: Math.ceil(this.totalRows / this.perPage) },
+          (_, i) => i + 1
+        );
+      },
+
+      currentManifest() {
+        return this.provider?.currentManifest;
+      },
+
+      dataServiceId() {
+        return this.$route.params.id;
+      },
+
+      fieldsFiltered() {
+        return this.fields;
+      },
+
+      prevIcon() {
+        return "Previous";
+      },
+
+      nextIcon() {
+        return "Next";
+      },
+
+      hasFiltersAndSearch() {
+        return this.searchTerm || false; // Add other filter checks if needed
+      },
     },
 
     methods: {
@@ -182,9 +247,11 @@
         this.currentPage = 1;
         this.updateRouteParams();
       },
+
       onSelectedPageChange() {
         this.updateRouteParams();
       },
+
       removeContentAfterLastDash(str) {
         const lastDashIndex = str.lastIndexOf("-");
         if (lastDashIndex === -1) {
@@ -219,8 +286,6 @@
             };
           }
         );
-
-        setTimeout(this.showMoreTokens, 0);
       },
 
       onPageChange(page) {
@@ -229,10 +294,10 @@
       },
 
       updateRouteParams() {
-        console.log(this.currentPage);
         this.routeParamsHandler.updateRouteParams({
           currentPage: this.currentPage,
           perPage: this.perPage,
+          searchTerm: this.searchTerm,
         });
       },
 
@@ -241,58 +306,42 @@
           this.routeParamsHandler.initializeFiltersFromRoute();
         this.currentPage = routeParams.currentPage;
         this.perPage = routeParams.perPage;
+        this.$store.dispatch(
+          "layout/updateSearchTerm",
+          routeParams.searchTerm || ""
+        );
       },
 
-      resetFilters() {},
-    },
-
-    components: {
-      LabelValue,
-    },
-
-    computed: {
-      availablePages() {
-        return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-      },
-      totalPages() {
-        return Math.ceil(this.totalRows / this.perPage);
-      },
-      currentManifest() {
-        return this.provider?.currentManifest;
+      onFiltered(filteredItems) {
+        this.filteredItems = filteredItems;
       },
 
-      dataServiceId() {
-        return this.$route.params.id;
+      formatInterval(interval) {
+        return interval / 1000 + " s"; // Convert ms to seconds and format
       },
 
-      fieldsFiltered() {
-        return this.fields;
+      customFilter(row, filters) {
+        if (!filters.searchTerm) return true;
+        const searchLower = filters.searchTerm?.toLowerCase();
+        return (
+          row.name?.toLowerCase().includes(searchLower) ||
+          row.symbol?.toLowerCase().includes(searchLower)
+        );
       },
 
-      totalRows() {
-        return this.tokens ? this.tokens.length : 0;
+      resetFilters(clearSearch = true) {
+        if (clearSearch) {
+          this.$store.dispatch("layout/updateSearchTerm", "");
+        }
+        this.currentPage = 1;
+        this.updateRouteParams();
+        this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
-
-      firstEntry() {
-        return this.totalRows === 0
-          ? 0
-          : (this.currentPage - 1) * this.perPage + 1;
-      },
-
-      lastEntry() {
-        return Math.min(this.currentPage * this.perPage, this.totalRows);
-      },
-
-      prevIcon() {
-        return "Previous";
-      },
-
-      nextIcon() {
-        return "Next";
-      },
-
-      hasFiltersAndSearch() {
-        return false;
+      applyFilters() {
+        // this.$refs.assetsTable?.refresh();
+        if (this.searchTerm) {
+          this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+        }
       },
     },
 
@@ -302,7 +351,7 @@
         this.$router,
         {
           pageParam: "page",
-          // perPageParam: "perPage",
+          searchParam: "search",
         },
         16
       );
@@ -321,6 +370,19 @@
         handler: function () {
           if (this.currentManifest) {
             this.prepareTokensDataForTable();
+          }
+        },
+      },
+      searchTerm: {
+        handler(newValue) {
+          this.currentPage = 1;
+          this.applyFilters();
+          this.updateRouteParams();
+          if (this.searchTerm === "") {
+            this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+          } else if (newValue?.length >= 3) {
+            this.resetFilters(false);
+            this.$store.dispatch("layout/updateFeedsFilterStatus", false);
           }
         },
       },
@@ -457,7 +519,7 @@
       span {
         text-align: center !important;
       }
-      select{
+      select {
         width: 100px;
       }
     }
