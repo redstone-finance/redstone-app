@@ -3,30 +3,60 @@
     <div class="provider-info mt-2">
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
         <div class="pull-model__status">
-
-            <span class="feeds__status-text mr-4"
-              ><div><i class="fa fa-server inline"></i> Nodes</div>
-              <strong>{{
-                provider && provider?.nodes?.length
-                  ? provider.nodes.length
-                  : "0"
-              }}</strong></span
+          <span class="feeds__status-text mr-4"
+            ><div><i class="fa fa-server inline"></i> Nodes</div>
+            <strong>{{
+              provider && provider?.nodes?.length ? provider.nodes.length : "0"
+            }}</strong></span
+          >
+          <span class="feeds__status-text mr-4"
+            ><div><i class="fa fa-cube inline"></i> Assets</div>
+            <strong>{{
+              provider && provider?.assetsCount ? provider.assetsCount : "0"
+            }}</strong></span
+          >
+          <span class="feeds__status-text mr-4"
+            ><div><i class="fa fa-clock-o inline"></i> Interval</div>
+            <strong>{{
+              provider && provider.currentManifest
+                ? formatInterval(provider.currentManifest.interval)
+                : undefined
+            }}</strong></span
+          >
+        </div>
+        <div
+          class="pull-model__pagers text-light fw-normal"
+          style="margin-left: auto"
+        >
+          <span class="feeds__status-text">
+            Per page:
+            <select
+              v-model="perPage"
+              @change="onPerPageChange"
+              class="feeds__select"
             >
-            <span class="feeds__status-text mr-4"
-              ><div><i class="fa fa-cube inline"></i> Assets</div>
-              <strong>{{
-                provider && provider?.assetsCount ? provider.assetsCount : "0"
-              }}</strong></span
+              <option
+                v-for="option in perPageOptions"
+                :key="option"
+                :value="option"
+              >
+                {{ option }}
+              </option>
+            </select>
+          </span>
+          <span class="feeds__status-text" style="text-align: right">
+            Current page:
+            <select
+              v-model="currentPage"
+              @change="onSelectedPageChange"
+              class="feeds__select"
             >
-            <span class="feeds__status-text mr-4"
-              ><div><i class="fa fa-clock-o inline"></i> Interval</div>
-              <strong>{{
-                provider && provider.currentManifest
-                  ? formatInterval(provider.currentManifest.interval)
-                  : undefined
-              }}</strong></span
-            >
-          </div>
+              <option v-for="page in availablePages" :key="page" :value="page">
+                {{ page }}
+              </option>
+            </select>
+          </span>
+        </div>
       </div>
     </div>
     <hr />
@@ -141,12 +171,20 @@
         logoPlaceholder:
           "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
         currentPage: 1,
-        perPage: 10,
+        perPage: 16,
         routeParamsHandler: null,
+        perPageOptions: [8, 16, 32, 64],
       };
     },
 
     methods: {
+      onPerPageChange() {
+        this.currentPage = 1;
+        this.updateRouteParams();
+      },
+      onSelectedPageChange() {
+        this.updateRouteParams();
+      },
       removeContentAfterLastDash(str) {
         const lastDashIndex = str.lastIndexOf("-");
         if (lastDashIndex === -1) {
@@ -194,7 +232,7 @@
         console.log(this.currentPage);
         this.routeParamsHandler.updateRouteParams({
           currentPage: this.currentPage,
-          // perPage: this.perPage,
+          perPage: this.perPage,
         });
       },
 
@@ -213,6 +251,12 @@
     },
 
     computed: {
+      availablePages() {
+        return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      },
+      totalPages() {
+        return Math.ceil(this.totalRows / this.perPage);
+      },
       currentManifest() {
         return this.provider?.currentManifest;
       },
@@ -405,6 +449,18 @@
     padding: 2rem;
     box-shadow: var(--content-shadow);
 
+    &__pagers {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      justify-items: center;
+      span {
+        text-align: center !important;
+      }
+      select{
+        width: 100px;
+      }
+    }
     &__view-details {
       padding: 0 10px;
       margin-bottom: 30px;
@@ -421,14 +477,14 @@
       background-color: $gray-200;
       // box-shadow: var(--content-shadow);
       padding: 10px;
-      div{
+      div {
         display: flex;
         align-items: center;
         i {
           margin-right: 5px;
         }
       }
-      strong{
+      strong {
         font-size: 15px;
       }
     }
