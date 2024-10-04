@@ -1,37 +1,32 @@
 <template>
   <div class="provider-details">
     <div class="provider-info mt-2">
-      <div class="mb-3 provider-description">
-        <div v-if="provider">
-          {{ provider.description }}
-        </div>
-        <div v-else class="preloader text-preloader"></div>
-      </div>
-
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
-        <LabelValue
-          label="Nodes"
-          :value="
-            provider && provider?.nodes?.length ? provider.nodes.length : '0'
-          "
-          :alignRight="true"
-        />
-        <LabelValue
-          label="Assets"
-          :value="
-            provider && provider?.assetsCount ? provider.assetsCount : '0'
-          "
-          :alignRight="true"
-        />
-        <LabelValue
-          label="Interval"
-          :value="
-            provider && provider.currentManifest
-              ? formatInterval(provider.currentManifest.interval)
-              : undefined
-          "
-          :alignRight="true"
-        />
+        <div class="pull-model__status">
+
+            <span class="feeds__status-text mr-4"
+              ><div><i class="fa fa-server inline"></i> Nodes</div>
+              <strong>{{
+                provider && provider?.nodes?.length
+                  ? provider.nodes.length
+                  : "0"
+              }}</strong></span
+            >
+            <span class="feeds__status-text mr-4"
+              ><div><i class="fa fa-cube inline"></i> Assets</div>
+              <strong>{{
+                provider && provider?.assetsCount ? provider.assetsCount : "0"
+              }}</strong></span
+            >
+            <span class="feeds__status-text mr-4"
+              ><div><i class="fa fa-clock-o inline"></i> Interval</div>
+              <strong>{{
+                provider && provider.currentManifest
+                  ? formatInterval(provider.currentManifest.interval)
+                  : undefined
+              }}</strong></span
+            >
+          </div>
       </div>
     </div>
     <hr />
@@ -196,7 +191,7 @@
       },
 
       updateRouteParams() {
-        console.log(this.currentPage)
+        console.log(this.currentPage);
         this.routeParamsHandler.updateRouteParams({
           currentPage: this.currentPage,
           // perPage: this.perPage,
@@ -259,10 +254,14 @@
 
     created() {
       document.addEventListener("scroll", this.scrollFunction);
-      this.routeParamsHandler = new RouteParamsHandler(this.$router, {
-        pageParam: "page",
-        // perPageParam: "perPage",
-      }, 16);
+      this.routeParamsHandler = new RouteParamsHandler(
+        this.$router,
+        {
+          pageParam: "page",
+          // perPageParam: "perPage",
+        },
+        16
+      );
       this.initializeFromRoute();
     },
 
@@ -405,6 +404,34 @@
     border-radius: 10px;
     padding: 2rem;
     box-shadow: var(--content-shadow);
+
+    &__view-details {
+      padding: 0 10px;
+      margin-bottom: 30px;
+      h1 {
+        font-size: 18px;
+      }
+    }
+    &__status {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      border-radius: 10px;
+      border: 1px solid rgb(227, 227, 227);
+      background-color: $gray-200;
+      // box-shadow: var(--content-shadow);
+      padding: 10px;
+      div{
+        display: flex;
+        align-items: center;
+        i {
+          margin-right: 5px;
+        }
+      }
+      strong{
+        font-size: 15px;
+      }
+    }
     table {
       border-top: 1px solid rgb(227, 227, 227);
     }

@@ -7,10 +7,12 @@
       <div class="preloader text-preloader"></div>
     </div>
     <div class="pull-model">
-      <div class="d-flex align-items-center">
-        <img class="provider-logo" :src="provider.logo" />
-        <div class="provider-name ml-3">{{ provider.name }}</div>
-      </div>
+      <div class="pull-model__view-details">
+      <h1>Pull Model</h1>
+      <p>
+        RedStone Pull Oracle offers robust, high frequency of data updates for broad range of assets.
+      </p>
+    </div>
       <DataServiceDetails :provider="provider" />
     </div>
   </div>
