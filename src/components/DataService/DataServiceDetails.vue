@@ -197,7 +197,7 @@
       },
 
       totalRows() {
-        return this.filteredItems.length;
+        return this.filteredItems.length || this.tokens.length
       },
 
       firstEntry() {
