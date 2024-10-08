@@ -849,6 +849,11 @@
     "url": "https://velodrome.finance/",
     "color": "#0f172a"
   },
+  "velodrome-optimism-usdc": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
+    "url": "https://velodrome.finance/",
+    "color": "#0f172a"
+  },
   "velodrome-cl-optimism-weth-500": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
     "url": "https://velodrome.finance/",
@@ -894,6 +899,16 @@
     "url": "https://pancakeswap.finance/",
     "color": "#a881fc"
   },
+  "pancake-swap-ethereum-usdt-100": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
+  "pancake-swap-ethereum-weth-500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
   "pancake-swap-ethereum-weth-500-multi-block": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
     "url": "https://pancakeswap.finance/",
@@ -930,6 +945,31 @@
     "color": "#fd627a"
   },
   "aerodrome-usdc": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },  
+  "aerodrome-cl-base-wsteth-2500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-base-rsr": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-base-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-cl-base-weth-100": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-cl-base-weth-400": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
     "url": "https://aerodrome.finance/",
     "color": "#0052FF"
