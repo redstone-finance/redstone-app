@@ -76,8 +76,18 @@
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
         <template #cell(name)="data">
-          <img class="token-logo" :src="data.item.logoURI || findLogoForSource(data.item.name) || logoPlaceholder" />
-          <span class="token-name ml-3">{{ data.item.name }}</span>
+          <img
+            class="token-logo"
+            :src="
+              data.item.logoURI ||
+              findLogoForSource(data.item.name) ||
+              logoPlaceholder
+            "
+          />
+          <span class="token-name ml-3">{{
+            data.item.name ||
+            `${data.item.symbol.replace("_FUNDAMENTAL", "").replace("_RATE_PROVIDER", "")} contract value`
+          }}</span>
         </template>
         <template #cell(symbol)="data">
           <span
@@ -103,7 +113,11 @@
               >
                 <img
                   class="source-logo"
-                  :src="source.logoURI || findLogoForSource(source.name) || logoPlaceholder"
+                  :src="
+                    source.logoURI ||
+                    findLogoForSource(source.name) ||
+                    logoPlaceholder
+                  "
                   v-b-tooltip.hover
                   :title="source.name"
                 />
@@ -198,7 +212,9 @@
       },
 
       totalRows() {
-        return this.filteredItems.length || this.tokens.length;
+        return this.hasFiltersAndSearch
+          ? this.filteredItems?.length
+          : this.tokens?.length;
       },
 
       firstEntry() {
@@ -239,7 +255,7 @@
       },
 
       hasFiltersAndSearch() {
-        return this.searchTerm || false; // Add other filter checks if needed
+        return this.searchTerm?.trim()?.length > 0 || false; // Add other filter checks if needed
       },
     },
 
@@ -282,6 +298,7 @@
               source: sourceList.map((el) => {
                 return {
                   name: el,
+                  ...sourcesData[el],
                   ...sourcesData[this.removeContentAfterLastDash(el)],
                 };
               }),
@@ -306,6 +323,7 @@
       initializeFromRoute() {
         const routeParams =
           this.routeParamsHandler.initializeFiltersFromRoute();
+        console.log(routeParams.currentPage);
         this.currentPage = routeParams.currentPage;
         this.perPage = routeParams.perPage;
         this.$store.dispatch(
@@ -340,15 +358,18 @@
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
       applyFilters() {
-        // this.$refs.assetsTable?.refresh();
-        if (this.searchTerm) {
-          this.$store.dispatch("layout/updateFeedsFilterStatus", true);
-        }
+        // apply other filters
+        // if (filters) {
+        //   this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+        // }
       },
     },
 
     created() {
       document.addEventListener("scroll", this.scrollFunction);
+    },
+
+    mounted() {
       this.routeParamsHandler = new RouteParamsHandler(
         this.$router,
         {
@@ -357,13 +378,10 @@
         },
         16
       );
-      this.initializeFromRoute();
-    },
-
-    mounted() {
       this.$nextTick(() => {
         this.routeParamsHandler.setInitialLoadComplete();
       });
+      this.initializeFromRoute();
     },
 
     watch: {
@@ -377,7 +395,6 @@
       },
       searchTerm: {
         handler(newValue) {
-          this.currentPage = 1;
           this.applyFilters();
           this.updateRouteParams();
           if (this.searchTerm === "") {
@@ -389,7 +406,6 @@
         },
       },
     },
-
     beforeDestroy() {
       document.removeEventListener("scroll", this.scrollFunction);
     },
