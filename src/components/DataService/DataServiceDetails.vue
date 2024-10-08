@@ -353,15 +353,10 @@
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
       applyFilters() {
-<<<<<<< HEAD
-        if (this.searchTerm) {
-          console.log('set filters')
-=======
-        // this.$refs.assetsTable?.refresh();
-        if (this.searchTerm) {
->>>>>>> ae664fe331a654bb2d65291fde8024e7c39be353
-          this.$store.dispatch("layout/updateFeedsFilterStatus", true);
-        }
+        // apply other filters
+        // if (filters) {
+        //   this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+        // }
       },
     },
 
