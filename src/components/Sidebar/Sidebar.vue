@@ -30,8 +30,8 @@
 
         <NavLink
           :activeItem="activeItem"
-          header="Data services"
-          link="/app/data-services"
+          header="Pull model"
+          link="/app/pull-model/redstone-primary-prod/"
           iconName="flaticon-providers"
           index="providers"
           isHeader

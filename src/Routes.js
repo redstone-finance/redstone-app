@@ -79,9 +79,10 @@ const router = new Router({
           },
         },
         {
-          path: "data-services/:id",
-          name: "DataServicePage",
+          path: "pull-model/:id",
+          name: "PullModel",
           component: DataService,
+          meta: { showSearchInputInNavbar: true },
         },
       ],
     },
