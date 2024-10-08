@@ -402,11 +402,6 @@
         },
       },
     },
-
-    beforeDestroy() {
-      document.removeEventListener("scroll", this.scrollFunction);
-    },
-
     beforeDestroy() {
       document.removeEventListener("scroll", this.scrollFunction);
     },
