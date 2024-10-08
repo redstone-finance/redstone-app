@@ -76,7 +76,7 @@
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
         <template #cell(name)="data">
-          <img class="token-logo" :src="data.item.logoURI || logoPlaceholder" />
+          <img class="token-logo" :src="data.item.logoURI || findLogoForSource(data.item.name) || logoPlaceholder" />
           <span class="token-name ml-3">{{ data.item.name }}</span>
         </template>
         <template #cell(symbol)="data">
@@ -476,8 +476,9 @@
   }
 
   .source-logo {
-    height: 20px;
+    height: 25px;
     margin: 4px;
+    border-radius: 50%;
   }
 
   .text-preloader {
@@ -715,16 +716,7 @@
       overflow: hidden;
     }
 
-    td:not(:hover) .source-links-wrapper:after {
-      content: "";
-      box-shadow: inset -19px 0px 12px -10px $gray-100;
-      z-index: 1;
-      transform: translateX(-10px);
-      height: 30px;
-      width: 30px;
-    }
-
-    td:hover {
+    td {
       .source-links {
         flex-wrap: wrap;
       }
