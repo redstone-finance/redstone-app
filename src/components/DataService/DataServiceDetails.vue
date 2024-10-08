@@ -103,7 +103,7 @@
               >
                 <img
                   class="source-logo"
-                  :src="source.logoURI || logoPlaceholder"
+                  :src="source.logoURI || findLogoForSource(source.name) || logoPlaceholder"
                   v-b-tooltip.hover
                   :title="source.name"
                 />
@@ -149,6 +149,7 @@
 </template>
 
 <script>
+  import { findLogoForSource } from "./logosHelper";
   import { mapState } from "vuex";
   import LabelValue from "@/components/DataService/LabelValue";
   import sourcesData from "../../config/sources.json";
@@ -197,7 +198,7 @@
       },
 
       totalRows() {
-        return this.filteredItems.length || this.tokens.length
+        return this.filteredItems.length || this.tokens.length;
       },
 
       firstEntry() {
@@ -243,6 +244,7 @@
     },
 
     methods: {
+      findLogoForSource,
       onPerPageChange() {
         this.currentPage = 1;
         this.updateRouteParams();
