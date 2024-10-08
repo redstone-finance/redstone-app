@@ -84,7 +84,10 @@
               logoPlaceholder
             "
           />
-          <span class="token-name ml-3">{{ data.item.name }}</span>
+          <span class="token-name ml-3">{{
+            data.item.name ||
+            `${data.item.symbol.replace("_FUNDAMENTAL", "").replace("_RATE_PROVIDER", "")} contract value`
+          }}</span>
         </template>
         <template #cell(symbol)="data">
           <span
@@ -208,7 +211,7 @@
         };
       },
 
-        totalRows() {
+      totalRows() {
         return this.hasFiltersAndSearch
           ? this.filteredItems?.length
           : this.tokens?.length;
@@ -320,7 +323,7 @@
       initializeFromRoute() {
         const routeParams =
           this.routeParamsHandler.initializeFiltersFromRoute();
-          console.log(routeParams.currentPage)
+        console.log(routeParams.currentPage);
         this.currentPage = routeParams.currentPage;
         this.perPage = routeParams.perPage;
         this.$store.dispatch(
@@ -364,8 +367,6 @@
 
     created() {
       document.addEventListener("scroll", this.scrollFunction);
-    
-
     },
 
     mounted() {
