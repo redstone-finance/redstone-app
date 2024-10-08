@@ -252,7 +252,7 @@
       },
 
       hasFiltersAndSearch() {
-        return this.searchTerm.trim()?.length > 0 || false; // Add other filter checks if needed
+        return this.searchTerm?.trim()?.length > 0 || false; // Add other filter checks if needed
       },
     },
 
@@ -295,6 +295,7 @@
               source: sourceList.map((el) => {
                 return {
                   name: el,
+                  ...sourcesData[el],
                   ...sourcesData[this.removeContentAfterLastDash(el)],
                 };
               }),
@@ -319,6 +320,7 @@
       initializeFromRoute() {
         const routeParams =
           this.routeParamsHandler.initializeFiltersFromRoute();
+          console.log(routeParams.currentPage)
         this.currentPage = routeParams.currentPage;
         this.perPage = routeParams.perPage;
         this.$store.dispatch(
@@ -362,6 +364,11 @@
 
     created() {
       document.addEventListener("scroll", this.scrollFunction);
+    
+
+    },
+
+    mounted() {
       this.routeParamsHandler = new RouteParamsHandler(
         this.$router,
         {
@@ -370,13 +377,10 @@
         },
         16
       );
-      this.initializeFromRoute();
-    },
-
-    mounted() {
       this.$nextTick(() => {
         this.routeParamsHandler.setInitialLoadComplete();
       });
+      this.initializeFromRoute();
     },
 
     watch: {
@@ -390,7 +394,6 @@
       },
       searchTerm: {
         handler(newValue) {
-          this.currentPage = 1;
           this.applyFilters();
           this.updateRouteParams();
           if (this.searchTerm === "") {
