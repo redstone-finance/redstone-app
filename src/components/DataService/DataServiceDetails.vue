@@ -76,7 +76,14 @@
         v-if="dataServiceId !== 'redstone-custom-urls-demo'"
       >
         <template #cell(name)="data">
-          <img class="token-logo" :src="data.item.logoURI || findLogoForSource(data.item.name) || logoPlaceholder" />
+          <img
+            class="token-logo"
+            :src="
+              data.item.logoURI ||
+              findLogoForSource(data.item.name) ||
+              logoPlaceholder
+            "
+          />
           <span class="token-name ml-3">{{ data.item.name }}</span>
         </template>
         <template #cell(symbol)="data">
@@ -103,7 +110,11 @@
               >
                 <img
                   class="source-logo"
-                  :src="source.logoURI || findLogoForSource(source.name) || logoPlaceholder"
+                  :src="
+                    source.logoURI ||
+                    findLogoForSource(source.name) ||
+                    logoPlaceholder
+                  "
                   v-b-tooltip.hover
                   :title="source.name"
                 />
@@ -197,8 +208,10 @@
         };
       },
 
-      totalRows() {
-        return this.filteredItems.length || this.tokens.length;
+        totalRows() {
+        return this.hasFiltersAndSearch
+          ? this.filteredItems?.length
+          : this.tokens?.length;
       },
 
       firstEntry() {
@@ -239,7 +252,7 @@
       },
 
       hasFiltersAndSearch() {
-        return this.searchTerm || false; // Add other filter checks if needed
+        return this.searchTerm.trim()?.length > 0 || false; // Add other filter checks if needed
       },
     },
 
@@ -340,8 +353,8 @@
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
       applyFilters() {
-        // this.$refs.assetsTable?.refresh();
         if (this.searchTerm) {
+          console.log('set filters')
           this.$store.dispatch("layout/updateFeedsFilterStatus", true);
         }
       },
@@ -372,19 +385,6 @@
         handler: function () {
           if (this.currentManifest) {
             this.prepareTokensDataForTable();
-          }
-        },
-      },
-      searchTerm: {
-        handler(newValue) {
-          this.currentPage = 1;
-          this.applyFilters();
-          this.updateRouteParams();
-          if (this.searchTerm === "") {
-            this.$store.dispatch("layout/updateFeedsFilterStatus", true);
-          } else if (newValue?.length >= 3) {
-            this.resetFilters(false);
-            this.$store.dispatch("layout/updateFeedsFilterStatus", false);
           }
         },
       },

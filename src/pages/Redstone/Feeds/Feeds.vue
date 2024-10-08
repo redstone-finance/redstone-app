@@ -254,14 +254,14 @@
           this.currentPage = 1;
           this.applyFilters();
           this.updateRouteParams();
-          if (this.searchTerm === "") {
+          if (this?.searchTerm === "" && this.hasFilters) {
             this.$store.dispatch("layout/updateFeedsFilterStatus", true);
           } else if (newValue?.length >= 3) {
             this.resetFilters(false);
             this.$store.dispatch("layout/updateFeedsFilterStatus", false);
           }
         },
-        immediate: true,
+        immediate: false,
       },
       currentPage(newPage) {
         this.selectedPage = newPage;
