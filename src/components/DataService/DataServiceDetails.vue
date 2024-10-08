@@ -353,8 +353,13 @@
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
       applyFilters() {
+<<<<<<< HEAD
         if (this.searchTerm) {
           console.log('set filters')
+=======
+        // this.$refs.assetsTable?.refresh();
+        if (this.searchTerm) {
+>>>>>>> ae664fe331a654bb2d65291fde8024e7c39be353
           this.$store.dispatch("layout/updateFeedsFilterStatus", true);
         }
       },
@@ -388,6 +393,23 @@
           }
         },
       },
+      searchTerm: {
+        handler(newValue) {
+          this.currentPage = 1;
+          this.applyFilters();
+          this.updateRouteParams();
+          if (this.searchTerm === "") {
+            this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+          } else if (newValue?.length >= 3) {
+            this.resetFilters(false);
+            this.$store.dispatch("layout/updateFeedsFilterStatus", false);
+          }
+        },
+      },
+    },
+
+    beforeDestroy() {
+      document.removeEventListener("scroll", this.scrollFunction);
     },
 
     beforeDestroy() {
