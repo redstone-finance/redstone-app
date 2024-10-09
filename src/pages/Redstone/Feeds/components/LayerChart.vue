@@ -24,7 +24,10 @@
   import Chart from "chart.js";
   import { isValid, subDays, subMonths, parseISO } from "date-fns";
   import isScreen from "../../../../core/screenHelper";
-  import { currencySymbolMap, formatPriceWithoutCurrency } from "./../utils/FeedsTableDataLayer";
+  import {
+    currencySymbolMap,
+    formatPriceWithoutCurrency,
+  } from "./../utils/FeedsTableDataLayer";
   import zoomPlugin from "chartjs-plugin-zoom";
 
   Chart.plugins.register(zoomPlugin);
@@ -97,8 +100,8 @@
       },
       specialDenomination: {
         type: Boolean,
-        default: false
-      }
+        default: false,
+      },
     },
     data() {
       return {
@@ -169,6 +172,9 @@
       this.createChart();
     },
     methods: {
+      onDataPointClick(index) {
+        this.$emit("data-point-click", index);
+      },
       parseTimestamp(timestamp) {
         if (typeof timestamp === "number") {
           return new Date(timestamp);
@@ -295,6 +301,17 @@
         this.$nextTick(() => {
           this.updateGradient();
         });
+
+        // Add click event listener to the chart
+        this.$refs.chart.onclick = (evt) => {
+          const activePoints = this.chart.getElementsAtEventForMode(
+            evt,
+            "nearest",
+            { intersect: false },
+            false
+          );
+          this.onDataPointClick(activePoints[0]._index)
+        };
       },
       getChartOptions() {
         const data = this.chartData.datasets[0].data;
@@ -331,8 +348,8 @@
               },
             },
             filter: function (tooltipItem, data) {
-            return tooltipItem.datasetIndex === 0;
-          },
+              return tooltipItem.datasetIndex === 0;
+            },
           },
           hover: {
             mode: "index",
@@ -387,6 +404,12 @@
             padding: {
               right: 20,
             },
+          },
+          onClick: (event, activeElements) => {
+            // This is needed to prevent default zoom behavior when clicking
+            if (activeElements.length > 0) {
+              event.stopPropagation();
+            }
           },
           plugins: {
             zoom: {
@@ -446,7 +469,7 @@
         }
       },
       onRangeChange(range) {
-        this.chart.resetZoom()
+        this.chart.resetZoom();
         this.$emit("range-change", range);
       },
       checkMobileView() {

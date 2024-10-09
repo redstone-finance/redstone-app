@@ -22,6 +22,18 @@
   }
 }
 
+.crypto-dropdown.chart {
+  margin-left: calc(100% - 150px);
+  .custom-checkbox {
+    border-bottom: 0;
+    font-size: 10px;
+    width: 150px;
+    &:hover {
+      background-color: #fff;
+    }
+  }
+}
+
 .stat-item {
   background-color: white;
   padding: 1.5rem 1rem;
@@ -136,7 +148,7 @@
   font-size: 1.2rem;
 }
 
-::v-deep .feeds__token-image{
+::v-deep .feeds__token-image {
   margin: 0;
   margin-right: 10px;
 }
@@ -166,7 +178,7 @@
   }
 }
 
-.timestamp{
+.timestamp {
   display: block;
   font-size: 10px;
   color: #6b7280;

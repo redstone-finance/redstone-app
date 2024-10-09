@@ -8,8 +8,15 @@
             <span>{{
               currencySymbolMap[feedData?.denomination] || feedData.denomination
             }}</span>
-            <strong>{{ formatPriceWithoutCurrency(feedData?.apiValues?.value, sUSDe_RATE) }}</strong>
-            <span class="timestamp" v-b-tooltip.hover :title="feedData.updateTime">Updated {{ feedData.humanUpdateTime }}</span>
+            <strong>{{
+              formatPriceWithoutCurrency(feedData?.apiValues?.value, sUSDe_RATE)
+            }}</strong>
+            <span
+              class="timestamp"
+              v-b-tooltip.hover
+              :title="feedData.updateTime"
+              >Updated {{ feedData.humanUpdateTime }}</span
+            >
           </dd>
         </div>
         <div class="stat-item">
@@ -86,8 +93,20 @@
         :separate-labels="false"
       />
       <div class="feed-chart">
+        <div class="crypto-dropdown chart">
+          <b-form-checkbox
+            class="crypto-checkbox-list"
+            variant="danger"
+            v-model="openExplorerOnClick"
+            v-b-tooltip.hover
+            title="Opens block transaction explorer on chart point click"
+          >
+           Block explorer <i class="fa fa-info-circle"></i>
+          </b-form-checkbox>
+        </div>
         <layer-chart
           v-if="currentChartData && !isLoading"
+          @data-point-click="handleDataPointClick"
           :data="currentChartData"
           :range="currentRange"
           :denomination="feedData.denomination"
@@ -121,7 +140,7 @@
     findNetworkName,
     heartbeatIsNumber,
     currencySymbolMap,
-    formatPriceWithoutCurrency
+    formatPriceWithoutCurrency,
   } from "./utils/FeedsTableDataLayer";
   import TimestampWithLoader from "./components/TimestampWithLoader.vue";
   import Loader from "./../../../components/Loader/Loader.vue";
@@ -150,6 +169,7 @@
         duplicateRanges: [],
         rawChartData: null,
         currencySymbolMap,
+        openExplorerOnClick: true,
       };
     },
     async mounted() {
@@ -161,6 +181,14 @@
       formatPriceWithoutCurrency,
       parseToCurrency,
       heartbeatIsNumber,
+      handleDataPointClick(index) {
+        if (!this.openExplorerOnClick) return;
+        window.open(
+          `${this.feedData.explorer.explorerUrl}/tx/${this.rawChartData[index].txHash}`,
+          "_blank"
+        );
+      },
+
       hexToPrice(hex) {
         let decimalValue = parseInt(hex, 16);
         let price = decimalValue / 100000000;
@@ -277,7 +305,7 @@
         this.currentRange = range;
       },
       getChartEndpoint(daysRange) {
-        const baseUrl = "https://api.redstone.finance/on-chain-updates";
+        const baseUrl = "http://localhost:9000/on-chain-updates";
         const dataFeedId = this.feedData.token || "ETH";
         const adapterName = this.feedData?.relayerId;
         return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;
@@ -297,7 +325,7 @@
       },
     },
     computed: {
-      sUSDe_RATE(){
+      sUSDe_RATE() {
         return this.feedData.token === "sUSDe_RATE_PROVIDER";
       },
       feedsInRelayer() {
