@@ -104,8 +104,13 @@
               token: toUrlParam(item.token),
             },
           }"
-          >{{ item.feed }}</RouterLink
+          >{{ clearFeedName(item.feed) }}</RouterLink
         >
+        <FeedIcon
+          :isFundamentalFeed="item.isFundamentalFeed"
+          :isTwap30="item.isTwap30"
+          :isTwap60="item.isTwap60"
+        />
       </template>
       <template #cell(answer)="{ item }">
         <strong style="font-weight: 500" v-if="item.apiValues?.value">{{
@@ -168,18 +173,21 @@
     heartbeatIsNumber,
     nearestCron,
     toUrlParam,
+    clearFeedName
   } from "../utils/FeedsTableDataLayer.js";
   import Loader from "../../../../components/Loader/Loader";
   import CopyToClipboard from "./CopyToClipboard.vue";
   import ToDateCounter from "./ToDateCounter.vue";
   import CronCounter from "./CronCounter.vue";
   import truncateString from "@/core/truncate";
+  import FeedIcon from "./FeedIcon.vue";
   export default {
     components: {
       Loader,
       CopyToClipboard,
       CronCounter,
       ToDateCounter,
+      FeedIcon,
     },
     data() {
       return {
@@ -227,6 +235,7 @@
       nearestCron,
       parseToCurrency,
       heartbeatIsNumber,
+      clearFeedName,
       handleSort(ctx) {
         this.$emit("update:sort", ctx);
       },
