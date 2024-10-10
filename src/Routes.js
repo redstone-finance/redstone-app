@@ -83,6 +83,7 @@ const router = new Router({
           name: "PullModel",
           component: DataService,
           meta: { showSearchInputInNavbar: true },
+          alias: "/app/data-services/:id"
         },
       ],
     },
