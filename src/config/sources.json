@@ -644,6 +644,11 @@
     "url": "https://excalibur.exchange/",
     "color": "#f3b245"
   },
+  "camelot-v3-arbitrumone-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/camelot.png",
+    "url": "https://excalibur.exchange/",
+    "color": "#f3b245"
+  },
   "camelot-usdc": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/camelot.png",
     "url": "https://excalibur.exchange/",
@@ -670,6 +675,11 @@
     "color": "#095be0"
   },
   "fraxswap-on-chain-fxs": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/fraxswap.svg",
+    "url": "https://app.frax.finance/fraxswap",
+    "color": "#232326"
+  },
+  "fraxswap-arbitrumone-weth": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/fraxswap.svg",
     "url": "https://app.frax.finance/fraxswap",
     "color": "#232326"
@@ -741,6 +751,11 @@
   },
   "balancer-ethereum-ezeth": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/balancer.png",
+    "url": "https://balancer.fi",
+    "color": "#232326"
+  },
+  "twap-local-redstone-primary-prod": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
     "url": "https://balancer.fi",
     "color": "#232326"
   },
@@ -834,6 +849,21 @@
     "url": "https://velodrome.finance/",
     "color": "#0f172a"
   },
+  "velodrome-optimism-usdc": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
+    "url": "https://velodrome.finance/",
+    "color": "#0f172a"
+  },
+  "velodrome-cl-optimism-weth-500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
+    "url": "https://velodrome.finance/",
+    "color": "#0f172a"
+  },
+  "velodrome-optimism-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
+    "url": "https://velodrome.finance/",
+    "color": "#0f172a"
+  },
   "velodrome-on-chain-usdc": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/velodrome.png",
     "url": "https://velodrome.finance/",
@@ -859,7 +889,27 @@
     "url": "https://www.diadata.org/",
     "color": "#000D30"
   },
+  "pancake-swap-ethereum-weth-100": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
   "pancake-swap-on-chain-weth-500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
+  "pancake-swap-ethereum-usdt-100": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
+  "pancake-swap-ethereum-weth-500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
+    "url": "https://pancakeswap.finance/",
+    "color": "#a881fc"
+  },
+  "pancake-swap-ethereum-weth-500-multi-block": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/pancakeswap.png",
     "url": "https://pancakeswap.finance/",
     "color": "#a881fc"
@@ -898,6 +948,41 @@
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
     "url": "https://aerodrome.finance/",
     "color": "#0052FF"
+  },  
+  "aerodrome-cl-base-wsteth-2500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-base-rsr": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-base-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-cl-base-weth-100": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-cl-base-weth-400": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-cl-base-usdc-100": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
+  },
+  "aerodrome-base-usdc": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aerodrome.png",
+    "url": "https://aerodrome.finance/",
+    "color": "#0052FF"
   },
   "aperture-swap-weth-500": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/aperture.png",
@@ -909,12 +994,37 @@
     "url": "https://ambient.finance/",
     "color": "#7371fc"
   },
+  "ambient-blast-eth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/ambient.png",
+    "url": "https://ambient.finance/",
+    "color": "#7371fc"
+  },
   "ring-swap-weth": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/ring-swap.png",
     "url": "https://ring.exchange/",
     "color": "#BDB8FA"
   },
+  "ringswap-blast-fwweth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/ring-swap.png",
+    "url": "https://ring.exchange/",
+    "color": "#BDB8FA"
+  },
   "thruster-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/thruster.png",
+    "url": "https://www.thruster.finance/",
+    "color": "#A71034"
+  },
+  "thruster-v3-blast-weth-500": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/thruster.png",
+    "url": "https://www.thruster.finance/",
+    "color": "#A71034"
+  },
+  "thruster-blast-weth": {
+    "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/thruster.png",
+    "url": "https://www.thruster.finance/",
+    "color": "#A71034"
+  },
+  "thruster-v3-blast-weth-3000": {
     "logoURI": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/thruster.png",
     "url": "https://www.thruster.finance/",
     "color": "#A71034"

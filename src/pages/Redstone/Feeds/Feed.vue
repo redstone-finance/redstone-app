@@ -305,7 +305,7 @@
         this.currentRange = range;
       },
       getChartEndpoint(daysRange) {
-        const baseUrl = "http://localhost:9000/on-chain-updates";
+        const baseUrl = "https://api.redstone.finance/on-chain-updates";
         const dataFeedId = this.feedData.token || "ETH";
         const adapterName = this.feedData?.relayerId;
         return `${baseUrl}?dataFeedId=${dataFeedId}&adapterName=${adapterName}&daysRange=${daysRange}`;

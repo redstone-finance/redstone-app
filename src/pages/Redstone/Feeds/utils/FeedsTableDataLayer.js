@@ -43,6 +43,9 @@ export const mapFeedsData = (storeFeedsArray) => {
         : item.feedId + "/" + resolveDenomination(item.feedId),
       timestamp: getTimestampValue(item),
       heartbeat: getHeartbeatValue(item),
+      isFundamentalFeed: isFundamentalFeed(item.feedId),
+      isTwap30: isTwapFeed(item.feedId, 30),
+      isTwap60: isTwapFeed(item.feedId, 60),
       deviation: getDeviationValue(item),
       crypto_token: removeSeparators(item.feedId),
       token_image: getTokenImage(item.feedId),
@@ -106,6 +109,13 @@ const resolveTimestampForHeartbeat = (item) => {
     );
   }
 };
+
+export const clearFeedName = (feedId) =>
+  feedId
+    .replace("_FUNDAMENTAL", "")
+    .replace("-TWAP-30", "")
+    .replace("-TWAP-60", "")
+    .replace("_RATE_PROVIDER", "");
 
 const resolveDenomination = (token) => {
   return denominationCustomMap?.[token] || token.split("/")[1] || "USD";
@@ -291,6 +301,25 @@ export const nearestCron = (cronString) => {
     return "Invalid cron";
   }
 };
+
+const fundamentalFeedIdsParts = [
+  "_FUNDAMENTAL",
+  "_RATE_PROVIDER",
+  "CRV",
+  "3Crv",
+  "sUSDe",
+  "wstETH/stETH",
+  "wUSDM",
+  "apxETH",
+  "sDAI",
+  "STONE",
+];
+
+export const isFundamentalFeed = (feedId) =>
+  fundamentalFeedIdsParts.some((part) => feedId.includes(part));
+
+export const isTwapFeed = (feedId, twapValue) =>
+  feedId.includes(`TWAP-${twapValue}`);
 
 export const heartbeatIsNumber = (value) => {
   return !isNaN(value);

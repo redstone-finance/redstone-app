@@ -141,7 +141,7 @@ export default {
         (network) => network.chainId === chainId
       );
       const provider = new ethers.providers.JsonRpcProvider(
-        contractNetwork.rpcUrl
+        contractNetwork?.rpcUrl
       );
       const abi =
         contractType === "multi-feed" || contractType === "mento"
