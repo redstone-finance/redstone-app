@@ -159,9 +159,10 @@
     z-index: 999;
 
     .dropdown.show {
-      ::v-deep button {
+      ::v-deep button, ::v-deep button:hover, ::v-deep button:focus {
         background: #fd627a;
         border: 2px solid darken(#fd627a, 15%) !important;
+        color: #fff;
       }
     }
 
@@ -173,12 +174,12 @@
         min-width: 300px !important;
       }
 
-      button {
+      ::v-deep button {
         padding: 10px 18px;
         font-size: 14px;
         background: #fff;
         border: 2px solid #e4e4e4;
-        &:hover {
+        &:hover, &:focus {
           background: #fff;
           color: #1a1414;
         }
