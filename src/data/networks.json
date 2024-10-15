@@ -236,5 +236,12 @@
     "chainId": 62320,
     "name": "Celo Baklava Testnet",
     "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/symbols/celo.png"
-  }
+  },
+  "unichainSepolia": {
+  "rpcUrl": "https://sepolia.unichain.org",
+  "explorerUrl": "https://unichain-sepolia.blockscout.com",
+  "chainId": 1301,
+  "name": "Unichain Sepolia Testnet",
+  "iconUrl": "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/sources/uniswap.svg"
+}
 }
