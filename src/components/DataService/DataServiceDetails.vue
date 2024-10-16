@@ -2,27 +2,39 @@
   <div class="provider-details">
     <div class="provider-info mt-2">
       <div class="d-flex justify-content-start mt-3 mb-2 provider-values">
-        <div class="pull-model__status">
-          <span class="feeds__status-text mr-4"
-            ><div><i class="fa fa-server inline"></i> Nodes</div>
-            <strong>{{
-              provider && provider?.nodes?.length ? provider.nodes.length : "0"
-            }}</strong></span
-          >
-          <span class="feeds__status-text mr-4"
-            ><div><i class="fa fa-cube inline"></i> Assets</div>
-            <strong>{{
-              provider && provider?.assetsCount ? provider.assetsCount : "0"
-            }}</strong></span
-          >
-          <span class="feeds__status-text mr-4"
-            ><div><i class="fa fa-clock-o inline"></i> Interval</div>
-            <strong>{{
-              provider && provider.currentManifest
-                ? formatInterval(provider.currentManifest.interval)
-                : undefined
-            }}</strong></span
-          >
+        <div class="d-flex align-items-center">
+          <div class="pull-model__status">
+            <span class="feeds__status-text mr-4"
+              ><div><i class="fa fa-server inline"></i> Nodes</div>
+              <strong>{{
+                provider && provider?.nodes?.length
+                  ? provider.nodes.length
+                  : "0"
+              }}</strong></span
+            >
+            <span class="feeds__status-text mr-4"
+              ><div><i class="fa fa-cube inline"></i> Assets</div>
+              <strong>{{
+                provider && provider?.assetsCount ? provider.assetsCount : "0"
+              }}</strong></span
+            >
+            <span class="feeds__status-text mr-4"
+              ><div><i class="fa fa-clock-o inline"></i> Interval</div>
+              <strong>{{
+                provider && provider.currentManifest
+                  ? formatInterval(provider.currentManifest.interval)
+                  : undefined
+              }}</strong></span
+            >
+          </div>
+          <SourcesPicker
+            v-if="tokens"
+            :items="parseJSON(sourcesData)"
+            :tokens="tokens"
+            @input="handleFilter('sources', $event)"
+            :value="selectedSources"
+            class="ml-3"
+          />
         </div>
         <div
           class="pull-model__pagers text-light fw-normal"
@@ -57,6 +69,27 @@
             </select>
           </span>
         </div>
+      </div>
+    </div>
+    <div>
+      <div class="feeds__actions-wrapper-item">
+        <div v-if="selectedSources?.length > 0">
+          <div class="selected-items">Selected sources:</div>
+          <div class="selected-filters-icons">
+            <SelectedFilters
+              class=""
+              @remove="removeSource"
+              :filters="displayedSelectedSources"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="hasFiltersAndSearch"
+        class="clear-filters"
+        @click="resetFilters"
+      >
+        Clear all
       </div>
     </div>
     <hr />
@@ -170,12 +203,16 @@
   import _ from "lodash";
   import { getDetailsForSymbol } from "@/tokens";
   import { RouteParamsHandler } from "@/core/RouteParamsHandler";
+  import SourcesPicker from "./SourcesPicker.vue";
+  import SelectedFilters from "@/pages/Redstone/Feeds/components/SelectedFilters.vue";
 
   export default {
     name: "DataService",
 
     components: {
+      SelectedFilters,
       LabelValue,
+      SourcesPicker,
     },
 
     props: {
@@ -184,6 +221,7 @@
 
     data() {
       return {
+        sourcesData,
         fields: [
           { key: "name", label: "Asset", thStyle: { width: "300px" } },
           { key: "symbol", label: "Symbol", thStyle: { width: "200px" } },
@@ -192,6 +230,7 @@
         firstManifest: null,
         transactionTime: null,
         tokens: null,
+        selectedSources: [],
         logoPlaceholder:
           "https://raw.githubusercontent.com/redstone-finance/redstone-images/main/redstone-logo.png",
         currentPage: 1,
@@ -205,9 +244,20 @@
     computed: {
       ...mapState("layout", ["searchTerm"]),
 
+      displayedSelectedSources() {
+        return this.selectedSources.map((source) => ({
+          key: source,
+          name: source,
+          imageUrl: this.parseJSON(this.sourcesData).find(
+            (dataSource) => dataSource.id.split("-")[0] === source
+          ).logoURI,
+        }));
+      },
+
       filters() {
         return {
           searchTerm: this.searchTerm,
+          sources: this.selectedSources,
         };
       },
 
@@ -255,12 +305,31 @@
       },
 
       hasFiltersAndSearch() {
-        return this.searchTerm?.trim()?.length > 0 || false; // Add other filter checks if needed
+        return (
+          this.searchTerm?.trim()?.length > 0 ||
+          this.selectedSources?.length > 0 ||
+          false
+        );
       },
     },
 
     methods: {
+      removeSource(item) {
+        this.selectedSources = this.selectedSources.filter(
+          (source) => source != item
+        );
+        this.handleFilter("sources", this.selectedSources);
+      },
       findLogoForSource,
+      handleFilter(filterType, value) {
+        if (filterType === "sources") {
+          this.selectedSources = value;
+          this.$store.dispatch("layout/updateSearchTerm", "");
+        }
+        this.currentPage = 1;
+        this.applyFilters();
+        this.updateRouteParams();
+      },
       onPerPageChange() {
         this.currentPage = 1;
         this.updateRouteParams();
@@ -317,6 +386,7 @@
           currentPage: this.currentPage,
           perPage: this.perPage,
           searchTerm: this.searchTerm,
+          selectedSources: this.selectedSources,
         });
       },
 
@@ -326,6 +396,7 @@
         console.log(routeParams.currentPage);
         this.currentPage = routeParams.currentPage;
         this.perPage = routeParams.perPage;
+        this.selectedSources = routeParams.selectedSources;
         this.$store.dispatch(
           "layout/updateSearchTerm",
           routeParams.searchTerm || ""
@@ -339,14 +410,36 @@
       formatInterval(interval) {
         return interval / 1000 + " s"; // Convert ms to seconds and format
       },
-
+      parseJSON(data) {
+        try {
+          return Object.entries(data).map(([key, value]) => ({
+            ...value,
+            id: key,
+          }));
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+          return [];
+        }
+      },
       customFilter(row, filters) {
-        if (!filters.searchTerm) return true;
-        const searchLower = filters.searchTerm?.toLowerCase();
-        return (
-          row.name?.toLowerCase().includes(searchLower) ||
-          row.symbol?.toLowerCase().includes(searchLower)
-        );
+        if (filters.searchTerm?.length > 0) {
+          const searchLower = filters.searchTerm?.toLowerCase();
+          return (
+            row.name?.toLowerCase().includes(searchLower) ||
+            row.symbol?.toLowerCase().includes(searchLower)
+          );
+        }
+
+        const sourceMatch =
+          filters.sources?.length === 0 ||
+          filters.sources.some((filterSource) => {
+            return row.source.some((rowSource) => {
+              const idParts = rowSource.name.split("-");
+              const value = idParts[0];
+              return filterSource === value;
+            });
+          });
+        return sourceMatch;
       },
 
       resetFilters(clearSearch = true) {
@@ -354,14 +447,21 @@
           this.$store.dispatch("layout/updateSearchTerm", "");
         }
         this.currentPage = 1;
+        this.selectedSources = [];
         this.updateRouteParams();
         this.$store.dispatch("layout/updateFeedsFilterStatus", false);
       },
       applyFilters() {
-        // apply other filters
-        // if (filters) {
-        //   this.$store.dispatch("layout/updateFeedsFilterStatus", true);
-        // }
+        // this.filters = {
+        //   selectedSources: this.selectedSources,
+        //   searchTerm: this.searchTerm,
+        // };
+        this.$nextTick(() => {
+          this.$refs.assetsTable?.refresh();
+        });
+        if (this.hasFilters) {
+          this.$store.dispatch("layout/updateFeedsFilterStatus", true);
+        }
       },
     },
 
@@ -424,10 +524,6 @@
       border-radius: 40px;
       border: 2px solid #ebebeb;
       margin: 10px;
-    }
-
-    .provider-info {
-      margin-bottom: 30px;
     }
 
     LabelValue {

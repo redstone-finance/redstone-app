@@ -10,6 +10,7 @@ export class RouteParamsHandler {
       sortDescParam: "sortDesc",
       perPageParam: "perPage",
       searchParam: "search",
+      sourcesParams: 'sources',
       ...options,
     };
     this.isInitialLoad = true;
@@ -24,6 +25,7 @@ export class RouteParamsHandler {
       sortByParam,
       sortDescParam,
       perPageParam,
+      sourcesParams,
       searchParam,
     } = this.options;
 
@@ -38,6 +40,11 @@ export class RouteParamsHandler {
         : query[networksParam]
           ? query[networksParam].split(",").map(Number)
           : [],
+      selectedSources: query[searchParam]
+      ? []
+      : query[sourcesParams]
+        ? query[sourcesParams].split(",")
+        : [],
       currentPage: query[pageParam] ? parseInt(query[pageParam]) : 1,
       sortBy: query[sortByParam] || "popularity",
       sortDesc: query[sortDescParam] === "true",
@@ -53,6 +60,7 @@ export class RouteParamsHandler {
     const {
       cryptosParam,
       networksParam,
+      sourcesParams,
       pageParam,
       sortByParam,
       sortDescParam,
@@ -83,6 +91,14 @@ export class RouteParamsHandler {
         query[networksParam] = params.selectedNetworks.join(",");
       } else {
         delete query[networksParam];
+      }
+    }
+
+    if (params.selectedSources !== undefined) {
+      if (params.selectedSources.length > 0) {
+        query[sourcesParams] = params.selectedSources.join(",");
+      } else {
+        delete query[sourcesParams];
       }
     }
 
