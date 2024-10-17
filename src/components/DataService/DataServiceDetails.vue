@@ -117,10 +117,21 @@
               logoPlaceholder
             "
           />
-          <span class="token-name ml-3">{{
-            data.item.name ||
-            `${data.item.symbol.replace("_FUNDAMENTAL", "").replace("_RATE_PROVIDER", "")} contract value`
-          }}</span>
+          <RouterLink
+            :to="{
+              name: 'TokenPage',
+              params: {
+                symbol: data.item.symbol.includes('/')
+                    ? data.item.symbol.replace('/', '-')
+                    : data.item.symbol,
+              },
+            }"
+          >
+            <span class="token-name ml-3">{{
+              data.item.name ||
+              `${data.item.symbol.replace("_FUNDAMENTAL", "").replace("_RATE_PROVIDER", "")} contract value`
+            }}</span></RouterLink
+          >
         </template>
         <template #cell(symbol)="data">
           <span
@@ -567,7 +578,6 @@
   .token-name {
     font-size: 14px;
     font-weight: $font-weight-soft-bold;
-    color: $navy;
   }
 
   hr {
