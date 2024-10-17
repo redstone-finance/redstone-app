@@ -2,6 +2,7 @@
   <div class="sources-wrapper">
     <h1 class="h6 text-black fw-bold text-dark">Redstone sources</h1>
     <b-table
+      class="pull-model"
       id="sources-table"
       stacked="md"
       sort-icon-left
@@ -13,9 +14,11 @@
       <template #cell(name)="source">
         <div class="source-name">
           <img class="source-logo" :src="source.item.logoURI" />
-          <span class="ml-3">
-            {{ source.item.id }}
-          </span>
+          <a :href="source.item.url" target="_blank">
+            <span class="ml-3">
+              {{ source.item.id }}
+            </span>
+          </a>
         </div>
       </template>
 
@@ -30,12 +33,6 @@
         >
           {{ source.item["fetching-success-percentage"] }}%
         </span>
-      </template>
-
-      <template #cell(link)="source">
-        <a :href="source.item.url" target="_blank">
-          <i class="fa fa-external-link" />
-        </a>
       </template>
 
       <template #cell(detailed-report)="source">
@@ -85,20 +82,26 @@
         showReportsLink: false,
         sourcesReportFromGH: {},
         fields: [
-          { key: "name", label: "Source", stickyColumn: true },
-          { key: "link", label: "URL" },
+          {
+            key: "name",
+            label: "Source",
+            stickyColumn: true,
+            thStyle: { width: "300px" },
+          },
+          // { key: "link", label: "URL" },
           {
             key: "incorrect-price-value",
             label: "Incorrect price",
             sortable: true,
+            thStyle: { width: "200px" },
           },
-          { key: "fetching-failed", label: "Fetching failed", sortable: true },
+          { key: "fetching-failed", label: "Fetching failed", sortable: true,  thStyle: { width: "250px" }, },
           {
             key: "fetching-success-percentage",
             label: "Success",
             sortable: true,
           },
-          { key: "detailed-report", label: "Stability report" },
+          // { key: "detailed-report", label: "Stability report" },
         ],
       };
     },
