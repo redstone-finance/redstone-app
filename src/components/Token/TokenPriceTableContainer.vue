@@ -1,6 +1,6 @@
 <template>
-  <div class="price-table">
-    <div class="table-title">Data services</div>
+  <div class="price-table pull-model">
+    <div class="table-title">Recent updates</div>
     <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
         <b-col xs="12" md="6">
@@ -170,8 +170,7 @@
         fromDate: new Date(Date.now() - 24 * 3600 * 1000),
         toDate: new Date(),
         lastConfirmedTxTimestamp: 0,
-
-        fields: ["value", "time", "providerId", "dispute"],
+        fields: ["value", "time"],
       };
     },
 
