@@ -1,5 +1,5 @@
 <template>
-  <div class="price-table pull-model">
+  <div class="price-table">
     <div class="table-title">Recent updates</div>
     <div class="table-filters-container mt-4 mb-4 d-flex justify-content-start">
       <b-row>
@@ -63,6 +63,9 @@
 
     <b-table
       id="prices-table"
+      sort-by="timestamp"
+      sort-desc="true"
+      class="pull-model"
       stacked="md"
       hover
       :busy.sync="loading"
@@ -138,7 +141,6 @@
 
 <script>
   import redstoneAdapter from "@/redstone-api-adapter";
-  import dateFormat from "dateformat";
   import utils from "@/utils";
   import {
     DEFAULT_PROVIDER,
@@ -146,6 +148,7 @@
     getDetailsForSymbol,
     isCurrencyToken,
   } from "@/tokens";
+  import { format } from "date-fns";
   import _ from "lodash";
 
   export default {
@@ -176,16 +179,7 @@
 
     async created() {
       await this.loadPrices();
-      // await this.updateLastConfirmedTxTimestamp();
     },
-
-    // timers: {
-    //   updateLastConfirmedTxTimestamp: {
-    //     autostart: true,
-    //     time: 10000,
-    //     repeat: true,
-    //   },
-    // },
 
     methods: {
       getCurrentTime(hoursAgo = 0) {
@@ -331,7 +325,7 @@
         return this.prices.map((p) => {
           return {
             value: p.value,
-            time: dateFormat(p.timestamp, "dd/mm/yyyy    h:MM:ss"),
+            time: format(p.timestamp, "MMMM d, yyyy h:mm a zzz"),
             timestamp: p.timestamp,
             permawebTx: p.permawebTx,
             providerId: p.provider,
@@ -527,8 +521,10 @@
   }
 
   #prices-table {
+    box-shadow: none;
     td {
       border-top: 1px solid rgba(0, 0, 0, 0.1);
+      text-align: center !important;
     }
 
     th {
