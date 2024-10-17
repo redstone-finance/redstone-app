@@ -64,7 +64,7 @@
     <b-table
       id="prices-table"
       sort-by="timestamp"
-      sort-desc="true"
+      :sort-desc="true"
       class="pull-model"
       stacked="md"
       hover
