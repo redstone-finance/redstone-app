@@ -1,146 +1,141 @@
 <script>
   import Chart from "chart.js";
-import { generateChart } from "vue-chartjs";
+  import { generateChart } from "vue-chartjs";
 
-Chart.defaults.LineWithLine = Chart.defaults.line;
-Chart.controllers.LineWithLine = Chart.controllers.line.extend({
-  draw: function (ease) {
-    Chart.controllers.line.prototype.draw.call(this, ease);
+  const CustomLine = generateChart("line", "line");
 
-    if (this.chart.tooltip._active && this.chart.tooltip._active.length) {
-      var activePoint = this.chart.tooltip._active[0],
-        ctx = this.chart.ctx,
-        x = activePoint.tooltipPosition().x,
-        y = activePoint.tooltipPosition().y,
-        topY = this.chart.scales["y-axis-0"].top,
-        bottomY = this.chart.scales["y-axis-0"].bottom;
-
-      // draw line
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x, topY);
-      ctx.lineTo(x, bottomY);
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "#ababab";
-      ctx.stroke();
-
-      // draw point
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.strokeStyle = "red";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.restore();
-    }
-  },
-});
-
-const CustomLine = generateChart("custom-line", "LineWithLine");
-
-export default {
-  extends: CustomLine,
-  props: {
-    symbol: String,
-    data: Object,
-    decimals: Number,
-    isUsdBased: Boolean,
-  },
-  methods: {
-    createGradient(ctx, chartArea) {
-      const gradient = ctx.createLinearGradient(
-        0,
-        chartArea.bottom,
-        0,
-        chartArea.top
-      );
-      gradient.addColorStop(0, "rgba(253, 98, 122, 0)");
-      gradient.addColorStop(0.5, "rgba(253, 98, 122, 0.1)");
-      gradient.addColorStop(1, "rgba(253, 98, 122, 0.2)");
-      return gradient;
+  export default {
+    extends: CustomLine,
+    props: {
+      symbol: String,
+      data: Object,
+      decimals: Number,
+      isUsdBased: Boolean,
     },
-  },
-  watch: {
-    data: function (chartData) {
-      this.renderChart(
-        {
-          labels: chartData.labels,
-          datasets: chartData.datasets.map(dataset => ({
-            ...dataset,
-            backgroundColor: (context) => {
-              const chart = context.chart;
-              const { ctx, chartArea } = chart;
-              if (!chartArea) {
-                return null;
-              }
-              return this.createGradient(ctx, chartArea);
-            },
-          })),
-        },
-        {
-          responsive: true,
-          maintainAspectRatio: false,
-          animation: {
-            duration: 0,
+    methods: {
+      createGradient(ctx, chartArea) {
+        const gradient = ctx.createLinearGradient(
+          0,
+          chartArea.bottom,
+          0,
+          chartArea.top
+        );
+        gradient.addColorStop(0, "rgba(253, 98, 122, 0)");
+        gradient.addColorStop(0.5, "rgba(253, 98, 122, 0.1)");
+        gradient.addColorStop(1, "rgba(253, 98, 122, 0.2)");
+        return gradient;
+      },
+    },
+    watch: {
+      data: function (chartData) {
+        this.renderChart(
+          {
+            labels: chartData.labels,
+            datasets: chartData.datasets.map((dataset, index) => ({
+              ...dataset,
+              backgroundColor:
+                index === 0
+                  ? (context) => {
+                      const chart = context.chart;
+                      const { ctx, chartArea } = chart;
+                      if (!chartArea) {
+                        return null;
+                      }
+                      return this.createGradient(ctx, chartArea);
+                    }
+                  : "transparent", // Set background to transparent for all datasets except the first
+              fill: index === 0, // Only fill the first dataset
+            })),
           },
-          scales: {
-            xAxes: [
-              {
-                type: "time",
-                time: {
-                  unit: chartData.timeUnit || "day",
-                  unitStepSize: chartData.timeUnit == "minute" ? 5 : 1,
-                },
-                ticks: {
-                  stepSize: 12,
-                },
-              },
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  userCallback: (value) => {
-                    const valueCalculated = value.toFixed(chartData.decimals);
-                    return this.isUsdBased
-                      ? `$${valueCalculated}`
-                      : valueCalculated;
+          {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              xAxes: [
+                {
+                  type: "time",
+                  time: {
+                    unit: chartData.timeUnit || "day",
+                    unitStepSize: chartData.timeUnit == "minute" ? 5 : 1,
+                  },
+                  ticks: {
+                    stepSize: 12,
+                  },
+                  gridLines: {
+                    lineWidth: 0,
+                    drawOnChartArea: false,
+                    drawTicks: false,
                   },
                 },
-              },
-            ],
-          },
-          legend: {
-            display: false,
-          },
-          hover: {
-            intersect: false,
-            mode: "index",
-          },
-          tooltips: {
-            intersect: false,
-            mode: "index",
-            backgroundColor: "#242F51",
-            callbacks: {
-              label: (tooltipItem, data) => {
-                var label =
-                  data.datasets[tooltipItem.datasetIndex].label || "";
-
-                if (label) {
-                  label += ": ";
-                }
-                const valueCalculated = tooltipItem.yLabel.toFixed(
-                  chartData.decimals
-                );
-                label += valueCalculated;
-                return this.isUsdBased ? `$${label}` : label;
+              ],
+              yAxes: [
+                {
+                  ticks: {
+                    userCallback: (value) => {
+                      const valueCalculated = value.toFixed(chartData.decimals);
+                      return this.isUsdBased
+                        ? `$${valueCalculated}`
+                        : valueCalculated;
+                    },
+                  },
+                },
+              ],
+            },
+            legend: {
+              display: false,
+            },
+            tooltips: {
+              enabled: true,
+              mode: "index",
+              intersect: false,
+              bodyFontSize: 14,
+              bodyFontStyle: "normal",
+              bodyFontColor: "#404040",
+              backgroundColor: "rgba(254, 254, 254, 1)",
+              borderColor: "#fd627a",
+              borderWidth: 1,
+              titleFontSize: 14,
+              titleFontStyle: "bold",
+              titleFontColor: "#404040",
+              xPadding: 15,
+              yPadding: 15,
+              caretSize: 0,
+              cornerRadius: 15,
+              callbacks: {
+                label: (tooltipItem, data) => {
+                  var label =
+                    data.datasets[tooltipItem.datasetIndex].label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  const valueCalculated = tooltipItem.yLabel.toFixed(
+                    chartData.decimals
+                  );
+                  label += valueCalculated;
+                  return this.isUsdBased ? `$${label}` : label;
+                },
               },
             },
-          },
-        }
-      );
+            hover: {
+              mode: "index",
+              intersect: false,
+            },
+            elements: {
+              line: {
+                borderWidth: 2,
+              },
+              point: {
+                radius: 0,
+                hitRadius: 10,
+                hoverRadius: 5,
+              },
+            },
+            animation: {
+              duration: 0,
+            },
+          }
+        );
+      },
     },
-  },
-};
+  };
 </script>
