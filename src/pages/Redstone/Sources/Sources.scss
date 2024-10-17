@@ -7,6 +7,13 @@
   box-shadow: var(--content-shadow);
 
   #sources-table {
+    box-shadow: none;
+    td {
+      text-align: center;
+    }
+    td:first-child {
+      text-align: left;
+    }
     th {
       text-transform: none;
       color: $navy;
