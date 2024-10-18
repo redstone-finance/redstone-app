@@ -943,5 +943,6 @@
   "rETH": "rocket-pool-eth",
   "MANTA": "manta-network",
   "frxETH": "frax-ether",
-  "USDe": "ethena-usde"
+  "USDe": "ethena-usde",
+  "PUFFER": "puffer-finance"
 }

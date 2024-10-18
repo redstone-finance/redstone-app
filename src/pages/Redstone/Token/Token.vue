@@ -21,9 +21,9 @@
           </b-form>
         </div>
         <div class="data-services-wrapper">
-          <a class="data-services" @click="scrollToDataServices"
+          <!-- <a class="data-services" @click="scrollToDataServices"
             >View data services</a
-          >
+          > -->
         </div>
       </div>
 
