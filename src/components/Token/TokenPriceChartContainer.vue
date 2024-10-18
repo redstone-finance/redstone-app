@@ -187,7 +187,7 @@
                     class="source-logo"
                   />
 
-                  <span v-if="source == 'aggregated'">Median</span>
+                  <span v-if="source == 'aggregated'">Aggregated</span>
                   <span v-else>{{ source }}</span>
                 </div>
                 <div class="source-value">
