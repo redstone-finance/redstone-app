@@ -480,12 +480,12 @@
       },
 
       chartData() {
-        const labels = [];
         const datasets = {};
 
         for (const source of this.selectedSources) {
           if (!datasets[source]) {
             datasets[source] = {
+              label: source,
               data: [],
               backgroundColor: "transparent",
               pointHoverRadius: 0,
@@ -497,24 +497,24 @@
         }
 
         for (const price of this.prices) {
-          labels.push(price.timestamp);
-
+          const timestamp = new Date(price.timestamp);
           for (const source of this.selectedSources) {
             const value = price.source[source] || price.value;
-            datasets[source].data.push(value);
+            datasets[source].data.push({
+              x: timestamp,
+              y: value,
+            });
           }
         }
 
         let timeUnit = "day";
         if (this.selectedTimeRange.days === 1) {
           timeUnit = "hour";
-        }
-        if (this.selectedTimeRange.days === 0) {
+        } else if (this.selectedTimeRange.days === 0) {
           timeUnit = "minute";
         }
 
         return {
-          labels,
           datasets: Object.values(datasets),
           timeUnit,
           decimals: this.priceDecimals(),
@@ -553,217 +553,219 @@
 <style scoped lang="scss">
   @import "~@/styles/app";
 
-.chart-wrapper {
-  position: relative;
-  padding: 20px;
-}
-
-.last-updated-note {
-  color: $gray-600;
-  justify-self: flex-end;
-  font-size: 12px;
-}
-
-.data-sources {
-  margin-bottom: 20px;
-  font-size: 20px;
-  color: $navy;
-}
-
-.data-sources-container {
-  max-height: 330px;
-  overflow-y: scroll;
-}
-
-.source-checkbox {
-  display: block;
-  margin-bottom: 5px;
-
-  .custom-control-input {
-    color: currentColor;
-    cursor: pointer;
+  .chart-wrapper {
+    position: relative;
+    padding: 20px;
   }
 
-  .source-label {
-    cursor: pointer;
+  .last-updated-note {
+    color: $gray-600;
+    justify-self: flex-end;
+    font-size: 12px;
+  }
+
+  .data-sources {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: $navy;
+  }
+
+  .data-sources-container {
+    max-height: 330px;
+    overflow-y: scroll;
+  }
+
+  .source-checkbox {
+    display: block;
+    margin-bottom: 5px;
+
+    .custom-control-input {
+      color: currentColor;
+      cursor: pointer;
+    }
+
+    .source-label {
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      color: currentColor;
+      justify-content: space-between;
+      font-size: 9px;
+      line-height: 22px;
+
+      img.source-logo {
+        width: 14px;
+        height: 14px;
+        position: relative;
+        bottom: 2px;
+        margin-right: 4px;
+      }
+
+      .source-name {
+        font-weight: $font-weight-normal;
+        text-transform: capitalize;
+      }
+
+      .source-value {
+        color: #777;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .price-chart-container {
+    min-height: 400px;
+  }
+
+  .bar-below-chart {
     display: flex;
-    flex-direction: row;
-    width: 100%;
-    color: currentColor;
     justify-content: space-between;
-    font-size: 9px;
-    line-height: 22px;
+  }
 
-    img.source-logo {
-      width: 14px;
-      height: 14px;
-      position: relative;
-      bottom: 2px;
-      margin-right: 4px;
-    }
+  .time-range-links {
+    a {
+      color: $gray-750;
+      font-weight: $font-weight-ultra-thin;
+      width: 60px;
+      display: inline-block;
 
-    .source-name {
-      font-weight: $font-weight-normal;
-      text-transform: capitalize;
-    }
+      &:first-of-type {
+        width: 75px;
+      }
 
-    .source-value {
-      color: #777;
-      font-weight: 500;
+      &:nth-of-type(2) {
+        width: 45px;
+      }
+
+      &.selected {
+        color: $navy;
+        font-weight: $font-weight-bold;
+      }
+
+      &:hover {
+        color: $navy;
+        font-weight: $font-weight-thin;
+        text-decoration: none;
+      }
     }
   }
-}
 
-.price-chart-container {
-  min-height: 400px;
-}
+  .percentage {
+    transform: translateY(-2px);
+    margin-bottom: 0;
+    font-weight: $font-weight-normal;
+    font-size: 16px;
+    color: $gray-500;
 
-.bar-below-chart {
-  display: flex;
-  justify-content: space-between;
-}
+    .positive {
+      span {
+        color: $teal;
+      }
+    }
 
-.time-range-links {
-  a {
-    color: $gray-750;
-    font-weight: $font-weight-ultra-thin;
-    width: 60px;
+    .negative {
+      span {
+        color: $error-red;
+      }
+    }
+
+    .period {
+      font-size: $font-size-index;
+      font-weight: $font-weight-semi-bold;
+    }
+  }
+
+  .token-logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .token-price-wrapper {
+    flex-wrap: wrap;
+  }
+
+  .token-name {
+    color: $navy;
+    font-size: 34px;
+  }
+
+  .current-price {
+    color: $navy;
+    font-size: 34px;
+    font-weight: $font-weight-bold;
     display: inline-block;
-
-    &:first-of-type {
-      width: 75px;
-    }
-
-    &:nth-of-type(2) {
-      width: 45px;
-    }
-
-    &.selected {
-      color: $navy;
-      font-weight: $font-weight-bold;
-    }
-
-    &:hover {
-      color: $navy;
-      font-weight: $font-weight-thin;
-      text-decoration: none;
-    }
   }
-}
 
-.percentage {
-  transform: translateY(-2px);
-  margin-bottom: 0;
-  font-weight: $font-weight-normal;
-  font-size: 16px;
-  color: $gray-500;
+  .stats-container {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
 
-  .positive {
-    span {
-      color: $teal;
+    &:before {
+      content: " ";
+      height: 30px;
+      border-right: 1px solid #d9d9d9;
+      border-top-width: 0;
+      position: absolute;
+      left: -1.75rem;
+      bottom: -4px;
     }
   }
 
-  .negative {
-    span {
-      color: $error-red;
+  @media (min-width: breakpoint-min(lg)) and (max-width: breakpoint-max(lg)) {
+    .token-price-wrapper {
+      max-width: calc(100% - 160px);
     }
   }
 
-  .period {
-    font-size: $font-size-index;
+  .data-service-details {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .data-service-details-text {
+    // font-weight: $font-weight-semi-bold;
+    font-size: $font-size-larger;
+    flex: 0 0 25%;
+    color: var(--redstone-dark-blue-color);
+  }
+
+  .data-service-details-label {
     font-weight: $font-weight-semi-bold;
   }
-}
 
-.token-logo {
-  width: 35px;
-  height: 35px;
-}
-
-.token-price-wrapper {
-  flex-wrap: wrap;
-}
-
-.token-name {
-  color: $navy;
-  font-size: 34px;
-}
-
-.current-price {
-  color: $navy;
-  font-size: 34px;
-  font-weight: $font-weight-bold;
-  display: inline-block;
-}
-
-.stats-container {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-
-  &:before {
-    content: " ";
-    height: 30px;
-    border-right: 1px solid #d9d9d9;
-    border-top-width: 0;
-    position: absolute;
-    left: -1.75rem;
-    bottom: -4px;
-  }
-}
-
-@media (min-width: breakpoint-min(lg)) and (max-width: breakpoint-max(lg)) {
-  .token-price-wrapper {
-    max-width: calc(100% - 160px);
-  }
-}
-
-.data-service-details {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.data-service-details-text {
-  // font-weight: $font-weight-semi-bold;
-  font-size: $font-size-larger;
-  flex: 0 0 25%;
-  color: var(--redstone-dark-blue-color);
-}
-
-.data-service-details-label {
-  font-weight: $font-weight-semi-bold;
-}
-
-.preloaders {
-  margin-bottom: 10px;
-
-  .preloader {
-    @include preload-animation(2.5s, 350px);
-  }
-
-  .text-preloader {
-    height: 20px;
-    width: 250px;
+  .preloaders {
     margin-bottom: 10px;
+
+    .preloader {
+      @include preload-animation(2.5s, 350px);
+    }
+
+    .text-preloader {
+      height: 20px;
+      width: 250px;
+      margin-bottom: 10px;
+    }
   }
-}
 </style>
 <style lang="scss" scoped>
   .custom-control-input:checked ~ .custom-control-label {
-  &::before {
-    color: currentColor !important;
-    border-color: currentColor !important;
-    background-color: currentColor !important;
-    cursor: pointer;
+    &::before {
+      color: currentColor !important;
+      border-color: currentColor !important;
+      background-color: currentColor !important;
+      cursor: pointer;
+    }
+
+    &::after {
+      cursor: pointer;
+    }
   }
 
-  &::after {
-    cursor: pointer;
+  .custom-checkbox
+    .custom-control-input:checked
+    ~ .custom-control-label::after {
+    background-image: url("../../assets/icons/check.svg") !important;
   }
-}
-
-.custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
-  background-image: url("../../assets/icons/check.svg") !important;
-}
 </style>
